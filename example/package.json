@@ -1,0 +1,37 @@
+{
+  "name": "DocumentReader",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint .",
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
+  },
+  "dependencies": {
+    "react": "16.11.0",
+    "react-native": "0.62.2",
+    "react-native-check-box": "^2.1.7",
+    "react-native-customized-image-picker": "^0.2.1",
+    "api_module_place_holder": "file:../",
+    "core_module_place_holder": "^0.0.6",
+    "react-native-progress": "^4.1.2",
+    "react-native-fs": "^2.16.6",
+    "react-native-radio-buttons-group": "^1.0.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/runtime": "^7.6.2",
+    "@react-native-community/eslint-config": "^0.0.5",
+    "babel-jest": "^24.9.0",
+    "eslint": "^6.5.1",
+    "jest": "^24.9.0",
+    "metro-react-native-babel-preset": "^0.58.0",
+    "react-test-renderer": "16.11.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
