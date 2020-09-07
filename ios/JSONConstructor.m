@@ -706,124 +706,6 @@
     return output;
 }
 
-+(NSInteger)generateDocReaderAction:(RGLDocReaderAction)action {
-    NSInteger output = 0;
-    switch (action) {
-        case 0:
-            output = 1;
-            break;
-        case 1:
-            output = 0;
-            break;
-        case 2:
-            output = 8;
-            break;
-        case 3:
-            output = 2;
-            break;
-        case 4:
-            output = 3;
-            break;
-        default:
-            break;
-    }
-    
-    return output;
-}
-
-+(NSInteger)generateRFIDCompleteAction:(RGLRFIDCompleteAction)action {
-    return action + 9;
-}
-
-+(NSInteger)generateRFIDNotificationAction:(RGLRFIDNotificationAction)action {
-    return action + 20;
-}
-
-+(NSString*)generateCompletion:(NSInteger)action :(RGLDocumentReaderResults*)results :(NSError*)error :(RGLRFIDNotify*)notify {
-    NSMutableDictionary *output = [NSMutableDictionary new];
-    
-    output[@"action"] = [NSNumber numberWithInteger:action];
-    switch (action) {
-        case 0:
-            output[@"results"] = [self generateResults:results];
-            break;
-        case 1:
-            output[@"results"] = [self generateResults:results];
-            break;
-        case 2:
-            output[@"results"] = [self generateResults:results];
-            break;
-        case 3:
-            output[@"results"] = [self generateResults:results];
-            break;
-        case 5:
-            break;
-        case 6:
-            output[@"results"] = [self generateResults:results];
-            break;
-        case 8:
-            output[@"results"] = [self generateResults:results];
-            break;
-        case 9:
-            output[@"results"] = [self generateResults:results];
-            break;
-        case 10:
-            output[@"results"] = [self generateResults:results];
-            break;
-        case 11:
-            output[@"results"] = [self generateResults:results];
-            break;
-        case 12:
-            output[@"results"] = [self generateResults:results];
-            break;
-        case 20:
-            output[@"results"] = [self generateResultsWithNotification:[self generateRFIDNotify:notify]];
-            break;
-        case 21:
-            output[@"results"] = [self generateResultsWithNotification:[self generateRFIDNotify:notify]];
-            break;
-        case 22:
-            output[@"results"] = [self generateResultsWithNotification:[self generateRFIDNotify:notify]];
-            break;
-        case 23:
-            output[@"results"] = [self generateResultsWithNotification:[self generateRFIDNotify:notify]];
-            break;
-        default:
-            break;
-    }
-    
-    output[@"error"] = [self generateNSError:error];
-    
-    return [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:output options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
-}
-
-+(NSMutableDictionary*)generateResultsWithNotification:(NSMutableDictionary*)dict {
-    NSMutableDictionary *output = [NSMutableDictionary new];
-    
-    output[@"documentReaderNotification"] = dict;
-    
-    return output;
-}
-
-+(NSMutableDictionary*)generateNSError:(NSError*)error {
-    NSMutableDictionary *output = [NSMutableDictionary new];
-
-    output[@"code"] = [NSNumber numberWithInteger: error.code];
-    output[@"domain"] = error.domain;
-    
-    return output;
-}
-
-+(NSMutableDictionary*)generateRFIDNotify:(RGLRFIDNotify*)notify {
-    NSMutableDictionary *output = [NSMutableDictionary new];
-
-    output[@"code"] = [NSNumber numberWithInteger:notify.code];
-    output[@"number"] = [NSNumber numberWithInt:notify.number];
-    output[@"value"] = [NSNumber numberWithDouble:notify.value];
-    
-    return output;
-}
-
 +(RGLPKDCertificate*)RGLPKDCertificateFromJson:(NSDictionary*)dict {
     RGLPKDResourceType resType;
 
@@ -861,6 +743,131 @@
     }
     
     return [[RGLPKDCertificate init] initWithBinaryData:binaryData resourceType:resType privateKey:privateKey];
+}
+
++(NSInteger)generateDocReaderAction:(RGLDocReaderAction)action {
+    NSInteger output = 0;
+    switch (action) {
+        case RGLDocReaderActionComplete:
+            output = 1;
+            break;
+        case RGLDocReaderActionProcess:
+            output = 0;
+            break;
+        case RGLDocReaderActionMorePagesAvailable:
+            output = 8;
+            break;
+        case RGLDocReaderActionCancel:
+            output = 2;
+            break;
+        case RGLDocReaderActionError:
+            output = 3;
+            break;
+        default:
+            break;
+    }
+    
+    return output;
+}
+
++(NSInteger)generateRFIDCompleteAction:(RGLRFIDCompleteAction)action {
+    NSInteger output = 0;
+    switch (action) {
+        case RGLRFIDCompleteActionComplete:
+            output = 10;
+            break;
+        case RGLRFIDCompleteActionError:
+            output = 3;
+            break;
+        case RGLRFIDCompleteActionCancel:
+            output = 2;
+            break;
+        case RGLRFIDCompleteActionSessionRestarted:
+            output = 1;
+            break;
+        default:
+            break;
+    }
+    
+    return output;
+}
+
++(NSInteger)generateRFIDNotificationAction:(RGLRFIDNotificationAction)action {
+    return 5;
+}
+
++(NSString*)generateCompletion:(NSInteger)action :(RGLDocumentReaderResults*)results :(NSError*)error :(RGLRFIDNotify*)notify {
+    NSMutableDictionary *output = [NSMutableDictionary new];
+    
+    switch (action) {
+        case 0:
+            output[@"results"] = [self generateResultsWithNotification:[self generateRFIDNotify:notify]];
+            break;
+        case 1:
+            output[@"results"] = [self generateResults:results];
+            break;
+        case 2:
+            output[@"results"] = [self generateResults:results];
+            break;
+        case 3:
+            output[@"results"] = [self generateResults:results];
+            break;
+        case 5:
+            output[@"results"] = [self generateResultsWithNotification:[self generateRFIDNotify:notify]];
+            break;
+        case 6:
+            output[@"results"] = [self generateResultsWithNotification:[self generateRFIDNotify:notify]];
+            break;
+        case 8:
+            output[@"results"] = [self generateResults:results];
+            break;
+        case 10:
+            output[@"results"] = [self generateResultsWithRFID :results :1];
+            action = 1;
+            break;
+        default:
+            break;
+    }
+    
+    output[@"action"] = [NSNumber numberWithInteger:action];
+    output[@"error"] = [self generateNSError:error];
+    
+    return [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:output options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
+}
+
++(NSMutableDictionary*)generateResultsWithNotification:(NSMutableDictionary*)dict {
+    NSMutableDictionary *output = [NSMutableDictionary new];
+    
+    output[@"documentReaderNotification"] = dict;
+    
+    return output;
+}
+
++(NSMutableDictionary*)generateResultsWithRFID:(RGLDocumentReaderResults*)results :(NSInteger)rfidResult {
+    NSMutableDictionary *output = [self generateResults:results];
+    
+    output[@"rfidResult"] = [NSNumber numberWithInteger:rfidResult];
+    
+    return output;
+}
+
++(NSMutableDictionary*)generateNSError:(NSError*)error {
+    NSMutableDictionary *output = [NSMutableDictionary new];
+
+    output[@"code"] = [NSNumber numberWithInteger: error.code];
+    output[@"domain"] = error.domain;
+    
+    return output;
+}
+
++(NSMutableDictionary*)generateRFIDNotify:(RGLRFIDNotify*)notify {
+    NSMutableDictionary *output = [NSMutableDictionary new];
+
+    output[@"code"] = [NSNumber numberWithInteger:notify.code];
+    output[@"number"] = [NSNumber numberWithInt:notify.number];
+    output[@"value"] = [NSNumber numberWithDouble:notify.value];
+    
+    return output;
 }
 
 @end

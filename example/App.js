@@ -78,13 +78,13 @@ export default class App extends Component {
   handleCompletion(completion) {
     if (this.state.isReadingRfid && (completion.action === Enum.DocReaderAction.CANCEL || completion.action === Enum.DocReaderAction.ERROR))
       this.hideRfidUI()
-    if (this.state.isReadingRfid && (completion.action === Enum.DocReaderAction.NOTIFICATION || completion.action === Enum.DocReaderAction.RFID_NOTIFICATION_NOTIFICATION))
+    if (this.state.isReadingRfid && completion.action === Enum.DocReaderAction.NOTIFICATION)
       this.updateRfidUI(completion.results.documentReaderNotification)
-    if (completion.action === Enum.DocReaderAction.COMPLETE || completion.action === Enum.DocReaderAction.RFID_COMPLETE)
+    if (completion.action === Enum.DocReaderAction.COMPLETE)
       if (this.state.isReadingRfid)
-        if (completion.results.rfidResult !== 1 && completion.action !== Enum.DocReaderAction.RFID_COMPLETE){
+        if (completion.results.rfidResult !== 1)
           this.restartRfidUI()
-        }else {
+        else {
           this.hideRfidUI()
           this.displayResults(completion.results)
         }
