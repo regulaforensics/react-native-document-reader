@@ -131,6 +131,11 @@ export default class App extends Component {
     DocumentReader.readRFID(e => { }, e => {})
   }
 
+  usualRFID(){
+    this.setState({ doRfid: false })
+    DocumentReader.startRFIDReader(e => { }, e => {})
+  }
+
   handleResults(results) {
     if (this.state.doRfid && results != null && results.chipPage != 0) {
       accessKey = null
@@ -152,7 +157,7 @@ export default class App extends Component {
         }
       }
       // this.customRFID()
-      DocumentReader.startRFIDReader(m => { }, e => console.log(e))
+      this.usualRFID()
     } else
       this.displayResults(results)
   }
