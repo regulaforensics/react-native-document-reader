@@ -319,6 +319,12 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "recognizeImageWithCameraMode":
                     recognizeImageWithCameraMode(callback, args(0), args(1));
                     break;
+                case "getRfidSessionStatus":
+                    getRfidSessionStatus(callback);
+                    break;
+                case "setRfidSessionStatus":
+                    setRfidSessionStatus(callback, args(0));
+                    break;
             }
         } catch (Exception ignored) {
         }
@@ -582,6 +588,14 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void initializeReaderWithDatabasePath(Callback callback, Object license, String path) {
         callback.error("initializeReaderWithDatabasePath() is an ios-only method");
+    }
+
+    private void setRfidSessionStatus(Callback callback, String s) {
+        callback.error("setRfidSessionStatus() is an ios-only method");
+    }
+
+    private void getRfidSessionStatus(Callback callback) {
+        callback.error("getRfidSessionStatus() is an ios-only method");
     }
 
     private IDocumentReaderCompletion getCompletion() {

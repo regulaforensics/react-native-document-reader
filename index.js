@@ -3,7 +3,7 @@ const { RNRegulaDocumentReader } = NativeModules
 
 // Classes
 
-class ScenarioClass {
+class Scenario {
     constructor() {
         this.RGLDocReaderOrientation = {
             GLDocReaderOrientationRotate: 0,
@@ -20,7 +20,7 @@ class ScenarioClass {
 
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new ScenarioClass()
+        const result = new Scenario()
         result.name = jsonObject["name"]
         result.caption = jsonObject["caption"]
         result.description = jsonObject["description"]
@@ -105,6 +105,7 @@ class DocumentReaderValue {
         result.originalValue = jsonObject["originalValue"]
         result.boundRect = Rect.fromJson(jsonObject["boundRect"])
         result.validity = jsonObject["validity"]
+        result.probability = jsonObject["probability"]
         result.comparison = {}
         if (jsonObject["comparison"] != null)
             for (const i in jsonObject["comparison"])
@@ -790,7 +791,9 @@ class DocumentReaderResults {
         const results = new DocumentReaderResults()
         results.chipPage = jsonObject["chipPage"]
         results.overallResult = jsonObject["overallResult"]
-        results.processingFinished = jsonObject["processingFinished"]
+        results.processingFinishedStatus = jsonObject["processingFinishedStatus"]
+        results.elapsedTimeRFID = jsonObject["elapsedTimeRFID"]
+        results.elapsedTime = jsonObject["elapsedTime"]
         results.morePagesAvailable = jsonObject["morePagesAvailable"]
         results.rfidResult = jsonObject["rfidResult"]
         results.highResolution = jsonObject["highResolution"]
@@ -5012,6 +5015,8 @@ DocumentReader.recognizeVideoFrame = (arg0, arg1, successCallback, errorCallback
 DocumentReader.showScannerWithCameraIDAndOpts = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "showScannerWithCameraIDAndOpts", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.recognizeImageWithImageInputParams = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithImageInputParams", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.recognizeImageWithCameraMode = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithCameraMode", [arg0, arg1], successCallback, errorCallback)
+DocumentReader.setRfidSessionStatus = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidSessionStatus", [arg0], successCallback, errorCallback)
+DocumentReader.getRfidSessionStatus = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidSessionStatus", [], successCallback, errorCallback)
 
 DocumentReader.DocumentReaderResults = DocumentReaderResults
 DocumentReader.Enum = Enum

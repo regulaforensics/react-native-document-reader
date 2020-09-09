@@ -219,8 +219,8 @@ class JSONConstructor {
 
     static private JSONObject generateDocumentReaderNotification(DocumentReaderNotification documentReaderNotification) throws JSONException {
         JSONObject result = new JSONObject();
-        result.put("code", documentReaderNotification.code & 0x0000FFFF);
-        result.put("number", documentReaderNotification.code & 0xFFFF0000);
+        result.put("code", documentReaderNotification.code & 0xFFFF0000);
+        result.put("number", documentReaderNotification.code & 0x0000FFFF);
         result.put("value", documentReaderNotification.value);
 
         return result;

@@ -144,6 +144,10 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         [self recognizeImageWithImageInputParams :[args objectAtIndex:0] :[args objectAtIndex:1] :successCallback :errorCallback];
     else if([action isEqualToString:@"recognizeImageWithCameraMode"])
         [self recognizeImageWithCameraMode :[args objectAtIndex:0] :[args objectAtIndex:1] :successCallback :errorCallback];
+    else if([action isEqualToString:@"getRfidSessionStatus"])
+        [self getRfidSessionStatus :successCallback :errorCallback];
+    else if([action isEqualToString:@"setRfidSessionStatus"])
+        [self setRfidSessionStatus :[args objectAtIndex:0] :successCallback :errorCallback];
     else
         [self result:[NSString stringWithFormat:@"%@/%@", @"method not implemented: ", action] :errorCallback];
 }
@@ -383,6 +387,11 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
 
 - (void) getRfidSessionStatus:(Callback)successCallback :(Callback)errorCallback{
     [self result:RGLDocReader.shared.rfidSessionStatus :successCallback];
+}
+
+- (void) setRfidSessionStatus:(NSString*)status :(Callback)successCallback :(Callback)errorCallback{
+    RGLDocReader.shared.rfidSessionStatus = status;
+    [self result:@"" :successCallback];
 }
 
 - (void) getCurrentScenario:(Callback)successCallback :(Callback)errorCallback{
