@@ -20,7 +20,7 @@ class ScenarioClass {
 
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new ScenarioClass();
+        const result = new ScenarioClass()
         result.name = jsonObject["name"]
         result.caption = jsonObject["caption"]
         result.description = jsonObject["description"]
@@ -44,7 +44,7 @@ class ScenarioClass {
 class FieldRect {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const rect = new FieldRect();
+        const rect = new FieldRect()
         rect.bottom = jsonObject["bottom"]
         rect.top = jsonObject["top"]
         rect.left = jsonObject["left"]
@@ -56,7 +56,7 @@ class FieldRect {
 class DocumentReaderGraphicField {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const field = new DocumentReaderGraphicField();
+        const field = new DocumentReaderGraphicField()
         field.sourceType = jsonObject["sourceType"]
         field.fieldType = jsonObject["fieldType"]
         field.fieldName = jsonObject["fieldName"]
@@ -74,7 +74,7 @@ class DocumentReaderGraphicField {
 class DocumentReaderGraphicResult {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderGraphicResult();
+        const result = new DocumentReaderGraphicResult()
         result.fields = []
         if (jsonObject["fields"] != null)
             for (const i in jsonObject["fields"])
@@ -86,7 +86,7 @@ class DocumentReaderGraphicResult {
 class Rect {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new Rect();
+        const result = new Rect()
         result.left = jsonObject["left"]
         result.right = jsonObject["right"]
         result.top = jsonObject["top"]
@@ -98,7 +98,7 @@ class Rect {
 class DocumentReaderValue {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderValue();
+        const result = new DocumentReaderValue()
         result.pageIndex = jsonObject["pageIndex"]
         result.sourceType = jsonObject["sourceType"]
         result.value = jsonObject["value"]
@@ -116,7 +116,7 @@ class DocumentReaderValue {
 class DocumentReaderTextField {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderTextField();
+        const result = new DocumentReaderTextField()
         result.fieldType = jsonObject["fieldType"]
         result.lcid = jsonObject["lcid"]
         result.lcidName = jsonObject["lcidName"]
@@ -134,7 +134,7 @@ class DocumentReaderTextField {
 class DocumentReaderTextResult {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderTextResult();
+        const result = new DocumentReaderTextResult()
         result.status = jsonObject["status"]
         result.fields = []
         if (jsonObject["fields"] != null)
@@ -147,7 +147,7 @@ class DocumentReaderTextResult {
 class Coordinate {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new Coordinate();
+        const result = new Coordinate()
         result.x = jsonObject["x"]
         result.y = jsonObject["y"]
         return result
@@ -157,7 +157,7 @@ class Coordinate {
 class ElementPosition {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new ElementPosition();
+        const result = new ElementPosition()
         result.docFormat = jsonObject["docFormat"]
         result.width = jsonObject["width"]
         result.height = jsonObject["height"]
@@ -181,7 +181,7 @@ class ElementPosition {
 class ImageQuality {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new ImageQuality();
+        const result = new ImageQuality()
         result.featureType = jsonObject["featureType"]
         result.result = jsonObject["result"]
         result.type = jsonObject["type"]
@@ -192,7 +192,7 @@ class ImageQuality {
 class ImageQualityGroup {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new ImageQualityGroup();
+        const result = new ImageQualityGroup()
         result.count = jsonObject["count"]
         result.result = jsonObject["result"]
         result.imageQualityList = []
@@ -206,7 +206,7 @@ class ImageQualityGroup {
 class DocumentReaderDocumentType {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderDocumentType();
+        const result = new DocumentReaderDocumentType()
         result.pageIndex = jsonObject["pageIndex"]
         result.name = jsonObject["name"]
         result.documentID = jsonObject["documentID"]
@@ -229,7 +229,7 @@ class DocumentReaderDocumentType {
 class DocumentReaderJsonResultGroup {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderJsonResultGroup();
+        const result = new DocumentReaderJsonResultGroup()
         result.resultType = jsonObject["resultType"]
         result.lightType = jsonObject["lightType"]
         result.pageIdx = jsonObject["pageIdx"]
@@ -241,7 +241,7 @@ class DocumentReaderJsonResultGroup {
 class DocumentReaderJsonResult {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderJsonResult();
+        const result = new DocumentReaderJsonResult()
         result.results = []
         if (jsonObject["results"] != null)
             for (const i in jsonObject["results"])
@@ -253,7 +253,7 @@ class DocumentReaderJsonResult {
 class DocumentReaderNotification {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderNotification();
+        const result = new DocumentReaderNotification()
         result.code = jsonObject["code"]
         result.value = jsonObject["value"]
         result.number = jsonObject["number"]
@@ -264,7 +264,7 @@ class DocumentReaderNotification {
 class AccessControlProcedureType {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new AccessControlProcedureType();
+        const result = new AccessControlProcedureType()
         result.activeOptionIdx = jsonObject["activeOptionIdx"]
         result.status = jsonObject["status"]
         result.type = jsonObject["type"]
@@ -279,7 +279,7 @@ class AccessControlProcedureType {
 class FileData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new FileData();
+        const result = new FileData()
         result.data = jsonObject["data"]
         result.length = jsonObject["length"]
         result.status = jsonObject["status"]
@@ -291,7 +291,7 @@ class FileData {
 class CertificateData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new CertificateData();
+        const result = new CertificateData()
         result.data = jsonObject["data"]
         result.length = jsonObject["length"]
         return result
@@ -301,7 +301,7 @@ class CertificateData {
 class SecurityObjectCertificates {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new SecurityObjectCertificates();
+        const result = new SecurityObjectCertificates()
         result.securityObject = CertificateData.fromJson(jsonObject["securityObject"])
         return result
     }
@@ -310,7 +310,7 @@ class SecurityObjectCertificates {
 class File {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new File();
+        const result = new File()
         result.fileData = FileData.fromJson(jsonObject["fileData"])
         result.fileID = jsonObject["fileID"]
         result.pAStatus = jsonObject["pAStatus"]
@@ -341,7 +341,7 @@ class File {
 class Application {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new Application();
+        const result = new Application()
         result.applicationID = jsonObject["applicationID"]
         result.dataHashAlgorithm = jsonObject["dataHashAlgorithm"]
         result.status = jsonObject["status"]
@@ -359,7 +359,7 @@ class Application {
 class Value {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new Value();
+        const result = new Value()
         result.data = jsonObject["data"]
         result.length = jsonObject["length"]
         result.status = jsonObject["status"]
@@ -372,7 +372,7 @@ class Value {
 class Attribute {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new Attribute();
+        const result = new Attribute()
         result.type = jsonObject["type"]
         result.value = Value.fromJson(jsonObject["value"])
         return result
@@ -382,7 +382,7 @@ class Attribute {
 class Authority {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new Authority();
+        const result = new Authority()
         result.data = jsonObject["data"]
         result.friendlyName = Value.fromJson(jsonObject["friendlyName"])
         result.attributes = []
@@ -396,7 +396,7 @@ class Authority {
 class Extension {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new Extension();
+        const result = new Extension()
         result.data = jsonObject["data"]
         result.type = jsonObject["type"]
         return result
@@ -406,7 +406,7 @@ class Extension {
 class Validity {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new Validity();
+        const result = new Validity()
         result.notAfter = Value.fromJson(jsonObject["notAfter"])
         result.notBefore = Value.fromJson(jsonObject["notBefore"])
         return result
@@ -416,7 +416,7 @@ class Validity {
 class CertificateChain {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new CertificateChain();
+        const result = new CertificateChain()
         result.fileName = Value.fromJson(jsonObject["fileName"])
         result.issuer = Authority.fromJson(jsonObject["issuer"])
         result.origin = jsonObject["origin"]
@@ -443,7 +443,7 @@ class CertificateChain {
 class SignerInfo {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new SignerInfo();
+        const result = new SignerInfo()
         result.dataToHash = jsonObject["dataToHash"]
         result.digestAlgorithm = jsonObject["digestAlgorithm"]
         result.paStatus = jsonObject["paStatus"]
@@ -472,7 +472,7 @@ class SignerInfo {
 class SecurityObject {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new SecurityObject();
+        const result = new SecurityObject()
         result.fileReference = jsonObject["fileReference"]
         result.objectType = jsonObject["objectType"]
         result.version = jsonObject["version"]
@@ -491,7 +491,7 @@ class SecurityObject {
 class CardProperties {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new CardProperties();
+        const result = new CardProperties()
         result.aTQA = jsonObject["aTQA"]
         result.aTQB = jsonObject["aTQB"]
         result.aTR = jsonObject["aTR"]
@@ -513,7 +513,7 @@ class CardProperties {
 class RFIDSessionData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new RFIDSessionData();
+        const result = new RFIDSessionData()
         result.cardProperties = CardProperties.fromJson(jsonObject["result"])
         result.totalBytesReceived = jsonObject["totalBytesReceived"]
         result.totalBytesSent = jsonObject["totalBytesSent"]
@@ -540,7 +540,7 @@ class RFIDSessionData {
 class DocumentReaderBarcodeResult {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderBarcodeResult();
+        const result = new DocumentReaderBarcodeResult()
         result.fields = []
         if (jsonObject["fields"] != null)
             for (const i in jsonObject["fields"])
@@ -552,7 +552,7 @@ class DocumentReaderBarcodeResult {
 class DocumentReaderBarcodeField {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderBarcodeField();
+        const result = new DocumentReaderBarcodeField()
         result.barcodeType = jsonObject["barcodeType"]
         result.status = jsonObject["status"]
         result.pdf417Info = jsonObject["pdf417Info"]
@@ -565,7 +565,7 @@ class DocumentReaderBarcodeField {
 class DocumentReaderAuthenticityResult {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderAuthenticityResult();
+        const result = new DocumentReaderAuthenticityResult()
         result.status = jsonObject["status"]
         result.checks = []
         if (jsonObject["checks"] != null)
@@ -578,7 +578,7 @@ class DocumentReaderAuthenticityResult {
 class DocumentReaderAuthenticityCheck {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderAuthenticityCheck();
+        const result = new DocumentReaderAuthenticityCheck()
         result.type = jsonObject["type"]
         result.typeName = jsonObject["typeName"]
         result.status = jsonObject["status"]
@@ -594,7 +594,7 @@ class DocumentReaderAuthenticityCheck {
 class DocumentReaderAuthenticityElement {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderAuthenticityElement();
+        const result = new DocumentReaderAuthenticityElement()
         result.status = jsonObject["status"]
         result.elementType = jsonObject["elementType"]
         result.elementTypeName = jsonObject["elementTypeName"]
@@ -608,7 +608,7 @@ class DocumentReaderAuthenticityElement {
 class DocumentReaderCompletion {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderCompletion();
+        const result = new DocumentReaderCompletion()
         result.action = jsonObject["action"]
         result.results = DocumentReaderResults.fromJson(jsonObject["results"])
         result.error = Throwable.fromJson(jsonObject["error"])
@@ -620,7 +620,7 @@ class DocumentReaderCompletion {
 class Throwable {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new Throwable();
+        const result = new Throwable()
         result.localizedMessage = jsonObject["localizedMessage"]
         result.message = jsonObject["message"]
         result.toString = jsonObject["toString"]
@@ -638,7 +638,7 @@ class Throwable {
 class StackTraceElement {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new StackTraceElement();
+        const result = new StackTraceElement()
         result.className = jsonObject["className"]
         result.fileName = jsonObject["fileName"]
         result.lineNumber = jsonObject["lineNumber"]
@@ -653,9 +653,9 @@ class StackTraceElement {
 class DocumentReaderResults {
     getTextFieldValueByType(fieldType, lcid = 0, source = -1, original = false) {
         if (this.textResult != null) {
-            const field = this.findByTypeAndLcid(fieldType, lcid);
+            const field = this.findByTypeAndLcid(fieldType, lcid)
             if (field != null) {
-                const value = this.findBySource(field, source);
+                const value = this.findBySource(field, source)
                 if (value != null) {
                     if (original)
                         return value.originalValue
@@ -668,7 +668,7 @@ class DocumentReaderResults {
 
     getTextFieldStatusByType(fieldType, lcid = 0) {
         if (this.textResult != null) {
-            const field = this.findByTypeAndLcid(fieldType, lcid);
+            const field = this.findByTypeAndLcid(fieldType, lcid)
             if (field != null)
                 return field.status
         }
@@ -678,7 +678,7 @@ class DocumentReaderResults {
 
     getGraphicFieldImageByType(fieldType, source = -1, pageIndex = -1, light = -1) {
         if (this.graphicResult != null) {
-            const foundFields = [];
+            const foundFields = []
             for (let field in this.graphicResult.fields) {
                 field = this.graphicResult.fields[field]
                 if (field.fieldType === fieldType)
@@ -707,10 +707,10 @@ class DocumentReaderResults {
     }
 
     getQualityResult(imageQualityCheckType, securityFeature = -1) {
-        let resultSum = 2;
+        let resultSum = 2
         if (this.imageQuality != null) {
             for (const index in this.imageQuality.imageQualityList) {
-                const field = this.imageQuality.imageQualityList[index];
+                const field = this.imageQuality.imageQualityList[index]
                 if (field.type === imageQualityCheckType) {
                     if (securityFeature === -1) {
                         if (field.result === 0) {
@@ -732,8 +732,8 @@ class DocumentReaderResults {
     }
 
     findByTypeAndLcid(type, lcid) {
-        let field;
-        const foundFields = [];
+        let field
+        const foundFields = []
 
         for (field in this.textResult.fields) {
             field = this.textResult.fields[field]
@@ -744,7 +744,7 @@ class DocumentReaderResults {
         if (foundFields.length <= 0)
             return null
 
-        let foundField = null;
+        let foundField = null
 
         for (field in foundFields) {
             field = foundFields[field]
@@ -760,15 +760,15 @@ class DocumentReaderResults {
     }
 
     findBySource(field, sourceType) {
-        let value;
+        let value
         if (sourceType === -1) {
-            const mrzVal = this.findBySource(field, 3);
+            const mrzVal = this.findBySource(field, 3)
             if (mrzVal != null)
                 return mrzVal
             value = this.findBySource(field, 18)
             if (value != null)
                 return value
-            const visualVal = this.findBySource(field, 17);
+            const visualVal = this.findBySource(field, 17)
             return visualVal != null ? visualVal : null
         }
         for (let item in field.values) {
@@ -787,7 +787,7 @@ class DocumentReaderResults {
 
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const results = new DocumentReaderResults();
+        const results = new DocumentReaderResults()
         results.chipPage = jsonObject["chipPage"]
         results.overallResult = jsonObject["overallResult"]
         results.processingFinished = jsonObject["processingFinished"]
@@ -868,11 +868,18 @@ const BarcodeType = {
     AZTEC: 15,
     DATAMATRIX: 16,
     ALL_1D: 17,
+    CODE11: 18,
 }
 
 const CameraTypes = {
     FRONT: "front",
     BACK: "back",
+}
+
+const CaptureMode = {
+    AUTO: 0,
+    CAPTURE_VIDEO: 1,
+    CAPTURE_FRAME: 2,
 }
 
 const diDocType = {
@@ -1356,7 +1363,8 @@ const eRFID_CertificateType = {
     CT_CSCA_LINK: 2,
     CT_DS: 3,
     CT_MLS: 4,
-    CT_DLS: 5,
+    CT_DEV_LS: 5,
+    CT_DEF_LS: 6,
 }
 
 const eRFID_DataFile_Type = {
@@ -1422,6 +1430,7 @@ const eRFID_DataFile_Type = {
     DFT_DL_DG14: 164,
     DFT_DL_SOD: 165,
     DFT_DL_CE: 166,
+    DFT_DL_CVCA: 167,
     DFT_PACE_CARDACCESS: 200,
     DFT_PACE_CARDSECURITY: 201,
     DFT_PACE_CHIPSECURITY: 202,
@@ -1438,6 +1447,7 @@ const eRFID_DataFile_Type = {
     DFT_APP_DIRECTORY: 700,
     DFT_SESSION: 701,
     DFT_LOGDATA: 702,
+    DFT_CHIP_PROPERTIES: 703,
     DFT_USERDEFINED: 1000,
 
     getTranslation: function (value) {
@@ -1575,7 +1585,35 @@ const eRFID_DataFile_Type = {
             case this.DFT_CERTIFICATE:
                 return "Certificate"
             case this.DFT_APP_DIRECTORY:
-                return "App direсtory"
+                return "App directory"
+            case this.DFT_ATR:
+                return "DFT_ATR"
+            case this.DFT_AUTHENTICITYV2:
+                return "DFT_CHIP_PROPERTIES"
+            case this.DFT_CHIP_PROPERTIES:
+                return "DFT_CHIP_PROPERTIES"
+            case this.DFT_DEFECTLIST:
+                return "DFT_DEFECTLIST"
+            case this.DFT_DEVIATIONLIST:
+                return "DFT_DEVIATIONLIST"
+            case this.DFT_DL_CE:
+                return "DFT_DL_CE"
+            case this.DFT_DL_CVCA:
+                return "DFT_DL_CVCA"
+            case this.DFT_ESIGN_PK:
+                return "DFT_ESIGN_PK"
+            case this.DFT_ESIGN_SIGNEDDATA:
+                return "DFT_ESIGN_SIGNEDDATA"
+            case this.DFT_LOGDATA:
+                return "DFT_LOGDATA"
+            case this.DFT_MASTERLIST:
+                return "DFT_MASTERLIST"
+            case this.DFT_SESSION:
+                return "DFT_SESSION"
+            case this.DFT_UNSPECIFIED:
+                return "DFT_UNSPECIFIED"
+            case this.DFT_USERDEFINED:
+                return "DFT_USERDEFINED"
             default:
                 return value
         }
@@ -1921,7 +1959,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -2130706072:
                 return "Error - CV Certificate: Extensions incorrect data"
             case -2130706071:
-                return "Error - CV Certificate: Private key incorrect  data"
+                return "Error - CV Certificate: Private key incorrect data"
             case -2130706070:
                 return "Error - CV Certificate: Private key missing"
             case -1879048191:
@@ -2205,7 +2243,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -1878458368:
                 return "Notification - Biometrics: BDB format ID incorrect"
             case -1878392832:
-                return "Notification - Biometrics: BDB version incorrect "
+                return "Notification - Biometrics: BDB version incorrect"
             case -1878327296:
                 return "Notification - Biometrics: BDB data length incorrect"
             case -1877999616:
@@ -2293,7 +2331,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -1862270705:
                 return "Notification - SI: RI domain params multiple entries"
             case -1862270704:
-                return "Notification - SI: Storage PACE Info Non Consistan"
+                return "Notification - SI: Storage PACE Info Non Consistant"
             case -1862270463:
                 return "Notification - CV Certificate: Profile incorrect version"
             case -1862270462:
@@ -2399,9 +2437,9 @@ const eRFID_NotificationAndErrorCodes = {
             case -2147456382:
                 return "LAYER6: File selection failure / file not found"
             case -2147458430:
-                return "LAYER6: Reading beyond EOF / Unexpected EOF "
+                return "LAYER6: Reading beyond EOF / Unexpected EOF"
             case -2147456256:
-                return "LAYER6: Reading beyond EOF / Unexpected EOF "
+                return "LAYER6: Reading beyond EOF / Unexpected EOF"
             case -2147456384:
                 return "LAYER6: Incorrect Params"
             case -2147456376:
@@ -2614,48 +2652,8 @@ const eRPRM_ResultType = {
     RFID_RESULT_TYPE_RFID_IMAGE_DATA: 103,
     RFID_RESULT_TYPE_RFID_BINARY_DATA: 104,
     RFID_RESULT_TYPE_RFID_ORIGINAL_GRAPHICS: 105,
-}
-
-const eRPRM_ResultType_Internal = {
-    RPRM_RESULT_TYPE_INTERNAL_PHOTO_POSITION: 99,
-    RPRM_RESULT_TYPE_INTERNAL_MAIN_DOCUMENT_INFO: 98,
-    RPRM_RESULT_TYPE_INTERNAL_FACE_DETECTION: 97,
-    RPRM_RESULT_TYPE_INTERNAL_L1_STYLE_RESULTS: 96,
-    RPRM_RESULT_TYPE_INTERNAL_DOC_FORMAT: 95,
-    RPRM_RESULT_TYPE_INTERNAL_DOC_FORMAT_ROTATED: 94,
-    RPRM_RESULT_TYPE_INTERNAL_DOC_PRE_ORIENTATION_FACE: 93,
-    RPRM_RESULT_TYPE_INTERNAL_BSI_XML: 92,
-    RPRM_RESULT_TYPE_INTERNAL_COLOR_CALIBRATION_INFO: 91,
-    RPRM_RESULT_TYPE_INTERNAL_DIST_CALIBRATION_INFO: 90,
-    RPRM_RESULT_TYPE_INTERNAL_DOCS_LIST: 89,
-    RPRM_RESULT_TYPE_INTERNAL_VISA_BOUNDS: 88,
-    RPRM_RESULT_TYPE_INTERNAL_MRZ_DETECTOR: 87,
-    RPRM_RESULT_TYPE_INTERNAL_DOCUMENT_POSITION: 86,
-    RPRM_RESULT_TYPE_INTERNAL_BOUNDS_RESULT: 85,
-    RPRM_RESULT_TYPE_INTERNAL_ORIENTATION: 84,
-    RPRM_RESULT_TYPE_INTERNAL_PRE_ORIENTATION: 83,
-    RPRM_RESULT_TYPE_INTERNAL_DEVICE_TYPE: 82,
-    RPRM_RESULT_TYPE_INTERNAL_TEXT_DOC_INFO: 81,
-    RPRM_RESULT_TYPE_INTERNAL_GRAPHICS_DOC_INFO: 80,
-    RPRM_RESULT_TYPE_INTERNAL_BARCODE_DOC_INFO: 79,
-    RPRM_RESULT_TYPE_INTERNAL_SOURCE_IMAGES_INFO: 78,
-    RPRM_RESULT_TYPE_INTERNAL_REQUIRED_OCR_FIELDS: 77,
-    RPRM_RESULT_TYPE_INTERNAL_LEX_ANALYSIS_DEPTH: 76,
-    RPRM_RESULT_TYPE_INTERNAL_ORIGINAL_RESOLUTION_PPM: 75,
-    RPRM_RESULT_TYPE_INTERNAL_BOUNDS_LOCATION_PARAMS: 74,
-    RPRM_RESULT_TYPE_INTERNAL_BSI_XML_V2: 73,
-    RPRM_RESULT_TYPE_INTERNAL_CANDIDATE_INFO: 72,
-    RPRM_RESULT_TYPE_INTERNAL_SAMPLE_PATH: 71,
-    RPRM_RESULT_TYPE_INTERNAL_BIND_RESULT: 70,
-    RPRM_RESULT_TYPE_INTERNAL_SAVE_DEBUG_INFO: 69,
-    RPRM_RESULT_TYPE_INTERNAL_DOCUMENT_JSON_DESC: 68,
-    RPRM_RESULT_TYPE_INTERNAL_BIND_LAYERS_LIST_DESC: 67,
-    RPRM_RESULT_TYPE_INTERNAL_MRZ_IMAGE: 66,
-    RPRM_RESULT_TYPE_INTERNAL_RAW_CALIBRATE_IMAGES: 65,
-    RPRM_RESULT_TYPE_INTERNAL_BYTE_ARRAY: 64,
-    RPRM_RESULT_TYPE_INTERNAL_DOCUMENT_JSON: 63,
-    RPRM_RESULT_TYPE_INTERNAL_BARCODE_POSITION: 62,
-    RPRM_RESULT_TYPE_INTERNAL_MRZ_POSITION: 61,
+    RPRM_RESULT_TYPE_BARCODE_POSITION: 62,
+    RPRM_RESULT_TYPE_MRZ_POSITION: 61,
 }
 
 const eRPRM_SecurityFeatureType = {
@@ -3236,6 +3234,18 @@ const eVisualFieldType = {
     FT_DLCLASSCODE_W_FROM: 581,
     FT_DLCLASSCODE_W_NOTES: 582,
     FT_DLCLASSCODE_W_TO: 583,
+    FT_URL: 584,
+    FT_CALIBER: 585,
+    FT_MODEL: 586,
+    FT_MAKE: 587,
+    FT_NUMBER_OF_CYLINDERS: 588,
+    FT_SURNAME_OF_HUSBAND_AFTER_REGISTRATION: 589,
+    FT_SURNAME_OF_WIFE_AFTER_REGISTRATION: 590,
+    FT_DATE_OF_BIRTH_OF_WIFE: 591,
+    FT_DATE_OF_BIRTH_OF_HUSBAND: 592,
+    FT_CITIZENSHIP_OF_FIRST_PERSON: 593,
+    FT_CITIZENSHIP_OF_SECOND_PERSON: 594,
+    FT_CVV: 595,
 
     getTranslation: function (value) {
         switch (value) {
@@ -3244,7 +3254,7 @@ const eVisualFieldType = {
             case this.FT_ISSUING_STATE_CODE:
                 return "Issuing state code"
             case this.FT_DOCUMENT_NUMBER:
-                return "Document #"
+                return "Document number"
             case this.FT_DATE_OF_EXPIRY:
                 return "Date of expiry"
             case this.FT_DATE_OF_ISSUE:
@@ -3254,7 +3264,7 @@ const eVisualFieldType = {
             case this.FT_PLACE_OF_BIRTH:
                 return "Place of birth"
             case this.FT_PERSONAL_NUMBER:
-                return "Personal #"
+                return "Personal number"
             case this.FT_SURNAME:
                 return "Surname"
             case this.FT_GIVEN_NAMES:
@@ -3294,7 +3304,7 @@ const eVisualFieldType = {
             case this.FT_NATIONALITY_CODE:
                 return "Nationality code"
             case this.FT_PASSPORT_NUMBER:
-                return "Passport #"
+                return "Passport number"
             case this.FT_INVITATION_NUMBER:
                 return "Invitation number"
             case this.FT_VISA_ID:
@@ -3326,11 +3336,11 @@ const eVisualFieldType = {
             case this.FT_DATE_OF_EXPIRY_CHECKSUM:
                 return "Checksum for date of expiry"
             case this.FT_PERSONAL_NUMBER_CHECKSUM:
-                return "Checksum for personal #"
+                return "Checksum for personal number"
             case this.FT_FINAL_CHECKSUM:
                 return "Final checksum"
             case this.FT_PASSPORT_NUMBER_CHECKSUM:
-                return "Checksum for Passport #"
+                return "Checksum for passport number"
             case this.FT_INVITATION_NUMBER_CHECKSUM:
                 return "Checksum for invitation number"
             case this.FT_VISA_ID_CHECKSUM:
@@ -3406,11 +3416,11 @@ const eVisualFieldType = {
             case this.FT_DATE_OF_EXPIRY_CHECK_DIGIT:
                 return "Check digit for date of expiry"
             case this.FT_PERSONAL_NUMBER_CHECK_DIGIT:
-                return "Check digit for personal #"
+                return "Check digit for personal number"
             case this.FT_FINAL_CHECK_DIGIT:
                 return "Final check digit"
             case this.FT_PASSPORT_NUMBER_CHECK_DIGIT:
-                return "Check digit for Passport #"
+                return "Check digit for passport number"
             case this.FT_INVITATION_NUMBER_CHECK_DIGIT:
                 return "Check digit for invitaiton number"
             case this.FT_VISA_ID_CHECK_DIGIT:
@@ -3526,7 +3536,7 @@ const eVisualFieldType = {
             case this.FT_IDENTITY_CARD_NUMBER:
                 return "Identity card number"
             case this.FT_CONTROL_NO:
-                return "Control #"
+                return "Control number"
             case this.FT_PARRENTS_GIVEN_NAMES:
                 return "Parents\' given names"
             case this.FT_SECOND_SURNAME:
@@ -3732,9 +3742,9 @@ const eVisualFieldType = {
             case this.FT_LINE_3_OPTIONAL_DATA:
                 return "Optional data from line 3"
             case this.FT_EQV_CODE:
-                return "EQV Code"
+                return "EQV code"
             case this.FT_ALT_CODE:
-                return "ALT Code"
+                return "ALT code"
             case this.FT_BINARY_CODE:
                 return "Binary code"
             case this.FT_PSEUDO_CODE:
@@ -3744,7 +3754,7 @@ const eVisualFieldType = {
             case this.FT_STAMP_NUMBER:
                 return "Stamp number"
             case this.FT_GNIB_NUMBER:
-                return "GNIB Number"
+                return "GNIB number"
             case this.FT_DEPT_NUMBER:
                 return "Department number"
             case this.FT_TELEX_CODE:
@@ -3764,7 +3774,7 @@ const eVisualFieldType = {
             case this.FT_MC_NOVICE_DATE:
                 return "Expiry date of Motorcycle Novice status"
             case this.FT_DUF_NUMBER:
-                return "DUF Number"
+                return "DUF number"
             case this.FT_AGY:
                 return "AGY"
             case this.FT_PNR_CODE:
@@ -3782,7 +3792,7 @@ const eVisualFieldType = {
             case this.FT_DATE_OF_ISSUE_BOARDING_PASS:
                 return "Date of boarding pass issue"
             case this.FT_CCW_UNTIL:
-                return "CCW Until"
+                return "CCW until"
             case this.FT_REFERENCE_NUMBER_CHECKSUM:
                 return "Unique number checksum"
             case this.FT_REFERENCE_NUMBER_CHECK_DIGIT:
@@ -3806,7 +3816,7 @@ const eVisualFieldType = {
             case this.FT_TICKET_NUMBER:
                 return "Ticket number"
             case this.FT_FREQUENT_FLYER_AIRLINE_DESIGNATOR:
-                return "Frequent Flyer airline designator"
+                return "Frequent flyer airline designator"
             case this.FT_FREQUENT_FLYER_NUMBER:
                 return "Frequent flyer number"
             case this.FT_FREE_BAGGAGE_ALLOWANCE:
@@ -3942,7 +3952,7 @@ const eVisualFieldType = {
             case this.FT_EC_ENVIRONMENTAL_TYPE:
                 return "Vehicle environmental type"
             case this.FT_POWER_WEIGHT_RATIO:
-                return "Power–to–weight ratio"
+                return "Power-to-weight ratio"
             case this.FT_MAX_MASS_OF_TRAILER_BRAKED:
                 return "Max mass of trailer (braked)"
             case this.FT_MAX_MASS_OF_TRAILER_UNBRAKED:
@@ -3996,9 +4006,9 @@ const eVisualFieldType = {
             case this.FT_NUMBER_OF_CARD_ISSUANCE:
                 return "Number of card issuances"
             case this.FT_NUMBER_OF_CARD_ISSUANCE_CHECKSUM:
-                return "Сhecksum for number of card issuances"
+                return "Checksum for number of card issuances"
             case this.FT_NUMBER_OF_CARD_ISSUANCE_CHECK_DIGIT:
-                return "Сheck digit for number of card issuances"
+                return "Check digit for number of card issuances"
             case this.FT_CENTURY_DATE_OF_BIRTH:
                 return "Century of birth"
             case this.FT_DL_CLASSCODE_A3_FROM:
@@ -4110,13 +4120,13 @@ const eVisualFieldType = {
             case this.FT_PERSONTONOTIFY_ADDRESS:
                 return "Notify person: Address"
             case this.FT_DS_CERTIFICATE_ISSUER:
-                return "DS Certificate Issuer"
+                return "DS certificate issuer"
             case this.FT_DS_CERTIFICATE_SUBJECT:
-                return "DS Certificate Subject"
+                return "DS certificate subject"
             case this.FT_DS_CERTIFICATE_VALIDFROM:
-                return "DS Certificate Valid From"
+                return "DS certificate valid from"
             case this.FT_DS_CERTIFICATE_VALIDTO:
-                return "DS Certificate Valid To"
+                return "DS certificate valid to"
             case this.FT_VRC_DATAOBJECT_ENTRY:
                 return "Vehicle data from the DG1 data group"
             case this.FT_GRANDFATHERNAME:
@@ -4124,7 +4134,7 @@ const eVisualFieldType = {
             case this.FT_HEALTH_NUMBER:
                 return "Health insurance number"
             case this.FT_TYPE_APPROVAL_NUMBER:
-                return "Type approval number"
+                return "Type of approval number"
             case this.FT_ADMINISTRATIVE_NUMBER:
                 return "Administrative number"
             case this.FT_DOCUMENT_DISCRIMINATOR:
@@ -4132,7 +4142,7 @@ const eVisualFieldType = {
             case this.FT_DATA_DISCRIMINATOR:
                 return "Data discriminator"
             case this.FT_ISO_ISSUER_ID_NUMBER:
-                return "ISO issuer ID number"
+                return "ID number of ISO issuer"
             case this.FT_SELECTEE_INDICATOR:
                 return "Selectee indicator"
             case this.FT_MOTHER_SURNAME:
@@ -4148,9 +4158,9 @@ const eVisualFieldType = {
             case this.FT_FATHER_DATEOFBIRTH:
                 return "Father\'s date of birth"
             case this.FT_MOTHER_PERSONALNUMBER:
-                return "Mother\'s personal #"
+                return "Mother\'s personal number"
             case this.FT_FATHER_PERSONALNUMBER:
-                return "Father\'s personal #"
+                return "Father\'s personal number"
             case this.FT_MOTHER_PLACEOFBIRTH:
                 return "Mother\'s place of birth"
             case this.FT_FATHER_PLACEOFBIRTH:
@@ -4305,10 +4315,41 @@ const eVisualFieldType = {
                 return "DL class code W notes"
             case this.FT_DLCLASSCODE_W_TO:
                 return "DL class code W to"
+            case this.FT_CALIBER:
+                return "Caliber"
+            case this.FT_CITIZENSHIP_OF_FIRST_PERSON:
+                return "Citizenship of the first person"
+            case this.FT_CITIZENSHIP_OF_SECOND_PERSON:
+                return "Citizenship of the second person"
+            case this.FT_CVV:
+                return "CVV/CVC"
+            case this.FT_DATE_OF_BIRTH_OF_HUSBAND:
+                return "Date of birth of husband"
+            case this.FT_DATE_OF_BIRTH_OF_WIFE:
+                return "Date of birth of wife"
+            case this.FT_MAKE:
+                return "Make"
+            case this.FT_MODEL:
+                return "Model"
+            case this.FT_NUMBER_OF_CYLINDERS:
+                return "Number of cylinders"
+            case this.FT_SURNAME_OF_HUSBAND_AFTER_REGISTRATION:
+                return "Surname of husband  after registration"
+            case this.FT_SURNAME_OF_WIFE_AFTER_REGISTRATION:
+                return "Surname of wife after registration"
+            case this.FT_URL:
+                return "URL"
             default:
                 return value
         }
     }
+}
+
+const FontStyle = {
+    NORMAL: 0,
+    BOLD: 1,
+    ITALIC: 2,
+    BOLD_ITALIC: 3,
 }
 
 const FrameShapeType = {
@@ -4783,12 +4824,18 @@ const PKDResourceType = {
     }
 }
 
+const ProcessingFinishedStatus = {
+    NOT_READY: 0,
+    READY: 1,
+    TIMEOUT: 2,
+}
+
 const RGLMeasureSystem = {
     METRIC: 0,
     IMPERIAL: 1,
 }
 
-const Scenario = {
+const ScenarioIdentifier = {
     SCENARIO_MRZ: "Mrz",
     SCENARIO_BARCODE: "Barcode",
     SCENARIO_LOCATE: "Locate",
@@ -4807,13 +4854,6 @@ const Scenario = {
     SCENARIO_OCR_FREE: "OcrFree",
     SCENARIO_CREDIT_CARD: "CreditCard",
     SCENARIO_CAPTURE: "Capture",
-}
-
-const FontStyle = {
-    NORMAL: 0,
-    BOLD: 1,
-    ITALIC: 2,
-    BOLD_ITALIC: 3
 }
 
 const LineCap = {
@@ -4875,6 +4915,7 @@ const Enum = {
    BarcodeResult: BarcodeResult,
    BarcodeType: BarcodeType,
    CameraTypes: CameraTypes,
+   CaptureMode: CaptureMode,
    diDocType: diDocType,
    DocFormat: DocFormat,
    DocReaderAction: DocReaderAction,
@@ -4899,16 +4940,16 @@ const Enum = {
    eRPRM_FieldVerificationResult: eRPRM_FieldVerificationResult,
    eRPRM_Lights: eRPRM_Lights,
    eRPRM_ResultType: eRPRM_ResultType,
-   eRPRM_ResultType_Internal: eRPRM_ResultType_Internal,
    eRPRM_SecurityFeatureType: eRPRM_SecurityFeatureType,
    eSignManagementAction: eSignManagementAction,
    eVisualFieldType: eVisualFieldType,
+   FontStyle: FontStyle,
    FrameShapeType: FrameShapeType,
    LCID: LCID,
    PKDResourceType: PKDResourceType,
+   ProcessingFinishedStatus: ProcessingFinishedStatus,
    RGLMeasureSystem: RGLMeasureSystem,
-   Scenario: Scenario,
-   FontStyle: FontStyle,
+   ScenarioIdentifier: ScenarioIdentifier,
    LineCap: LineCap,
    UIInterfaceOrientationMask: UIInterfaceOrientationMask,
    AVCaptureSessionPreset: AVCaptureSessionPreset,
@@ -4962,6 +5003,7 @@ DocumentReader.runAutoUpdate = (arg0, successCallback, errorCallback) => RNRegul
 DocumentReader.setConfig = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setConfig", [arg0], successCallback, errorCallback)
 DocumentReader.setRfidScenario = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidScenario", [arg0], successCallback, errorCallback)
 DocumentReader.initializeReader = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReader", [arg0], successCallback, errorCallback)
+DocumentReader.initializeReaderWithDatabasePath = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabasePath", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.prepareDatabase = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "prepareDatabase", [arg0], successCallback, errorCallback)
 DocumentReader.recognizeImage = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImage", [arg0], successCallback, errorCallback)
 DocumentReader.recognizeImageFrame = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageFrame", [arg0, arg1], successCallback, errorCallback)
@@ -4973,7 +5015,7 @@ DocumentReader.recognizeImageWithCameraMode = (arg0, arg1, successCallback, erro
 
 DocumentReader.DocumentReaderResults = DocumentReaderResults
 DocumentReader.Enum = Enum
-DocumentReader.Scenario = ScenarioClass
+DocumentReader.Scenario = Scenario
 DocumentReader.DocumentReaderCompletion = DocumentReaderCompletion
 
 export default { DocumentReader, RNRegulaDocumentReader }

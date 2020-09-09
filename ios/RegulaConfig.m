@@ -468,8 +468,8 @@
         functionality.showCaptureButtonDelayFromStart = [[options valueForKey:@"showCaptureButtonDelayFromStart"] doubleValue];
     if([options valueForKey:@"captureMode"] != nil)
         functionality.captureMode = [[options valueForKey:@"captureMode"] intValue];
-    if([options valueForKey:@"rfidEnabled"] != nil)
-        functionality.showMetadataInfo = [[options valueForKey:@"showMetadataInfo"] boolValue];
+    if([options valueForKey:@"displayMetadata "] != nil)
+        functionality.showMetadataInfo = [[options valueForKey:@"displayMetadata "] boolValue];
 }
 
 +(void)setProcessParams:(NSDictionary*)options :(RGLProcessParams*)processParams {
@@ -512,11 +512,11 @@
     if([options valueForKey:@"barcodeParserType"] != nil)
         processParams.barcodeParserType = [[options valueForKey:@"barcodeParserType"] integerValue];
     if([options valueForKey:@"timeout"] != nil)
-        processParams.timeout = [[options valueForKey:@"timeout"] integerValue];
+        processParams.timeout = [[options valueForKey:@"timeout"] doubleValue];
     if([options valueForKey:@"timeoutFromFirstDetect"] != nil)
-        processParams.timeoutFromFirstDetect = [[options valueForKey:@"timeoutFromFirstDetect"] integerValue];
+        processParams.timeoutFromFirstDetect = [[options valueForKey:@"timeoutFromFirstDetect"] doubleValue];
     if([options valueForKey:@"timeoutFromFirstDocType"] != nil)
-        processParams.timeoutFromFirstDocType = [[options valueForKey:@"timeoutFromFirstDocType"] integerValue];
+        processParams.timeoutFromFirstDocType = [[options valueForKey:@"timeoutFromFirstDocType"] doubleValue];
     if([options valueForKey:@"manualCrop"] != nil)
         processParams.manualCrop = [[options valueForKey:@"manualCrop"] boolValue];
     if([options valueForKey:@"perspectiveAngle"] != nil)
@@ -611,7 +611,7 @@
     result[@"showCaptureButtonDelayFromDetect"] = [NSNumber numberWithDouble:functionality.showCaptureButtonDelayFromDetect];
     result[@"showCaptureButtonDelayFromStart"] = [NSNumber numberWithDouble:functionality.showCaptureButtonDelayFromStart];
     result[@"captureMode"] = [NSNumber numberWithInteger:functionality.captureMode];
-    result[@"showMetadataInfo"] = [NSNumber numberWithBool:functionality.showMetadataInfo];
+    result[@"displayMetadata "] = [NSNumber numberWithBool:functionality.showMetadataInfo];
 
     return result;
 }
@@ -641,9 +641,9 @@
     result[@"processParamsDictionary"] = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:processParams.processParamsDictionary options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
     result[@"coreParamsDictionary"] = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:processParams.coreParamsDictionary options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
     result[@"rfidParamsDictionary"] = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:processParams.rfidParamsDictionary options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
-    result[@"timeout"] = [NSNumber numberWithInteger:processParams.timeout];
-    result[@"timeoutFromFirstDetect"] = [NSNumber numberWithInteger:processParams.timeoutFromFirstDetect];
-    result[@"timeoutFromFirstDocType"] = [NSNumber numberWithInteger:processParams.timeoutFromFirstDocType];
+    result[@"timeout"] = [NSNumber numberWithDouble:processParams.timeout];
+    result[@"timeoutFromFirstDetect"] = [NSNumber numberWithDouble:processParams.timeoutFromFirstDetect];
+    result[@"timeoutFromFirstDocType"] = [NSNumber numberWithDouble:processParams.timeoutFromFirstDocType];
     result[@"manualCrop"] = [NSNumber numberWithBool:processParams.manualCrop];
     result[@"perspectiveAngle"] = [NSNumber numberWithInteger:processParams.perspectiveAngle];
     result[@"minDPI"] = [NSNumber numberWithInteger:processParams.minDPI];

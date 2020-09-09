@@ -236,11 +236,8 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
 
 - (void) recognizeImages:(NSArray*)input :(Callback)successCallback :(Callback)errorCallback{
         NSMutableArray<UIImage*>* images = [[NSMutableArray alloc] init];
-        for(__strong NSMutableString* base64 in input){
-            if(![[base64 substringToIndex:10] isEqualToString:@"data:image"])
-                base64 = [NSMutableString stringWithFormat: @"%@%@", @"data:image/jpeg;base64,", base64];
-            [images addObject:[UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:base64]]]];
-        }
+        for(__strong NSMutableString* base64 in input)
+            [images addObject:[UIImage imageWithData:[[NSData alloc]initWithBase64EncodedString:base64 options:NSDataBase64DecodingIgnoreUnknownCharacters]]];
         dispatch_async(dispatch_get_main_queue(), ^{
             [RGLDocReader.shared recognizeImages:images completion:[self getCompletion]];
         });
@@ -252,10 +249,8 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
 }
 
 - (void) recognizeImageWith:(NSMutableString*)base64 :(BOOL)cameraMode :(Callback)successCallback :(Callback)errorCallback{
-        if(![[base64 substringToIndex:10] isEqualToString:@"data:image"])
-            base64 = [NSMutableString stringWithFormat: @"%@%@", @"data:image/jpeg;base64,", base64];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [RGLDocReader.shared recognizeImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:base64]]] cameraMode:cameraMode completion:[self getCompletion]];
+            [RGLDocReader.shared recognizeImage:[UIImage imageWithData:[[NSData alloc]initWithBase64EncodedString:base64 options:NSDataBase64DecodingIgnoreUnknownCharacters]] cameraMode:cameraMode completion:[self getCompletion]];
         });
         [self result:@"" :successCallback];
 }
