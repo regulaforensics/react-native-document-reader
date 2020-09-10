@@ -652,9 +652,20 @@ class StackTraceElement {
 }
 
 class DocumentReaderResults {
-    getTextFieldValueByType(fieldType, lcid = 0, source = -1, original = false) {
+    getTextFieldValueByType(map) {
+        const fieldType = map.fieldType
+        let lcid = 0
+        if (map.lcid != null)
+            lcid = map.lcid
+        let source = -1
+        if (map.source != null)
+            source = map.source
+        let original = false
+        if (map.original != null)
+            original = map.original
         if (this.textResult != null) {
             const field = this.findByTypeAndLcid(fieldType, lcid)
+            console.log("field:" + field)
             if (field != null) {
                 const value = this.findBySource(field, source)
                 if (value != null) {

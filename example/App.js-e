@@ -120,7 +120,7 @@ export default class App extends Component {
   }
 
   displayResults(results) {
-    this.setState({ fullName: results.getTextFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES) })
+    this.setState({ fullName: results.getTextFieldValueByType({ fieldType: Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES }) })
     if (results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE) != null)
       this.setState({ docFront: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE) } })
     if (results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT) != null)
