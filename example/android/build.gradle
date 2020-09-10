@@ -1,0 +1,39 @@
+buildscript {
+    ext {
+        buildToolsVersion = "30.0.0"
+        minSdkVersion = 19
+        compileSdkVersion = 30
+        targetSdkVersion = 30
+    }
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath('com.android.tools.build:gradle:4.0.1')
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        maven {
+            url("$rootDir/../node_modules/react-native/android")
+        }
+        maven {
+            url("$rootDir/../node_modules/jsc-android/dist")
+        }
+        maven {
+            url "http://maven.regulaforensics.com/RegulaDocumentReader"
+            allowInsecureProtocol true
+        }
+        maven {
+            url "http://maven.regulaforensics.com/RegulaDocumentReader/Beta"
+            allowInsecureProtocol true
+        }
+
+        google()
+        jcenter()
+        maven { url 'https://www.jitpack.io' }
+    }
+}
