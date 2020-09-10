@@ -468,8 +468,8 @@
         functionality.showCaptureButtonDelayFromStart = [[options valueForKey:@"showCaptureButtonDelayFromStart"] doubleValue];
     if([options valueForKey:@"captureMode"] != nil)
         functionality.captureMode = [[options valueForKey:@"captureMode"] intValue];
-    if([options valueForKey:@"displayMetadata "] != nil)
-        functionality.showMetadataInfo = [[options valueForKey:@"displayMetadata "] boolValue];
+    if([options valueForKey:@"displayMetadata"] != nil)
+        functionality.showMetadataInfo = [[options valueForKey:@"displayMetadata"] boolValue];
 }
 
 +(void)setProcessParams:(NSDictionary*)options :(RGLProcessParams*)processParams {
@@ -611,7 +611,7 @@
     result[@"showCaptureButtonDelayFromDetect"] = [NSNumber numberWithDouble:functionality.showCaptureButtonDelayFromDetect];
     result[@"showCaptureButtonDelayFromStart"] = [NSNumber numberWithDouble:functionality.showCaptureButtonDelayFromStart];
     result[@"captureMode"] = [NSNumber numberWithInteger:functionality.captureMode];
-    result[@"displayMetadata "] = [NSNumber numberWithBool:functionality.showMetadataInfo];
+    result[@"displayMetadata"] = [NSNumber numberWithBool:functionality.showMetadataInfo];
 
     return result;
 }

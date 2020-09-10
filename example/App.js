@@ -111,8 +111,7 @@ export default class App extends Component {
     if (results.code === Enum.eRFID_NotificationAndErrorCodes.RFID_NOTIFICATION_PCSC_READING_DATAGROUP)
       this.setState({ rfidDescription: Enum.eRFID_DataFile_Type.getTranslation(results.number) })
     this.setState({ rfidUIHeader: "Reading RFID", rfidUIHeaderColor: "black", rfidProgress: results.value / 100 })
-    if (Platform.OS === 'ios')
-      DocumentReader.setRfidSessionStatus(this.state.rfidDescription + "\n" + results.value + "%", e => { }, e => { })
+    DocumentReader.setRfidSessionStatus(this.state.rfidDescription + "\n" + results.value + "%", e => { }, e => { })
   }
 
   clearResults(){
