@@ -1,6 +1,6 @@
 {
   "name": "@regulaforensics/react-native-document-reader-api-beta",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "description": "React Native module for reading and validation of identification documents (API framework)",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   "license": "commercial",
   "repository": {
     "type": "git",
-    "url": "https://github.com/regulaforensics/React-Native-DocumentReader.git"
+    "url": "https://github.com/regulaforensics/react-native-document-reader.git"
   },
   "homepage": "https://mobile.regulaforensics.com",
   "publishConfig": {
