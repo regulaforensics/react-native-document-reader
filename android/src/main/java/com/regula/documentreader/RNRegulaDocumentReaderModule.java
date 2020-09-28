@@ -106,10 +106,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void sendCompletion(int action, DocumentReaderResults results, Throwable error) {
         WritableMap map = Arguments.createMap();
-        try {
-            map.putString("msg", JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
-        } catch (JSONException ignored) {
-        }
+        map.putString("msg", JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(completionEvent, map);
     }
 
