@@ -4,70 +4,52 @@ const { RNRegulaDocumentReader } = NativeModules
 // Classes
 
 class Scenario {
-    constructor() {
-        this.RGLDocReaderOrientation = {
-            GLDocReaderOrientationRotate: 0,
-            RGLDocReaderOrientationPortrait: 1,
-            RGLDocReaderOrientationLandscape: 2
-        }
-        this.RGLDocReaderFrame = {
-            RGLDocReaderFrameScenarioDefault: 0,
-            RGLDocReaderFrameMax: 1,
-            RGLDocReaderFrameNone: 2,
-            RGLDocReaderFrameDocument: 3
-        }
-    }
-
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Scenario()
-        result.name = jsonObject["name"]
-        result.caption = jsonObject["caption"]
-        result.description = jsonObject["description"]
-        result.uvTorch = jsonObject["uvTorch"]
         result.frame = jsonObject["frame"]
-        result.frameKWHLandscape = jsonObject["frameKWHLandscape"]
-        result.frameKWHPortrait = jsonObject["frameKWHPortrait"]
+        result.frameOrientation = jsonObject["frameOrientation"]
+        result.uvTorch = jsonObject["uvTorch"]
         result.barcodeExt = jsonObject["barcodeExt"]
         result.faceExt = jsonObject["faceExt"]
         result.multiPageOff = jsonObject["multiPageOff"]
-        result.frameOrientation = jsonObject["frameOrientation"]
         result.seriesProcessMode = jsonObject["seriesProcessMode"]
         result.frameKWHLandscape = jsonObject["frameKWHLandscape"]
         result.frameKWHPortrait = jsonObject["frameKWHPortrait"]
         result.frameKWHDoublePageSpreadPortrait = jsonObject["frameKWHDoublePageSpreadPortrait"]
         result.frameKWHDoublePageSpreadLandscape = jsonObject["frameKWHDoublePageSpreadLandscape"]
+        result.name = jsonObject["name"]
+        result.caption = jsonObject["caption"]
+        result.description = jsonObject["description"]
         return result
     }
 }
 
-class FieldRect {
+class Rect {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const rect = new FieldRect()
-        rect.bottom = jsonObject["bottom"]
-        rect.top = jsonObject["top"]
-        rect.left = jsonObject["left"]
-        rect.right = jsonObject["right"]
-        return rect
+        const result = new Rect()
+        result.bottom = jsonObject["bottom"]
+        result.top = jsonObject["top"]
+        result.left = jsonObject["left"]
+        result.right = jsonObject["right"]
+        return result
     }
 }
 
 class DocumentReaderGraphicField {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const field = new DocumentReaderGraphicField()
-        field.sourceType = jsonObject["sourceType"]
-        field.fieldType = jsonObject["fieldType"]
-        field.fieldName = jsonObject["fieldName"]
-        field.lightType = jsonObject["lightType"]
-        field.lightName = jsonObject["lightName"]
-        field.fieldRect = FieldRect.fromJson(jsonObject["fieldRect"])
-        field.value = jsonObject["value"]
-        field.width = jsonObject["width"]
-        field.height = jsonObject["height"]
-        field.pageIndex = jsonObject["pageIndex"]
-        return field
+        const result = new DocumentReaderGraphicField()
+        result.sourceType = jsonObject["sourceType"]
+        result.fieldType = jsonObject["fieldType"]
+        result.lightType = jsonObject["lightType"]
+        result.pageIndex = jsonObject["pageIndex"]
+        result.fieldName = jsonObject["fieldName"]
+        result.lightName = jsonObject["lightName"]
+        result.value = jsonObject["value"]
+        result.fieldRect = Rect.fromJson(jsonObject["fieldRect"])
+        return result
     }
 }
 
@@ -83,29 +65,17 @@ class DocumentReaderGraphicResult {
     }
 }
 
-class Rect {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new Rect()
-        result.left = jsonObject["left"]
-        result.right = jsonObject["right"]
-        result.top = jsonObject["top"]
-        result.bottom = jsonObject["bottom"]
-        return result
-    }
-}
-
 class DocumentReaderValue {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderValue()
         result.pageIndex = jsonObject["pageIndex"]
         result.sourceType = jsonObject["sourceType"]
+        result.validity = jsonObject["validity"]
+        result.probability = jsonObject["probability"]
         result.value = jsonObject["value"]
         result.originalValue = jsonObject["originalValue"]
         result.boundRect = Rect.fromJson(jsonObject["boundRect"])
-        result.validity = jsonObject["validity"]
-        result.probability = jsonObject["probability"]
         result.comparison = {}
         if (jsonObject["comparison"] != null)
             for (const i in jsonObject["comparison"])
@@ -120,9 +90,9 @@ class DocumentReaderTextField {
         const result = new DocumentReaderTextField()
         result.fieldType = jsonObject["fieldType"]
         result.lcid = jsonObject["lcid"]
+        result.status = jsonObject["status"]
         result.lcidName = jsonObject["lcidName"]
         result.fieldName = jsonObject["fieldName"]
-        result.status = jsonObject["status"]
         result.value = DocumentReaderValue.fromJson(jsonObject["value"])
         result.values = []
         if (jsonObject["values"] != null)
@@ -162,7 +132,6 @@ class ElementPosition {
         result.docFormat = jsonObject["docFormat"]
         result.width = jsonObject["width"]
         result.height = jsonObject["height"]
-        result.angle = jsonObject["angle"]
         result.dpi = jsonObject["dpi"]
         result.pageIndex = jsonObject["pageIndex"]
         result.inverse = jsonObject["inverse"]
@@ -170,6 +139,7 @@ class ElementPosition {
         result.objArea = jsonObject["objArea"]
         result.objIntAngleDev = jsonObject["objIntAngleDev"]
         result.resultStatus = jsonObject["resultStatus"]
+        result.angle = jsonObject["angle"]
         result.center = Coordinate.fromJson(jsonObject["center"])
         result.leftTop = Coordinate.fromJson(jsonObject["leftTop"])
         result.leftBottom = Coordinate.fromJson(jsonObject["leftBottom"])
@@ -209,13 +179,12 @@ class DocumentReaderDocumentType {
         if (jsonObject == null) return null
         const result = new DocumentReaderDocumentType()
         result.pageIndex = jsonObject["pageIndex"]
-        result.name = jsonObject["name"]
         result.documentID = jsonObject["documentID"]
-        result.ICAOCode = jsonObject["ICAOCode"]
         result.dType = jsonObject["dType"]
-        result.FDSID = []
         result.dFormat = jsonObject["dFormat"]
         result.dMRZ = jsonObject["dMRZ"]
+        result.name = jsonObject["name"]
+        result.ICAOCode = jsonObject["ICAOCode"]
         result.dDescription = jsonObject["dDescription"]
         result.dYear = jsonObject["dYear"]
         result.dCountryName = jsonObject["dCountryName"]
@@ -267,8 +236,8 @@ class AccessControlProcedureType {
         if (jsonObject == null) return null
         const result = new AccessControlProcedureType()
         result.activeOptionIdx = jsonObject["activeOptionIdx"]
-        result.status = jsonObject["status"]
         result.type = jsonObject["type"]
+        result.status = jsonObject["status"]
         result.notifications = []
         if (jsonObject["notifications"] != null)
             for (const i in jsonObject["notifications"])
@@ -281,10 +250,10 @@ class FileData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new FileData()
-        result.data = jsonObject["data"]
         result.length = jsonObject["length"]
-        result.status = jsonObject["status"]
         result.type = jsonObject["type"]
+        result.status = jsonObject["status"]
+        result.data = jsonObject["data"]
         return result
     }
 }
@@ -293,8 +262,8 @@ class CertificateData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new CertificateData()
-        result.data = jsonObject["data"]
         result.length = jsonObject["length"]
+        result.data = jsonObject["data"]
         return result
     }
 }
@@ -312,29 +281,29 @@ class File {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new File()
-        result.fileData = FileData.fromJson(jsonObject["fileData"])
-        result.fileID = jsonObject["fileID"]
+        result.readingTime = jsonObject["readingTime"]
+        result.type = jsonObject["type"]
         result.pAStatus = jsonObject["pAStatus"]
         result.readingStatus = jsonObject["readingStatus"]
-        result.readingTime = jsonObject["readingTime"]
-        result.retypesult = jsonObject["type"]
+        result.fileID = jsonObject["fileID"]
+        result.fileData = FileData.fromJson(jsonObject["fileData"])
         result.certificates = SecurityObjectCertificates.fromJson(jsonObject["certificates"])
-        result.notifications = []
         result.docFieldsText = []
-        result.docFieldsGraphics = []
-        result.docFieldsOriginals = []
-        if (jsonObject["notifications"] != null)
-            for (const i in jsonObject["notifications"])
-                result.notifications.push(jsonObject["notifications"][i])
         if (jsonObject["docFieldsText"] != null)
             for (const i in jsonObject["docFieldsText"])
                 result.docFieldsText.push(jsonObject["docFieldsText"][i])
+        result.docFieldsGraphics = []
         if (jsonObject["docFieldsGraphics"] != null)
             for (const i in jsonObject["docFieldsGraphics"])
                 result.docFieldsGraphics.push(jsonObject["docFieldsGraphics"][i])
+        result.docFieldsOriginals = []
         if (jsonObject["docFieldsOriginals"] != null)
             for (const i in jsonObject["docFieldsOriginals"])
                 result.docFieldsOriginals.push(jsonObject["docFieldsOriginals"][i])
+        result.notifications = []
+        if (jsonObject["notifications"] != null)
+            for (const i in jsonObject["notifications"])
+                result.notifications.push(jsonObject["notifications"][i])
         return result
     }
 }
@@ -343,10 +312,10 @@ class Application {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Application()
+        result.type = jsonObject["type"]
+        result.status = jsonObject["status"]
         result.applicationID = jsonObject["applicationID"]
         result.dataHashAlgorithm = jsonObject["dataHashAlgorithm"]
-        result.status = jsonObject["status"]
-        result.type = jsonObject["type"]
         result.unicodeVersion = jsonObject["unicodeVersion"]
         result.version = jsonObject["version"]
         result.files = []
@@ -361,10 +330,10 @@ class Value {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Value()
-        result.data = jsonObject["data"]
         result.length = jsonObject["length"]
-        result.status = jsonObject["status"]
         result.type = jsonObject["type"]
+        result.status = jsonObject["status"]
+        result.data = jsonObject["data"]
         result.format = jsonObject["format"]
         return result
     }
@@ -418,25 +387,25 @@ class CertificateChain {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new CertificateChain()
-        result.fileName = Value.fromJson(jsonObject["fileName"])
-        result.issuer = Authority.fromJson(jsonObject["issuer"])
         result.origin = jsonObject["origin"]
+        result.type = jsonObject["type"]
+        result.version = jsonObject["version"]
         result.paStatus = jsonObject["paStatus"]
         result.serialNumber = jsonObject["serialNumber"]
         result.signatureAlgorithm = jsonObject["signatureAlgorithm"]
-        result.subject = Authority.fromJson(jsonObject["subject"])
         result.subjectPKAlgorithm = jsonObject["subjectPKAlgorithm"]
-        result.type = jsonObject["type"]
+        result.fileName = Value.fromJson(jsonObject["fileName"])
         result.validity = Validity.fromJson(jsonObject["validity"])
-        result.version = jsonObject["version"]
-        result.extensions = []
+        result.issuer = Authority.fromJson(jsonObject["issuer"])
+        result.subject = Authority.fromJson(jsonObject["subject"])
         result.notifications = []
-        if (jsonObject["extensions"] != null)
-            for (const i in jsonObject["extensions"])
-                result.extensions.push(Extension.fromJson(jsonObject["extensions"][i]))
         if (jsonObject["notifications"] != null)
             for (const i in jsonObject["notifications"])
                 result.notifications.push(jsonObject["notifications"][i])
+        result.extensions = []
+        if (jsonObject["extensions"] != null)
+            for (const i in jsonObject["extensions"])
+                result.extensions.push(Extension.fromJson(jsonObject["extensions"][i]))
         return result
     }
 }
@@ -445,27 +414,27 @@ class SignerInfo {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new SignerInfo()
+        result.version = jsonObject["version"]
+        result.paStatus = jsonObject["paStatus"]
         result.dataToHash = jsonObject["dataToHash"]
         result.digestAlgorithm = jsonObject["digestAlgorithm"]
-        result.paStatus = jsonObject["paStatus"]
         result.signatureAlgorithm = jsonObject["signatureAlgorithm"]
-        result.version = jsonObject["version"]
-        result.issuer = Authority.fromJson(jsonObject["issuer"])
         result.serialNumber = Value.fromJson(jsonObject["serialNumber"])
         result.signature = Value.fromJson(jsonObject["signature"])
         result.subjectKeyIdentifier = Value.fromJson(jsonObject["subjectKeyIdentifier"])
-        result.signedAttributes = []
-        result.certificateChain = []
+        result.issuer = Authority.fromJson(jsonObject["issuer"])
         result.notifications = []
-        if (jsonObject["signedAttributes"] != null)
-            for (const i in jsonObject["signedAttributes"])
-                result.signedAttributes.push(Extension.fromJson(jsonObject["signedAttributes"][i]))
-        if (jsonObject["certificateChain"] != null)
-            for (const i in jsonObject["certificateChain"])
-                result.certificateChain.push(CertificateChain.fromJson(jsonObject["certificateChain"][i]))
         if (jsonObject["notifications"] != null)
             for (const i in jsonObject["notifications"])
                 result.notifications.push(jsonObject["notifications"][i])
+        result.signedAttributes = []
+        if (jsonObject["signedAttributes"] != null)
+            for (const i in jsonObject["signedAttributes"])
+                result.signedAttributes.push(Extension.fromJson(jsonObject["signedAttributes"][i]))
+        result.certificateChain = []
+        if (jsonObject["certificateChain"] != null)
+            for (const i in jsonObject["certificateChain"])
+                result.certificateChain.push(CertificateChain.fromJson(jsonObject["certificateChain"][i]))
         return result
     }
 }
@@ -475,16 +444,16 @@ class SecurityObject {
         if (jsonObject == null) return null
         const result = new SecurityObject()
         result.fileReference = jsonObject["fileReference"]
-        result.objectType = jsonObject["objectType"]
         result.version = jsonObject["version"]
-        result.signerInfos = []
+        result.objectType = jsonObject["objectType"]
         result.notifications = []
-        if (jsonObject["signerInfos"] != null)
-            for (const i in jsonObject["signerInfos"])
-                result.signerInfos.push(SignerInfo.fromJson(jsonObject["signerInfos"][i]))
         if (jsonObject["notifications"] != null)
             for (const i in jsonObject["notifications"])
                 result.notifications.push(jsonObject["notifications"][i])
+        result.signerInfos = []
+        if (jsonObject["signerInfos"] != null)
+            for (const i in jsonObject["signerInfos"])
+                result.signerInfos.push(SignerInfo.fromJson(jsonObject["signerInfos"][i]))
         return result
     }
 }
@@ -494,10 +463,6 @@ class CardProperties {
         if (jsonObject == null) return null
         const result = new CardProperties()
         result.aTQA = jsonObject["aTQA"]
-        result.aTQB = jsonObject["aTQB"]
-        result.aTR = jsonObject["aTR"]
-        result.baudrate1 = jsonObject["baudrate1"]
-        result.baudrate2 = jsonObject["baudrate2"]
         result.bitRateR = jsonObject["bitRateR"]
         result.bitRateS = jsonObject["bitRateS"]
         result.chipTypeA = jsonObject["chipTypeA"]
@@ -506,6 +471,10 @@ class CardProperties {
         result.sAK = jsonObject["sAK"]
         result.support4 = jsonObject["support4"]
         result.supportMifare = jsonObject["supportMifare"]
+        result.aTQB = jsonObject["aTQB"]
+        result.aTR = jsonObject["aTR"]
+        result.baudrate1 = jsonObject["baudrate1"]
+        result.baudrate2 = jsonObject["baudrate2"]
         result.uID = jsonObject["uID"]
         return result
     }
@@ -515,25 +484,67 @@ class RFIDSessionData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new RFIDSessionData()
-        result.cardProperties = CardProperties.fromJson(jsonObject["result"])
         result.totalBytesReceived = jsonObject["totalBytesReceived"]
         result.totalBytesSent = jsonObject["totalBytesSent"]
         result.status = jsonObject["status"]
         result.extLeSupport = jsonObject["extLeSupport"]
         result.processTime = jsonObject["processTime"]
-        result.sessionDataStatus = jsonObject["sessionDataStatus"]
+        result.cardProperties = CardProperties.fromJson(jsonObject["cardProperties"])
+        result.sessionDataStatus = RFIDSessionDataStatus.fromJson(jsonObject["sessionDataStatus"])
         result.accessControls = []
-        result.applications = []
-        result.securityObjects = []
         if (jsonObject["accessControls"] != null)
             for (const i in jsonObject["accessControls"])
                 result.accessControls.push(AccessControlProcedureType.fromJson(jsonObject["accessControls"][i]))
+        result.applications = []
         if (jsonObject["applications"] != null)
             for (const i in jsonObject["applications"])
                 result.applications.push(Application.fromJson(jsonObject["applications"][i]))
+        result.securityObjects = []
         if (jsonObject["securityObjects"] != null)
             for (const i in jsonObject["securityObjects"])
                 result.securityObjects.push(SecurityObject.fromJson(jsonObject["securityObjects"][i]))
+        return result
+    }
+}
+
+class DocumentReaderAuthenticityCheck {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocumentReaderAuthenticityCheck()
+        result.type = jsonObject["type"]
+        result.status = jsonObject["status"]
+        result.typeName = jsonObject["typeName"]
+        result.pageIndex = jsonObject["pageIndex"]
+        result.elements = []
+        if (jsonObject["elements"] != null)
+            for (const i in jsonObject["elements"])
+                result.elements.push(DocumentReaderAuthenticityElement.fromJson(jsonObject["elements"][i]))
+        return result
+    }
+}
+
+class PDF417Info {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new PDF417Info()
+        result.errorLevel = jsonObject["errorLevel"]
+        result.columns = jsonObject["columns"]
+        result.rows = jsonObject["rows"]
+        return result
+    }
+}
+
+class RFIDSessionDataStatus {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new RFIDSessionDataStatus()
+        result.AA = jsonObject["AA"]
+        result.BAC = jsonObject["BAC"]
+        result.CA = jsonObject["CA"]
+        result.PA = jsonObject["PA"]
+        result.PACE = jsonObject["PACE"]
+        result.TA = jsonObject["TA"]
+        result.overallStatus = jsonObject["overallStatus"]
         return result
     }
 }
@@ -556,9 +567,12 @@ class DocumentReaderBarcodeField {
         const result = new DocumentReaderBarcodeField()
         result.barcodeType = jsonObject["barcodeType"]
         result.status = jsonObject["status"]
-        result.pdf417Info = jsonObject["pdf417Info"]
-        result.data = jsonObject["data"]
         result.pageIndex = jsonObject["pageIndex"]
+        result.pdf417Info = PDF417Info.fromJson(jsonObject["pdf417Info"])
+        result.data = []
+        if (jsonObject["data"] != null)
+            for (const i in jsonObject["data"])
+                result.data.push(jsonObject["data"][i])
         return result
     }
 }
@@ -576,32 +590,15 @@ class DocumentReaderAuthenticityResult {
     }
 }
 
-class DocumentReaderAuthenticityCheck {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new DocumentReaderAuthenticityCheck()
-        result.type = jsonObject["type"]
-        result.typeName = jsonObject["typeName"]
-        result.status = jsonObject["status"]
-        result.pageIndex = jsonObject["pageIndex"]
-        result.elements = []
-        if (jsonObject["elements"] != null)
-            for (const i in jsonObject["elements"])
-                result.elements.push(DocumentReaderAuthenticityElement.fromJson(jsonObject["elements"][i]))
-        return result
-    }
-}
-
 class DocumentReaderAuthenticityElement {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderAuthenticityElement()
         result.status = jsonObject["status"]
         result.elementType = jsonObject["elementType"]
-        result.elementTypeName = jsonObject["elementTypeName"]
         result.elementDiagnose = jsonObject["elementDiagnose"]
+        result.elementTypeName = jsonObject["elementTypeName"]
         result.elementDiagnoseName = jsonObject["elementDiagnoseName"]
-
         return result
     }
 }
@@ -613,7 +610,6 @@ class DocumentReaderCompletion {
         result.action = jsonObject["action"]
         result.results = DocumentReaderResults.fromJson(jsonObject["results"])
         result.error = Throwable.fromJson(jsonObject["error"])
-
         return result
     }
 }
@@ -622,16 +618,15 @@ class Throwable {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Throwable()
-        result.localizedMessage = jsonObject["localizedMessage"]
-        result.message = jsonObject["message"]
-        result.toString = jsonObject["toString"]
         result.code = jsonObject["code"]
         result.domain = jsonObject["domain"]
+        result.localizedMessage = jsonObject["localizedMessage"]
+        result.message = jsonObject["message"]
+        result.string = jsonObject["string"]
         result.stackTrace = []
         if (jsonObject["stackTrace"] != null)
             for (const i in jsonObject["stackTrace"])
                 result.stackTrace.push(StackTraceElement.fromJson(jsonObject["stackTrace"][i]))
-
         return result
     }
 }
@@ -640,13 +635,12 @@ class StackTraceElement {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new StackTraceElement()
+        result.lineNumber = jsonObject["lineNumber"]
+        result.isNativeMethod = jsonObject["isNativeMethod"]
         result.className = jsonObject["className"]
         result.fileName = jsonObject["fileName"]
-        result.lineNumber = jsonObject["lineNumber"]
         result.methodName = jsonObject["methodName"]
-        result.isNativeMethod = jsonObject["isNativeMethod"]
-        result.toString = jsonObject["toString"]
-
+        result.string = jsonObject["string"]
         return result
     }
 }
@@ -655,12 +649,12 @@ class DocumentReaderResults {
     getTextFieldValueByType(map) {
         const fieldType = map.fieldType
         let lcid = 0
+        let source = -1
+        let original = false
         if (map.lcid != null)
             lcid = map.lcid
-        let source = -1
         if (map.source != null)
             source = map.source
-        let original = false
         if (map.original != null)
             original = map.original
         if (this.textResult != null) {
@@ -678,6 +672,7 @@ class DocumentReaderResults {
         }
     }
 
+
     getTextFieldStatusByType(fieldType, lcid = 0) {
         if (this.textResult != null) {
             const field = this.findByTypeAndLcid(fieldType, lcid)
@@ -688,7 +683,17 @@ class DocumentReaderResults {
         return 0
     }
 
-    getGraphicFieldImageByType(fieldType, source = -1, pageIndex = -1, light = -1) {
+    getGraphicFieldImageByType(map) {
+        const fieldType = map.fieldType
+        let source = -1
+        let pageIndex = -1
+        let light = -1
+        if (map.source != null)
+            source = map.source
+        if (map.pageIndex != null)
+            pageIndex = map.pageIndex
+        if (map.light != null)
+            light = map.light
         if (this.graphicResult != null) {
             const foundFields = []
             for (let field in this.graphicResult.fields) {
@@ -793,38 +798,33 @@ class DocumentReaderResults {
 
     }
 
-    clone() {
-        return DocumentReaderResults.fromJson(this)
-    }
-
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const results = new DocumentReaderResults()
-        results.chipPage = jsonObject["chipPage"]
-        results.overallResult = jsonObject["overallResult"]
-        results.processingFinishedStatus = jsonObject["processingFinishedStatus"]
-        results.elapsedTimeRFID = jsonObject["elapsedTimeRFID"]
-        results.elapsedTime = jsonObject["elapsedTime"]
-        results.morePagesAvailable = jsonObject["morePagesAvailable"]
-        results.rfidResult = jsonObject["rfidResult"]
-        results.highResolution = jsonObject["highResolution"]
-        results.graphicResult = DocumentReaderGraphicResult.fromJson(jsonObject["graphicResult"])
-        results.textResult = DocumentReaderTextResult.fromJson(jsonObject["textResult"])
-        results.documentPosition = ElementPosition.fromJson(jsonObject["documentPosition"])
-        results.barcodePosition = ElementPosition.fromJson(jsonObject["barcodePosition"])
-        results.mrzPosition = ElementPosition.fromJson(jsonObject["mrzPosition"])
-        results.imageQuality = ImageQualityGroup.fromJson(jsonObject["imageQuality"])
-        results.jsonResult = DocumentReaderJsonResult.fromJson(jsonObject["jsonResult"])
-        results.documentReaderNotification = DocumentReaderNotification.fromJson(jsonObject["documentReaderNotification"])
-        results.rfidSessionData = RFIDSessionData.fromJson(jsonObject["rfidSessionData"])
-        results.authenticityResult = DocumentReaderAuthenticityResult.fromJson(jsonObject["authenticityResult"])
-        results.barcodeResult = DocumentReaderBarcodeResult.fromJson(jsonObject["barcodeResult"])
-        results.documentType = []
+        const result = new DocumentReaderResults()
+        result.chipPage = jsonObject["chipPage"]
+        result.overallResult = jsonObject["overallResult"]
+        result.processingFinishedStatus = jsonObject["processingFinishedStatus"]
+        result.elapsedTime = jsonObject["elapsedTime"]
+        result.elapsedTimeRFID = jsonObject["elapsedTimeRFID"]
+        result.morePagesAvailable = jsonObject["morePagesAvailable"]
+        result.rfidResult = jsonObject["rfidResult"]
+        result.highResolution = jsonObject["highResolution"]
+        result.graphicResult = DocumentReaderGraphicResult.fromJson(jsonObject["graphicResult"])
+        result.textResult = DocumentReaderTextResult.fromJson(jsonObject["textResult"])
+        result.documentPosition = ElementPosition.fromJson(jsonObject["documentPosition"])
+        result.barcodePosition = ElementPosition.fromJson(jsonObject["barcodePosition"])
+        result.mrzPosition = ElementPosition.fromJson(jsonObject["mrzPosition"])
+        result.imageQuality = ImageQualityGroup.fromJson(jsonObject["imageQuality"])
+        result.jsonResult = DocumentReaderJsonResult.fromJson(jsonObject["jsonResult"])
+        result.documentReaderNotification = DocumentReaderNotification.fromJson(jsonObject["documentReaderNotification"])
+        result.rfidSessionData = RFIDSessionData.fromJson(jsonObject["rfidSessionData"])
+        result.authenticityResult = DocumentReaderAuthenticityResult.fromJson(jsonObject["authenticityResult"])
+        result.barcodeResult = DocumentReaderBarcodeResult.fromJson(jsonObject["barcodeResult"])
+        result.documentType = []
         if (jsonObject["documentType"] != null)
-            for (const index in jsonObject["documentType"])
-                results.documentType.push(DocumentReaderDocumentType.fromJson(jsonObject["documentType"][index]))
-
-        return results
+            for (const i in jsonObject["documentType"])
+                result.documentType.push(DocumentReaderDocumentType.fromJson(jsonObject["documentType"][i]))
+        return result
     }
 }
 
@@ -5007,6 +5007,7 @@ DocumentReader.cancelDBUpdate = (successCallback, errorCallback) => RNRegulaDocu
 DocumentReader.resetConfiguration = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "resetConfiguration", [], successCallback, errorCallback)
 DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
 DocumentReader.readRFID = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "readRFID", [], successCallback, errorCallback)
+DocumentReader.getRfidSessionStatus = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidSessionStatus", [], successCallback, errorCallback)
 DocumentReader.setEnableCoreLogs = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setEnableCoreLogs", [arg0], successCallback, errorCallback)
 DocumentReader.addPKDCertificates = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "addPKDCertificates", [arg0], successCallback, errorCallback)
 DocumentReader.setCameraSessionIsPaused = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setCameraSessionIsPaused", [arg0], successCallback, errorCallback)
@@ -5020,14 +5021,13 @@ DocumentReader.initializeReader = (arg0, successCallback, errorCallback) => RNRe
 DocumentReader.initializeReaderWithDatabasePath = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabasePath", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.prepareDatabase = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "prepareDatabase", [arg0], successCallback, errorCallback)
 DocumentReader.recognizeImage = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImage", [arg0], successCallback, errorCallback)
+DocumentReader.setRfidSessionStatus = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidSessionStatus", [arg0], successCallback, errorCallback)
 DocumentReader.recognizeImageFrame = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageFrame", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.recognizeImageWithOpts = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithOpts", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.recognizeVideoFrame = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeVideoFrame", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.showScannerWithCameraIDAndOpts = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "showScannerWithCameraIDAndOpts", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.recognizeImageWithImageInputParams = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithImageInputParams", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.recognizeImageWithCameraMode = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithCameraMode", [arg0, arg1], successCallback, errorCallback)
-DocumentReader.setRfidSessionStatus = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidSessionStatus", [arg0], successCallback, errorCallback)
-DocumentReader.getRfidSessionStatus = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidSessionStatus", [], successCallback, errorCallback)
 
 DocumentReader.DocumentReaderResults = DocumentReaderResults
 DocumentReader.Enum = Enum

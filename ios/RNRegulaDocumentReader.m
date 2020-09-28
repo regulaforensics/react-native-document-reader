@@ -22,12 +22,31 @@ typedef void (^Callback)(NSString* response);
     callback(message);
 }
 
-- (void)sendProgress:(NSProgress*)progress {
-    [self sendEventWithName:@"prepareDatabaseProgressChangeEvent" body:@{@"msg": [NSString stringWithFormat:@"%@%.1f%@", @"Downloading database: ", progress.fractionCompleted * 100, @"%"]}];
+-(void (^_Nullable)(NSProgress * _Nonnull progress))getProgressHandler:(Callback)successCallback :(Callback)errorCallback{
+    return ^(NSProgress * _Nonnull progress) {
+        if(RNRegulaDocumentReader.databasePercentageDownloaded != [NSNumber numberWithDouble:progress.fractionCompleted * 100]){
+            [self sendEventWithName:@"prepareDatabaseProgressChangeEvent" body:@{@"msg": [NSString stringWithFormat:@"%.1f", progress.fractionCompleted * 100]}];
+            [RNRegulaDocumentReader setDatabasePercentageDownloaded:[NSNumber numberWithDouble:progress.fractionCompleted * 100]];
+        }
+    };
 }
 
-- (void)sendCompletion:(RGLRFIDCompleteAction)action :(RGLDocumentReaderResults*)results :(NSError*)error :(RGLRFIDNotify*)notify {
-    [self sendEventWithName:@"completionEvent" body:@{@"msg": [JSONConstructor generateCompletion:action :results :error :notify]}];
+-(RGLDocumentReaderCompletion _Nonnull)getCompletion {
+    return ^(RGLDocReaderAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error) {
+        [self sendEventWithName:@"completionEvent" body:@{@"msg": [JSONConstructor generateCompletion:[JSONConstructor generateDocReaderAction: action] :results :error :nil]}];
+    };
+}
+
+-(RGLRFIDProcessCompletion _Nonnull)getRFIDCompletion {
+    return ^(RGLRFIDCompleteAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error, RGLRFIDErrorCodes errorCode) {
+        [self sendEventWithName:@"completionEvent" body:@{@"msg": [JSONConstructor generateCompletion:[JSONConstructor generateRFIDCompleteAction: action] :results :error :nil]}];
+    };
+}
+
+-(RGLRFIDNotificationCallback _Nonnull)getRFIDNotificationCallback {
+    return ^(RGLRFIDNotificationAction notificationAction, RGLRFIDNotify* _Nullable notify) {
+        [self sendEventWithName:@"completionEvent" body:@{@"msg": [JSONConstructor generateCompletion:[JSONConstructor generateRFIDNotificationAction:notificationAction] :nil :nil :notify]}];
+    };
 }
 
 RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(RCTResponseSenderBlock)sCallback:(RCTResponseSenderBlock)eCallback) {
@@ -106,6 +125,8 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         [self clearPKDCertificates :successCallback :errorCallback];
     else if([action isEqualToString:@"readRFID"])
         [self readRFID :successCallback :errorCallback];
+    else if([action isEqualToString:@"getRfidSessionStatus"])
+        [self getRfidSessionStatus :successCallback :errorCallback];
     else if([action isEqualToString:@"setEnableCoreLogs"])
         [self setEnableCoreLogs :[args objectAtIndex:0] :successCallback :errorCallback];
     else if([action isEqualToString:@"addPKDCertificates"])
@@ -132,6 +153,8 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         [self prepareDatabase :[args objectAtIndex:0] :successCallback :errorCallback];
     else if([action isEqualToString:@"recognizeImage"])
         [self recognizeImage :[args objectAtIndex:0] :successCallback :errorCallback];
+    else if([action isEqualToString:@"setRfidSessionStatus"])
+        [self setRfidSessionStatus :[args objectAtIndex:0] :successCallback :errorCallback];
     else if([action isEqualToString:@"recognizeImageFrame"])
         [self recognizeImageFrame :[args objectAtIndex:0] :[args objectAtIndex:1] :successCallback :errorCallback];
     else if([action isEqualToString:@"recognizeImageWithOpts"])
@@ -144,10 +167,6 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         [self recognizeImageWithImageInputParams :[args objectAtIndex:0] :[args objectAtIndex:1] :successCallback :errorCallback];
     else if([action isEqualToString:@"recognizeImageWithCameraMode"])
         [self recognizeImageWithCameraMode :[args objectAtIndex:0] :[args objectAtIndex:1] :successCallback :errorCallback];
-    else if([action isEqualToString:@"getRfidSessionStatus"])
-        [self getRfidSessionStatus :successCallback :errorCallback];
-    else if([action isEqualToString:@"setRfidSessionStatus"])
-        [self setRfidSessionStatus :[args objectAtIndex:0] :successCallback :errorCallback];
     else
         [self result:[NSString stringWithFormat:@"%@/%@", @"method not implemented: ", action] :errorCallback];
 }
@@ -447,39 +466,12 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
     };
 }
 
--(void (^_Nullable)(NSProgress * _Nonnull progress))getProgressHandler:(Callback)successCallback :(Callback)errorCallback{
-    return ^(NSProgress * _Nonnull progress) {
-        if(RNRegulaDocumentReader.databasePercentageDownloaded != [NSNumber numberWithDouble:progress.fractionCompleted * 100]){
-            [self sendProgress:progress];
-            [RNRegulaDocumentReader setDatabasePercentageDownloaded:[NSNumber numberWithDouble:progress.fractionCompleted * 100]];
-        }
-    };
-}
-
 -(RGLDocumentReaderPrepareCompletion _Nonnull)getPrepareCompletion:(Callback)successCallback :(Callback)errorCallback{
     return ^(BOOL successful, NSError * _Nullable error) {
         if (successful)
             [self result:@"database prepared" :successCallback];
         else
             [self result:[NSString stringWithFormat:@"%@/%@", @"database preparation failed: ", error.description] :errorCallback];
-    };
-}
-
--(RGLDocumentReaderCompletion _Nonnull)getCompletion {
-    return ^(RGLDocReaderAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error) {
-        [self sendCompletion:[JSONConstructor generateDocReaderAction: action] :results :error :nil];
-    };
-}
-
--(RGLRFIDProcessCompletion _Nonnull)getRFIDCompletion {
-    return ^(RGLRFIDCompleteAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error, RGLRFIDErrorCodes errorCode) {
-        [self sendCompletion:[JSONConstructor generateRFIDCompleteAction: action] :results :error :nil];
-    };
-}
-
--(RGLRFIDNotificationCallback _Nonnull)getRFIDNotificationCallback {
-    return ^(RGLRFIDNotificationAction notificationAction, RGLRFIDNotify* _Nullable notification) {
-        [self sendCompletion:[JSONConstructor generateRFIDNotificationAction:notificationAction] :nil :nil :notification];
     };
 }
 

@@ -287,10 +287,38 @@
 +(RGLePassportDataGroup*)RGLePassportDataGroupFromJson:(NSDictionary*)dict {
     RGLePassportDataGroup *group = [[RGLePassportDataGroup alloc] init];
 
-    if([dict valueForKey:@"dG15"] != nil)
-        group.dG15 = [[dict valueForKey:@"dG15"] boolValue];
-    if([dict valueForKey:@"dG16"] != nil)
-        group.dG16 = [[dict valueForKey:@"dG16"] boolValue];
+    if([dict valueForKey:@"DG1"] != nil)
+        group.dG1 = [[dict valueForKey:@"DG1"] boolValue];
+    if([dict valueForKey:@"DG2"] != nil)
+        group.dG2 = [[dict valueForKey:@"DG2"] boolValue];
+    if([dict valueForKey:@"DG3"] != nil)
+        group.dG3 = [[dict valueForKey:@"DG3"] boolValue];
+    if([dict valueForKey:@"DG4"] != nil)
+        group.dG4 = [[dict valueForKey:@"DG4"] boolValue];
+    if([dict valueForKey:@"DG5"] != nil)
+        group.dG5 = [[dict valueForKey:@"DG5"] boolValue];
+    if([dict valueForKey:@"DG6"] != nil)
+        group.dG6 = [[dict valueForKey:@"DG6"] boolValue];
+    if([dict valueForKey:@"DG7"] != nil)
+        group.dG7 = [[dict valueForKey:@"DG7"] boolValue];
+    if([dict valueForKey:@"DG8"] != nil)
+        group.dG8 = [[dict valueForKey:@"DG8"] boolValue];
+    if([dict valueForKey:@"DG9"] != nil)
+        group.dG9 = [[dict valueForKey:@"DG9"] boolValue];
+    if([dict valueForKey:@"DG10"] != nil)
+        group.dG10 = [[dict valueForKey:@"DG10"] boolValue];
+    if([dict valueForKey:@"DG11"] != nil)
+        group.dG11 = [[dict valueForKey:@"DG11"] boolValue];
+    if([dict valueForKey:@"DG12"] != nil)
+        group.dG12 = [[dict valueForKey:@"DG12"] boolValue];
+    if([dict valueForKey:@"DG13"] != nil)
+        group.dG13 = [[dict valueForKey:@"DG13"] boolValue];
+    if([dict valueForKey:@"DG14"] != nil)
+        group.dG14 = [[dict valueForKey:@"DG14"] boolValue];
+    if([dict valueForKey:@"DG15"] != nil)
+        group.dG15 = [[dict valueForKey:@"DG15"] boolValue];
+    if([dict valueForKey:@"DG16"] != nil)
+        group.dG16 = [[dict valueForKey:@"DG16"] boolValue];
 
     return group;
 }
@@ -298,26 +326,84 @@
 +(RGLeIDDataGroup*)RGLeIDDataGroupFromJson:(NSDictionary*)dict {
     RGLeIDDataGroup *group = [[RGLeIDDataGroup alloc] init];
 
-    if([dict valueForKey:@"dG15"] != nil)
-        group.dG15 = [[dict valueForKey:@"dG15"] boolValue];
-    if([dict valueForKey:@"dG16"] != nil)
-        group.dG16 = [[dict valueForKey:@"dG16"] boolValue];
-    if([dict valueForKey:@"dG17"] != nil)
-        group.dG17 = [[dict valueForKey:@"dG17"] boolValue];
-    if([dict valueForKey:@"dG18"] != nil)
-        group.dG18 = [[dict valueForKey:@"dG18"] boolValue];
-    if([dict valueForKey:@"dG19"] != nil)
-        group.dG19 = [[dict valueForKey:@"dG19"] boolValue];
-    if([dict valueForKey:@"dG20"] != nil)
-        group.dG20 = [[dict valueForKey:@"dG20"] boolValue];
-    if([dict valueForKey:@"dG21"] != nil)
-        group.dG21 = [[dict valueForKey:@"dG21"] boolValue];
+    if([dict valueForKey:@"DG1"] != nil)
+        group.dG1 = [[dict valueForKey:@"DG1"] boolValue];
+    if([dict valueForKey:@"DG2"] != nil)
+        group.dG2 = [[dict valueForKey:@"DG2"] boolValue];
+    if([dict valueForKey:@"DG3"] != nil)
+        group.dG3 = [[dict valueForKey:@"DG3"] boolValue];
+    if([dict valueForKey:@"DG4"] != nil)
+        group.dG4 = [[dict valueForKey:@"DG4"] boolValue];
+    if([dict valueForKey:@"DG5"] != nil)
+        group.dG5 = [[dict valueForKey:@"DG5"] boolValue];
+    if([dict valueForKey:@"DG6"] != nil)
+        group.dG6 = [[dict valueForKey:@"DG6"] boolValue];
+    if([dict valueForKey:@"DG7"] != nil)
+        group.dG7 = [[dict valueForKey:@"DG7"] boolValue];
+    if([dict valueForKey:@"DG8"] != nil)
+        group.dG8 = [[dict valueForKey:@"DG8"] boolValue];
+    if([dict valueForKey:@"DG9"] != nil)
+        group.dG9 = [[dict valueForKey:@"DG9"] boolValue];
+    if([dict valueForKey:@"DG10"] != nil)
+        group.dG10 = [[dict valueForKey:@"DG10"] boolValue];
+    if([dict valueForKey:@"DG11"] != nil)
+        group.dG11 = [[dict valueForKey:@"DG11"] boolValue];
+    if([dict valueForKey:@"DG12"] != nil)
+        group.dG12 = [[dict valueForKey:@"DG12"] boolValue];
+    if([dict valueForKey:@"DG13"] != nil)
+        group.dG13 = [[dict valueForKey:@"DG13"] boolValue];
+    if([dict valueForKey:@"DG14"] != nil)
+        group.dG14 = [[dict valueForKey:@"DG14"] boolValue];
+    if([dict valueForKey:@"DG15"] != nil)
+        group.dG15 = [[dict valueForKey:@"DG15"] boolValue];
+    if([dict valueForKey:@"DG16"] != nil)
+        group.dG16 = [[dict valueForKey:@"DG16"] boolValue];
+    if([dict valueForKey:@"DG17"] != nil)
+        group.dG17 = [[dict valueForKey:@"DG17"] boolValue];
+    if([dict valueForKey:@"DG18"] != nil)
+        group.dG18 = [[dict valueForKey:@"DG18"] boolValue];
+    if([dict valueForKey:@"DG19"] != nil)
+        group.dG19 = [[dict valueForKey:@"DG19"] boolValue];
+    if([dict valueForKey:@"DG20"] != nil)
+        group.dG20 = [[dict valueForKey:@"DG20"] boolValue];
+    if([dict valueForKey:@"DG21"] != nil)
+        group.dG21 = [[dict valueForKey:@"DG21"] boolValue];
 
     return group;
 }
 
 +(RGLeDLDataGroup*)RGLeDLDataGroupFromJson:(NSDictionary*)dict {
     RGLeDLDataGroup *group = [[RGLeDLDataGroup alloc] init];
+
+    if([dict valueForKey:@"DG1"] != nil)
+        group.dG1 = [[dict valueForKey:@"DG1"] boolValue];
+    if([dict valueForKey:@"DG2"] != nil)
+        group.dG2 = [[dict valueForKey:@"DG2"] boolValue];
+    if([dict valueForKey:@"DG3"] != nil)
+        group.dG3 = [[dict valueForKey:@"DG3"] boolValue];
+    if([dict valueForKey:@"DG4"] != nil)
+        group.dG4 = [[dict valueForKey:@"DG4"] boolValue];
+    if([dict valueForKey:@"DG5"] != nil)
+        group.dG5 = [[dict valueForKey:@"DG5"] boolValue];
+    if([dict valueForKey:@"DG6"] != nil)
+        group.dG6 = [[dict valueForKey:@"DG6"] boolValue];
+    if([dict valueForKey:@"DG7"] != nil)
+        group.dG7 = [[dict valueForKey:@"DG7"] boolValue];
+    if([dict valueForKey:@"DG8"] != nil)
+        group.dG8 = [[dict valueForKey:@"DG8"] boolValue];
+    if([dict valueForKey:@"DG9"] != nil)
+        group.dG9 = [[dict valueForKey:@"DG9"] boolValue];
+    if([dict valueForKey:@"DG10"] != nil)
+        group.dG10 = [[dict valueForKey:@"DG10"] boolValue];
+    if([dict valueForKey:@"DG11"] != nil)
+        group.dG11 = [[dict valueForKey:@"DG11"] boolValue];
+    if([dict valueForKey:@"DG12"] != nil)
+        group.dG12 = [[dict valueForKey:@"DG12"] boolValue];
+    if([dict valueForKey:@"DG13"] != nil)
+        group.dG13 = [[dict valueForKey:@"DG13"] boolValue];
+    if([dict valueForKey:@"DG14"] != nil)
+        group.dG14 = [[dict valueForKey:@"DG14"] boolValue];
+
     return group;
 }
 

@@ -9,7 +9,7 @@
 
 + (NSMutableDictionary*)generateResults:(RGLDocumentReaderResults*)results {
     NSMutableDictionary *myDictionary = [[NSMutableDictionary alloc] init];
-    
+
     myDictionary[@"resolutionType"] = [NSNumber numberWithInteger:results.resolutionType];
     myDictionary[@"overallResult"] = [NSNumber numberWithInteger:results.overallResult];
     myDictionary[@"chipPage"] = [NSNumber numberWithInteger:results.chipPage];
@@ -39,7 +39,7 @@
         myDictionary[@"barcodeResult"] = [self generateRGLDocumentReaderBarcodeResult:results.barcodeResult];
     if(results.rfidSessionData != nil)
         myDictionary[@"rfidSessionData"] = [self generateRGLRFIDSessionData:results.rfidSessionData];
-    
+
     return myDictionary;
 }
 
@@ -62,7 +62,7 @@
     output[@"leftBottom"] = [self generateCGPoint:position.leftBottom];
     output[@"rightTop"] = [self generateCGPoint:position.rightTop];
     output[@"rightBottom"] = [self generateCGPoint:position.rightBottom];
-    
+
     return output;
 }
 
@@ -71,7 +71,7 @@
 
     output[@"x"] = [NSNumber numberWithFloat:point.x];
     output[@"y"] = [NSNumber numberWithFloat:point.y];
-    
+
     return output;
 }
 
@@ -80,7 +80,7 @@
 
     if(documentReaderBarcodeResult.fields != nil)
         output[@"fields"] = [self generateNSArrayRGLDocumentReaderBarcodeField:documentReaderBarcodeResult.fields];
-    
+
     return output;
 }
 
@@ -97,11 +97,11 @@
 
     output[@"barcodeType"] = [NSNumber numberWithInteger:documentReaderBarcodeField.barcodeType];
     output[@"status"] = [NSNumber numberWithInteger:documentReaderBarcodeField.status];
-    output[@"data"] = [[NSString alloc] initWithData:documentReaderBarcodeField.data encoding:NSUTF8StringEncoding];
+    output[@"data"] = [NSKeyedUnarchiver unarchiveObjectWithData:documentReaderBarcodeField.data];
     output[@"pageIndex"] = [NSNumber numberWithInteger:documentReaderBarcodeField.pageIndex];
     if(documentReaderBarcodeField.pdf417Info != nil)
         output[@"pdf417Info"] = [self generateRGLPDF417Info:documentReaderBarcodeField.pdf417Info];
-    
+
     return output;
 }
 
@@ -111,7 +111,7 @@
     output[@"errorLevel"] = [NSNumber numberWithInteger:pdf417Info.errorLevel];
     output[@"columns"] = [NSNumber numberWithInteger:pdf417Info.columns];
     output[@"rows"] = [NSNumber numberWithInteger:pdf417Info.rows];
-    
+
     return output;
 }
 
@@ -121,7 +121,7 @@
     output[@"status"] = [NSNumber numberWithInteger:documentReaderAuthenticityResult.status];
     if(documentReaderAuthenticityResult.checks != nil)
         output[@"checks"] = [self generateNSArrayRGLAuthenticityCheck:documentReaderAuthenticityResult.checks];
-    
+
     return output;
 }
 
@@ -142,7 +142,7 @@
     output[@"pageIndex"] = [NSNumber numberWithInteger:authenticityCheck.pageIndex];
     if(authenticityCheck.elements != nil)
         output[@"elements"] = [self generateNSArrayRGLAuthenticityElement:authenticityCheck.elements];
-    
+
     return output;
 }
 
@@ -162,7 +162,7 @@
     output[@"elementTypeName"] = authenticityElement.elementTypeName;
     output[@"elementDiagnose"] = [NSNumber numberWithInteger:authenticityElement.elementDiagnose];
     output[@"elementDiagnoseName"] = authenticityElement.elementDiagnoseName;
-    
+
     return output;
 }
 
@@ -173,7 +173,7 @@
     output[@"result"] = [NSNumber numberWithInteger:imageQualityGroup.result];
     if(imageQualityGroup.imageQualityList != nil)
         output[@"imageQualityList"] = [self generateImageQualityList:imageQualityGroup.imageQualityList];
-    
+
     return output;
 }
 
@@ -191,7 +191,7 @@
     output[@"type"] = [NSNumber numberWithInteger:imageQuality.type];
     output[@"result"] = [NSNumber numberWithInteger:imageQuality.result];
     output[@"featureType"] = [NSNumber numberWithInteger:imageQuality.featureType];
-    
+
     return output;
 }
 
@@ -200,7 +200,7 @@
 
     if(documentReaderJsonResult.results != nil)
         output[@"results"] = [self generateNSArrayDocumentReaderJsonResultGroup:documentReaderJsonResult.results];
-    
+
     return output;
 }
 
@@ -219,7 +219,7 @@
     output[@"lightType"] = [NSNumber numberWithInteger:documentReaderJsonResultGroup.lightType];
     output[@"pageIdx"] = [NSNumber numberWithInteger:documentReaderJsonResultGroup.pageIdx];
     output[@"jsonResult"] = documentReaderJsonResultGroup.jsonResult;
-    
+
     return output;
 }
 
@@ -228,7 +228,7 @@
 
     if(documentReaderGraphicResult.fields != nil)
         output[@"fields"] = [self generateNSArrayDocumentReaderGraphicResultGroup:documentReaderGraphicResult.fields];
-    
+
     return output;
 }
 
@@ -248,14 +248,12 @@
     output[@"fieldName"] = documentReaderGraphicField.fieldName;
     output[@"lightType"] = [NSNumber numberWithInteger:documentReaderGraphicField.lightType];
     output[@"lightName"] = documentReaderGraphicField.lightName;
-    output[@"width"] = @(documentReaderGraphicField.boundRect.size.width);
-    output[@"height"] = @(documentReaderGraphicField.boundRect.size.height);
     NSData *imageData = UIImageJPEGRepresentation(documentReaderGraphicField.value, 1.0);
     NSString * base64String = [imageData base64EncodedStringWithOptions:0];
     output[@"value"] = base64String;
     output[@"pageIndex"] = [NSNumber numberWithInteger:documentReaderGraphicField.pageIndex];
     output[@"fieldRect"] = [self generateCGRect:documentReaderGraphicField.boundRect];
-    
+
     return output;
 }
 
@@ -266,7 +264,7 @@
     output[@"left"] = @(cgRect.origin.x);
     output[@"bottom"] = @(cgRect.origin.y+cgRect.size.height);
     output[@"right"] = @(cgRect.origin.x+cgRect.size.width);
-    
+
     return output;
 }
 
@@ -276,7 +274,7 @@
     output[@"status"] = [NSNumber numberWithInteger:documentReaderTextResult.status];
     if(documentReaderTextResult.fields != nil)
         output[@"fields"] = [self generateNSArrayDocumentReaderTextField:documentReaderTextResult.fields];
-    
+
     return output;
 }
 
@@ -300,7 +298,7 @@
         output[@"value"] = [self generateDocumentReaderValue:[documentReaderTextField getValue]];
     if(documentReaderTextField.values != nil)
         output[@"values"] = [self generateNSArrayDocumentReaderValue:documentReaderTextField.values];
-    
+
     return output;
 }
 
@@ -326,7 +324,7 @@
     for(NSNumber* key in documentReaderValue.comparison)
         dict[[key stringValue]] = documentReaderValue.comparison[key];
     output[@"comparison"] = dict;
-    
+
     return output;
 }
 
@@ -353,7 +351,7 @@
     output[@"pageIndex"] = [NSNumber numberWithInteger:documentReaderDocumentType.pageIndex];
     if(documentReaderDocumentType.FDSID != nil)
         output[@"FDSID"] = [self generateNSArrayNSNumber:documentReaderDocumentType.FDSID];
-    
+
     return output;
 }
 
@@ -381,7 +379,7 @@
     output[@"caption"] = scenario.caption;
     output[@"uvTorch"] = [NSNumber numberWithBool:scenario.uvTorch];
     output[@"frameOrientation"] = [NSNumber numberWithInteger:scenario.frameOrientation];
-    
+
     return [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:output options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
 }
 
@@ -403,7 +401,7 @@
         output[@"applications"] = [self generateNSArrayRGLApplication:rfidSessionData.applications];
     if(rfidSessionData.securityObjects != nil)
         output[@"securityObjects"] = [self generateNSArrayRGLSecurityObject:rfidSessionData.securityObjects];
-    
+
     return output;
 }
 
@@ -424,7 +422,7 @@
     output[@"uID"] = cardProperties.uID;
     output[@"support4"] = [NSNumber numberWithBool:cardProperties.support4];
     output[@"supportMifare"] = [NSNumber numberWithBool:cardProperties.supportMifare];
-    
+
     return output;
 }
 
@@ -438,7 +436,7 @@
     output[@"PACE"] = [NSNumber numberWithInteger:sessionDataStatus.PACE];
     output[@"TA"] = [NSNumber numberWithInteger:sessionDataStatus.TA];
     output[@"overallStatus"] = [NSNumber numberWithInteger:sessionDataStatus.overallStatus];
-    
+
     return output;
 }
 
@@ -458,7 +456,7 @@
     output[@"type"] = [NSNumber numberWithInteger:accessControlProcedureType.type];
     if(accessControlProcedureType.notifications != nil)
         output[@"notifications"] = [self generateNSArrayNSNumber:accessControlProcedureType.notifications];
-    
+
     return output;
 }
 
@@ -481,7 +479,7 @@
     output[@"status"] = [NSNumber numberWithInteger:application.status];
     if(application.files != nil)
         output[@"files"] = [self generateNSArrayRGLFile:application.files];
-    
+
     return output;
 }
 
@@ -514,7 +512,7 @@
         output[@"fileData"] = [self generateRGLFileData:file.fileData];
     if(file.certificates != nil)
         output[@"certificates"] = [self generateRGLSecurityObjectCertificates:file.certificates];
-    
+
     return output;
 }
 
@@ -525,7 +523,7 @@
     output[@"length"] = [NSNumber numberWithInteger:fileData.length];
     output[@"type"] = [NSNumber numberWithInteger:fileData.type];
     output[@"status"] = [NSNumber numberWithDouble:fileData.status];
-    
+
     return output;
 }
 
@@ -534,7 +532,7 @@
 
     if(certificates.securityObject != nil)
         output[@"securityObject"] = [self generateRGLCertificateData:certificates.securityObject];
-    
+
     return output;
 }
 
@@ -543,7 +541,7 @@
 
     output[@"data"] = certificateData.data;
     output[@"length"] = [NSNumber numberWithInteger:certificateData.length];
-    
+
     return output;
 }
 
@@ -564,7 +562,7 @@
         output[@"signerInfos"] = [self generateNSArrayRGLSignerInfo:securityObject.signerInfos];
     if(securityObject.notifications != nil)
         output[@"notifications"] = [self generateNSArrayNSNumber:securityObject.notifications];
-    
+
     return output;
 }
 
@@ -598,7 +596,7 @@
         output[@"signedAttributes"] = [self generateNSArrayRGLExtension:signerInfo.signedAttributes];
     if(signerInfo.certificateChain != nil)
         output[@"certificateChain"] = [self generateNSArrayRGLCertificateChain:signerInfo.certificateChain];
-    
+
     return output;
 }
 
@@ -610,7 +608,7 @@
         output[@"friendlyName"] = [self generateRGLRFIDValue:authority.friendlyName];
     if(authority.attributes != nil)
         output[@"attributes"] = [self generateNSArrayRGLAttribute:authority.attributes];
-    
+
     return output;
 }
 
@@ -622,7 +620,7 @@
     output[@"length"] = [NSNumber numberWithInteger:value.length];
     output[@"type"] = [NSNumber numberWithInteger:value.type];
     output[@"status"] = [NSNumber numberWithDouble:value.status];
-    
+
     return output;
 }
 
@@ -640,7 +638,7 @@
     output[@"type"] = attribute.type;
     if(attribute.value != nil)
         output[@"value"] = [self generateRGLRFIDValue:attribute.value];
-    
+
     return output;
 }
 
@@ -657,7 +655,7 @@
 
     output[@"data"] = extension.data;
     output[@"type"] = extension.type;
-    
+
     return output;
 }
 
@@ -691,7 +689,7 @@
         output[@"extensions"] = [self generateNSArrayRGLExtension:certificateChain.extensions];
     if(certificateChain.validity != nil)
         output[@"validity"] = [self generateRGLValidity:certificateChain.validity];
-    
+
     return output;
 }
 
@@ -702,7 +700,7 @@
         output[@"fileName"] = [self generateRGLRFIDValue:validity.notAfter];
     if(validity.notBefore != nil)
         output[@"fileName"] = [self generateRGLRFIDValue:validity.notBefore];
-    
+
     return output;
 }
 
@@ -741,7 +739,7 @@
             resType = RGLPKDResourceTypeCertificate_PA;
             break;
     }
-    
+
     return [[RGLPKDCertificate init] initWithBinaryData:binaryData resourceType:resType privateKey:privateKey];
 }
 
@@ -766,7 +764,7 @@
         default:
             break;
     }
-    
+
     return output;
 }
 
@@ -788,7 +786,7 @@
         default:
             break;
     }
-    
+
     return output;
 }
 
@@ -798,7 +796,7 @@
 
 +(NSString*)generateCompletion:(NSInteger)action :(RGLDocumentReaderResults*)results :(NSError*)error :(RGLRFIDNotify*)notify {
     NSMutableDictionary *output = [NSMutableDictionary new];
-    
+
     switch (action) {
         case 0:
             output[@"results"] = [self generateResultsWithNotification:[self generateRFIDNotify:notify]];
@@ -828,26 +826,26 @@
         default:
             break;
     }
-    
+
     output[@"action"] = [NSNumber numberWithInteger:action];
     output[@"error"] = [self generateNSError:error];
-    
+
     return [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:output options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
 }
 
 +(NSMutableDictionary*)generateResultsWithNotification:(NSMutableDictionary*)dict {
     NSMutableDictionary *output = [NSMutableDictionary new];
-    
+
     output[@"documentReaderNotification"] = dict;
-    
+
     return output;
 }
 
 +(NSMutableDictionary*)generateResultsWithRFID:(RGLDocumentReaderResults*)results :(NSInteger)rfidResult {
     NSMutableDictionary *output = [self generateResults:results];
-    
+
     output[@"rfidResult"] = [NSNumber numberWithInteger:rfidResult];
-    
+
     return output;
 }
 
@@ -856,7 +854,7 @@
 
     output[@"code"] = [NSNumber numberWithInteger: error.code];
     output[@"domain"] = error.domain;
-    
+
     return output;
 }
 
@@ -866,7 +864,7 @@
     output[@"code"] = [NSNumber numberWithInteger:notify.code];
     output[@"number"] = [NSNumber numberWithInt:notify.number];
     output[@"value"] = [NSNumber numberWithDouble:notify.value];
-    
+
     return output;
 }
 

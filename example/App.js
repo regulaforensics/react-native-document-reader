@@ -14,7 +14,7 @@ const Enum = DocumentReader.Enum
 export default class App extends Component {
   constructor(props) {
     super(props)
-    eventManager.addListener('prepareDatabaseProgressChangeEvent', e => this.setState({ fullName: e["msg"] }))
+    eventManager.addListener('prepareDatabaseProgressChangeEvent', e => this.setState({ fullName: "Downloading database: " + e["msg"] + "%" }))
     eventManager.addListener('completionEvent', e => this.handleCompletion(DocumentReader.DocumentReaderCompletion.fromJson(JSON.parse(e["msg"]))))
     var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license"
     var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets
