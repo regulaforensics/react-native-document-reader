@@ -659,7 +659,6 @@ class DocumentReaderResults {
             original = map.original
         if (this.textResult != null) {
             const field = this.findByTypeAndLcid(fieldType, lcid)
-            console.log("field:" + field)
             if (field != null) {
                 const value = this.findBySource(field, source)
                 if (value != null) {

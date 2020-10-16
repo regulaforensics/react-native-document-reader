@@ -736,7 +736,13 @@ class JSONConstructor {
 
     static Bitmap bitmapFromBase64(String base64) {
         byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        Bitmap result = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length, options);
+        int sizeMultiplier = result.getByteCount() / 5000000;
+        if (result.getByteCount() > 5000000)
+            result = Bitmap.createScaledBitmap(result, result.getWidth() / (int)Math.sqrt(sizeMultiplier), result.getHeight() / (int)Math.sqrt(sizeMultiplier), false);
+        return result;
     }
 
     static byte[] byteArrayFromJson(JSONArray array) throws JSONException {

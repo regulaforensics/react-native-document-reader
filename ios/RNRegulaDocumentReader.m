@@ -215,7 +215,6 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
     dispatch_async(dispatch_get_main_queue(), ^{
         [RGLDocReader.shared startRFIDReaderFromPresenter:[[[UIApplication sharedApplication] keyWindow] rootViewController] completion:[self getCompletion]];
     });
-    [self result:@"" :successCallback];
 }
 
 - (void) initializeReaderWithDatabasePath:(NSString*)licenseString :(NSString*)databasePath :(Callback)successCallback :(Callback)errorCallback{
@@ -250,7 +249,6 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
             UIViewController *currentViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
             [RGLDocReader.shared showScanner:currentViewController completion:[self getCompletion]];
         });
-        [self result:@"" :successCallback];
 }
 
 - (void) recognizeImage:(NSMutableString*)base64 :(Callback)successCallback :(Callback)errorCallback{
@@ -264,7 +262,6 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         dispatch_async(dispatch_get_main_queue(), ^{
             [RGLDocReader.shared recognizeImages:images completion:[self getCompletion]];
         });
-        [self result:@"" :successCallback];
 }
 
 - (void) recognizeImageWithCameraMode:(NSMutableString*)base64 :(BOOL)cameraMode :(Callback)successCallback :(Callback)errorCallback{
@@ -275,7 +272,6 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         dispatch_async(dispatch_get_main_queue(), ^{
             [RGLDocReader.shared recognizeImage:[UIImage imageWithData:[[NSData alloc]initWithBase64EncodedString:base64 options:NSDataBase64DecodingIgnoreUnknownCharacters]] cameraMode:cameraMode completion:[self getCompletion]];
         });
-        [self result:@"" :successCallback];
 }
 
 - (void) setConfig:(NSDictionary*)config :(Callback)successCallback :(Callback)errorCallback{
@@ -298,7 +294,6 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
 
 - (void) readRFID:(Callback)successCallback :(Callback)errorCallback{
         [RGLDocReader.shared readRFID:[self getRFIDNotificationCallback] completion:[self getRFIDCompletion]];
-        [self result:@"" :successCallback];
 }
 
 - (void) stopRFIDReader:(Callback)successCallback :(Callback)errorCallback{
