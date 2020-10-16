@@ -323,7 +323,11 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
 }
 
 - (void) stopScanner:(Callback)successCallback :(Callback)errorCallback{
-    [RGLDocReader.shared stopScanner:^(){[self result:@"" :successCallback];}];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [RGLDocReader.shared stopScanner:^(){
+            [self result:@"" :successCallback];
+        }];
+    });
 }
 
 - (void) startNewSession:(Callback)successCallback :(Callback)errorCallback{
