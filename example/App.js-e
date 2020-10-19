@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Button, Text, Image, ScrollView, NativeEventEmitter, Platform, TouchableOpacity } from 'react-native'
-import Regula from '@regulaforensics/react-native-document-reader-api-beta'
+import Regula from '@regulaforensics/api_module_place_holder'
 import * as RNFS from 'react-native-fs'
 import RadioGroup from 'react-native-radio-buttons-group'
 import ImagePicker from 'react-native-customized-image-picker'

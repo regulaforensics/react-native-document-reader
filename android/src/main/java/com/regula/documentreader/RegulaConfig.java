@@ -485,8 +485,6 @@ class RegulaConfig {
             DocumentReader.Instance().rfidScenario().setAuthorizedInstallQCert(opts.getBoolean("authorizedInstallQCert"));
         if (opts.has("applyAmendments"))
             DocumentReader.Instance().rfidScenario().setApplyAmendments(opts.getBoolean("applyAmendments"));
-        if (opts.has("autoSettings"))
-            DocumentReader.Instance().rfidScenario().setAutoSettings(opts.getBoolean("autoSettings"));
         if (opts.has("ePassportDataGroups"))
             setDataGroups(DocumentReader.Instance().rfidScenario().ePassportDataGroups(), opts.getJSONObject("ePassportDataGroups"));
         if (opts.has("eIDDataGroups"))
