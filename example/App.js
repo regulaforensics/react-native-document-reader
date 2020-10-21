@@ -14,7 +14,7 @@ const Enum = DocumentReader.Enum
 export default class App extends Component {
   constructor(props) {
     super(props)
-    eventManager.addListener('prepareDatabaseProgressChangeEvent', e => this.setState({ fullName: e["msg"] }))
+    eventManager.addListener('prepareDatabaseProgressChangeEvent', e => this.setState({ fullName: "Downloading database: " + e["msg"] + "%" }))
     eventManager.addListener('completionEvent', e => this.handleCompletion(DocumentReader.DocumentReaderCompletion.fromJson(JSON.parse(e["msg"]))))
     var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license"
     var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets
@@ -121,10 +121,10 @@ export default class App extends Component {
 
   displayResults(results) {
     this.setState({ fullName: results.getTextFieldValueByType({ fieldType: Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES }) })
-    if (results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE) != null)
-      this.setState({ docFront: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE) } })
-    if (results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT) != null)
-      this.setState({ portrait: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT) } })
+    if (results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE }) != null)
+      this.setState({ docFront: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE }) } })
+    if (results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_PORTRAIT }) != null)
+      this.setState({ portrait: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_PORTRAIT }) } })
   }
 
   customRFID(){

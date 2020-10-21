@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.IsoDep;
 import android.util.Base64;
-import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -44,7 +43,6 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     private final static String completionEvent = "completionEvent";
     private static int databaseDownloadProgress = 0;
     JSONArray data;
-    private NfcAdapter nfcAdapter;
     private ReactContext reactContext;
     private boolean backgroundRFIDEnabled = false;
 
@@ -65,54 +63,30 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         return reactContext.getCurrentActivity();
     }
 
+    private Activity getActivity() {
+        return getCurrentActivity();
+    }
+
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
     }
 
     @Override
     public void onNewIntent(Intent intent) {
-        if (intent.getAction() != null && intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED) && backgroundRFIDEnabled) {
-            Log.d("RFID", "starting rfid reader");
+        if (intent.getAction() != null && intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED) && backgroundRFIDEnabled)
             Instance().readRFID(IsoDep.get(intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)), getCompletion());
-        }
     }
 
     @Override
     public void onHostResume() {
-        if (backgroundRFIDEnabled) {
-            if (nfcAdapter == null)
-                nfcAdapter = NfcAdapter.getDefaultAdapter(getCurrentActivity());
-            startForegroundDispatch(getCurrentActivity(), nfcAdapter);
-        }
+        if (backgroundRFIDEnabled)
+            startForegroundDispatch(getActivity());
     }
 
     @Override
     public void onHostPause() {
         if (backgroundRFIDEnabled)
-            stopForegroundDispatch(getCurrentActivity(), nfcAdapter);
-    }
-
-    private void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
-        adapter.disableForegroundDispatch(activity);
-    }
-
-    private void startForegroundDispatch(final Activity activity, NfcAdapter adapter) {
-        IntentFilter[] filters = new IntentFilter[1];
-        filters[0] = new IntentFilter();
-        filters[0].addAction(NfcAdapter.ACTION_TECH_DISCOVERED);
-        filters[0].addCategory(Intent.CATEGORY_DEFAULT);
-        String[][] techList = new String[][]{
-                new String[]{"android.nfc.tech.IsoDep"}
-        };
-        adapter.enableForegroundDispatch(activity, PendingIntent.getActivity(activity.getApplicationContext(), 0, new Intent(activity.getApplicationContext(), activity.getClass()), 0), filters, techList);
-        Log.d("RFID", "NFC adapter dispatch enabled for android.nfc.tech.IsoDep");
-    }
-
-    private void stopBackgroundRFID() {
-        if (!backgroundRFIDEnabled)
-            return;
-        stopForegroundDispatch(getCurrentActivity(), nfcAdapter);
-        backgroundRFIDEnabled = false;
+            NfcAdapter.getDefaultAdapter(getActivity()).disableForegroundDispatch(getActivity());
     }
 
     @Override
@@ -126,17 +100,24 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void sendProgress(int progress) {
         WritableMap map = Arguments.createMap();
-        map.putString("msg", "Downloading database: " + progress + "%");
+        map.putString("msg", progress + "");
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(prepareDatabaseProgressChangeEvent, map);
     }
 
-    private void sendCompletion(int action, DocumentReaderResults results, Throwable error, Context context) {
+    private void sendCompletion(int action, DocumentReaderResults results, Throwable error) {
         WritableMap map = Arguments.createMap();
-        try {
-            map.putString("msg", JSONConstructor.generateCompletion(action, results, error, context).toString());
-        } catch (JSONException ignored) {
-        }
+        map.putString("msg", JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(completionEvent, map);
+    }
+
+    private interface Callback {
+        void success(Object o);
+
+        void error(String s);
+
+        default void success() {
+            success("");
+        }
     }
 
     @ReactMethod
@@ -262,6 +243,9 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "readRFID":
                     readRFID(callback);
                     break;
+                case "getRfidSessionStatus":
+                    getRfidSessionStatus(callback);
+                    break;
                 case "setEnableCoreLogs":
                     setEnableCoreLogs(callback, args(0));
                     break;
@@ -301,6 +285,9 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "recognizeImage":
                     recognizeImage(callback, args(0));
                     break;
+                case "setRfidSessionStatus":
+                    setRfidSessionStatus(callback, args(0));
+                    break;
                 case "recognizeImageFrame":
                     recognizeImageFrame(callback, args(0), args(1));
                     break;
@@ -319,15 +306,30 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "recognizeImageWithCameraMode":
                     recognizeImageWithCameraMode(callback, args(0), args(1));
                     break;
-                case "getRfidSessionStatus":
-                    getRfidSessionStatus(callback);
-                    break;
-                case "setRfidSessionStatus":
-                    setRfidSessionStatus(callback, args(0));
-                    break;
             }
         } catch (Exception ignored) {
         }
+    }
+
+    private void startForegroundDispatch(final Activity activity) {
+        IntentFilter[] filters = new IntentFilter[1];
+        filters[0] = new IntentFilter();
+        filters[0].addAction(NfcAdapter.ACTION_TECH_DISCOVERED);
+        filters[0].addCategory(Intent.CATEGORY_DEFAULT);
+        String[][] techList = new String[][]{
+                new String[]{"android.nfc.tech.IsoDep"}
+        };
+        Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
+        NfcAdapter.getDefaultAdapter(getActivity()).enableForegroundDispatch(activity, pendingIntent, filters, techList);
+    }
+
+    private void stopBackgroundRFID() {
+        if (!backgroundRFIDEnabled)
+            return;
+        NfcAdapter.getDefaultAdapter(getActivity()).disableForegroundDispatch(getActivity());
+        backgroundRFIDEnabled = false;
     }
 
     private void getAvailableScenarios(Callback callback) throws JSONException {
@@ -442,9 +444,8 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         callback.success();
     }
 
-    private void recognizeImageWithImageInputParams(Callback callback, String base64Image, final JSONObject params) throws JSONException {
+    private void recognizeImageWithImageInputParams(@SuppressWarnings("unused") Callback callback, String base64Image, final JSONObject params) throws JSONException {
         Instance().recognizeImage(JSONConstructor.bitmapFromBase64(base64Image), new ImageInputParam(params.getInt("width"), params.getInt("height"), params.getInt("type")), getCompletion());
-        callback.success();
     }
 
     private void recognizeImageWithOpts(Callback callback, final JSONObject opts, String base64Image) throws JSONException {
@@ -452,19 +453,17 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         recognizeImage(callback, base64Image);
     }
 
-    private void recognizeImage(Callback callback, String base64Image) {
+    private void recognizeImage(@SuppressWarnings("unused") Callback callback, String base64Image) {
         stopBackgroundRFID();
         Instance().recognizeImage(JSONConstructor.bitmapFromBase64(base64Image), getCompletion());
-        callback.success();
     }
 
-    private void recognizeImages(Callback callback, JSONArray base64Images) throws JSONException {
+    private void recognizeImages(@SuppressWarnings("unused") Callback callback, JSONArray base64Images) throws JSONException {
         stopBackgroundRFID();
         Bitmap[] images = new Bitmap[base64Images.length()];
         for (int i = 0; i < images.length; i++)
             images[i] = JSONConstructor.bitmapFromBase64(base64Images.getString(i));
         Instance().recognizeImages(images, getCompletion());
-        callback.success();
     }
 
     private void removeDatabase(Callback callback) {
@@ -500,32 +499,28 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         callback.success();
     }
 
-    private void recognizeImageFrame(Callback callback, String base64Image, final JSONObject opts) throws JSONException {
+    private void recognizeImageFrame(@SuppressWarnings("unused") Callback callback, String base64Image, final JSONObject opts) throws JSONException {
         Instance().recognizeImageFrame(JSONConstructor.bitmapFromBase64(base64Image), new ImageInputParam(opts.getInt("width"), opts.getInt("height"), opts.getInt("type")), getCompletion());
-        callback.success();
     }
 
-    private void recognizeVideoFrame(Callback callback, String byteString, final JSONObject opts) throws JSONException {
+    private void recognizeVideoFrame(@SuppressWarnings("unused") Callback callback, String byteString, final JSONObject opts) throws JSONException {
         stopBackgroundRFID();
         Instance().recognizeVideoFrame(byteString.getBytes(), new ImageInputParam(opts.getInt("width"), opts.getInt("height"), opts.getInt("type")), getCompletion());
-        callback.success();
     }
 
-    private void showScannerWithCameraID(Callback callback, int cameraID) {
+    private void showScannerWithCameraID(@SuppressWarnings("unused") Callback callback, int cameraID) {
         stopBackgroundRFID();
         Instance().showScanner(getContext(), cameraID, getCompletion());
-        callback.success();
     }
 
     private void showScanner(Callback callback) {
         showScannerWithCameraID(callback, -1);
     }
 
-    private void showScannerWithCameraIDAndOpts(Callback callback, int cameraID, final JSONObject opts) throws JSONException {
+    private void showScannerWithCameraIDAndOpts(@SuppressWarnings("unused") Callback callback, int cameraID, final JSONObject opts) throws JSONException {
         stopBackgroundRFID();
         RegulaConfig.setConfig(Instance(), opts, getContext());
         Instance().showScanner(getContext(), cameraID, getCompletion());
-        callback.success();
     }
 
     private void stopScanner(Callback callback) {
@@ -533,14 +528,14 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         callback.success();
     }
 
-    private void startRFIDReader(Callback callback) {
+    private void startRFIDReader(@SuppressWarnings("unused") Callback callback) {
         stopBackgroundRFID();
         Instance().startRFIDReader(getContext(), getCompletion());
-        callback.success();
     }
 
     private void stopRFIDReader(Callback callback) {
         Instance().stopRFIDReader(getContext());
+        stopBackgroundRFID();
         callback.success();
     }
 
@@ -566,30 +561,30 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         callback.success();
     }
 
-    private void setCameraSessionIsPaused(Callback callback, @SuppressWarnings("unused") boolean ignored) {
-        callback.error("setCameraSessionIsPaused() is an ios-only method");
+    private void readRFID(@SuppressWarnings("unused") Callback callback) {
+        backgroundRFIDEnabled = true;
+        startForegroundDispatch(getActivity());
     }
 
-    private void readRFID(Callback callback) {
-        if (nfcAdapter == null)
-            nfcAdapter = NfcAdapter.getDefaultAdapter(getCurrentActivity());
-        backgroundRFIDEnabled = true;
-        startForegroundDispatch(getCurrentActivity(), nfcAdapter);
-        callback.success();
+    private void setCameraSessionIsPaused(Callback callback, @SuppressWarnings("unused") boolean ignored) {
+        callback.error("setCameraSessionIsPaused() is an ios-only method");
     }
 
     private void getCameraSessionIsPaused(Callback callback) {
         callback.error("getCameraSessionIsPaused() is an ios-only method");
     }
 
+    @SuppressWarnings("unused")
     private void recognizeImageWithCameraMode(Callback callback, String base64, boolean mode) {
         callback.error("recognizeImageWithCameraMode() is an ios-only method");
     }
 
+    @SuppressWarnings("unused")
     private void initializeReaderWithDatabasePath(Callback callback, Object license, String path) {
         callback.error("initializeReaderWithDatabasePath() is an ios-only method");
     }
 
+    @SuppressWarnings("unused")
     private void setRfidSessionStatus(Callback callback, String s) {
         callback.error("setRfidSessionStatus() is an ios-only method");
     }
@@ -600,7 +595,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private IDocumentReaderCompletion getCompletion() {
         return (action, results, error) -> {
-            sendCompletion(action, results, error, getContext());
+            sendCompletion(action, results, error);
             if (action == DocReaderAction.ERROR || action == DocReaderAction.CANCEL || (action == DocReaderAction.COMPLETE && results.rfidResult == 1))
                 stopBackgroundRFID();
         };
@@ -633,15 +628,5 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             else
                 callback.error("Init failed:" + error);
         };
-    }
-
-    private interface Callback {
-        void success(Object o);
-
-        void error(String s);
-
-        default void success() {
-            success("");
-        }
     }
 }

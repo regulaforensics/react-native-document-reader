@@ -29,7 +29,7 @@
 +(NSInteger)generateDocReaderAction:(RGLDocReaderAction)action;
 +(NSInteger)generateRFIDCompleteAction:(RGLRFIDCompleteAction)action;
 +(NSInteger)generateRFIDNotificationAction:(RGLRFIDNotificationAction)action;
-+(NSString*)generateCompletion:(NSInteger)action :(RGLDocumentReaderResults*)results :(NSError*)error :(RGLRFIDNotify*)notify;
++(NSString*_Nullable)generateCompletion:(NSInteger)action :(RGLDocumentReaderResults*_Nullable)results :(NSError*_Nullable)error :(RGLRFIDNotify*_Nullable)notify;
 
 @end
 #endif
