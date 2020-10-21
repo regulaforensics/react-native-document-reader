@@ -681,26 +681,23 @@ class JSONConstructor {
         return result;
     }
 
-    static JSONObject generateCompletion(int action, DocumentReaderResults results, Throwable error, Context context) {
+    static JSONObject generateCompletion(int action, DocumentReaderResults results, Throwable error, Context context) throws JSONException {
         JSONObject result = new JSONObject();
-        try {
-            result.put("action", action);
-            switch (action) {
-                case DocReaderAction.PROCESS:
-                case DocReaderAction.PROCESS_WHITE_UV_IMAGES:
-                    result.put("results", "");
-                case DocReaderAction.NOTIFICATION:
-                    result.put("results", resultsToJsonObjectNotification(results));
-                    break;
-                case DocReaderAction.COMPLETE:
-                case DocReaderAction.MORE_PAGES_AVAILABLE:
-                case DocReaderAction.CANCEL:
-                case DocReaderAction.ERROR:
-                    result.put("results", resultsToJsonObject(results, context));
-                    break;
-            }
-            result.put("error", generateThrowable(error, context));
-        } catch (JSONException ignored) {
+        result.put("action", action);
+        switch (action) {
+            case DocReaderAction.PROCESS:
+            case DocReaderAction.PROCESS_WHITE_UV_IMAGES:
+                result.put("results", "");
+                break;
+            case DocReaderAction.NOTIFICATION:
+                result.put("results", resultsToJsonObjectNotification(results));
+                break;
+            case DocReaderAction.COMPLETE:
+            case DocReaderAction.MORE_PAGES_AVAILABLE:
+            case DocReaderAction.CANCEL:
+            case DocReaderAction.ERROR:
+                result.put("results", resultsToJsonObject(results, context));
+                break;
         }
         result.put("error", generateThrowable(error, context));
 
