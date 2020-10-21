@@ -685,15 +685,17 @@ class JSONConstructor {
         JSONObject result = new JSONObject();
         result.put("action", action);
         switch (action) {
-            case DocReaderAction.NOTIFICATION:
-            case DocReaderAction.CANCEL:
-            case DocReaderAction.ERROR:
-            case DocReaderAction.MORE_PAGES_AVAILABLE:
             case DocReaderAction.PROCESS:
             case DocReaderAction.PROCESS_WHITE_UV_IMAGES:
+                result.put("results", "");
+                break;
+            case DocReaderAction.NOTIFICATION:
                 result.put("results", resultsToJsonObjectNotification(results));
                 break;
             case DocReaderAction.COMPLETE:
+            case DocReaderAction.MORE_PAGES_AVAILABLE:
+            case DocReaderAction.CANCEL:
+            case DocReaderAction.ERROR:
                 result.put("results", resultsToJsonObject(results, context));
                 break;
         }
