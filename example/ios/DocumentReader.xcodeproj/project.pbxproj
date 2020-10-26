@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7AFCB96C24614DED001ADC8C /* regula.license in Resources */ = {isa = PBXBuildFile; fileRef = 7AFCB96B24614DED001ADC8C /* regula.license */; };
+		C319CA982546ED9500F66B80 /* certificates in Resources */ = {isa = PBXBuildFile; fileRef = C319CA972546ED9500F66B80 /* certificates */; };
 		DB4A3F8D100061EA002AC758 /* libPods-DocumentReader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC41147B38BC760CBB31537 /* libPods-DocumentReader.a */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +39,7 @@
 		96CE673CD940A74CA8CDCD0D /* Pods-DocumentReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DocumentReader.debug.xcconfig"; path = "Target Support Files/Pods-DocumentReader/Pods-DocumentReader.debug.xcconfig"; sourceTree = "<group>"; };
 		9EC41147B38BC760CBB31537 /* libPods-DocumentReader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DocumentReader.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B58D0E1DCFBA929CF939112F /* libPods-DocumentReader-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DocumentReader-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C319CA972546ED9500F66B80 /* certificates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = certificates; sourceTree = "<group>"; };
 		CBB2AD237E203DBCC9F660CE /* libPods-DocumentReader-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DocumentReader-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D32550F4BF52B1BA21EE8905 /* Pods-DocumentReader-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DocumentReader-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-DocumentReader-tvOS/Pods-DocumentReader-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -77,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				7AFCB96B24614DED001ADC8C /* regula.license */,
+				C319CA972546ED9500F66B80 /* certificates */,
 				7AADEF0224614713002B84E1 /* DocumentReader.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -181,6 +184,7 @@
 				LastUpgradeCheck = 1130;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = H6WR54S268;
 						LastSwiftMigration = 1120;
 					};
 				};
@@ -210,6 +214,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				C319CA982546ED9500F66B80 /* certificates in Resources */,
 				7AFCB96C24614DED001ADC8C /* regula.license in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -260,18 +265,14 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DocumentReader/Pods-DocumentReader-frameworks.sh",
-				"${PODS_ROOT}/../../node_modules/react-native-document-reader-api/ios/DocumentReader.framework",
-				"${PODS_ROOT}/../../node_modules/react-native-document-reader-api/ios/DocumentReader.framework.dSYM",
-				"${PODS_ROOT}/../../node_modules/react-native-document-reader-api/ios/CE97E1BC-4747-3ED0-977C-B464DED733EC.bcsymbolmap",
-				"${PODS_ROOT}/../../node_modules/react-native-document-reader-api/ios/3B4A2A59-2CDE-32AD-8307-59AC1D74BACF.bcsymbolmap",
-				"${PODS_ROOT}/../../node_modules/react-native-document-reader-core-fullrfid/ios/DocumentReaderCore.framework",
+				"${PODS_ROOT}/DocumentReader/DocumentReader.framework",
+				"${PODS_ROOT}/DocumentReader/DocumentReader.framework.dSYM",
+				"${PODS_ROOT}/DocumentReaderFullRFID/DocumentReaderCore.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DocumentReader.framework",
 				"${DWARF_DSYM_FOLDER_PATH}/DocumentReader.framework.dSYM",
-				"${BUILT_PRODUCTS_DIR}/CE97E1BC-4747-3ED0-977C-B464DED733EC.bcsymbolmap",
-				"${BUILT_PRODUCTS_DIR}/3B4A2A59-2CDE-32AD-8307-59AC1D74BACF.bcsymbolmap",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DocumentReaderCore.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -353,7 +354,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = DocumentReader/DocumentReader.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = H6WR54S268;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -382,7 +383,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = DocumentReader/DocumentReader.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = H6WR54S268;
 				INFOPLIST_FILE = DocumentReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (

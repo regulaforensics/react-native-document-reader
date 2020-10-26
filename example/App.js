@@ -11,13 +11,40 @@ const eventManager = new NativeEventEmitter(Regula.RNRegulaDocumentReader)
 const DocumentReader = Regula.DocumentReader
 const Enum = DocumentReader.Enum
 
+var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license"
+var certDir = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/certificates") : "certificates"
+var readDir = Platform.OS === 'ios' ? RNFS.readDir : RNFS.readDirAssets
+var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets
+
+async function addCertificates() {
+  var certificates = []
+  var items = await readDir(certDir, 'base64')
+
+  for (var i in items) {
+    var item = items[i]
+    if (item.isFile()) {
+      var findExt = item.name.split('.')
+      var pkdResourceType = 0
+      if (findExt.length > 0)
+        pkdResourceType = Enum.PKDResourceType.getType(findExt[findExt.length - 1].toLowerCase())
+
+      var file = await readFile(item.path, 'base64')
+      certificates.push({
+        'binaryData': file,
+        'resourceType': pkdResourceType
+      })
+    }
+  }
+  DocumentReader.addPKDCertificates(certificates, s => {
+    console.log("certificates added")
+  }, e => console.log(e))
+}
+
 export default class App extends Component {
   constructor(props) {
     super(props)
-    eventManager.addListener('prepareDatabaseProgressChangeEvent', e => this.setState({ fullName: e["msg"] }))
+    eventManager.addListener('prepareDatabaseProgressChangeEvent', e => this.setState({ fullName: "Downloading database: " + e["msg"] + "%" }))
     eventManager.addListener('completionEvent', e => this.handleCompletion(DocumentReader.DocumentReaderCompletion.fromJson(JSON.parse(e["msg"]))))
-    var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license"
-    var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets
     DocumentReader.prepareDatabase("Full", (respond) => {
       console.log(respond)
       readFile(licPath, 'base64').then((res) => {
@@ -52,9 +79,10 @@ export default class App extends Component {
               }} />
             })
             DocumentReader.getDocumentReaderIsReady((isReady) => {
-              if (isReady)
+              if (isReady) {
                 this.setState({ fullName: "Ready" })
-              else
+                // addCertificates()
+              } else
                 this.setState({ fullName: "Failed" })
             }, error => console.log(error))
           }, error => console.log(error))
@@ -115,26 +143,26 @@ export default class App extends Component {
       DocumentReader.setRfidSessionStatus(this.state.rfidDescription + "\n" + results.value + "%", e => { }, e => { })
   }
 
-  clearResults(){
+  clearResults() {
     this.setState({ fullName: "Ready", docFront: require('./images/id.png'), portrait: require('./images/portrait.png') })
   }
 
   displayResults(results) {
     this.setState({ fullName: results.getTextFieldValueByType({ fieldType: Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES }) })
-    if (results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE) != null)
-      this.setState({ docFront: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE) } })
-    if (results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT) != null)
-      this.setState({ portrait: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT) } })
+    if (results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE }) != null)
+      this.setState({ docFront: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE }) } })
+    if (results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_PORTRAIT }) != null)
+      this.setState({ portrait: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_PORTRAIT }) } })
   }
 
-  customRFID(){
+  customRFID() {
     this.showRfidUI()
-    DocumentReader.readRFID(e => { }, e => {})
+    DocumentReader.readRFID(e => { }, e => { })
   }
 
-  usualRFID(){
+  usualRFID() {
     this.setState({ doRfid: false })
-    DocumentReader.startRFIDReader(e => { }, e => {})
+    DocumentReader.startRFIDReader(e => { }, e => { })
   }
 
   handleResults(results) {
@@ -293,7 +321,7 @@ export default class App extends Component {
                     images.push(response[i].data)
                   }
                   this.setState({ fullName: "PROCESSING..." })
-                  DocumentReader.recognizeImages(images, s => {}, e => console.log(e))
+                  DocumentReader.recognizeImages(images, s => { }, e => console.log(e))
                 }).catch(e => {
                   console.log("ImagePicker: " + e)
                 })

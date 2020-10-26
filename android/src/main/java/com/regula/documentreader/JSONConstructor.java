@@ -681,25 +681,28 @@ class JSONConstructor {
         return result;
     }
 
-    static JSONObject generateCompletion(int action, DocumentReaderResults results, Throwable error, Context context) throws JSONException {
+    static JSONObject generateCompletion(int action, DocumentReaderResults results, Throwable error, Context context) {
         JSONObject result = new JSONObject();
-        result.put("action", action);
-        switch (action) {
-            case DocReaderAction.PROCESS:
-            case DocReaderAction.PROCESS_WHITE_UV_IMAGES:
-                result.put("results", "");
-                break;
-            case DocReaderAction.NOTIFICATION:
-                result.put("results", resultsToJsonObjectNotification(results));
-                break;
-            case DocReaderAction.COMPLETE:
-            case DocReaderAction.MORE_PAGES_AVAILABLE:
-            case DocReaderAction.CANCEL:
-            case DocReaderAction.ERROR:
-                result.put("results", resultsToJsonObject(results, context));
-                break;
+        try {
+            result.put("action", action);
+            switch (action) {
+                case DocReaderAction.PROCESS:
+                case DocReaderAction.PROCESS_WHITE_UV_IMAGES:
+                    result.put("results", "");
+                    break;
+                case DocReaderAction.NOTIFICATION:
+                    result.put("results", resultsToJsonObjectNotification(results));
+                    break;
+                case DocReaderAction.COMPLETE:
+                case DocReaderAction.MORE_PAGES_AVAILABLE:
+                case DocReaderAction.CANCEL:
+                case DocReaderAction.ERROR:
+                    result.put("results", resultsToJsonObject(results, context));
+                    break;
+            }
+            result.put("error", generateThrowable(error, context));
+        } catch (JSONException ignored) {
         }
-        result.put("error", generateThrowable(error, context));
 
         return result;
     }
@@ -710,7 +713,7 @@ class JSONConstructor {
             return result;
         result.put("localizedMessage", throwable.getLocalizedMessage());
         result.put("message", throwable.getMessage());
-        result.put("toString", throwable.toString());
+        result.put("string", throwable.toString());
         result.put("stackTrace", generateArray(throwable.getStackTrace(), JSONConstructor::generateStackTraceElement, context));
 
         return result;
@@ -725,7 +728,7 @@ class JSONConstructor {
         result.put("lineNumber", e.getLineNumber());
         result.put("methodName", e.getMethodName());
         result.put("isNativeMethod", e.isNativeMethod());
-        result.put("toString", e.toString());
+        result.put("string", e.toString());
 
         return result;
     }
@@ -734,7 +737,13 @@ class JSONConstructor {
 
     static Bitmap bitmapFromBase64(String base64) {
         byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        Bitmap result = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length, options);
+        int sizeMultiplier = result.getByteCount() / 5000000;
+        if (result.getByteCount() > 5000000)
+            result = Bitmap.createScaledBitmap(result, result.getWidth() / (int)Math.sqrt(sizeMultiplier), result.getHeight() / (int)Math.sqrt(sizeMultiplier), false);
+        return result;
     }
 
     static byte[] byteArrayFromJson(JSONArray array) throws JSONException {
