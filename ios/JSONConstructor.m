@@ -27,8 +27,8 @@
         myDictionary[@"documentPosition"] = [self generateRGLPosition:results.documentPosition];
     if(results.mrzPosition != nil)
         myDictionary[@"mrzPosition"] = [self generateRGLPosition:results.mrzPosition];
-    if(results.jsonResult != nil)
-        myDictionary[@"jsonResult"] = [self generateDocumentReaderJsonResult:results.jsonResult];
+    if(results.rawResult != nil)
+        myDictionary[@"rawResult"] = results.rawResult;
     if(results.graphicResult != nil)
         myDictionary[@"graphicResult"] = [self generateDocumentReaderGraphicResult:results.graphicResult];
     if(results.textResult != nil)
@@ -191,34 +191,6 @@
     output[@"type"] = [NSNumber numberWithInteger:imageQuality.type];
     output[@"result"] = [NSNumber numberWithInteger:imageQuality.result];
     output[@"featureType"] = [NSNumber numberWithInteger:imageQuality.featureType];
-
-    return output;
-}
-
-+(NSMutableDictionary*)generateDocumentReaderJsonResult:(RGLDocumentReaderJsonResult*)documentReaderJsonResult {
-    NSMutableDictionary *output = [[NSMutableDictionary alloc] init];
-
-    if(documentReaderJsonResult.results != nil)
-        output[@"results"] = [self generateNSArrayDocumentReaderJsonResultGroup:documentReaderJsonResult.results];
-
-    return output;
-}
-
-+(NSMutableArray*)generateNSArrayDocumentReaderJsonResultGroup:(NSArray<RGLDocumentReaderJsonResultGroup*>* _Nonnull)list {
-    NSMutableArray *output = [[NSMutableArray alloc] init];
-    for(RGLDocumentReaderJsonResultGroup* documentReaderJsonResultGroup in list)
-        if(documentReaderJsonResultGroup != nil)
-            [output addObject:[self generateDocumentReaderJsonResultGroup:documentReaderJsonResultGroup]];
-    return output;
-}
-
-+(NSMutableDictionary*)generateDocumentReaderJsonResultGroup:(RGLDocumentReaderJsonResultGroup*)documentReaderJsonResultGroup {
-    NSMutableDictionary *output = [[NSMutableDictionary alloc] init];
-
-    output[@"resultType"] = [NSNumber numberWithInteger:documentReaderJsonResultGroup.resultType];
-    output[@"lightType"] = [NSNumber numberWithInteger:documentReaderJsonResultGroup.lightType];
-    output[@"pageIdx"] = [NSNumber numberWithInteger:documentReaderJsonResultGroup.pageIdx];
-    output[@"jsonResult"] = documentReaderJsonResultGroup.jsonResult;
 
     return output;
 }
@@ -739,7 +711,7 @@
             resType = RGLPKDResourceTypeCertificate_PA;
             break;
     }
-    
+
     return [[RGLPKDCertificate alloc] initWithBinaryData:binaryData resourceType:(RGLPKDResourceType)resType privateKey:privateKey];
 }
 

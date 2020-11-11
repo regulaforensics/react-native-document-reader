@@ -18,14 +18,7 @@ import android.graphics.Typeface;
 
 import java.math.BigDecimal;
 
-import static com.regula.documentreader.JSONConstructor.drawableFromBase64;
-import static com.regula.documentreader.JSONConstructor.bitmapFromDrawable;
-import static com.regula.documentreader.JSONConstructor.barcodeTypeArrayFromJson;
-import static com.regula.documentreader.JSONConstructor.faceMetaDataArrayFromJson;
-import static com.regula.documentreader.JSONConstructor.floatArrayFromJson;
-import static com.regula.documentreader.JSONConstructor.intArrayFromJson;
-import static com.regula.documentreader.JSONConstructor.generateIntArray;
-import static com.regula.documentreader.JSONConstructor.matrixFromFloatArray;
+import static com.regula.documentreader.JSONConstructor.*;
 
 class RegulaConfig {
     static void setConfig(DocumentReader reader, JSONObject opts, Context context) throws JSONException {
@@ -90,8 +83,19 @@ class RegulaConfig {
             editor.setCaptureMode(opts.getInt("captureMode"));
         if (opts.has("displayMetadata"))
             editor.setDisplayMetadata(opts.getBoolean("displayMetadata"));
-//        if (opts.has("cameraSize"))
-//            editor.setCameraSize();
+        if (opts.has("cameraWidth"))
+            editor.setCameraSize(opts.getInt("cameraWidth"), functionality.getCameraHeight());
+        if (opts.has("cameraHeight"))
+            editor.setCameraSize(functionality.getCameraWidth(), opts.getInt("cameraHeight"));
+        if (opts.has("cameraMode"))
+            editor.setCameraMode(opts.getInt("cameraMode"));
+        if (opts.has("excludedCamera2Models"))
+            editor.setExcludedCamera2Models(stringListFromJson(opts.getJSONArray("excludedCamera2Models")));
+        if (opts.has("zoomEnabled"))
+            editor.setZoomEnabled(opts.getBoolean("zoomEnabled"));
+        if (opts.has("zoomFactor"))
+            editor.setZoomFactor(BigDecimal.valueOf(opts.getDouble("zoomFactor")).floatValue());
+
         editor.apply();
     }
 
@@ -150,6 +154,10 @@ class RegulaConfig {
             processParams.integralImage = opts.getBoolean("integralImage");
         if (opts.has("minDPI"))
             processParams.minDPI = opts.getInt("minDPI");
+        if (opts.has("returnCroppedBarcode"))
+            processParams.returnCroppedBarcode = opts.getBoolean("returnCroppedBarcode");
+        if (opts.has("checkHologram"))
+            processParams.checkHologram = opts.getBoolean("checkHologram");
     }
 
     private static void setCustomization(ParamsCustomization customization, JSONObject opts, Context context) throws JSONException {
@@ -262,6 +270,9 @@ class RegulaConfig {
             editor.setChangeFrameExpandButtonImage(drawableFromBase64(opts.getString("changeFrameButtonExpandImage"), context));
         if (opts.has("changeFrameButtonCollapseImage"))
             editor.setChangeFrameCollapseButtonImage(drawableFromBase64(opts.getString("changeFrameButtonCollapseImage"), context));
+        if (opts.has("toolbarSize"))
+            editor.setToolbarSize(BigDecimal.valueOf(opts.getDouble("toolbarSize")).floatValue());
+
         editor.apply();
     }
 
@@ -289,7 +300,12 @@ class RegulaConfig {
         object.put("startDocReaderForResult", functionality.getStartDocReaderForResult());
         object.put("captureMode", functionality.getCaptureMode());
         object.put("displayMetadata", functionality.isDisplayMetaData());
-//        object.put("cameraSize", functionality.getCameraSize());
+        object.put("cameraWidth", functionality.getCameraWidth());
+        object.put("cameraHeight", functionality.getCameraHeight());
+        object.put("cameraMode", functionality.getCameraMode());
+        object.put("excludedCamera2Models", generateList(functionality.getExcludedCamera2Models()));
+        object.put("zoomEnabled", functionality.isZoomEnabled());
+        object.put("zoomFactor", functionality.getZoomFactor());
 
         return object;
     }
@@ -316,9 +332,9 @@ class RegulaConfig {
         object.put("cameraFrameLineLength", customization.getCameraFrameLineLength());
         object.put("cameraFrameShapeType", customization.getCameraFrameShapeType());
         object.put("resultStatusTextSize", customization.getResultStatusTextSize());
-        object.put("multipageAnimationFrontImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getMultipageAnimationFrontImage())));
-        object.put("multipageAnimationBackImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getMultipageAnimationBackImage())));
-        object.put("borderBackgroundImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getBorderBackgroundImage())));
+        object.put("multipageAnimationFrontImage", bitmapToBase64String(bitmapFromDrawable(customization.getMultipageAnimationFrontImage())));
+        object.put("multipageAnimationBackImage", bitmapToBase64String(bitmapFromDrawable(customization.getMultipageAnimationBackImage())));
+        object.put("borderBackgroundImage", bitmapToBase64String(bitmapFromDrawable(customization.getBorderBackgroundImage())));
         object.put("helpAnimationImageScaleType", customization.getHelpAnimationImageScaleType());
         object.put("multipageAnimationFrontImageScaleType", customization.getMultipageAnimationFrontImageScaleType());
         object.put("multipageAnimationBackImageScaleType", customization.getMultipageAnimationBackImageScaleType());
@@ -330,7 +346,7 @@ class RegulaConfig {
         object.put("statusPositionMultiplier", customization.getStatusPositionMultiplier());
         object.put("resultStatusPositionMultiplier", customization.getResultStatusPositionMultiplier());
         object.put("backgroundMaskAlpha", customization.getBackgroundMaskAlpha());
-        object.put("helpAnimationImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getHelpAnimationImageDrawable())));
+        object.put("helpAnimationImage", bitmapToBase64String(bitmapFromDrawable(customization.getHelpAnimationImageDrawable())));
         object.put("cameraFrameOffsetWidth", customization.getCameraFrameOffsetWidth());
         object.put("customLabelStatus", customization.getCustomLabelStatus().toString());
         object.put("customStatusPositionMultiplier", customization.getCustomStatusPositionMultiplier());
@@ -339,17 +355,18 @@ class RegulaConfig {
         object.put("cameraFramePortraitAspectRatio", customization.getCameraFramePortraitAspectRatio());
         object.put("cameraFrameCornerRadius", customization.getCameraFrameCornerRadius());
         object.put("cameraFrameLineCap", customization.getCameraFrameLineCap().toString());
-        object.put("torchImageOnImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getTorchImageOnDrawable())));
-        object.put("torchImageOffImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getTorchImageOffDrawable())));
-        object.put("closeButtonImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getCloseButtonDrawable())));
-        object.put("captureButtonImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getCaptureButtonDrawable())));
-        object.put("changeFrameCollapseButtonImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getChangeFrameCollapseButtonDrawable())));
-        object.put("changeFrameExpandButtonImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getChangeFrameExpandButtonDrawable())));
-        object.put("cameraSwitchButtonImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getCameraSwitchButtonDrawable())));
-        object.put("torchButtonOnImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getTorchImageOnDrawable())));
-        object.put("torchButtonOffImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getTorchImageOffDrawable())));
-        object.put("changeFrameButtonExpandImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getChangeFrameExpandButtonDrawable())));
-        object.put("changeFrameButtonCollapseImage", JSONConstructor.bitmapToBase64String(bitmapFromDrawable(customization.getChangeFrameCollapseButtonDrawable())));
+        object.put("torchImageOnImage", bitmapToBase64String(bitmapFromDrawable(customization.getTorchImageOnDrawable())));
+        object.put("torchImageOffImage", bitmapToBase64String(bitmapFromDrawable(customization.getTorchImageOffDrawable())));
+        object.put("closeButtonImage", bitmapToBase64String(bitmapFromDrawable(customization.getCloseButtonDrawable())));
+        object.put("captureButtonImage", bitmapToBase64String(bitmapFromDrawable(customization.getCaptureButtonDrawable())));
+        object.put("changeFrameCollapseButtonImage", bitmapToBase64String(bitmapFromDrawable(customization.getChangeFrameCollapseButtonDrawable())));
+        object.put("changeFrameExpandButtonImage", bitmapToBase64String(bitmapFromDrawable(customization.getChangeFrameExpandButtonDrawable())));
+        object.put("cameraSwitchButtonImage", bitmapToBase64String(bitmapFromDrawable(customization.getCameraSwitchButtonDrawable())));
+        object.put("torchButtonOnImage", bitmapToBase64String(bitmapFromDrawable(customization.getTorchImageOnDrawable())));
+        object.put("torchButtonOffImage", bitmapToBase64String(bitmapFromDrawable(customization.getTorchImageOffDrawable())));
+        object.put("changeFrameButtonExpandImage", bitmapToBase64String(bitmapFromDrawable(customization.getChangeFrameExpandButtonDrawable())));
+        object.put("changeFrameButtonCollapseImage", bitmapToBase64String(bitmapFromDrawable(customization.getChangeFrameCollapseButtonDrawable())));
+        object.put("toolbarSize", customization.getToolbarSize());
 
         return object;
     }
@@ -380,14 +397,16 @@ class RegulaConfig {
         object.put("integralImage", processParams.integralImage);
         object.put("minDPI", processParams.minDPI);
         object.put("logs", processParams.isLogEnable());
+        object.put("returnCroppedBarcode", processParams.returnCroppedBarcode);
+        object.put("checkHologram", processParams.checkHologram);
         if (processParams.documentIDList != null)
             object.put("documentIDList", generateIntArray(processParams.documentIDList));
         if (processParams.doBarcodes != null)
-            object.put("barcodeTypes", JSONConstructor.generateArray(processParams.doBarcodes));
+            object.put("barcodeTypes", generateArray(processParams.doBarcodes));
         if (processParams.fieldTypesFilter != null)
             object.put("fieldTypesFilter", generateIntArray(processParams.fieldTypesFilter));
         if (processParams.faceMetaData != null)
-            object.put("faceMetaData", JSONConstructor.generateArray(processParams.faceMetaData, JSONConstructor::generateFaceMetaData, context));
+            object.put("faceMetaData", generateArray(processParams.faceMetaData, JSONConstructor::generateFaceMetaData, context));
 
         return object;
     }

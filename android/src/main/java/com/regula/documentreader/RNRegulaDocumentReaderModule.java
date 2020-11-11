@@ -43,7 +43,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     private final static String completionEvent = "completionEvent";
     private static int databaseDownloadProgress = 0;
     JSONArray data;
-    private ReactContext reactContext;
+    private final ReactContext reactContext;
     private boolean backgroundRFIDEnabled = false;
 
     public RNRegulaDocumentReaderModule(ReactApplicationContext reactContext) {
