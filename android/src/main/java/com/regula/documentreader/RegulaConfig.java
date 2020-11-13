@@ -83,16 +83,14 @@ class RegulaConfig {
             editor.setCaptureMode(opts.getInt("captureMode"));
         if (opts.has("displayMetadata"))
             editor.setDisplayMetadata(opts.getBoolean("displayMetadata"));
-        if (opts.has("cameraWidth"))
-            editor.setCameraSize(opts.getInt("cameraWidth"), functionality.getCameraHeight());
-        if (opts.has("cameraHeight"))
-            editor.setCameraSize(functionality.getCameraWidth(), opts.getInt("cameraHeight"));
+        if (opts.has("cameraSize"))
+            editor.setCameraSize(opts.getJSONObject("cameraSize").getInt("width"), opts.getJSONObject("cameraSize").getInt("height"));
         if (opts.has("cameraMode"))
             editor.setCameraMode(opts.getInt("cameraMode"));
         if (opts.has("excludedCamera2Models"))
             editor.setExcludedCamera2Models(stringListFromJson(opts.getJSONArray("excludedCamera2Models")));
-        if (opts.has("zoomEnabled"))
-            editor.setZoomEnabled(opts.getBoolean("zoomEnabled"));
+        if (opts.has("isZoomEnabled"))
+            editor.setZoomEnabled(opts.getBoolean("isZoomEnabled"));
         if (opts.has("zoomFactor"))
             editor.setZoomFactor(BigDecimal.valueOf(opts.getDouble("zoomFactor")).floatValue());
 
@@ -300,11 +298,13 @@ class RegulaConfig {
         object.put("startDocReaderForResult", functionality.getStartDocReaderForResult());
         object.put("captureMode", functionality.getCaptureMode());
         object.put("displayMetadata", functionality.isDisplayMetaData());
-        object.put("cameraWidth", functionality.getCameraWidth());
-        object.put("cameraHeight", functionality.getCameraHeight());
+        object.put("cameraSize", new JSONObject() {{
+            put("width", functionality.getCameraWidth());
+            put("height", functionality.getCameraHeight());
+        }});
         object.put("cameraMode", functionality.getCameraMode());
         object.put("excludedCamera2Models", generateList(functionality.getExcludedCamera2Models()));
-        object.put("zoomEnabled", functionality.isZoomEnabled());
+        object.put("isZoomEnabled", functionality.isZoomEnabled());
         object.put("zoomFactor", functionality.getZoomFactor());
 
         return object;
