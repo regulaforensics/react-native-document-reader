@@ -677,42 +677,11 @@
 }
 
 +(RGLPKDCertificate*)RGLPKDCertificateFromJson:(NSDictionary*)dict {
-    RGLPKDResourceType resType;
-
-    NSNumber* type = [dict objectForKey:@"resourceType"];
+    NSInteger type = [[dict valueForKey:@"resourceType"] integerValue];
     NSData* binaryData = [[NSData alloc] initWithBase64EncodedString:[dict objectForKey:@"binaryData"] options:0];
     NSData* privateKey = [dict objectForKey:@"privateKey"] != nil ? [[NSData alloc] initWithBase64EncodedString:[dict objectForKey:@"privateKey"] options:0] : nil;
-    switch((int)type){
-        case 0:
-            resType = RGLPKDResourceTypeCertificate_PA;
-            break;
-        case 1:
-            resType = RGLPKDResourceTypeCertificate_TA;
-            break;
-        case 2:
-            resType = RGLPKDResourceTypeLDIF;
-            break;
-        case 3:
-            resType = RGLPKDResourceTypeCRL;
-            break;
-        case 4:
-            resType = RGLPKDResourceTypeML;
-            break;
-        case 5:
-            resType = RGLPKDResourceTypeDefL;
-            break;
-        case 6:
-            resType = RGLPKDResourceTypeDevL;
-            break;
-        case 7:
-            resType = RGLPKDResourceTypeBL;
-            break;
-        default:
-            resType = RGLPKDResourceTypeCertificate_PA;
-            break;
-    }
 
-    return [[RGLPKDCertificate alloc] initWithBinaryData:binaryData resourceType:(RGLPKDResourceType)resType privateKey:privateKey];
+    return [[RGLPKDCertificate alloc] initWithBinaryData:binaryData resourceType:type privateKey:privateKey];
 }
 
 +(NSInteger)generateDocReaderAction:(RGLDocReaderAction)action {
