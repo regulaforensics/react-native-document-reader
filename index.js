@@ -87,7 +87,7 @@ class DocumentReaderValue {
         result.boundRect = Rect.fromJson(jsonObject["boundRect"])
         result.comparison = {}
         if (jsonObject["comparison"] != null)
-            for (let i = 0; i < jsonObject["comparison"].length; i++)
+            for (const i in jsonObject["comparison"])
                 result.comparison[i] = jsonObject["comparison"][i]
 
         return result
