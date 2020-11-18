@@ -19,8 +19,6 @@ import com.regula.documentreader.api.results.DocReaderFieldRect;
 import com.regula.documentreader.api.results.DocumentReaderDocumentType;
 import com.regula.documentreader.api.results.DocumentReaderGraphicField;
 import com.regula.documentreader.api.results.DocumentReaderGraphicResult;
-import com.regula.documentreader.api.results.DocumentReaderJsonResult;
-import com.regula.documentreader.api.results.DocumentReaderJsonResultGroup;
 import com.regula.documentreader.api.results.DocumentReaderNotification;
 import com.regula.documentreader.api.results.DocumentReaderResults;
 import com.regula.documentreader.api.results.DocumentReaderScenarioFull;
@@ -63,6 +61,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -133,8 +132,8 @@ class JSONConstructor {
                 jsonObject.put("graphicResult", generateDocumentReaderGraphicResult(results.graphicResult, context));
             if (results.imageQuality != null)
                 jsonObject.put("imageQuality", generateImageQualityGroup(results.imageQuality, context));
-            if (results.jsonResult != null)
-                jsonObject.put("jsonResult", generateDocumentReaderJsonResult(results.jsonResult, context));
+            if (results.rawResult != null)
+                jsonObject.put("rawResult", results.rawResult);
             if (results.mrzPosition != null)
                 jsonObject.put("mrzPosition", generateElementPosition(results.mrzPosition));
             if (results.rfidSessionData != null)
@@ -257,8 +256,8 @@ class JSONConstructor {
         result.put("lightName", eRPRM_Lights.getTranslation(context, documentReaderGraphicField.light));
         result.put("pageIndex", documentReaderGraphicField.pageIndex);
         result.put("value", documentReaderGraphicField.imageBase64());
-        if (documentReaderGraphicField.getRect() != null)
-            result.put("fieldRect", generateDocReaderFieldRect(documentReaderGraphicField.getRect()));
+        if (documentReaderGraphicField.boundRect != null)
+            result.put("fieldRect", generateDocReaderFieldRect(documentReaderGraphicField.boundRect));
 
         return result;
     }
@@ -295,20 +294,6 @@ class JSONConstructor {
         result.put("result", imageQuality.result);
         result.put("type", imageQuality.type);
         result.put("featureType", imageQuality.featureType);
-
-        return result;
-    }
-
-    static private JSONObject generateDocumentReaderJsonResult(DocumentReaderJsonResult documentReaderJsonResult, Context context) throws JSONException {
-        return new JSONObject().put("results", generateList(documentReaderJsonResult.results, JSONConstructor::generateDocumentReaderJsonResultGroup, context));
-    }
-
-    static private JSONObject generateDocumentReaderJsonResultGroup(DocumentReaderJsonResultGroup documentReaderJsonResultGroup, Context context) throws JSONException {
-        JSONObject result = new JSONObject();
-        result.put("lightType", documentReaderJsonResultGroup.lightType);
-        result.put("pageIdx", documentReaderJsonResultGroup.pageIdx);
-        result.put("resultType", documentReaderJsonResultGroup.resultType);
-        result.put("jsonResult", documentReaderJsonResultGroup.jsonResult);
 
         return result;
     }
@@ -681,25 +666,28 @@ class JSONConstructor {
         return result;
     }
 
-    static JSONObject generateCompletion(int action, DocumentReaderResults results, Throwable error, Context context) throws JSONException {
+    static JSONObject generateCompletion(int action, DocumentReaderResults results, Throwable error, Context context) {
         JSONObject result = new JSONObject();
-        result.put("action", action);
-        switch (action) {
-            case DocReaderAction.PROCESS:
-            case DocReaderAction.PROCESS_WHITE_UV_IMAGES:
-                result.put("results", "");
-                break;
-            case DocReaderAction.NOTIFICATION:
-                result.put("results", resultsToJsonObjectNotification(results));
-                break;
-            case DocReaderAction.COMPLETE:
-            case DocReaderAction.MORE_PAGES_AVAILABLE:
-            case DocReaderAction.CANCEL:
-            case DocReaderAction.ERROR:
-                result.put("results", resultsToJsonObject(results, context));
-                break;
+        try {
+            result.put("action", action);
+            switch (action) {
+                case DocReaderAction.PROCESS:
+                case DocReaderAction.PROCESS_WHITE_UV_IMAGES:
+                    result.put("results", "");
+                    break;
+                case DocReaderAction.NOTIFICATION:
+                    result.put("results", resultsToJsonObjectNotification(results));
+                    break;
+                case DocReaderAction.COMPLETE:
+                case DocReaderAction.MORE_PAGES_AVAILABLE:
+                case DocReaderAction.CANCEL:
+                case DocReaderAction.ERROR:
+                    result.put("results", resultsToJsonObject(results, context));
+                    break;
+            }
+            result.put("error", generateThrowable(error, context));
+        } catch (JSONException ignored) {
         }
-        result.put("error", generateThrowable(error, context));
 
         return result;
     }
@@ -710,7 +698,7 @@ class JSONConstructor {
             return result;
         result.put("localizedMessage", throwable.getLocalizedMessage());
         result.put("message", throwable.getMessage());
-        result.put("toString", throwable.toString());
+        result.put("string", throwable.toString());
         result.put("stackTrace", generateArray(throwable.getStackTrace(), JSONConstructor::generateStackTraceElement, context));
 
         return result;
@@ -725,7 +713,7 @@ class JSONConstructor {
         result.put("lineNumber", e.getLineNumber());
         result.put("methodName", e.getMethodName());
         result.put("isNativeMethod", e.isNativeMethod());
-        result.put("toString", e.toString());
+        result.put("string", e.toString());
 
         return result;
     }
@@ -734,14 +722,13 @@ class JSONConstructor {
 
     static Bitmap bitmapFromBase64(String base64) {
         byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-    }
-
-    static byte[] byteArrayFromJson(JSONArray array) throws JSONException {
-        byte[] bytes = new byte[array.length()];
-        for (int i = 0; i < array.length(); i++)
-            bytes[i] = (byte) array.getInt(i);
-        return bytes;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        Bitmap result = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length, options);
+        int sizeMultiplier = result.getByteCount() / 5000000;
+        if (result.getByteCount() > 5000000)
+            result = Bitmap.createScaledBitmap(result, result.getWidth() / (int) Math.sqrt(sizeMultiplier), result.getHeight() / (int) Math.sqrt(sizeMultiplier), false);
+        return result;
     }
 
     static Drawable drawableFromBase64(String base64, Context context) {
@@ -825,6 +812,13 @@ class JSONConstructor {
         result.x = object.getInt("x");
         result.y = object.getInt("y");
 
+        return result;
+    }
+
+    static List<String> stringListFromJson(JSONArray jsonArray) {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++)
+            result.add(jsonArray.optString(i));
         return result;
     }
 }

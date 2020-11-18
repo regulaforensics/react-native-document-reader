@@ -4,81 +4,25 @@ const { RNRegulaDocumentReader } = NativeModules
 // Classes
 
 class Scenario {
-    constructor() {
-        this.RGLDocReaderOrientation = {
-            GLDocReaderOrientationRotate: 0,
-            RGLDocReaderOrientationPortrait: 1,
-            RGLDocReaderOrientationLandscape: 2
-        }
-        this.RGLDocReaderFrame = {
-            RGLDocReaderFrameScenarioDefault: 0,
-            RGLDocReaderFrameMax: 1,
-            RGLDocReaderFrameNone: 2,
-            RGLDocReaderFrameDocument: 3
-        }
-    }
-
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Scenario()
-        result.name = jsonObject["name"]
-        result.caption = jsonObject["caption"]
-        result.description = jsonObject["description"]
-        result.uvTorch = jsonObject["uvTorch"]
+
         result.frame = jsonObject["frame"]
-        result.frameKWHLandscape = jsonObject["frameKWHLandscape"]
-        result.frameKWHPortrait = jsonObject["frameKWHPortrait"]
+        result.frameOrientation = jsonObject["frameOrientation"]
+        result.uvTorch = jsonObject["uvTorch"]
         result.barcodeExt = jsonObject["barcodeExt"]
         result.faceExt = jsonObject["faceExt"]
         result.multiPageOff = jsonObject["multiPageOff"]
-        result.frameOrientation = jsonObject["frameOrientation"]
         result.seriesProcessMode = jsonObject["seriesProcessMode"]
         result.frameKWHLandscape = jsonObject["frameKWHLandscape"]
         result.frameKWHPortrait = jsonObject["frameKWHPortrait"]
         result.frameKWHDoublePageSpreadPortrait = jsonObject["frameKWHDoublePageSpreadPortrait"]
         result.frameKWHDoublePageSpreadLandscape = jsonObject["frameKWHDoublePageSpreadLandscape"]
-        return result
-    }
-}
+        result.name = jsonObject["name"]
+        result.caption = jsonObject["caption"]
+        result.description = jsonObject["description"]
 
-class FieldRect {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const rect = new FieldRect()
-        rect.bottom = jsonObject["bottom"]
-        rect.top = jsonObject["top"]
-        rect.left = jsonObject["left"]
-        rect.right = jsonObject["right"]
-        return rect
-    }
-}
-
-class DocumentReaderGraphicField {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const field = new DocumentReaderGraphicField()
-        field.sourceType = jsonObject["sourceType"]
-        field.fieldType = jsonObject["fieldType"]
-        field.fieldName = jsonObject["fieldName"]
-        field.lightType = jsonObject["lightType"]
-        field.lightName = jsonObject["lightName"]
-        field.fieldRect = FieldRect.fromJson(jsonObject["fieldRect"])
-        field.value = jsonObject["value"]
-        field.width = jsonObject["width"]
-        field.height = jsonObject["height"]
-        field.pageIndex = jsonObject["pageIndex"]
-        return field
-    }
-}
-
-class DocumentReaderGraphicResult {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new DocumentReaderGraphicResult()
-        result.fields = []
-        if (jsonObject["fields"] != null)
-            for (const i in jsonObject["fields"])
-                result.fields.push(DocumentReaderGraphicField.fromJson(jsonObject["fields"][i]))
         return result
     }
 }
@@ -87,10 +31,44 @@ class Rect {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Rect()
+
+        result.bottom = jsonObject["bottom"]
+        result.top = jsonObject["top"]
         result.left = jsonObject["left"]
         result.right = jsonObject["right"]
-        result.top = jsonObject["top"]
-        result.bottom = jsonObject["bottom"]
+
+        return result
+    }
+}
+
+class DocumentReaderGraphicField {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocumentReaderGraphicField()
+
+        result.sourceType = jsonObject["sourceType"]
+        result.fieldType = jsonObject["fieldType"]
+        result.lightType = jsonObject["lightType"]
+        result.pageIndex = jsonObject["pageIndex"]
+        result.fieldName = jsonObject["fieldName"]
+        result.lightName = jsonObject["lightName"]
+        result.value = jsonObject["value"]
+        result.fieldRect = Rect.fromJson(jsonObject["fieldRect"])
+
+        return result
+    }
+}
+
+class DocumentReaderGraphicResult {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocumentReaderGraphicResult()
+
+        result.fields = []
+        if (jsonObject["fields"] != null)
+            for (const i in jsonObject["fields"])
+                result.fields.push(DocumentReaderGraphicField.fromJson(jsonObject["fields"][i]))
+
         return result
     }
 }
@@ -99,17 +77,19 @@ class DocumentReaderValue {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderValue()
+
         result.pageIndex = jsonObject["pageIndex"]
         result.sourceType = jsonObject["sourceType"]
+        result.validity = jsonObject["validity"]
+        result.probability = jsonObject["probability"]
         result.value = jsonObject["value"]
         result.originalValue = jsonObject["originalValue"]
         result.boundRect = Rect.fromJson(jsonObject["boundRect"])
-        result.validity = jsonObject["validity"]
-        result.probability = jsonObject["probability"]
         result.comparison = {}
         if (jsonObject["comparison"] != null)
             for (const i in jsonObject["comparison"])
                 result.comparison[i] = jsonObject["comparison"][i]
+
         return result
     }
 }
@@ -118,16 +98,18 @@ class DocumentReaderTextField {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderTextField()
+
         result.fieldType = jsonObject["fieldType"]
         result.lcid = jsonObject["lcid"]
+        result.status = jsonObject["status"]
         result.lcidName = jsonObject["lcidName"]
         result.fieldName = jsonObject["fieldName"]
-        result.status = jsonObject["status"]
         result.value = DocumentReaderValue.fromJson(jsonObject["value"])
         result.values = []
         if (jsonObject["values"] != null)
             for (const i in jsonObject["values"])
                 result.values.push(DocumentReaderValue.fromJson(jsonObject["values"][i]))
+
         return result
     }
 }
@@ -136,11 +118,13 @@ class DocumentReaderTextResult {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderTextResult()
+
         result.status = jsonObject["status"]
         result.fields = []
         if (jsonObject["fields"] != null)
             for (const i in jsonObject["fields"])
                 result.fields.push(DocumentReaderTextField.fromJson(jsonObject["fields"][i]))
+
         return result
     }
 }
@@ -149,8 +133,10 @@ class Coordinate {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Coordinate()
+
         result.x = jsonObject["x"]
         result.y = jsonObject["y"]
+
         return result
     }
 }
@@ -159,10 +145,10 @@ class ElementPosition {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new ElementPosition()
+
         result.docFormat = jsonObject["docFormat"]
         result.width = jsonObject["width"]
         result.height = jsonObject["height"]
-        result.angle = jsonObject["angle"]
         result.dpi = jsonObject["dpi"]
         result.pageIndex = jsonObject["pageIndex"]
         result.inverse = jsonObject["inverse"]
@@ -170,11 +156,13 @@ class ElementPosition {
         result.objArea = jsonObject["objArea"]
         result.objIntAngleDev = jsonObject["objIntAngleDev"]
         result.resultStatus = jsonObject["resultStatus"]
+        result.angle = jsonObject["angle"]
         result.center = Coordinate.fromJson(jsonObject["center"])
         result.leftTop = Coordinate.fromJson(jsonObject["leftTop"])
         result.leftBottom = Coordinate.fromJson(jsonObject["leftBottom"])
         result.rightTop = Coordinate.fromJson(jsonObject["rightTop"])
         result.rightBottom = Coordinate.fromJson(jsonObject["rightBottom"])
+
         return result
     }
 }
@@ -183,9 +171,11 @@ class ImageQuality {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new ImageQuality()
+
         result.featureType = jsonObject["featureType"]
         result.result = jsonObject["result"]
         result.type = jsonObject["type"]
+
         return result
     }
 }
@@ -194,12 +184,14 @@ class ImageQualityGroup {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new ImageQualityGroup()
+
         result.count = jsonObject["count"]
         result.result = jsonObject["result"]
         result.imageQualityList = []
         if (jsonObject["imageQualityList"] != null)
             for (const i in jsonObject["imageQualityList"])
                 result.imageQualityList.push(ImageQuality.fromJson(jsonObject["imageQualityList"][i]))
+
         return result
     }
 }
@@ -208,14 +200,14 @@ class DocumentReaderDocumentType {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderDocumentType()
+
         result.pageIndex = jsonObject["pageIndex"]
-        result.name = jsonObject["name"]
         result.documentID = jsonObject["documentID"]
-        result.ICAOCode = jsonObject["ICAOCode"]
         result.dType = jsonObject["dType"]
-        result.FDSID = []
         result.dFormat = jsonObject["dFormat"]
         result.dMRZ = jsonObject["dMRZ"]
+        result.name = jsonObject["name"]
+        result.ICAOCode = jsonObject["ICAOCode"]
         result.dDescription = jsonObject["dDescription"]
         result.dYear = jsonObject["dYear"]
         result.dCountryName = jsonObject["dCountryName"]
@@ -223,30 +215,7 @@ class DocumentReaderDocumentType {
         if (jsonObject["FDSID"] != null)
             for (const i in jsonObject["FDSID"])
                 result.FDSID.push(jsonObject["FDSID"][i])
-        return result
-    }
-}
 
-class DocumentReaderJsonResultGroup {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new DocumentReaderJsonResultGroup()
-        result.resultType = jsonObject["resultType"]
-        result.lightType = jsonObject["lightType"]
-        result.pageIdx = jsonObject["pageIdx"]
-        result.jsonResult = jsonObject["jsonResult"]
-        return result
-    }
-}
-
-class DocumentReaderJsonResult {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new DocumentReaderJsonResult()
-        result.results = []
-        if (jsonObject["results"] != null)
-            for (const i in jsonObject["results"])
-                result.results.push(DocumentReaderJsonResultGroup.fromJson(jsonObject["results"][i]))
         return result
     }
 }
@@ -255,9 +224,11 @@ class DocumentReaderNotification {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderNotification()
+
         result.code = jsonObject["code"]
         result.value = jsonObject["value"]
         result.number = jsonObject["number"]
+
         return result
     }
 }
@@ -266,13 +237,15 @@ class AccessControlProcedureType {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new AccessControlProcedureType()
+
         result.activeOptionIdx = jsonObject["activeOptionIdx"]
-        result.status = jsonObject["status"]
         result.type = jsonObject["type"]
+        result.status = jsonObject["status"]
         result.notifications = []
         if (jsonObject["notifications"] != null)
             for (const i in jsonObject["notifications"])
                 result.notifications.push(jsonObject["notifications"][i])
+
         return result
     }
 }
@@ -281,10 +254,12 @@ class FileData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new FileData()
-        result.data = jsonObject["data"]
+
         result.length = jsonObject["length"]
-        result.status = jsonObject["status"]
         result.type = jsonObject["type"]
+        result.status = jsonObject["status"]
+        result.data = jsonObject["data"]
+
         return result
     }
 }
@@ -293,8 +268,10 @@ class CertificateData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new CertificateData()
-        result.data = jsonObject["data"]
+
         result.length = jsonObject["length"]
+        result.data = jsonObject["data"]
+
         return result
     }
 }
@@ -303,7 +280,9 @@ class SecurityObjectCertificates {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new SecurityObjectCertificates()
+
         result.securityObject = CertificateData.fromJson(jsonObject["securityObject"])
+
         return result
     }
 }
@@ -312,29 +291,31 @@ class File {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new File()
-        result.fileData = FileData.fromJson(jsonObject["fileData"])
-        result.fileID = jsonObject["fileID"]
+
+        result.readingTime = jsonObject["readingTime"]
+        result.type = jsonObject["type"]
         result.pAStatus = jsonObject["pAStatus"]
         result.readingStatus = jsonObject["readingStatus"]
-        result.readingTime = jsonObject["readingTime"]
-        result.retypesult = jsonObject["type"]
+        result.fileID = jsonObject["fileID"]
+        result.fileData = FileData.fromJson(jsonObject["fileData"])
         result.certificates = SecurityObjectCertificates.fromJson(jsonObject["certificates"])
-        result.notifications = []
         result.docFieldsText = []
-        result.docFieldsGraphics = []
-        result.docFieldsOriginals = []
-        if (jsonObject["notifications"] != null)
-            for (const i in jsonObject["notifications"])
-                result.notifications.push(jsonObject["notifications"][i])
         if (jsonObject["docFieldsText"] != null)
             for (const i in jsonObject["docFieldsText"])
                 result.docFieldsText.push(jsonObject["docFieldsText"][i])
+        result.docFieldsGraphics = []
         if (jsonObject["docFieldsGraphics"] != null)
             for (const i in jsonObject["docFieldsGraphics"])
                 result.docFieldsGraphics.push(jsonObject["docFieldsGraphics"][i])
+        result.docFieldsOriginals = []
         if (jsonObject["docFieldsOriginals"] != null)
             for (const i in jsonObject["docFieldsOriginals"])
                 result.docFieldsOriginals.push(jsonObject["docFieldsOriginals"][i])
+        result.notifications = []
+        if (jsonObject["notifications"] != null)
+            for (const i in jsonObject["notifications"])
+                result.notifications.push(jsonObject["notifications"][i])
+
         return result
     }
 }
@@ -343,16 +324,18 @@ class Application {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Application()
+
+        result.type = jsonObject["type"]
+        result.status = jsonObject["status"]
         result.applicationID = jsonObject["applicationID"]
         result.dataHashAlgorithm = jsonObject["dataHashAlgorithm"]
-        result.status = jsonObject["status"]
-        result.type = jsonObject["type"]
         result.unicodeVersion = jsonObject["unicodeVersion"]
         result.version = jsonObject["version"]
         result.files = []
         if (jsonObject["files"] != null)
             for (const i in jsonObject["files"])
                 result.files.push(File.fromJson(jsonObject["files"][i]))
+
         return result
     }
 }
@@ -361,11 +344,13 @@ class Value {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Value()
-        result.data = jsonObject["data"]
+
         result.length = jsonObject["length"]
-        result.status = jsonObject["status"]
         result.type = jsonObject["type"]
+        result.status = jsonObject["status"]
+        result.data = jsonObject["data"]
         result.format = jsonObject["format"]
+
         return result
     }
 }
@@ -374,8 +359,10 @@ class Attribute {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Attribute()
+
         result.type = jsonObject["type"]
         result.value = Value.fromJson(jsonObject["value"])
+
         return result
     }
 }
@@ -384,12 +371,14 @@ class Authority {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Authority()
+
         result.data = jsonObject["data"]
         result.friendlyName = Value.fromJson(jsonObject["friendlyName"])
         result.attributes = []
         if (jsonObject["attributes"] != null)
             for (const i in jsonObject["attributes"])
                 result.attributes.push(Attribute.fromJson(jsonObject["attributes"][i]))
+
         return result
     }
 }
@@ -398,8 +387,10 @@ class Extension {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Extension()
+
         result.data = jsonObject["data"]
         result.type = jsonObject["type"]
+
         return result
     }
 }
@@ -408,8 +399,10 @@ class Validity {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Validity()
+
         result.notAfter = Value.fromJson(jsonObject["notAfter"])
         result.notBefore = Value.fromJson(jsonObject["notBefore"])
+
         return result
     }
 }
@@ -418,25 +411,27 @@ class CertificateChain {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new CertificateChain()
-        result.fileName = Value.fromJson(jsonObject["fileName"])
-        result.issuer = Authority.fromJson(jsonObject["issuer"])
+
         result.origin = jsonObject["origin"]
+        result.type = jsonObject["type"]
+        result.version = jsonObject["version"]
         result.paStatus = jsonObject["paStatus"]
         result.serialNumber = jsonObject["serialNumber"]
         result.signatureAlgorithm = jsonObject["signatureAlgorithm"]
-        result.subject = Authority.fromJson(jsonObject["subject"])
         result.subjectPKAlgorithm = jsonObject["subjectPKAlgorithm"]
-        result.type = jsonObject["type"]
+        result.fileName = Value.fromJson(jsonObject["fileName"])
         result.validity = Validity.fromJson(jsonObject["validity"])
-        result.version = jsonObject["version"]
-        result.extensions = []
+        result.issuer = Authority.fromJson(jsonObject["issuer"])
+        result.subject = Authority.fromJson(jsonObject["subject"])
         result.notifications = []
-        if (jsonObject["extensions"] != null)
-            for (const i in jsonObject["extensions"])
-                result.extensions.push(Extension.fromJson(jsonObject["extensions"][i]))
         if (jsonObject["notifications"] != null)
             for (const i in jsonObject["notifications"])
                 result.notifications.push(jsonObject["notifications"][i])
+        result.extensions = []
+        if (jsonObject["extensions"] != null)
+            for (const i in jsonObject["extensions"])
+                result.extensions.push(Extension.fromJson(jsonObject["extensions"][i]))
+
         return result
     }
 }
@@ -445,27 +440,29 @@ class SignerInfo {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new SignerInfo()
+
+        result.version = jsonObject["version"]
+        result.paStatus = jsonObject["paStatus"]
         result.dataToHash = jsonObject["dataToHash"]
         result.digestAlgorithm = jsonObject["digestAlgorithm"]
-        result.paStatus = jsonObject["paStatus"]
         result.signatureAlgorithm = jsonObject["signatureAlgorithm"]
-        result.version = jsonObject["version"]
-        result.issuer = Authority.fromJson(jsonObject["issuer"])
         result.serialNumber = Value.fromJson(jsonObject["serialNumber"])
         result.signature = Value.fromJson(jsonObject["signature"])
         result.subjectKeyIdentifier = Value.fromJson(jsonObject["subjectKeyIdentifier"])
-        result.signedAttributes = []
-        result.certificateChain = []
+        result.issuer = Authority.fromJson(jsonObject["issuer"])
         result.notifications = []
-        if (jsonObject["signedAttributes"] != null)
-            for (const i in jsonObject["signedAttributes"])
-                result.signedAttributes.push(Extension.fromJson(jsonObject["signedAttributes"][i]))
-        if (jsonObject["certificateChain"] != null)
-            for (const i in jsonObject["certificateChain"])
-                result.certificateChain.push(CertificateChain.fromJson(jsonObject["certificateChain"][i]))
         if (jsonObject["notifications"] != null)
             for (const i in jsonObject["notifications"])
                 result.notifications.push(jsonObject["notifications"][i])
+        result.signedAttributes = []
+        if (jsonObject["signedAttributes"] != null)
+            for (const i in jsonObject["signedAttributes"])
+                result.signedAttributes.push(Extension.fromJson(jsonObject["signedAttributes"][i]))
+        result.certificateChain = []
+        if (jsonObject["certificateChain"] != null)
+            for (const i in jsonObject["certificateChain"])
+                result.certificateChain.push(CertificateChain.fromJson(jsonObject["certificateChain"][i]))
+
         return result
     }
 }
@@ -474,17 +471,19 @@ class SecurityObject {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new SecurityObject()
+
         result.fileReference = jsonObject["fileReference"]
-        result.objectType = jsonObject["objectType"]
         result.version = jsonObject["version"]
-        result.signerInfos = []
+        result.objectType = jsonObject["objectType"]
         result.notifications = []
-        if (jsonObject["signerInfos"] != null)
-            for (const i in jsonObject["signerInfos"])
-                result.signerInfos.push(SignerInfo.fromJson(jsonObject["signerInfos"][i]))
         if (jsonObject["notifications"] != null)
             for (const i in jsonObject["notifications"])
                 result.notifications.push(jsonObject["notifications"][i])
+        result.signerInfos = []
+        if (jsonObject["signerInfos"] != null)
+            for (const i in jsonObject["signerInfos"])
+                result.signerInfos.push(SignerInfo.fromJson(jsonObject["signerInfos"][i]))
+
         return result
     }
 }
@@ -493,11 +492,8 @@ class CardProperties {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new CardProperties()
+
         result.aTQA = jsonObject["aTQA"]
-        result.aTQB = jsonObject["aTQB"]
-        result.aTR = jsonObject["aTR"]
-        result.baudrate1 = jsonObject["baudrate1"]
-        result.baudrate2 = jsonObject["baudrate2"]
         result.bitRateR = jsonObject["bitRateR"]
         result.bitRateS = jsonObject["bitRateS"]
         result.chipTypeA = jsonObject["chipTypeA"]
@@ -506,7 +502,12 @@ class CardProperties {
         result.sAK = jsonObject["sAK"]
         result.support4 = jsonObject["support4"]
         result.supportMifare = jsonObject["supportMifare"]
+        result.aTQB = jsonObject["aTQB"]
+        result.aTR = jsonObject["aTR"]
+        result.baudrate1 = jsonObject["baudrate1"]
+        result.baudrate2 = jsonObject["baudrate2"]
         result.uID = jsonObject["uID"]
+
         return result
     }
 }
@@ -515,63 +516,27 @@ class RFIDSessionData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new RFIDSessionData()
-        result.cardProperties = CardProperties.fromJson(jsonObject["result"])
+
         result.totalBytesReceived = jsonObject["totalBytesReceived"]
         result.totalBytesSent = jsonObject["totalBytesSent"]
         result.status = jsonObject["status"]
         result.extLeSupport = jsonObject["extLeSupport"]
         result.processTime = jsonObject["processTime"]
-        result.sessionDataStatus = jsonObject["sessionDataStatus"]
+        result.cardProperties = CardProperties.fromJson(jsonObject["cardProperties"])
+        result.sessionDataStatus = RFIDSessionDataStatus.fromJson(jsonObject["sessionDataStatus"])
         result.accessControls = []
-        result.applications = []
-        result.securityObjects = []
         if (jsonObject["accessControls"] != null)
             for (const i in jsonObject["accessControls"])
                 result.accessControls.push(AccessControlProcedureType.fromJson(jsonObject["accessControls"][i]))
+        result.applications = []
         if (jsonObject["applications"] != null)
             for (const i in jsonObject["applications"])
                 result.applications.push(Application.fromJson(jsonObject["applications"][i]))
+        result.securityObjects = []
         if (jsonObject["securityObjects"] != null)
             for (const i in jsonObject["securityObjects"])
                 result.securityObjects.push(SecurityObject.fromJson(jsonObject["securityObjects"][i]))
-        return result
-    }
-}
 
-class DocumentReaderBarcodeResult {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new DocumentReaderBarcodeResult()
-        result.fields = []
-        if (jsonObject["fields"] != null)
-            for (const i in jsonObject["fields"])
-                result.fields.push(DocumentReaderBarcodeField.fromJson(jsonObject["fields"][i]))
-        return result
-    }
-}
-
-class DocumentReaderBarcodeField {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new DocumentReaderBarcodeField()
-        result.barcodeType = jsonObject["barcodeType"]
-        result.status = jsonObject["status"]
-        result.pdf417Info = jsonObject["pdf417Info"]
-        result.data = jsonObject["data"]
-        result.pageIndex = jsonObject["pageIndex"]
-        return result
-    }
-}
-
-class DocumentReaderAuthenticityResult {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new DocumentReaderAuthenticityResult()
-        result.status = jsonObject["status"]
-        result.checks = []
-        if (jsonObject["checks"] != null)
-            for (const i in jsonObject["checks"])
-                result.checks.push(DocumentReaderAuthenticityCheck.fromJson(jsonObject["checks"][i]))
         return result
     }
 }
@@ -580,14 +545,93 @@ class DocumentReaderAuthenticityCheck {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderAuthenticityCheck()
+
         result.type = jsonObject["type"]
-        result.typeName = jsonObject["typeName"]
         result.status = jsonObject["status"]
+        result.typeName = jsonObject["typeName"]
         result.pageIndex = jsonObject["pageIndex"]
         result.elements = []
         if (jsonObject["elements"] != null)
             for (const i in jsonObject["elements"])
                 result.elements.push(DocumentReaderAuthenticityElement.fromJson(jsonObject["elements"][i]))
+
+        return result
+    }
+}
+
+class PDF417Info {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new PDF417Info()
+
+        result.errorLevel = jsonObject["errorLevel"]
+        result.columns = jsonObject["columns"]
+        result.rows = jsonObject["rows"]
+
+        return result
+    }
+}
+
+class RFIDSessionDataStatus {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new RFIDSessionDataStatus()
+
+        result.AA = jsonObject["AA"]
+        result.BAC = jsonObject["BAC"]
+        result.CA = jsonObject["CA"]
+        result.PA = jsonObject["PA"]
+        result.PACE = jsonObject["PACE"]
+        result.TA = jsonObject["TA"]
+        result.overallStatus = jsonObject["overallStatus"]
+
+        return result
+    }
+}
+
+class DocumentReaderBarcodeResult {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocumentReaderBarcodeResult()
+
+        result.fields = []
+        if (jsonObject["fields"] != null)
+            for (const i in jsonObject["fields"])
+                result.fields.push(DocumentReaderBarcodeField.fromJson(jsonObject["fields"][i]))
+
+        return result
+    }
+}
+
+class DocumentReaderBarcodeField {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocumentReaderBarcodeField()
+
+        result.barcodeType = jsonObject["barcodeType"]
+        result.status = jsonObject["status"]
+        result.pageIndex = jsonObject["pageIndex"]
+        result.pdf417Info = PDF417Info.fromJson(jsonObject["pdf417Info"])
+        result.data = []
+        if (jsonObject["data"] != null)
+            for (const i in jsonObject["data"])
+                result.data.push(jsonObject["data"][i])
+
+        return result
+    }
+}
+
+class DocumentReaderAuthenticityResult {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocumentReaderAuthenticityResult()
+
+        result.status = jsonObject["status"]
+        result.checks = []
+        if (jsonObject["checks"] != null)
+            for (const i in jsonObject["checks"])
+                result.checks.push(DocumentReaderAuthenticityCheck.fromJson(jsonObject["checks"][i]))
+
         return result
     }
 }
@@ -596,10 +640,11 @@ class DocumentReaderAuthenticityElement {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderAuthenticityElement()
+
         result.status = jsonObject["status"]
         result.elementType = jsonObject["elementType"]
-        result.elementTypeName = jsonObject["elementTypeName"]
         result.elementDiagnose = jsonObject["elementDiagnose"]
+        result.elementTypeName = jsonObject["elementTypeName"]
         result.elementDiagnoseName = jsonObject["elementDiagnoseName"]
 
         return result
@@ -610,6 +655,7 @@ class DocumentReaderCompletion {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderCompletion()
+
         result.action = jsonObject["action"]
         result.results = DocumentReaderResults.fromJson(jsonObject["results"])
         result.error = Throwable.fromJson(jsonObject["error"])
@@ -622,11 +668,12 @@ class Throwable {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Throwable()
-        result.localizedMessage = jsonObject["localizedMessage"]
-        result.message = jsonObject["message"]
-        result.toString = jsonObject["toString"]
+
         result.code = jsonObject["code"]
         result.domain = jsonObject["domain"]
+        result.localizedMessage = jsonObject["localizedMessage"]
+        result.message = jsonObject["message"]
+        result.string = jsonObject["string"]
         result.stackTrace = []
         if (jsonObject["stackTrace"] != null)
             for (const i in jsonObject["stackTrace"])
@@ -640,105 +687,74 @@ class StackTraceElement {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new StackTraceElement()
+
+        result.lineNumber = jsonObject["lineNumber"]
+        result.isNativeMethod = jsonObject["isNativeMethod"]
         result.className = jsonObject["className"]
         result.fileName = jsonObject["fileName"]
-        result.lineNumber = jsonObject["lineNumber"]
         result.methodName = jsonObject["methodName"]
-        result.isNativeMethod = jsonObject["isNativeMethod"]
-        result.toString = jsonObject["toString"]
+        result.string = jsonObject["string"]
 
         return result
     }
 }
 
 class DocumentReaderResults {
-    getTextFieldValueByType(map) {
-        const fieldType = map.fieldType
-        let lcid = 0
-        if (map.lcid != null)
-            lcid = map.lcid
-        let source = -1
-        if (map.source != null)
-            source = map.source
-        let original = false
-        if (map.original != null)
-            original = map.original
-        if (this.textResult != null) {
-            const field = this.findByTypeAndLcid(fieldType, lcid)
-            console.log("field:" + field)
-            if (field != null) {
-                const value = this.findBySource(field, source)
-                if (value != null) {
-                    if (original)
-                        return value.originalValue
-                    return value.value
-                }
-            }
-            return null
-        }
+    getTextFieldValueByType({ fieldType, lcid = 0, source = -1, original = false }) {
+        if (this.textResult == null) return null
+        const field = this.findByTypeAndLcid(fieldType, lcid)
+        if (field == null) return null
+        const value = this.findBySource(field, source)
+        if (value == null) return null
+        return original ? value.originalValue : value.value
     }
 
     getTextFieldStatusByType(fieldType, lcid = 0) {
-        if (this.textResult != null) {
-            const field = this.findByTypeAndLcid(fieldType, lcid)
-            if (field != null)
-                return field.status
-        }
-
-        return 0
+        if (this.textResult == null) return 0
+        const field = this.findByTypeAndLcid(fieldType, lcid)
+        return field != null ? field.status : 0
     }
 
-    getGraphicFieldImageByType(fieldType, source = -1, pageIndex = -1, light = -1) {
-        if (this.graphicResult != null) {
-            const foundFields = []
-            for (let field in this.graphicResult.fields) {
-                field = this.graphicResult.fields[field]
-                if (field.fieldType === fieldType)
-                    foundFields.push(field)
-            }
+    getGraphicFieldImageByType({ fieldType, source = -1, pageIndex = -1, light = -1 }) {
+        if (this.graphicResult == null) return null
+        const foundFields = []
 
-            if (source !== -1)
-                for (const index in foundFields)
-                    if (foundFields[index].sourceType !== source)
-                        foundFields.splice(index, 1)
-
-            if (light !== -1)
-                for (const index in foundFields)
-                    if (foundFields[index].light !== light)
-                        foundFields.splice(index, 1)
-
-            if (pageIndex !== -1)
-                for (const index in foundFields)
-                    if (foundFields[index].pageIndex !== pageIndex)
-                        foundFields.splice(index, 1)
-
-            if (foundFields.length > 0)
-                return foundFields[0].value
-        }
-        return null
+        for (const field of this.graphicResult.fields)
+            if (field.fieldType === fieldType)
+                foundFields.push(field)
+        if (source !== -1)
+            for (const index in foundFields)
+                if (foundFields[index].sourceType !== source)
+                    foundFields.splice(index, 1)
+        if (light !== -1)
+            for (const index in foundFields)
+                if (foundFields[index].lightType !== light)
+                    foundFields.splice(index, 1)
+        if (pageIndex !== -1)
+            for (const index in foundFields)
+                if (foundFields[index].pageIndex !== pageIndex)
+                    foundFields.splice(index, 1)
+        if (foundFields.length > 0)
+            return foundFields[0].value
     }
 
     getQualityResult(imageQualityCheckType, securityFeature = -1) {
         let resultSum = 2
-        if (this.imageQuality != null) {
-            for (const index in this.imageQuality.imageQualityList) {
-                const field = this.imageQuality.imageQualityList[index]
-                if (field.type === imageQualityCheckType) {
-                    if (securityFeature === -1) {
-                        if (field.result === 0) {
-                            resultSum = 0
-                            break
-                        }
+        if (this.imageQuality == null) return resultSum
 
-                        if (field.result === 1)
-                            resultSum = field.result
-                    } else if (field.featureType === securityFeature) {
-                        resultSum = field.result
+        for (const field of this.imageQuality.imageQualityList)
+            if (field.type === imageQualityCheckType)
+                if (securityFeature === -1) {
+                    if (field.result === 0) {
+                        resultSum = 0
                         break
                     }
+                    if (field.result === 1)
+                        resultSum = field.result
+                } else if (field.featureType === securityFeature) {
+                    resultSum = field.result
+                    break
                 }
-            }
-        }
 
         return resultSum
     }
@@ -747,26 +763,21 @@ class DocumentReaderResults {
         let field
         const foundFields = []
 
-        for (field in this.textResult.fields) {
-            field = this.textResult.fields[field]
+        for (field of this.textResult.fields)
             if (field.fieldType === type)
                 foundFields.push(field)
-        }
-
         if (foundFields.length <= 0)
             return null
 
         let foundField = null
 
-        for (field in foundFields) {
-            field = foundFields[field]
+        for (field of foundFields)
             if (lcid === 0) {
                 foundField = field
                 if (field.lcid === lcid)
                     break
             } else if (field.lcid === lcid)
                 return field
-        }
 
         return foundField
     }
@@ -783,48 +794,42 @@ class DocumentReaderResults {
             const visualVal = this.findBySource(field, 17)
             return visualVal != null ? visualVal : null
         }
-        for (let item in field.values) {
-            item = field.values[item]
+        for (const item of field.values)
             if (item.sourceType === sourceType)
                 return item
-        }
 
         return null
-
-    }
-
-    clone() {
-        return DocumentReaderResults.fromJson(this)
     }
 
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const results = new DocumentReaderResults()
-        results.chipPage = jsonObject["chipPage"]
-        results.overallResult = jsonObject["overallResult"]
-        results.processingFinishedStatus = jsonObject["processingFinishedStatus"]
-        results.elapsedTimeRFID = jsonObject["elapsedTimeRFID"]
-        results.elapsedTime = jsonObject["elapsedTime"]
-        results.morePagesAvailable = jsonObject["morePagesAvailable"]
-        results.rfidResult = jsonObject["rfidResult"]
-        results.highResolution = jsonObject["highResolution"]
-        results.graphicResult = DocumentReaderGraphicResult.fromJson(jsonObject["graphicResult"])
-        results.textResult = DocumentReaderTextResult.fromJson(jsonObject["textResult"])
-        results.documentPosition = ElementPosition.fromJson(jsonObject["documentPosition"])
-        results.barcodePosition = ElementPosition.fromJson(jsonObject["barcodePosition"])
-        results.mrzPosition = ElementPosition.fromJson(jsonObject["mrzPosition"])
-        results.imageQuality = ImageQualityGroup.fromJson(jsonObject["imageQuality"])
-        results.jsonResult = DocumentReaderJsonResult.fromJson(jsonObject["jsonResult"])
-        results.documentReaderNotification = DocumentReaderNotification.fromJson(jsonObject["documentReaderNotification"])
-        results.rfidSessionData = RFIDSessionData.fromJson(jsonObject["rfidSessionData"])
-        results.authenticityResult = DocumentReaderAuthenticityResult.fromJson(jsonObject["authenticityResult"])
-        results.barcodeResult = DocumentReaderBarcodeResult.fromJson(jsonObject["barcodeResult"])
-        results.documentType = []
-        if (jsonObject["documentType"] != null)
-            for (const index in jsonObject["documentType"])
-                results.documentType.push(DocumentReaderDocumentType.fromJson(jsonObject["documentType"][index]))
+        const result = new DocumentReaderResults()
 
-        return results
+        result.chipPage = jsonObject["chipPage"]
+        result.overallResult = jsonObject["overallResult"]
+        result.processingFinishedStatus = jsonObject["processingFinishedStatus"]
+        result.elapsedTime = jsonObject["elapsedTime"]
+        result.elapsedTimeRFID = jsonObject["elapsedTimeRFID"]
+        result.morePagesAvailable = jsonObject["morePagesAvailable"]
+        result.rfidResult = jsonObject["rfidResult"]
+        result.highResolution = jsonObject["highResolution"]
+        result.graphicResult = DocumentReaderGraphicResult.fromJson(jsonObject["graphicResult"])
+        result.textResult = DocumentReaderTextResult.fromJson(jsonObject["textResult"])
+        result.documentPosition = ElementPosition.fromJson(jsonObject["documentPosition"])
+        result.barcodePosition = ElementPosition.fromJson(jsonObject["barcodePosition"])
+        result.mrzPosition = ElementPosition.fromJson(jsonObject["mrzPosition"])
+        result.imageQuality = ImageQualityGroup.fromJson(jsonObject["imageQuality"])
+        result.rawResult = jsonObject["rawResult"]
+        result.documentReaderNotification = DocumentReaderNotification.fromJson(jsonObject["documentReaderNotification"])
+        result.rfidSessionData = RFIDSessionData.fromJson(jsonObject["rfidSessionData"])
+        result.authenticityResult = DocumentReaderAuthenticityResult.fromJson(jsonObject["authenticityResult"])
+        result.barcodeResult = DocumentReaderBarcodeResult.fromJson(jsonObject["barcodeResult"])
+        result.documentType = []
+        if (jsonObject["documentType"] != null)
+            for (const i in jsonObject["documentType"])
+                result.documentType.push(DocumentReaderDocumentType.fromJson(jsonObject["documentType"][i]))
+
+        return result
     }
 }
 
@@ -883,6 +888,12 @@ const BarcodeType = {
     DATAMATRIX: 16,
     ALL_1D: 17,
     CODE11: 18,
+}
+
+const CameraMode = {
+    AUTO: 0,
+    CAMERA1: 1,
+    CAMERA2: 2,
 }
 
 const CameraTypes = {
@@ -1235,6 +1246,10 @@ const eCheckDiagnose = {
     PPORTRAIT_COMPARISON_NOT_ENOUGH_IMAGES: 153,
     PORTRAIT_COMPARISON_NO_LIVE_PHOTO: 154,
     PORTRAIT_COMPARISON_NO_SERVICE_LICENSE: 155,
+    PORTRAIT_COMPARISON_NO_PORTRAIT_DETECTED: 156,
+    MOBILE_IMAGES_UNSUITABLE_LIGHT_CONDITIONS: 160,
+    MOBILE_IMAGES_WHITE_UV_NO_DIFFERENCE: 161,
+    LAST_DIAGNOSE_VALUE: 162,
 }
 
 const eCheckResult = {
@@ -1284,7 +1299,7 @@ const eGraphicFieldType = {
             case this.GF_DOCUMENT_IMAGE:
                 return "Document image"
             case this.GF_COLOR_DYNAMIC:
-                return "Color dynamic"
+                return "Color dynamics"
             case this.GF_GHOST_PORTRAIT:
                 return "Ghost portrait"
             case this.GF_STAMP:
@@ -1344,6 +1359,7 @@ const eRequestCommand = {
     eReqCmd_RFid_GetDataForScenario: 102,
     eReqCmd_Torch_GetUVFoto: 200,
     eReqCmd_InternetSend: 300,
+    eReqCmd_GetGuid: 400,
 }
 
 const eRFID_AccessControl_ProcedureType = {
@@ -3260,6 +3276,35 @@ const eVisualFieldType = {
     FT_CITIZENSHIP_OF_FIRST_PERSON: 593,
     FT_CITIZENSHIP_OF_SECOND_PERSON: 594,
     FT_CVV: 595,
+    FT_DATE_OF_INSURANCE_EXPIRY: 596,
+    FT_MORTGAGE_BY: 597,
+    FT_OLD_DOCUMENT_NUMBER: 598,
+    FT_OLD_DATE_OF_ISSUE: 599,
+    FT_OLD_PLACE_OF_ISSUE: 600,
+    FT_DLCLASSCODE_LR_FROM: 601,
+    FT_DLCLASSCODE_LR_TO: 602,
+    FT_DLCLASSCODE_LR_NOTES: 603,
+    FT_DLCLASSCODE_MR_FROM: 604,
+    FT_DLCLASSCODE_MR_TO: 605,
+    FT_DLCLASSCODE_MR_NOTES: 606,
+    FT_DLCLASSCODE_HR_FROM: 607,
+    FT_DLCLASSCODE_HR_TO: 608,
+    FT_DLCLASSCODE_HR_NOTES: 609,
+    FT_DLCLASSCODE_HC_FROM: 610,
+    FT_DLCLASSCODE_HC_TO: 611,
+    FT_DLCLASSCODE_HC_NOTES: 612,
+    FT_DLCLASSCODE_MC_FROM: 613,
+    FT_DLCLASSCODE_MC_TO: 614,
+    FT_DLCLASSCODE_MC_NOTES: 615,
+    FT_DLCLASSCODE_RE_FROM: 616,
+    FT_DLCLASSCODE_RE_TO: 617,
+    FT_DLCLASSCODE_RE_NOTES: 618,
+    FT_DLCLASSCODE_R_FROM: 619,
+    FT_DLCLASSCODE_R_TO: 620,
+    FT_DLCLASSCODE_R_NOTES: 621,
+    FT_DLCLASSCODE_CA_FROM: 622,
+    FT_DLCLASSCODE_CA_TO: 623,
+    FT_DLCLASSCODE_CA_NOTES: 624,
 
     getTranslation: function (value) {
         switch (value) {
@@ -3296,7 +3341,7 @@ const eVisualFieldType = {
             case this.FT_EYES_COLOR:
                 return "Eye color"
             case this.FT_HAIR_COLOR:
-                return "Hair сolor"
+                return "Hair color"
             case this.FT_ADDRESS:
                 return "Address"
             case this.FT_DONOR:
@@ -3304,13 +3349,13 @@ const eVisualFieldType = {
             case this.FT_SOCIAL_SECURITY_NUMBER:
                 return "Social insurance number"
             case this.FT_DL_CLASS:
-                return "DL class"
+                return "DL category"
             case this.FT_DL_ENDORSED:
-                return "DL Endorsed"
+                return "DL endorsement code"
             case this.FT_DL_RESTRICTION_CODE:
                 return "DL Restriction Code"
             case this.FT_DL_UNDER_21_DATE:
-                return "Date of 21th birthday"
+                return "Date of 21st birthday"
             case this.FT_AUTHORITY:
                 return "Issuing authority"
             case this.FT_SURNAME_AND_GIVEN_NAMES:
@@ -3338,7 +3383,7 @@ const eVisualFieldType = {
             case this.FT_OPTIONAL_DATA:
                 return "Optional data"
             case this.FT_DOCUMENT_CLASS_NAME:
-                return "Document сlass"
+                return "Document class"
             case this.FT_ISSUING_STATE_NAME:
                 return "Issuing state"
             case this.FT_PLACE_OF_ISSUE:
@@ -3436,7 +3481,7 @@ const eVisualFieldType = {
             case this.FT_PASSPORT_NUMBER_CHECK_DIGIT:
                 return "Check digit for passport number"
             case this.FT_INVITATION_NUMBER_CHECK_DIGIT:
-                return "Check digit for invitaiton number"
+                return "Check digit for invitation number"
             case this.FT_VISA_ID_CHECK_DIGIT:
                 return "Check digit for visa ID"
             case this.FT_SURNAME_AND_GIVEN_NAMES_CHECK_DIGIT:
@@ -3444,7 +3489,7 @@ const eVisualFieldType = {
             case this.FT_VISA_VALID_UNTIL_CHECK_DIGIT:
                 return "Check digit for visa expiry date"
             case this.FT_PERMIT_DL_CLASS:
-                return "Permit сlass"
+                return "Permit class"
             case this.FT_PERMIT_DATE_OF_EXPIRY:
                 return "Permit expiry date"
             case this.FT_PERMIT_IDENTIFIER:
@@ -3460,7 +3505,7 @@ const eVisualFieldType = {
             case this.FT_NUMBER_OF_DUPLICATES:
                 return "Number of duplicates"
             case this.FT_MEDICAL_INDICATOR_CODES:
-                return "Medical indicator/code"
+                return "Medical notes/codes"
             case this.FT_NON_RESIDENT_INDICATOR:
                 return "Non-resident indicator"
             case this.FT_VISA_TYPE:
@@ -3480,7 +3525,7 @@ const eVisualFieldType = {
             case this.FT_YEAR:
                 return "Year"
             case this.FT_UNIQUE_CUSTOMER_IDENTIFIER:
-                return "Unique сustomer identifier"
+                return "Unique customer identifier"
             case this.FT_COMMERCIAL_VEHICLE_CODES:
                 return "Commercial vehicle code"
             case this.FT_AKA_DATE_OF_BIRTH:
@@ -3616,11 +3661,11 @@ const eVisualFieldType = {
             case this.FT_DL_RECORD_CREATED:
                 return "Record created"
             case this.FT_DL_DUPLICATE_DATE:
-                return "Duplicate date"
+                return "Date of duplicate issue"
             case this.FT_DL_ISS_TYPE:
-                return "Iss. Type"
+                return "Card type"
             case this.FT_MILITARY_BOOK_NUMBER:
-                return "Military book number"
+                return "Military ID number"
             case this.FT_DESTINATION:
                 return "Destination"
             case this.FT_BLOOD_GROUP:
@@ -3688,15 +3733,15 @@ const eVisualFieldType = {
             case this.FT_E_ID_RESIDENCE_PERMIT_2:
                 return "Residence permit 2"
             case this.FT_E_ID_PLACE_OF_BIRTH_STREET:
-                return "Place Of Birth: Street"
+                return "Place of Birth: Street"
             case this.FT_E_ID_PLACE_OF_BIRTH_CITY:
-                return "Place Of Birth: City"
+                return "Place of Birth: City"
             case this.FT_E_ID_PLACE_OF_BIRTH_STATE:
-                return "Place Of Birth: State"
+                return "Place of Birth: State"
             case this.FT_E_ID_PLACE_OF_BIRTH_COUNTRY:
-                return "Place Of Birth: Country"
+                return "Place of Birth: Country"
             case this.FT_E_ID_PLACE_OF_BIRTH_ZIPCODE:
-                return "Place Of Birth: Postal code"
+                return "Place of Birth: Postal code"
             case this.FT_CDL_CLASS:
                 return "CDL Class"
             case this.FT_DL_UNDER_19_DATE:
@@ -3776,7 +3821,7 @@ const eVisualFieldType = {
             case this.FT_ALLERGIES:
                 return "Allergies"
             case this.FT_SP_CODE:
-                return "SP code"
+                return "Special code"
             case this.FT_COURT_CODE:
                 return "Court code"
             case this.FT_CTY:
@@ -3844,113 +3889,113 @@ const eVisualFieldType = {
             case this.FT_VETERAN:
                 return "Veteran"
             case this.FT_DL_CLASS_CODE_A_1_FROM:
-                return "DL class code A1 from"
+                return "DL category A1 valid from"
             case this.FT_DL_CLASS_CODE_A_1_TO:
-                return "DL class code A1 to"
+                return "DL category A1 valid to"
             case this.FT_DL_CLASS_CODE_A_1_NOTES:
-                return "DL class code A1 notes"
+                return "DL category A1 codes"
             case this.FT_DL_CLASS_CODE_A_FROM:
-                return "DL class code A from"
+                return "DL category A valid from"
             case this.FT_DL_CLASS_CODE_A_TO:
-                return "DL class code A to"
+                return "DL category A valid to"
             case this.FT_DL_CLASS_CODE_A_NOTES:
-                return "DL class code A notes"
+                return "DL category A codes"
             case this.FT_DL_CLASS_CODE_B_FROM:
-                return "DL class code B from"
+                return "DL category B valid from"
             case this.FT_DL_CLASS_CODE_B_TO:
-                return "DL class code B to"
+                return "DL category B valid to"
             case this.FT_DL_CLASS_CODE_B_NOTES:
-                return "DL class code B notes"
+                return "DL category B codes"
             case this.FT_DL_CLASS_CODE_C_1_FROM:
-                return "DL class code C1 from"
+                return "DL category C1 valid from"
             case this.FT_DL_CLASS_CODE_C_1_TO:
-                return "DL class code C1 to"
+                return "DL category C1 valid to"
             case this.FT_DL_CLASS_CODE_C_1_NOTES:
-                return "DL class code C1 notes"
+                return "DL category C1 codes"
             case this.FT_DL_CLASS_CODE_C_FROM:
-                return "DL class code C from"
+                return "DL category C valid from"
             case this.FT_DL_CLASS_CODE_C_TO:
-                return "DL class code C to"
+                return "DL category C valid to"
             case this.FT_DL_CLASS_CODE_C_NOTES:
-                return "DL class code C notes"
+                return "DL category C codes"
             case this.FT_DL_CLASS_CODE_D_1_FROM:
-                return "DL class code D1 from"
+                return "DL category D1 valid from"
             case this.FT_DL_CLASS_CODE_D_1_TO:
-                return "DL class code D1 to"
+                return "DL category D1 valid to"
             case this.FT_DL_CLASS_CODE_D_1_NOTES:
-                return "DL class code D1 notes"
+                return "DL category D1 codes"
             case this.FT_DL_CLASS_CODE_D_FROM:
-                return "DL class code D from"
+                return "DL category D valid from"
             case this.FT_DL_CLASS_CODE_D_TO:
-                return "DL class code D to"
+                return "DL category D valid to"
             case this.FT_DL_CLASS_CODE_D_NOTES:
-                return "DL class code D notes"
+                return "DL category D codes"
             case this.FT_DL_CLASS_CODE_BE_FROM:
-                return "DL class code BE from"
+                return "DL category BE valid from"
             case this.FT_DL_CLASS_CODE_BE_TO:
-                return "DL class code BE to"
+                return "DL category BE valid to"
             case this.FT_DL_CLASS_CODE_BE_NOTES:
-                return "DL class code BE notes"
+                return "DL category BE codes"
             case this.FT_DL_CLASS_CODE_C_1_E_FROM:
-                return "DL class code C1E from"
+                return "DL category C1E valid from"
             case this.FT_DL_CLASS_CODE_C_1_E_TO:
-                return "DL class code C1E to"
+                return "DL category C1E valid to"
             case this.FT_DL_CLASS_CODE_C_1_E_NOTES:
-                return "DL class code C1E notes"
+                return "DL category C1E codes"
             case this.FT_DL_CLASS_CODE_CE_FROM:
-                return "DL class code CE from"
+                return "DL category CE valid from"
             case this.FT_DL_CLASS_CODE_CE_TO:
-                return "DL class code CE to"
+                return "DL category CE valid to"
             case this.FT_DL_CLASS_CODE_CE_NOTES:
-                return "DL class code CE notes"
+                return "DL category CE codes"
             case this.FT_DL_CLASS_CODE_D_1_E_FROM:
-                return "DL class code D1E from"
+                return "DL category D1E valid from"
             case this.FT_DL_CLASS_CODE_D_1_E_TO:
-                return "DL class code D1E to"
+                return "DL category D1E valid to"
             case this.FT_DL_CLASS_CODE_D_1_E_NOTES:
-                return "DL class code D1E notes"
+                return "DL category D1E codes"
             case this.FT_DL_CLASS_CODE_DE_FROM:
-                return "DL class code DE from"
+                return "DL category DE valid from"
             case this.FT_DL_CLASS_CODE_DE_TO:
-                return "DL class code DE to"
+                return "DL category DE valid to"
             case this.FT_DL_CLASS_CODE_DE_NOTES:
-                return "DL class code DE notes"
+                return "DL category DE codes"
             case this.FT_DL_CLASS_CODE_M_FROM:
-                return "DL class code M from"
+                return "DL category M valid from"
             case this.FT_DL_CLASS_CODE_M_TO:
-                return "DL class code M to"
+                return "DL category M valid to"
             case this.FT_DL_CLASS_CODE_M_NOTES:
-                return "DL class code M notes"
+                return "DL category M codes"
             case this.FT_DL_CLASS_CODE_L_FROM:
-                return "DL class code L from"
+                return "DL category L valid from"
             case this.FT_DL_CLASS_CODE_L_TO:
-                return "DL class code L to"
+                return "DL category L valid to"
             case this.FT_DL_CLASS_CODE_L_NOTES:
-                return "DL class code L Notes"
+                return "DL category L codes"
             case this.FT_DL_CLASS_CODE_T_FROM:
-                return "DL class code T from"
+                return "DL category T valid from"
             case this.FT_DL_CLASS_CODE_T_TO:
-                return "DL class code T to"
+                return "DL category T valid to"
             case this.FT_DL_CLASS_CODE_T_NOTES:
-                return "DL class code T notes"
+                return "DL category T codes"
             case this.FT_DL_CLASS_CODE_AM_FROM:
-                return "DL class code AM from"
+                return "DL category AM valid from"
             case this.FT_DL_CLASS_CODE_AM_TO:
-                return "DL class code AM to"
+                return "DL category AM valid to"
             case this.FT_DL_CLASS_CODE_AM_NOTES:
-                return "DL class code AM notes"
+                return "DL category AM codes"
             case this.FT_DL_CLASS_CODE_A_2_FROM:
-                return "DL class code A2 from"
+                return "DL category A2 valid from"
             case this.FT_DL_CLASS_CODE_A_2_TO:
-                return "DL class code A2 to"
+                return "DL category A2 valid to"
             case this.FT_DL_CLASS_CODE_A_2_NOTES:
-                return "DL class code A2 notes"
+                return "DL category A2 codes"
             case this.FT_DL_CLASS_CODE_B_1_FROM:
-                return "DL class code B1 from"
+                return "DL category B1 valid from"
             case this.FT_DL_CLASS_CODE_B_1_TO:
-                return "DL class code B1 to"
+                return "DL category B1 valid to"
             case this.FT_DL_CLASS_CODE_B_1_NOTES:
-                return "DL class code B1 notes"
+                return "DL category B1 codes"
             case this.FT_SURNAME_AT_BIRTH:
                 return "Surname at birth"
             case this.FT_CIVIL_STATUS:
@@ -3984,7 +4029,7 @@ const eVisualFieldType = {
             case this.FT_PAYLOAD_CAPACITY:
                 return "Payload capacity"
             case this.FT_NUMBER_OF_AXELS:
-                return "Number of axels"
+                return "Number of axles"
             case this.FT_PERMISSIBLE_AXLE_LOAD:
                 return "Permissible axle load"
             case this.FT_PRECINCT:
@@ -4026,53 +4071,53 @@ const eVisualFieldType = {
             case this.FT_CENTURY_DATE_OF_BIRTH:
                 return "Century of birth"
             case this.FT_DL_CLASSCODE_A3_FROM:
-                return "DL class code A3 from"
+                return "DL category A3 valid from"
             case this.FT_DL_CLASSCODE_A3_TO:
-                return "DL class code A3 to"
+                return "DL category A3 valid to"
             case this.FT_DL_CLASSCODE_A3_NOTES:
-                return "DL class code A3 notes"
+                return "DL category A3 codes"
             case this.FT_DL_CLASSCODE_C2_FROM:
-                return "DL class code C2 from"
+                return "DL category C2 valid from"
             case this.FT_DL_CLASSCODE_C2_TO:
-                return "DL class code C2 to"
+                return "DL category C2 valid to"
             case this.FT_DL_CLASSCODE_C2_NOTES:
-                return "DL class code C2 notes"
+                return "DL category C2 codes"
             case this.FT_DL_CLASSCODE_B2_FROM:
-                return "DL class code B2 from"
+                return "DL category B2 valid from"
             case this.FT_DL_CLASSCODE_B2_TO:
-                return "DL class code B2 to"
+                return "DL category B2 valid to"
             case this.FT_DL_CLASSCODE_B2_NOTES:
-                return "DL class code B2 notes"
+                return "DL category B2 codes"
             case this.FT_DL_CLASSCODE_D2_FROM:
-                return "DL class code D2 from"
+                return "DL category D2 valid from"
             case this.FT_DL_CLASSCODE_D2_TO:
-                return "DL class code D2 to"
+                return "DL category D2 valid to"
             case this.FT_DL_CLASSCODE_D2_NOTES:
-                return "DL class code D2 notes"
+                return "DL category D2 codes"
             case this.FT_DL_CLASSCODE_B2E_FROM:
-                return "DL class code B2E from"
+                return "DL category B2E valid from"
             case this.FT_DL_CLASSCODE_B2E_TO:
-                return "DL class code B2E to"
+                return "DL category B2E valid to"
             case this.FT_DL_CLASSCODE_B2E_NOTES:
-                return "DL class code B2E notes"
+                return "DL category B2E codes"
             case this.FT_DL_CLASSCODE_G_FROM:
-                return "DL class code G from"
+                return "DL category G valid from"
             case this.FT_DL_CLASSCODE_G_TO:
-                return "DL class code G to"
+                return "DL category G valid to"
             case this.FT_DL_CLASSCODE_G_NOTES:
-                return "DL class code G notes"
+                return "DL category G codes"
             case this.FT_DL_CLASSCODE_J_FROM:
-                return "DL class code J from"
+                return "DL category J valid from"
             case this.FT_DL_CLASSCODE_J_TO:
-                return "DL class code J to"
+                return "DL category J valid to"
             case this.FT_DL_CLASSCODE_J_NOTES:
-                return "DL class code J notes"
+                return "DL category J codes"
             case this.FT_DL_CLASSCODE_LC_FROM:
-                return "DL class code LC from"
+                return "DL category LC valid from"
             case this.FT_DL_CLASSCODE_LC_TO:
-                return "DL class code LC to"
+                return "DL category LC valid to"
             case this.FT_DLC_LASSCODE_LC_NOTES:
-                return "DL class code LC notes"
+                return "DL category LC codes"
             case this.FT_BANKCARDNUMBER:
                 return "Bank card number"
             case this.FT_BANKCARDVALIDTHRU:
@@ -4210,125 +4255,125 @@ const eVisualFieldType = {
             case this.FT_YEARS_SINCE_ISSUE:
                 return "Years since issue"
             case this.FT_DLCLASSCODE_BTP_FROM:
-                return "DL class code BTP from"
+                return "DL category BTP valid from"
             case this.FT_DLCLASSCODE_BTP_NOTES:
-                return "DL class code BTP notes"
+                return "DL category BTP codes"
             case this.FT_DLCLASSCODE_BTP_TO:
-                return "DL class code BTP to"
+                return "DL category BTP valid to"
             case this.FT_DLCLASSCODE_C3_FROM:
-                return "DL class code C3 from"
+                return "DL category C3 valid from"
             case this.FT_DLCLASSCODE_C3_NOTES:
-                return "DL class code C3 notes"
+                return "DL category C3 codes"
             case this.FT_DLCLASSCODE_C3_TO:
-                return "DL class code C3 to"
+                return "DL category C3 valid to"
             case this.FT_DLCLASSCODE_E_FROM:
-                return "DL class code E from"
+                return "DL category E valid from"
             case this.FT_DLCLASSCODE_E_NOTES:
-                return "DL class code E notes"
+                return "DL category E codes"
             case this.FT_DLCLASSCODE_E_TO:
-                return "DL class code E to"
+                return "DL category E valid to"
             case this.FT_DLCLASSCODE_F_FROM:
-                return "DL class code F from"
+                return "DL category F valid from"
             case this.FT_DLCLASSCODE_F_NOTES:
-                return "DL class code F notes"
+                return "DL category F codes"
             case this.FT_DLCLASSCODE_F_TO:
-                return "DL class code F to"
+                return "DL category F valid to"
             case this.FT_DLCLASSCODE_FA_FROM:
-                return "DL class code FA from"
+                return "DL category FA valid from"
             case this.FT_DLCLASSCODE_FA_NOTES:
-                return "DL class code FA notes"
+                return "DL category FA codes"
             case this.FT_DLCLASSCODE_FA_TO:
-                return "DL class code FA to"
+                return "DL category FA valid to"
             case this.FT_DLCLASSCODE_FA1_FROM:
-                return "DL class code FA1 from"
+                return "DL category FA1 valid from"
             case this.FT_DLCLASSCODE_FA1_NOTES:
-                return "DL class code FA1 notes"
+                return "DL category FA1 codes"
             case this.FT_DLCLASSCODE_FA1_TO:
-                return "DL class code FA1 to"
+                return "DL category FA1 valid to"
             case this.FT_DLCLASSCODE_FB_FROM:
-                return "DL class code FB from"
+                return "DL category FB valid from"
             case this.FT_DLCLASSCODE_FB_NOTES:
-                return "DL class code FB notes"
+                return "DL category FB codes"
             case this.FT_DLCLASSCODE_FB_TO:
-                return "DL class code FB to"
+                return "DL category FB valid to"
             case this.FT_DLCLASSCODE_G1_FROM:
-                return "DL class code G1 from"
+                return "DL category G1 valid from"
             case this.FT_DLCLASSCODE_G1_NOTES:
-                return "DL class code G1 notes"
+                return "DL category G1 codes"
             case this.FT_DLCLASSCODE_G1_TO:
-                return "DL class code G1 to"
+                return "DL category G1 valid to"
             case this.FT_DLCLASSCODE_H_FROM:
-                return "DL class code H from"
+                return "DL category H valid from"
             case this.FT_DLCLASSCODE_H_NOTES:
-                return "DL class code H notes"
+                return "DL category H codes"
             case this.FT_DLCLASSCODE_H_TO:
-                return "DL class code H to"
+                return "DL category H valid to"
             case this.FT_DLCLASSCODE_I_FROM:
-                return "DL class code I from"
+                return "DL category I valid from"
             case this.FT_DLCLASSCODE_I_NOTES:
-                return "DL class code I notes"
+                return "DL category I codes"
             case this.FT_DLCLASSCODE_I_TO:
-                return "DL class code I to"
+                return "DL category I valid to"
             case this.FT_DLCLASSCODE_K_FROM:
-                return "DL class code K from"
+                return "DL category K valid from"
             case this.FT_DLCLASSCODE_K_NOTES:
-                return "DL class code K notes"
+                return "DL category K codes"
             case this.FT_DLCLASSCODE_K_TO:
-                return "DL class code K to"
+                return "DL category K valid to"
             case this.FT_DLCLASSCODE_LK_FROM:
-                return "DL class code LK from"
+                return "DL category LK valid from"
             case this.FT_DLCLASSCODE_LK_NOTES:
-                return "DL class code LK Notes"
+                return "DL category LK codes"
             case this.FT_DLCLASSCODE_LK_TO:
-                return "DL class code LK to"
+                return "DL category LK valid to"
             case this.FT_DLCLASSCODE_N_FROM:
-                return "DL class code N from"
+                return "DL category N valid from"
             case this.FT_DLCLASSCODE_N_NOTES:
-                return "DL class code N notes"
+                return "DL category N codes"
             case this.FT_DLCLASSCODE_N_TO:
-                return "DL class code N to"
+                return "DL category N valid to"
             case this.FT_DLCLASSCODE_S_FROM:
-                return "DL class code S from"
+                return "DL category S valid from"
             case this.FT_DLCLASSCODE_S_NOTES:
-                return "DL class code S notes"
+                return "DL category S codes"
             case this.FT_DLCLASSCODE_S_TO:
-                return "DL class code S to"
+                return "DL category S valid to"
             case this.FT_DLCLASSCODE_TB_FROM:
-                return "DL class code TB from"
+                return "DL category TB valid from"
             case this.FT_DLCLASSCODE_TB_NOTES:
-                return "DL class code TB notes"
+                return "DL category TB codes"
             case this.FT_DLCLASSCODE_TB_TO:
-                return "DL class code TB to"
+                return "DL category TB valid to"
             case this.FT_DLCLASSCODE_TM_FROM:
-                return "DL class code TM from"
+                return "DL category TM valid from"
             case this.FT_DLCLASSCODE_TM_NOTES:
-                return "DL class code TM notes"
+                return "DL category TM codes"
             case this.FT_DLCLASSCODE_TM_TO:
-                return "DL class code TM to"
+                return "DL category TM valid to"
             case this.FT_DLCLASSCODE_TR_FROM:
-                return "DL class code TR from"
+                return "DL category TR valid from"
             case this.FT_DLCLASSCODE_TR_NOTES:
-                return "DL class code TR notes"
+                return "DL category TR codes"
             case this.FT_DLCLASSCODE_TR_TO:
-                return "DL class code TR to"
+                return "DL category TR valid to"
             case this.FT_DLCLASSCODE_TV_FROM:
-                return "DL class code TV from"
+                return "DL category TV valid from"
             case this.FT_DLCLASSCODE_TV_NOTES:
-                return "DL class code TV notes"
+                return "DL category TV codes"
             case this.FT_DLCLASSCODE_TV_TO:
-                return "DL class code TV to"
+                return "DL category TV valid to"
             case this.FT_DLCLASSCODE_V_FROM:
-                return "DL class code V from"
+                return "DL category V valid from"
             case this.FT_DLCLASSCODE_V_NOTES:
-                return "DL class code V notes"
+                return "DL category V codes"
             case this.FT_DLCLASSCODE_V_TO:
-                return "DL class code V to"
+                return "DL category V valid to"
             case this.FT_DLCLASSCODE_W_FROM:
-                return "DL class code W from"
+                return "DL category W valid from"
             case this.FT_DLCLASSCODE_W_NOTES:
-                return "DL class code W notes"
+                return "DL category W codes"
             case this.FT_DLCLASSCODE_W_TO:
-                return "DL class code W to"
+                return "DL category W valid to"
             case this.FT_CALIBER:
                 return "Caliber"
             case this.FT_CITIZENSHIP_OF_FIRST_PERSON:
@@ -4348,11 +4393,69 @@ const eVisualFieldType = {
             case this.FT_NUMBER_OF_CYLINDERS:
                 return "Number of cylinders"
             case this.FT_SURNAME_OF_HUSBAND_AFTER_REGISTRATION:
-                return "Surname of husband  after registration"
+                return "Surname of husband after registration"
             case this.FT_SURNAME_OF_WIFE_AFTER_REGISTRATION:
                 return "Surname of wife after registration"
             case this.FT_URL:
                 return "URL"
+            case this.FT_DATE_OF_INSURANCE_EXPIRY:
+                return "Expiry date of insurance"
+            case this.FT_MORTGAGE_BY:
+                return "Mortgage by"
+            case this.FT_OLD_DOCUMENT_NUMBER:
+                return "Old document number"
+            case this.FT_OLD_DATE_OF_ISSUE:
+                return "Old date of issue"
+            case this.FT_OLD_PLACE_OF_ISSUE:
+                return "Old place of issue"
+            case this.FT_DLCLASSCODE_LR_FROM:
+                return "DL category LR valid from"
+            case this.FT_DLCLASSCODE_LR_TO:
+                return "DL category LR valid to"
+            case this.FT_DLCLASSCODE_LR_NOTES:
+                return "DL category LR codes"
+            case this.FT_DLCLASSCODE_MR_FROM:
+                return "DL category MR valid from"
+            case this.FT_DLCLASSCODE_MR_TO:
+                return "DL category MR valid to"
+            case this.FT_DLCLASSCODE_MR_NOTES:
+                return "DL category MR codes"
+            case this.FT_DLCLASSCODE_HR_FROM:
+                return "DL category HR valid from"
+            case this.FT_DLCLASSCODE_HR_TO:
+                return "DL category HR valid to"
+            case this.FT_DLCLASSCODE_HR_NOTES:
+                return "DL category HR codes"
+            case this.FT_DLCLASSCODE_HC_FROM:
+                return "DL category HC valid from"
+            case this.FT_DLCLASSCODE_HC_TO:
+                return "DL category HC valid to"
+            case this.FT_DLCLASSCODE_HC_NOTES:
+                return "DL category HC codes"
+            case this.FT_DLCLASSCODE_MC_FROM:
+                return "DL category MC valid from"
+            case this.FT_DLCLASSCODE_MC_TO:
+                return "DL category MC valid to"
+            case this.FT_DLCLASSCODE_MC_NOTES:
+                return "DL category MC codes"
+            case this.FT_DLCLASSCODE_RE_FROM:
+                return "DL category RE valid from"
+            case this.FT_DLCLASSCODE_RE_TO:
+                return "DL category RE valid to"
+            case this.FT_DLCLASSCODE_RE_NOTES:
+                return "DL category RE codes"
+            case this.FT_DLCLASSCODE_R_FROM:
+                return "DL category R valid from"
+            case this.FT_DLCLASSCODE_R_TO:
+                return "DL category R valid to"
+            case this.FT_DLCLASSCODE_R_NOTES:
+                return "DL category R codes"
+            case this.FT_DLCLASSCODE_CA_FROM:
+                return "DL category CA valid from"
+            case this.FT_DLCLASSCODE_CA_TO:
+                return "DL category CA valid to"
+            case this.FT_DLCLASSCODE_CA_NOTES:
+                return "DL category CA codes"
             default:
                 return value
         }
@@ -4926,49 +5029,50 @@ const UIViewContentMode = {
 }
 
 const Enum = {
-   BarcodeResult: BarcodeResult,
-   BarcodeType: BarcodeType,
-   CameraTypes: CameraTypes,
-   CaptureMode: CaptureMode,
-   diDocType: diDocType,
-   DocFormat: DocFormat,
-   DocReaderAction: DocReaderAction,
-   DocReaderFrame: DocReaderFrame,
-   DocReaderOrientation: DocReaderOrientation,
-   eCheckDiagnose: eCheckDiagnose,
-   eCheckResult: eCheckResult,
-   eGraphicFieldType: eGraphicFieldType,
-   eImageQualityCheckType: eImageQualityCheckType,
-   eProcessGLCommands: eProcessGLCommands,
-   eRequestCommand: eRequestCommand,
-   eRFID_AccessControl_ProcedureType: eRFID_AccessControl_ProcedureType,
-   eRFID_AuthenticationProcedureType: eRFID_AuthenticationProcedureType,
-   eRFID_BaudRate: eRFID_BaudRate,
-   eRFID_CertificateType: eRFID_CertificateType,
-   eRFID_DataFile_Type: eRFID_DataFile_Type,
-   eRFID_NotificationAndErrorCodes: eRFID_NotificationAndErrorCodes,
-   eRFID_Password_Type: eRFID_Password_Type,
-   eRFID_SDK_ProfilerType: eRFID_SDK_ProfilerType,
-   eRFID_TerminalType: eRFID_TerminalType,
-   eRPRM_Authenticity: eRPRM_Authenticity,
-   eRPRM_FieldVerificationResult: eRPRM_FieldVerificationResult,
-   eRPRM_Lights: eRPRM_Lights,
-   eRPRM_ResultType: eRPRM_ResultType,
-   eRPRM_SecurityFeatureType: eRPRM_SecurityFeatureType,
-   eSignManagementAction: eSignManagementAction,
-   eVisualFieldType: eVisualFieldType,
-   FontStyle: FontStyle,
-   FrameShapeType: FrameShapeType,
-   LCID: LCID,
-   PKDResourceType: PKDResourceType,
-   ProcessingFinishedStatus: ProcessingFinishedStatus,
-   RGLMeasureSystem: RGLMeasureSystem,
-   ScenarioIdentifier: ScenarioIdentifier,
-   LineCap: LineCap,
-   UIInterfaceOrientationMask: UIInterfaceOrientationMask,
-   AVCaptureSessionPreset: AVCaptureSessionPreset,
-   AVCaptureDevicePosition: AVCaptureDevicePosition,
-   UIViewContentMode: UIViewContentMode,
+   BarcodeResult,
+   BarcodeType,
+   CameraMode,
+   CameraTypes,
+   CaptureMode,
+   diDocType,
+   DocFormat,
+   DocReaderAction,
+   DocReaderFrame,
+   DocReaderOrientation,
+   eCheckDiagnose,
+   eCheckResult,
+   eGraphicFieldType,
+   eImageQualityCheckType,
+   eProcessGLCommands,
+   eRequestCommand,
+   eRFID_AccessControl_ProcedureType,
+   eRFID_AuthenticationProcedureType,
+   eRFID_BaudRate,
+   eRFID_CertificateType,
+   eRFID_DataFile_Type,
+   eRFID_NotificationAndErrorCodes,
+   eRFID_Password_Type,
+   eRFID_SDK_ProfilerType,
+   eRFID_TerminalType,
+   eRPRM_Authenticity,
+   eRPRM_FieldVerificationResult,
+   eRPRM_Lights,
+   eRPRM_ResultType,
+   eRPRM_SecurityFeatureType,
+   eSignManagementAction,
+   eVisualFieldType,
+   FontStyle,
+   FrameShapeType,
+   LCID,
+   PKDResourceType,
+   ProcessingFinishedStatus,
+   RGLMeasureSystem,
+   ScenarioIdentifier,
+   LineCap,
+   UIInterfaceOrientationMask,
+   AVCaptureSessionPreset,
+   AVCaptureDevicePosition,
+   UIViewContentMode,
 }
 
 const DocumentReader = {}
@@ -5007,6 +5111,7 @@ DocumentReader.cancelDBUpdate = (successCallback, errorCallback) => RNRegulaDocu
 DocumentReader.resetConfiguration = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "resetConfiguration", [], successCallback, errorCallback)
 DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
 DocumentReader.readRFID = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "readRFID", [], successCallback, errorCallback)
+DocumentReader.getRfidSessionStatus = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidSessionStatus", [], successCallback, errorCallback)
 DocumentReader.setEnableCoreLogs = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setEnableCoreLogs", [arg0], successCallback, errorCallback)
 DocumentReader.addPKDCertificates = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "addPKDCertificates", [arg0], successCallback, errorCallback)
 DocumentReader.setCameraSessionIsPaused = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setCameraSessionIsPaused", [arg0], successCallback, errorCallback)
@@ -5020,14 +5125,13 @@ DocumentReader.initializeReader = (arg0, successCallback, errorCallback) => RNRe
 DocumentReader.initializeReaderWithDatabasePath = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabasePath", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.prepareDatabase = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "prepareDatabase", [arg0], successCallback, errorCallback)
 DocumentReader.recognizeImage = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImage", [arg0], successCallback, errorCallback)
+DocumentReader.setRfidSessionStatus = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidSessionStatus", [arg0], successCallback, errorCallback)
 DocumentReader.recognizeImageFrame = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageFrame", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.recognizeImageWithOpts = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithOpts", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.recognizeVideoFrame = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeVideoFrame", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.showScannerWithCameraIDAndOpts = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "showScannerWithCameraIDAndOpts", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.recognizeImageWithImageInputParams = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithImageInputParams", [arg0, arg1], successCallback, errorCallback)
 DocumentReader.recognizeImageWithCameraMode = (arg0, arg1, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithCameraMode", [arg0, arg1], successCallback, errorCallback)
-DocumentReader.setRfidSessionStatus = (arg0, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidSessionStatus", [arg0], successCallback, errorCallback)
-DocumentReader.getRfidSessionStatus = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidSessionStatus", [], successCallback, errorCallback)
 
 DocumentReader.DocumentReaderResults = DocumentReaderResults
 DocumentReader.Enum = Enum

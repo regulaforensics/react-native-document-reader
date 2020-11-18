@@ -10,9 +10,6 @@
 + (NSMutableDictionary* _Nullable)generateImageQualityGroup:(RGLImageQualityGroup* _Nullable) imageQualityGroup;
 +(NSMutableArray* _Nullable)generateImageQualityList:(NSArray<RGLImageQuality *> * _Nonnull) imageQualityList;
 +(NSMutableDictionary* _Nullable)generateImageQuality:(RGLImageQuality* _Nullable) imageQuality;
-+(NSMutableDictionary* _Nullable)generateDocumentReaderJsonResult:(RGLDocumentReaderJsonResult* _Nullable) documentReaderJsonResult;
-+(NSMutableArray* _Nullable)generateNSArrayDocumentReaderJsonResultGroup:(NSArray<RGLDocumentReaderJsonResultGroup *> * _Nonnull) list;
-+(NSMutableDictionary* _Nullable)generateDocumentReaderJsonResultGroup:(RGLDocumentReaderJsonResultGroup* _Nullable) documentReaderJsonResultGroup;
 +(NSMutableDictionary* _Nullable)generateDocumentReaderGraphicResult:(RGLDocumentReaderGraphicResult* _Nullable) documentReaderGraphicResult;
 +(NSMutableArray* _Nullable)generateNSArrayDocumentReaderGraphicResultGroup:(NSArray<RGLDocumentReaderGraphicField*>* _Nonnull) list;
 +(NSMutableDictionary* _Nullable)generateDocumentReaderGraphicField:(RGLDocumentReaderGraphicField* _Nullable) documentReaderGraphicField;
@@ -29,7 +26,7 @@
 +(NSInteger)generateDocReaderAction:(RGLDocReaderAction)action;
 +(NSInteger)generateRFIDCompleteAction:(RGLRFIDCompleteAction)action;
 +(NSInteger)generateRFIDNotificationAction:(RGLRFIDNotificationAction)action;
-+(NSString*)generateCompletion:(NSInteger)action :(RGLDocumentReaderResults*)results :(NSError*)error :(RGLRFIDNotify*)notify;
++(NSString*_Nullable)generateCompletion:(NSInteger)action :(RGLDocumentReaderResults*_Nullable)results :(NSError*_Nullable)error :(RGLRFIDNotify*_Nullable)notify;
 
 @end
 #endif
