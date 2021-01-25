@@ -620,7 +620,7 @@
     if([options valueForKey:@"returnCroppedBarcode"] != nil)
         processParams.returnCroppedBarcode = [[options valueForKey:@"returnCroppedBarcode"] boolValue];
     if([options valueForKey:@"checkHologram"] != nil)
-        processParams.doublePageSpread = [[options valueForKey:@"checkHologram"] boolValue];
+        processParams.checkHologram = [[options valueForKey:@"checkHologram"] boolValue];
 }
 
 +(NSMutableDictionary *)getCustomization:(RGLCustomization*)customization {
