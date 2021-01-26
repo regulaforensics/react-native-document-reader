@@ -27,6 +27,7 @@ import com.regula.documentreader.api.enums.DocReaderAction;
 import com.regula.documentreader.api.params.ImageInputParam;
 import com.regula.documentreader.api.params.rfid.PKDCertificate;
 import com.regula.documentreader.api.results.DocumentReaderResults;
+import com.regula.documentreader.api.errors.DocumentReaderException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
