@@ -82,11 +82,11 @@
 }
 
 +(UIColor *)getUIColorObjectFromHexString:(NSString *)hexStr alpha:(CGFloat)alpha {
-    unsigned int hexint = [self intFromHexString:hexStr];
+    unsigned int hexInt = [self intFromHexString:hexStr];
     UIColor *color =
-    [UIColor colorWithRed:((CGFloat) ((hexint & 0xFF0000) >> 16))/255
-                    green:((CGFloat) ((hexint & 0xFF00) >> 8))/255
-                     blue:((CGFloat) (hexint & 0xFF))/255
+    [UIColor colorWithRed:((CGFloat) ((hexInt & 0xFF0000) >> 16))/255
+                    green:((CGFloat) ((hexInt & 0xFF00) >> 8))/255
+                     blue:((CGFloat) (hexInt & 0xFF))/255
                     alpha:alpha];
 
     return color;
@@ -619,6 +619,8 @@
         processParams.integralImage = [[options valueForKey:@"integralImage"] boolValue];
     if([options valueForKey:@"returnCroppedBarcode"] != nil)
         processParams.returnCroppedBarcode = [[options valueForKey:@"returnCroppedBarcode"] boolValue];
+    if([options valueForKey:@"checkHologram"] != nil)
+        processParams.checkHologram = [[options valueForKey:@"checkHologram"] boolValue];
 }
 
 +(NSMutableDictionary *)getCustomization:(RGLCustomization*)customization {
@@ -746,6 +748,7 @@
     result[@"minDPI"] = [NSNumber numberWithInteger:processParams.minDPI];
     result[@"integralImage"] = [NSNumber numberWithBool:processParams.integralImage];
     result[@"returnCroppedBarcode"] = [NSNumber numberWithBool:processParams.returnCroppedBarcode];
+    result[@"checkHologram"] = [NSNumber numberWithBool:processParams.checkHologram];
 
     return result;
 }

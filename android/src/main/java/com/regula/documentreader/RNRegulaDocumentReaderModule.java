@@ -27,6 +27,7 @@ import com.regula.documentreader.api.enums.DocReaderAction;
 import com.regula.documentreader.api.params.ImageInputParam;
 import com.regula.documentreader.api.params.rfid.PKDCertificate;
 import com.regula.documentreader.api.results.DocumentReaderResults;
+import com.regula.documentreader.api.errors.DocumentReaderException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -276,9 +277,6 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "initializeReader":
                     initializeReader(callback, args(0));
                     break;
-                case "initializeReaderWithDatabasePath":
-                    initializeReaderWithDatabasePath(callback, args(0), args(1));
-                    break;
                 case "prepareDatabase":
                     prepareDatabase(callback, args(0));
                     break;
@@ -287,6 +285,9 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                     break;
                 case "setRfidSessionStatus":
                     setRfidSessionStatus(callback, args(0));
+                    break;
+                case "initializeReaderWithDatabasePath":
+                    initializeReaderWithDatabasePath(callback, args(0), args(1));
                     break;
                 case "recognizeImageFrame":
                     recognizeImageFrame(callback, args(0), args(1));
@@ -448,7 +449,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         Instance().recognizeImage(JSONConstructor.bitmapFromBase64(base64Image), new ImageInputParam(params.getInt("width"), params.getInt("height"), params.getInt("type")), getCompletion());
     }
 
-    private void recognizeImageWithOpts(Callback callback, final JSONObject opts, String base64Image) throws JSONException {
+    private void recognizeImageWithOpts(Callback callback, String base64Image, final JSONObject opts) throws JSONException {
         RegulaConfig.setConfig(Instance(), opts, getContext());
         recognizeImage(callback, base64Image);
     }
@@ -612,7 +613,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             }
 
             @Override
-            public void onPrepareCompleted(boolean status, Throwable error) {
+            public void onPrepareCompleted(boolean status, DocumentReaderException error) {
                 if (status)
                     callback.success("database prepared");
                 else
