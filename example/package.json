@@ -11,11 +11,11 @@
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
   },
   "dependencies": {
-    "react": "16.11.0",
+    "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-check-box": "^2.1.7",
     "react-native-customized-image-picker": "^1.1.0",
-    "@regulaforensics/react-native-document-reader-api-beta": "^0.0.61",
+    "@regulaforensics/react-native-document-reader-api-beta": "^0.0.62",
     "@regulaforensics/react-native-document-reader-core-fullrfid-beta": "^0.0.11",
     "react-native-progress": "^4.1.2",
     "react-native-fs": "^2.16.6",
