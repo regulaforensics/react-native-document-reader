@@ -18,7 +18,6 @@ import android.graphics.Typeface;
 
 import java.math.BigDecimal;
 
-import static com.regula.documentreader.Helpers.*;
 import static com.regula.documentreader.JSONConstructor.*;
 
 class RegulaConfig {
@@ -31,11 +30,11 @@ class RegulaConfig {
             setProcessParams(reader.processParams(), opts.getJSONObject("processParams"));
     }
 
-    static JSONObject getConfig(DocumentReader reader) throws JSONException {
+    static JSONObject getConfig(DocumentReader reader, Context context) throws JSONException {
         JSONObject object = new JSONObject();
         object.put("customization", getCustomization(reader.customization()));
         object.put("functionality", getFunctionality(reader.functionality()));
-        object.put("processParams", getProcessParams(reader.processParams()));
+        object.put("processParams", getProcessParams(reader.processParams(), context));
 
         return object;
     }
@@ -375,7 +374,7 @@ class RegulaConfig {
         return object;
     }
 
-    private static JSONObject getProcessParams(ProcessParam processParams) throws JSONException {
+    private static JSONObject getProcessParams(ProcessParam processParams, Context context) throws JSONException {
         JSONObject object = new JSONObject();
         object.put("scenario", processParams.scenario);
         object.put("measureSystem", processParams.measureSystem);
@@ -410,7 +409,7 @@ class RegulaConfig {
         if (processParams.fieldTypesFilter != null)
             object.put("fieldTypesFilter", generateIntArray(processParams.fieldTypesFilter));
         if (processParams.faceMetaData != null)
-            object.put("faceMetaData", generateArray(processParams.faceMetaData, JSONConstructor::generateFaceMetaData));
+            object.put("faceMetaData", generateArray(processParams.faceMetaData, JSONConstructor::generateFaceMetaData, context));
 
         return object;
     }

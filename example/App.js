@@ -62,7 +62,7 @@ export default class App extends Component {
             var scenariosL = []
             for (var i in scenariosTemp) {
               scenariosL.push({
-                label: DocumentReader.DocumentReaderScenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
+                label: DocumentReader.Scenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
                 value: i
               })
             }
