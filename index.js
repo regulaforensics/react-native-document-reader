@@ -3,15 +3,28 @@ const { RNRegulaDocumentReader } = NativeModules
 
 // Classes
 
-class Scenario {
+class DocumentReaderScenario {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new Scenario()
+        const result = new DocumentReaderScenario()
 
-        result.frame = jsonObject["frame"]
-        result.frameOrientation = jsonObject["frameOrientation"]
         result.uvTorch = jsonObject["uvTorch"]
-        result.barcodeExt = jsonObject["barcodeExt"]
+        result.seriesProcessMode = jsonObject["seriesProcessMode"]
+        result.name = jsonObject["name"]
+        result.caption = jsonObject["caption"]
+        result.description = jsonObject["description"]
+
+        return result
+    }
+}
+
+class DocumentReaderScenarioFull {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocumentReaderScenarioFull()
+
+        result.uvTorch = jsonObject["uvTorch"]
+        result.frameOrientation = jsonObject["frameOrientation"]
         result.faceExt = jsonObject["faceExt"]
         result.multiPageOff = jsonObject["multiPageOff"]
         result.seriesProcessMode = jsonObject["seriesProcessMode"]
@@ -22,6 +35,34 @@ class Scenario {
         result.name = jsonObject["name"]
         result.caption = jsonObject["caption"]
         result.description = jsonObject["description"]
+        result.manualCrop = jsonObject["manualCrop"]
+
+        return result
+    }
+}
+
+class FaceMetaData {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new FaceMetaData()
+
+        result.ID = jsonObject["ID"]
+        result.rollAngle = jsonObject["rollAngle"]
+        result.bounds = Bounds.fromJson(jsonObject["bounds"])
+
+        return result
+    }
+}
+
+class Bounds {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new Bounds()
+
+        result.x = jsonObject["x"]
+        result.y = jsonObject["y"]
+        result.width = jsonObject["width"]
+        result.height = jsonObject["height"]
 
         return result
     }
@@ -31,6 +72,20 @@ class Rect {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Rect()
+
+        result.bottom = jsonObject["bottom"]
+        result.top = jsonObject["top"]
+        result.left = jsonObject["left"]
+        result.right = jsonObject["right"]
+
+        return result
+    }
+}
+
+class DocReaderFieldRect {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocReaderFieldRect()
 
         result.bottom = jsonObject["bottom"]
         result.top = jsonObject["top"]
@@ -53,7 +108,7 @@ class DocumentReaderGraphicField {
         result.fieldName = jsonObject["fieldName"]
         result.lightName = jsonObject["lightName"]
         result.value = jsonObject["value"]
-        result.fieldRect = Rect.fromJson(jsonObject["fieldRect"])
+        result.fieldRect = DocReaderFieldRect.fromJson(jsonObject["fieldRect"])
 
         return result
     }
@@ -175,10 +230,6 @@ class ImageQuality {
         result.featureType = jsonObject["featureType"]
         result.result = jsonObject["result"]
         result.type = jsonObject["type"]
-        result.boundRects = []
-        if (jsonObject["boundRects"] != null)
-            for (const i in jsonObject["boundRects"])
-                result.boundRects.push(Rect.fromJson(jsonObject["boundRects"][i]))
 
         return result
     }
@@ -230,8 +281,8 @@ class DocumentReaderNotification {
         const result = new DocumentReaderNotification()
 
         result.code = jsonObject["code"]
-        result.value = jsonObject["value"]
         result.number = jsonObject["number"]
+        result.value = jsonObject["value"]
 
         return result
     }
@@ -673,8 +724,6 @@ class Throwable {
         if (jsonObject == null) return null
         const result = new Throwable()
 
-        result.code = jsonObject["code"]
-        result.domain = jsonObject["domain"]
         result.localizedMessage = jsonObject["localizedMessage"]
         result.message = jsonObject["message"]
         result.string = jsonObject["string"]
@@ -1172,21 +1221,6 @@ const DocReaderOrientation = {
     LANDSCAPE: 2,
 }
 
-const DocumentReaderException = {
-    NATIVE_JAVA_EXCEPTION: 0,
-    DOCUMENT_READER_STATE_EXCEPTION: 1,
-    DOCUMENT_READER_WRONG_INPUT: 2,
-    DOCUMENT_READER_BLE_EXCEPTION: 201,
-    DB_DOWNLOAD_ERROR: 301,
-    LICENSE_ABSENT_OR_CORRUPTED: 101,
-    LICENSE_INVALID_DATE: 102,
-    LICENSE_INVALID_VERSION: 103,
-    LICENSE_INVALID_DEVICE_ID: 104,
-    LICENSE_INVALID_SYSTEM_OR_APP_ID: 105,
-    LICENSE_NO_CAPABILITIES: 106,
-    LICENSE_NO_AUTHENTICITY: 107,
-}
-
 const eCheckDiagnose = {
     UNKNOWN: 0,
     PASS: 1,
@@ -1219,7 +1253,6 @@ const eCheckDiagnose = {
     VISIBLE_ELEMENT_ABSENT: 41,
     ELEMENT_SHOULD_BE_COLORED: 42,
     ELEMENT_SHOULD_BE_GRAYSCALE: 43,
-    PHOTO_WHITE_IR_DONT_MATCH: 44,
     UV_DULL_PAPER_MRZ: 50,
     FALSE_LUMINISCENCE_IN_MRZ: 51,
     UV_DULL_PAPER_PHOTO: 52,
@@ -1229,7 +1262,6 @@ const eCheckDiagnose = {
     BAD_AREA_IN_AXIAL: 60,
     FALSE_IPI_PARAMETERS: 65,
     FIELD_POS_CORRECTOR_HIGHLIGHT_IR: 80,
-    FIELD_POS_CORRECTOR_GLARES_IN_PHOTO_AREA: 81,
     OVI_IR_INVISIBLE: 90,
     OVI_INSUFFICIENT_AREA: 91,
     OVI_COLOR_INVARIABLE: 92,
@@ -1240,8 +1272,6 @@ const eCheckDiagnose = {
     HOLOGRAM_ELEMENT_ABSENT: 100,
     HOLOGRAM_SIDE_TOP_IMAGES_ABSENT: 101,
     HOLOGRAM_ELEMENT_PRESENT: 102,
-    HOLOGRAM_FRAMES_IS_ABSENT: 103,
-    HOLOGRAM_HOLO_FIELD_IS_ABSENT: 104,
     PHOTO_PATTERN_INTERRUPTED: 110,
     PHOTO_PATTERN_SHIFTED: 111,
     PHOTO_PATTERN_DIFFERENT_COLORS: 112,
@@ -1266,21 +1296,13 @@ const eCheckDiagnose = {
     PORTRAIT_COMPARISON_PORTRAITS_DIFFER: 150,
     PORTRAIT_COMPARISON_NO_SERVICE_REPLY: 151,
     PORTRAIT_COMPARISON_SERVICE_ERROR: 152,
-    PORTRAIT_COMPARISON_NOT_ENOUGH_IMAGES: 153,
+    PPORTRAIT_COMPARISON_NOT_ENOUGH_IMAGES: 153,
     PORTRAIT_COMPARISON_NO_LIVE_PHOTO: 154,
     PORTRAIT_COMPARISON_NO_SERVICE_LICENSE: 155,
     PORTRAIT_COMPARISON_NO_PORTRAIT_DETECTED: 156,
     MOBILE_IMAGES_UNSUITABLE_LIGHT_CONDITIONS: 160,
     MOBILE_IMAGES_WHITE_UV_NO_DIFFERENCE: 161,
-    FINGERPRINTS_COMPARISON_MISMATCH: 170,
-    HOLO_PHOTO_FACE_NOT_DETECTED: 180,
-    HOLO_PHOTO_FACE_COMPARISON_FAILED: 181,
-    HOLO_PHOTO_FACE_GLARE_IN_CENTER_ABSENT: 182,
-    HOLO_ELEMENT_SHAPE_ERROR: 183,
-    ALGORITHM_STEPS_ERROR: 184,
-    HOLO_AREAS_NOT_LOADED: 185,
-    FINISHED_BY_TIMEOUT: 186,
-    LAST_DIAGNOSE_VALUE: 190,
+    LAST_DIAGNOSE_VALUE: 162,
 }
 
 const eCheckResult = {
@@ -1369,8 +1391,6 @@ const eImageQualityCheckType = {
     IQC_IMAGE_GLARES: 0,
     IQC_IMAGE_FOCUS: 1,
     IQC_IMAGE_RESOLUTION: 2,
-    IQC_PERSPECTIVE: 3,
-    IQC_BOUNDS: 4,
 }
 
 const eProcessGLCommands = {
@@ -5072,7 +5092,6 @@ const Enum = {
    DocReaderAction,
    DocReaderFrame,
    DocReaderOrientation,
-   DocumentReaderException,
    eCheckDiagnose,
    eCheckResult,
    eGraphicFieldType,
@@ -5169,7 +5188,7 @@ DocumentReader.recognizeImageWithCameraMode = (image, mode, successCallback, err
 
 DocumentReader.DocumentReaderResults = DocumentReaderResults
 DocumentReader.Enum = Enum
-DocumentReader.Scenario = Scenario
+DocumentReader.DocumentReaderScenario = DocumentReaderScenario
 DocumentReader.DocumentReaderCompletion = DocumentReaderCompletion
 
 export default { DocumentReader, RNRegulaDocumentReader }
