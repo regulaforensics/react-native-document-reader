@@ -96,6 +96,8 @@ class RegulaConfig {
             editor.setZoomFactor(BigDecimal.valueOf(opts.getDouble("zoomFactor")).floatValue());
         if (opts.has("isCameraTorchCheckDisabled"))
             editor.setIsCameraTorchCheckDisabled(opts.getBoolean("isCameraTorchCheckDisabled"));
+        if (opts.has("doRecordProcessingVideo"))
+            editor.setDoRecordProcessingVideo(opts.getBoolean("doRecordProcessingVideo"));
 
         editor.apply();
     }
@@ -159,6 +161,8 @@ class RegulaConfig {
             processParams.returnCroppedBarcode = opts.getBoolean("returnCroppedBarcode");
         if (opts.has("checkHologram"))
             processParams.checkHologram = opts.getBoolean("checkHologram");
+        if (opts.has("checkRequiredTextFields"))
+            processParams.checkRequiredTextFields = opts.getBoolean("checkRequiredTextFields");
     }
 
     private static void setCustomization(ParamsCustomization customization, JSONObject opts, Context context) throws JSONException {
@@ -310,6 +314,7 @@ class RegulaConfig {
         object.put("isZoomEnabled", functionality.isZoomEnabled());
         object.put("zoomFactor", functionality.getZoomFactor());
         object.put("isCameraTorchCheckDisabled", functionality.isCameraTorchCheckDisabled());
+        object.put("doRecordProcessingVideo", functionality.doRecordProcessingVideo());
 
         return object;
     }
@@ -403,6 +408,7 @@ class RegulaConfig {
         object.put("logs", processParams.isLogEnable());
         object.put("returnCroppedBarcode", processParams.returnCroppedBarcode);
         object.put("checkHologram", processParams.checkHologram);
+        object.put("checkRequiredTextFields", processParams.checkRequiredTextFields);
         if (processParams.documentIDList != null)
             object.put("documentIDList", generateIntArray(processParams.documentIDList));
         if (processParams.doBarcodes != null)

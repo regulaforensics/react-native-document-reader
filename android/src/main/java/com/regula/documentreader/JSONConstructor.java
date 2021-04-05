@@ -250,6 +250,20 @@ class JSONConstructor {
         return result;
     }
 
+    static JSONObject generateVideoEncoderCompletion(String sessionId, java.io.File file) {
+        JSONObject result = new JSONObject();
+
+        try {
+            result.put("sessionId", sessionId);
+            result.put("filePath", file.getPath());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     static JSONObject generateCompletion(int action, DocumentReaderResults results, Throwable error, Context context) {
         JSONObject result = new JSONObject();
         try {

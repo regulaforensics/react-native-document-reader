@@ -20,6 +20,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.regula.documentreader.api.DocumentReader;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion;
@@ -27,7 +28,6 @@ import com.regula.documentreader.api.enums.DocReaderAction;
 import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.params.ImageInputParam;
 import com.regula.documentreader.api.params.rfid.PKDCertificate;
-import com.regula.documentreader.api.results.DocumentReaderResults;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,10 +38,11 @@ import java.util.List;
 
 import static com.regula.documentreader.api.DocumentReader.Instance;
 
-@SuppressWarnings({"ConstantConditions", "unused", "RedundantSuppression"})
+@SuppressWarnings({"ConstantConditions", "RedundantSuppression"})
 public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
     private final static String prepareDatabaseProgressChangeEvent = "prepareDatabaseProgressChangeEvent";
     private final static String completionEvent = "completionEvent";
+    private final static String videoEncoderCompletionEvent = "videoEncoderCompletionEvent";
     private static int databaseDownloadProgress = 0;
     JSONArray data;
     private final ReactContext reactContext;
@@ -99,16 +100,10 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         return (T) data.get(index);
     }
 
-    private void sendProgress(int progress) {
+    private void send(String event, String data) {
         WritableMap map = Arguments.createMap();
-        map.putString("msg", progress + "");
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(prepareDatabaseProgressChangeEvent, map);
-    }
-
-    private void sendCompletion(int action, DocumentReaderResults results, Throwable error) {
-        WritableMap map = Arguments.createMap();
-        map.putString("msg", JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(completionEvent, map);
+        map.putString("msg", data);
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(event, map);
     }
 
     private interface Callback {
@@ -122,6 +117,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     @ReactMethod
+    @SuppressWarnings("unused")
     public void exec(String moduleName, String action, ReadableArray args, com.facebook.react.bridge.Callback successCallback, com.facebook.react.bridge.Callback errorCallback) {
         data = new JSONArray(args.toArrayList());
         Callback callback = new Callback() {
@@ -596,7 +592,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private IDocumentReaderCompletion getCompletion() {
         return (action, results, error) -> {
-            sendCompletion(action, results, error);
+            send(completionEvent, JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
             if (action == DocReaderAction.ERROR || action == DocReaderAction.CANCEL || (action == DocReaderAction.COMPLETE && results.rfidResult == 1))
                 stopBackgroundRFID();
         };
@@ -607,7 +603,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             @Override
             public void onPrepareProgressChanged(int progress) {
                 if (progress != databaseDownloadProgress) {
-                    sendProgress(progress);
+                    send(prepareDatabaseProgressChangeEvent, progress + "");
                     databaseDownloadProgress = progress;
                 }
             }
@@ -624,9 +620,11 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private IDocumentReaderInitCompletion getInitCompletion(Callback callback) {
         return (success, error) -> {
-            if (success)
+            if (success) {
+                DocumentReader.Instance().setVideoEncoderCompletion((sessionId, file) ->
+                        send(videoEncoderCompletionEvent, JSONConstructor.generateVideoEncoderCompletion(sessionId, file).toString()));
                 callback.success("init completed");
-            else
+            } else
                 callback.error("Init failed:" + error);
         };
     }
