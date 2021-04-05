@@ -20,7 +20,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.regula.documentreader.api.DocumentReader;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion;
@@ -28,11 +27,13 @@ import com.regula.documentreader.api.enums.DocReaderAction;
 import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.params.ImageInputParam;
 import com.regula.documentreader.api.params.rfid.PKDCertificate;
+import com.regula.documentreader.api.results.DocumentReaderResults;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,6 +106,19 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         map.putString("msg", data);
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(event, map);
     }
+
+    private void sendProgress(int progress) {
+        send(prepareDatabaseProgressChangeEvent, progress + "");
+    }
+
+    private void sendCompletion(int action, DocumentReaderResults results, Throwable error) {
+        send(completionEvent, JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
+    }
+
+    private void sendVideoEncoderCompletion(String sessionId, File file) {
+        send(videoEncoderCompletionEvent, JSONConstructor.generateVideoEncoderCompletion(sessionId, file).toString());
+    }
+
 
     private interface Callback {
         void success(Object o);
@@ -592,7 +606,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private IDocumentReaderCompletion getCompletion() {
         return (action, results, error) -> {
-            send(completionEvent, JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
+            sendCompletion(action, results, error);
             if (action == DocReaderAction.ERROR || action == DocReaderAction.CANCEL || (action == DocReaderAction.COMPLETE && results.rfidResult == 1))
                 stopBackgroundRFID();
         };
@@ -603,7 +617,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             @Override
             public void onPrepareProgressChanged(int progress) {
                 if (progress != databaseDownloadProgress) {
-                    send(prepareDatabaseProgressChangeEvent, progress + "");
+                    sendProgress(progress);
                     databaseDownloadProgress = progress;
                 }
             }
@@ -621,8 +635,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     private IDocumentReaderInitCompletion getInitCompletion(Callback callback) {
         return (success, error) -> {
             if (success) {
-                DocumentReader.Instance().setVideoEncoderCompletion((sessionId, file) ->
-                        send(videoEncoderCompletionEvent, JSONConstructor.generateVideoEncoderCompletion(sessionId, file).toString()));
+                Instance().setVideoEncoderCompletion(this::sendVideoEncoderCompletion);
                 callback.success("init completed");
             } else
                 callback.error("Init failed:" + error);
