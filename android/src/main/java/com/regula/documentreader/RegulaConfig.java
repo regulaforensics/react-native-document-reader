@@ -96,7 +96,7 @@ class RegulaConfig {
             editor.setZoomFactor(BigDecimal.valueOf(opts.getDouble("zoomFactor")).floatValue());
         if (opts.has("isCameraTorchCheckDisabled"))
             editor.setIsCameraTorchCheckDisabled(opts.getBoolean("isCameraTorchCheckDisabled"));
-        if (opts.has("doRecordProcessingVideo"))
+        if (opts.has("recordScanningProcess"))
             editor.setDoRecordProcessingVideo(opts.getBoolean("doRecordProcessingVideo"));
 
         editor.apply();
@@ -314,7 +314,7 @@ class RegulaConfig {
         object.put("isZoomEnabled", functionality.isZoomEnabled());
         object.put("zoomFactor", functionality.getZoomFactor());
         object.put("isCameraTorchCheckDisabled", functionality.isCameraTorchCheckDisabled());
-        object.put("doRecordProcessingVideo", functionality.doRecordProcessingVideo());
+        object.put("recordScanningProcess", functionality.doRecordProcessingVideo());
 
         return object;
     }

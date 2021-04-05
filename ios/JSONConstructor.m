@@ -53,6 +53,15 @@
     return result;
 }
 
++(NSMutableDictionary*)generateVideoEncoderCompletion:(NSURL*)input :(NSError*)error {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+
+    result[@"filePath"] = input.absoluteString;
+    result[@"error"] = [self generateNSError:error];
+
+    return result;
+}
+
 +(NSInteger)generateDocReaderAction:(RGLDocReaderAction)input {
     NSInteger result = 0;
     switch (input) {
@@ -174,10 +183,34 @@
     }
     result[@"textResult"] = [self generateRGLDocumentReaderTextResult:input.textResult];
     result[@"graphicResult"] = [self generateRGLDocumentReaderGraphicResult:input.graphicResult];
-    result[@"documentPosition"] = [self generateRGLPosition:input.documentPosition];
-    result[@"barcodePosition"] = [self generateRGLPosition:input.barcodePosition];
-    result[@"mrzPosition"] = [self generateRGLPosition:input.mrzPosition];
-    result[@"imageQualityGroup"] = [self generateRGLImageQualityGroup:input.imageQualityGroup];
+    if(input.documentPosition != nil){
+        NSMutableArray *array = [NSMutableArray new];
+        for(RGLPosition* item in input.documentPosition)
+            if(item != nil)
+                [array addObject:[self generateRGLPosition:item]];
+        result[@"documentPosition"] = array;
+    }
+    if(input.barcodePosition != nil){
+        NSMutableArray *array = [NSMutableArray new];
+        for(RGLPosition* item in input.barcodePosition)
+            if(item != nil)
+                [array addObject:[self generateRGLPosition:item]];
+        result[@"barcodePosition"] = array;
+    }
+    if(input.mrzPosition != nil){
+        NSMutableArray *array = [NSMutableArray new];
+        for(RGLPosition* item in input.mrzPosition)
+            if(item != nil)
+                [array addObject:[self generateRGLPosition:item]];
+        result[@"mrzPosition"] = array;
+    }
+    if(input.imageQualityGroup != nil){
+        NSMutableArray *array = [NSMutableArray new];
+        for(RGLImageQualityGroup* item in input.imageQualityGroup)
+            if(item != nil)
+                [array addObject:[self generateRGLImageQualityGroup:item]];
+        result[@"imageQualityGroup"] = array;
+    }
     result[@"overallResult"] = @(input.overallResult);
     result[@"authenticityResults"] = [self generateRGLDocumentReaderAuthenticityResult:input.authenticityResults];
     result[@"rfidSessionData"] = [self generateRGLRFIDSessionData:input.rfidSessionData];

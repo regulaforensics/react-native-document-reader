@@ -13,6 +13,7 @@
 +(NSInteger)generateRFIDCompleteAction:(RGLRFIDCompleteAction)action;
 +(NSInteger)generateRFIDNotificationAction:(RGLRFIDNotificationAction)action;
 +(NSMutableDictionary* _Nullable)generateCompletion:(NSInteger)action :(RGLDocumentReaderResults*_Nullable)results :(NSError*_Nullable)error :(RGLRFIDNotify*_Nullable)notify;
++(NSMutableDictionary* _Nonnull)generateVideoEncoderCompletion:(NSURL* _Nullable)input :(NSError* _Nullable)error;
 +(NSMutableDictionary* _Nonnull)generateRGLDocumentReaderResults:(RGLDocumentReaderResults* _Nullable)input;
 +(NSMutableDictionary* _Nonnull)generateRGLPosition:(RGLPosition* _Nullable)input;
 +(NSMutableDictionary* _Nonnull)generateRGLDocumentReaderBarcodeResult:(RGLDocumentReaderBarcodeResult* _Nullable)input;

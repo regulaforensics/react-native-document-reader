@@ -4,7 +4,7 @@
 #import "JSONConstructor.h"
 #import "RegulaConfig.h"
 
-@interface RNRegulaDocumentReader : RCTEventEmitter <RCTBridgeModule>
+@interface RNRegulaDocumentReader : RCTEventEmitter <RCTBridgeModule, RGLRecordScanningProcessDelegate>
 
 @property (class) NSNumber* _Nullable databasePercentageDownloaded;
 
