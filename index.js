@@ -868,10 +868,22 @@ class DocumentReaderResults {
         result.highResolution = jsonObject["highResolution"]
         result.graphicResult = DocumentReaderGraphicResult.fromJson(jsonObject["graphicResult"])
         result.textResult = DocumentReaderTextResult.fromJson(jsonObject["textResult"])
-        result.documentPosition = ElementPosition.fromJson(jsonObject["documentPosition"])
-        result.barcodePosition = ElementPosition.fromJson(jsonObject["barcodePosition"])
-        result.mrzPosition = ElementPosition.fromJson(jsonObject["mrzPosition"])
-        result.imageQuality = ImageQualityGroup.fromJson(jsonObject["imageQuality"])
+        result.documentPosition = []
+        if (jsonObject["documentPosition"] != null)
+            for (const i in jsonObject["documentPosition"])
+                result.documentPosition.push(ElementPosition.fromJson(jsonObject["documentPosition"][i]))
+        result.barcodePosition = []
+        if (jsonObject["barcodePosition"] != null)
+            for (const i in jsonObject["barcodePosition"])
+                result.barcodePosition.push(ElementPosition.fromJson(jsonObject["barcodePosition"][i]))
+        result.mrzPosition = []
+        if (jsonObject["mrzPosition"] != null)
+            for (const i in jsonObject["mrzPosition"])
+                result.mrzPosition.push(ElementPosition.fromJson(jsonObject["mrzPosition"][i]))
+        result.imageQuality = []
+        if (jsonObject["imageQuality"] != null)
+            for (const i in jsonObject["imageQuality"])
+                result.imageQuality.push(ImageQualityGroup.fromJson(jsonObject["imageQuality"][i]))
         result.rawResult = jsonObject["rawResult"]
         result.documentReaderNotification = DocumentReaderNotification.fromJson(jsonObject["documentReaderNotification"])
         result.rfidSessionData = RFIDSessionData.fromJson(jsonObject["rfidSessionData"])
@@ -1537,8 +1549,6 @@ const eRFID_DataFile_Type = {
         switch (value) {
             case this.DFT_MIFARE_DATA:
                 return "MIFARE data"
-            case this.DFT_PASSPORT_COM:
-                return "EF.COM"
             case this.DFT_DL_COM:
                 return "EF.COM"
             case this.DFT_PASSPORT_DG1:
@@ -1651,8 +1661,6 @@ const eRFID_DataFile_Type = {
                 return "Residence permit 2" + " (DG20)"
             case this.DFT_ID_DG21:
                 return "Optional details" + " (DG21)"
-            case this.DFT_PASSPORT_SOD:
-                return "EF.SOD"
             case this.DFT_DL_SOD:
                 return "EF.SOD"
             case this.DFT_PASSPORT_CVCA:
@@ -1671,8 +1679,6 @@ const eRFID_DataFile_Type = {
                 return "App directory"
             case this.DFT_ATR:
                 return "DFT_ATR"
-            case this.DFT_AUTHENTICITYV2:
-                return "DFT_CHIP_PROPERTIES"
             case this.DFT_CHIP_PROPERTIES:
                 return "DFT_CHIP_PROPERTIES"
             case this.DFT_DEFECTLIST:
@@ -1904,7 +1910,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -2147483600:
                 return "Error - ICAO LDS object: Unsupported digest algorithm"
             case -2147483599:
-                return "Error - ICAO Signed data: Signer infos empty"
+                return "Error - ICAO Signed data: Signer info empty"
             case -2147483598:
                 return "Error - ICAO Signer info: Unsupported digest algorithm"
             case -2147483597:
@@ -1914,7 +1920,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -2147483594:
                 return "Error - ICAO Signer info: Signed attributes missed"
             case -2147483595:
-                return "Error - Auth: Signer info cant find certificate"
+                return "Error - Auth: Signer info cannot find certificate"
             case -2147483568:
                 return "Error - Auth: Error"
             case -2147483567:
@@ -1960,7 +1966,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -2130706391:
                 return "Error - PACE: Mapping Cannot Perform"
             case -2130706390:
-                return "Error - PACE: Non Matching Auth Tokens"
+                return "Error - PACE: Non-Matching Auth Tokens"
             case -2130706384:
                 return "Error - CA: Cannot Find Public Key"
             case -2130706383:
@@ -1978,7 +1984,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -2130706377:
                 return "Error - CA: Shared Secret Cannot Create"
             case -2130706376:
-                return "Error - CA: Non Matching Auth Tokens"
+                return "Error - CA: Non-Matching Auth Tokens"
             case -2130706368:
                 return "Error - TA: Incorrect Version"
             case -2130706367:
@@ -2048,7 +2054,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -1879048191:
                 return "Notification - ASN certificate: Incorrect version"
             case -1879048190:
-                return "Notification - ASN certificate: Non matching signature algorithm"
+                return "Notification - ASN certificate: Non-matching signature algorithm"
             case -1879048189:
                 return "Notification - ASN certificate: Incorrect time coding"
             case -1879048188:
@@ -2076,15 +2082,15 @@ const eRFID_NotificationAndErrorCodes = {
             case -1879047677:
                 return "Notification - ICAO certificate: Issuer common name missed"
             case -1879047676:
-                return "Notification - ICAO certificate: Issuer country non compliant"
+                return "Notification - ICAO certificate: Issuer country non-compliant"
             case -1879047675:
                 return "Notification - ICAO certificate: Subject country missed"
             case -1879047674:
                 return "Notification - ICAO certificate: Subject common name missed"
             case -1879047673:
-                return "Notification - ICAO certificate: Subject country non compliant"
+                return "Notification - ICAO certificate: Subject country non-compliant"
             case -1879047672:
-                return "Notification - ICAO certificate: Using non compliant data"
+                return "Notification - ICAO certificate: Using non-compliant data"
             case -1879047671:
                 return "Notification - ICAO certificate: Unsupported signature algorithm"
             case -1879047670:
@@ -2094,7 +2100,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -1879047668:
                 return "Notification - ICAO certificate: Validity"
             case -1879047667:
-                return "Notification - ICAO certificate extension: Using non compliant data"
+                return "Notification - ICAO certificate extension: Using non-compliant data"
             case -1879047666:
                 return "Notification - ICAO certificate extension: Key usage missed"
             case -1879047665:
@@ -2144,13 +2150,13 @@ const eRFID_NotificationAndErrorCodes = {
             case -1879047643:
                 return "Notification - ICAO certificate extension: Subject alt name empty"
             case -1879047642:
-                return "Notification - ICAO certificate extension: Subject alt name non compliant"
+                return "Notification - ICAO certificate extension: Subject alt name non-compliant"
             case -1879047639:
                 return "Notification - ICAO certificate extension: Subject alt name DN empty"
             case -1879047638:
                 return "Notification - ICAO certificate extension: Subject alt name DN incorrect"
             case -1879047637:
-                return "Notification - ICAO certificate extension: Subject alt name DN non compliant"
+                return "Notification - ICAO certificate extension: Subject alt name DN non-compliant"
             case -1879047636:
                 return "Notification - ICAO certificate extension: Issuer alt name missed"
             case -1879047635:
@@ -2158,13 +2164,13 @@ const eRFID_NotificationAndErrorCodes = {
             case -1879047634:
                 return "Notification - ICAO certificate extension: Issuer alt name empty"
             case -1879047633:
-                return "Notification - ICAO certificate extension: Issuer alt name non compliant"
+                return "Notification - ICAO certificate extension: Issuer alt name non-compliant"
             case -1879047630:
                 return "Notification - ICAO certificate extension: Issuer alt name DN empty"
             case -1879047629:
                 return "Notification - ICAO certificate extension: Issuer alt name DN incorrect"
             case -1879047628:
-                return "Notification - ICAO certificate extension: Issuer alt name DN non compliant"
+                return "Notification - ICAO certificate extension: Issuer alt name DN non-compliant"
             case -1879047627:
                 return "Notification - ICAO certificate extension Doc type list: Missed"
             case -1879047626:
@@ -2270,7 +2276,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -1879047914:
                 return "Notification - Auth signer info: Certificate root is not trusted"
             case -1879047913:
-                return "Notification - Auth signer info: Certificate cant find CSCA"
+                return "Notification - Auth signer info: Certificate cannot find CSCA"
             case -1879047912:
                 return "Notification - Auth signer info: Certificate revoked"
             case -1879047911:
@@ -2430,7 +2436,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -1845493482:
                 return "Notification - Auth ML signer info: Certificate root is not trusted"
             case -1845493481:
-                return "Notification - Auth ML signer info: Certificate cant find CSCA"
+                return "Notification - Auth ML signer info: Certificate cannot find CSCA"
             case -1845493480:
                 return "Notification - Auth ML signer info: Certificate revoked"
             case -1845493479:
@@ -2532,7 +2538,7 @@ const eRFID_NotificationAndErrorCodes = {
             case -2147458112:
                 return "LAYER6: PWD Blocked"
             case -2147458429:
-                return "LAYER6: PWD Deactivatted"
+                return "LAYER6: PWD Deactivated"
             case -2147456637:
                 return "LAYER6: PWD Blocked 2"
             case -2147456636:
@@ -3358,1157 +3364,1166 @@ const eVisualFieldType = {
     FT_DLCLASSCODE_CA_FROM: 622,
     FT_DLCLASSCODE_CA_TO: 623,
     FT_DLCLASSCODE_CA_NOTES: 624,
+    FT_CITIZENSHIP_STATUS: 625,
+    FT_MILITARY_SERVICE_FROM: 626,
+    FT_MILITARY_SERVICE_TO: 627,
 
     getTranslation: function (value) {
         switch (value) {
-            case this.FT_DOCUMENT_CLASS_CODE:
+            case 0:
                 return "Document class code"
-            case this.FT_ISSUING_STATE_CODE:
+            case 1:
                 return "Issuing state code"
-            case this.FT_DOCUMENT_NUMBER:
+            case 2:
                 return "Document number"
-            case this.FT_DATE_OF_EXPIRY:
+            case 3:
                 return "Date of expiry"
-            case this.FT_DATE_OF_ISSUE:
+            case 4:
                 return "Date of issue"
-            case this.FT_DATE_OF_BIRTH:
+            case 5:
                 return "Date of birth"
-            case this.FT_PLACE_OF_BIRTH:
+            case 6:
                 return "Place of birth"
-            case this.FT_PERSONAL_NUMBER:
+            case 7:
                 return "Personal number"
-            case this.FT_SURNAME:
+            case 8:
                 return "Surname"
-            case this.FT_GIVEN_NAMES:
+            case 9:
                 return "Given name"
-            case this.FT_MOTHERS_NAME:
+            case 10:
                 return "Mother\'s name"
-            case this.FT_NATIONALITY:
+            case 11:
                 return "Nationality"
-            case this.FT_SEX:
+            case 12:
                 return "Sex"
-            case this.FT_HEIGHT:
+            case 13:
                 return "Height"
-            case this.FT_WEIGHT:
+            case 14:
                 return "Weight"
-            case this.FT_EYES_COLOR:
+            case 15:
                 return "Eye color"
-            case this.FT_HAIR_COLOR:
+            case 16:
                 return "Hair color"
-            case this.FT_ADDRESS:
+            case 17:
                 return "Address"
-            case this.FT_DONOR:
+            case 18:
                 return "Donor"
-            case this.FT_SOCIAL_SECURITY_NUMBER:
+            case 19:
                 return "Social insurance number"
-            case this.FT_DL_CLASS:
+            case 20:
                 return "DL category"
-            case this.FT_DL_ENDORSED:
+            case 21:
                 return "DL endorsement code"
-            case this.FT_DL_RESTRICTION_CODE:
+            case 22:
                 return "DL Restriction Code"
-            case this.FT_DL_UNDER_21_DATE:
+            case 23:
                 return "Date of 21st birthday"
-            case this.FT_AUTHORITY:
+            case 24:
                 return "Issuing authority"
-            case this.FT_SURNAME_AND_GIVEN_NAMES:
+            case 25:
                 return "Surname and given names"
-            case this.FT_NATIONALITY_CODE:
+            case 26:
                 return "Nationality code"
-            case this.FT_PASSPORT_NUMBER:
+            case 27:
                 return "Passport number"
-            case this.FT_INVITATION_NUMBER:
+            case 28:
                 return "Invitation number"
-            case this.FT_VISA_ID:
+            case 29:
                 return "Visa ID"
-            case this.FT_VISA_CLASS:
+            case 30:
                 return "Visa Class"
-            case this.FT_VISA_SUB_CLASS:
+            case 31:
                 return "Visa subclass"
-            case this.FT_MRZ_STRING_1:
+            case 32:
                 return "MRZ line 1"
-            case this.FT_MRZ_STRING_2:
+            case 33:
                 return "MRZ line 2"
-            case this.FT_MRZ_STRING_3:
+            case 34:
                 return "MRZ line 3"
-            case this.FT_MRZ_TYPE:
+            case 35:
                 return "MRZ Type"
-            case this.FT_OPTIONAL_DATA:
+            case 36:
                 return "Optional data"
-            case this.FT_DOCUMENT_CLASS_NAME:
+            case 37:
                 return "Document class"
-            case this.FT_ISSUING_STATE_NAME:
+            case 38:
                 return "Issuing state"
-            case this.FT_PLACE_OF_ISSUE:
+            case 39:
                 return "Place of issue"
-            case this.FT_DOCUMENT_NUMBER_CHECKSUM:
+            case 40:
                 return "Checksum for document number"
-            case this.FT_DATE_OF_BIRTH_CHECKSUM:
+            case 41:
                 return "Checksum for date of birth"
-            case this.FT_DATE_OF_EXPIRY_CHECKSUM:
+            case 42:
                 return "Checksum for date of expiry"
-            case this.FT_PERSONAL_NUMBER_CHECKSUM:
+            case 43:
                 return "Checksum for personal number"
-            case this.FT_FINAL_CHECKSUM:
+            case 44:
                 return "Final checksum"
-            case this.FT_PASSPORT_NUMBER_CHECKSUM:
+            case 45:
                 return "Checksum for passport number"
-            case this.FT_INVITATION_NUMBER_CHECKSUM:
+            case 46:
                 return "Checksum for invitation number"
-            case this.FT_VISA_ID_CHECKSUM:
+            case 47:
                 return "Checksum for visa ID"
-            case this.FT_SURNAME_AND_GIVEN_NAMES_CHECKSUM:
+            case 48:
                 return "Checksum for surname and given names"
-            case this.FT_VISA_VALID_UNTIL_CHECKSUM:
+            case 49:
                 return "Checksum for visa expiry date"
-            case this.FT_OTHER:
+            case 50:
                 return "Other"
-            case this.FT_MRZ_STRINGS:
+            case 51:
                 return "MRZ lines"
-            case this.FT_NAME_SUFFIX:
+            case 52:
                 return "Name suffix"
-            case this.FT_NAME_PREFIX:
+            case 53:
                 return "Name prefix"
-            case this.FT_DATE_OF_ISSUE_CHECKSUM:
+            case 54:
                 return "Checksum for date of issue"
-            case this.FT_DATE_OF_ISSUE_CHECK_DIGIT:
+            case 55:
                 return "Check digit for date of issue"
-            case this.FT_DOCUMENT_SERIES:
+            case 56:
                 return "Document series"
-            case this.FT_REG_CERT_REG_NUMBER:
+            case 57:
                 return "Registration number"
-            case this.FT_REG_CERT_CAR_MODEL:
+            case 58:
                 return "Vehicle model"
-            case this.FT_REG_CERT_CAR_COLOR:
+            case 59:
                 return "Vehicle color"
-            case this.FT_REG_CERT_BODY_NUMBER:
+            case 60:
                 return "Body number"
-            case this.FT_REG_CERT_CAR_TYPE:
+            case 61:
                 return "Vehicle type"
-            case this.FT_REG_CERT_MAX_WEIGHT:
+            case 62:
                 return "Max permissible weight"
-            case this.FT_REG_CERT_WEIGHT:
+            case 63:
                 return "Unladen mass"
-            case this.FT_ADDRESS_AREA:
+            case 64:
                 return "Area"
-            case this.FT_ADDRESS_STATE:
+            case 65:
                 return "State"
-            case this.FT_ADDRESS_BUILDING:
+            case 66:
                 return "Unit"
-            case this.FT_ADDRESS_HOUSE:
+            case 67:
                 return "Building"
-            case this.FT_ADDRESS_FLAT:
+            case 68:
                 return "Apartment"
-            case this.FT_PLACE_OF_REGISTRATION:
+            case 69:
                 return "Place of registration"
-            case this.FT_DATE_OF_REGISTRATION:
+            case 70:
                 return "Date of registration"
-            case this.FT_RESIDENT_FROM:
+            case 71:
                 return "Resident from"
-            case this.FT_RESIDENT_UNTIL:
+            case 72:
                 return "Resident until"
-            case this.FT_AUTHORITY_CODE:
+            case 73:
                 return "Issuing authority code"
-            case this.FT_PLACE_OF_BIRTH_AREA:
+            case 74:
                 return "Area of birthplace"
-            case this.FT_PLACE_OF_BIRTH_STATE_CODE:
+            case 75:
                 return "State code of birthplace"
-            case this.FT_ADDRESS_STREET:
+            case 76:
                 return "Street"
-            case this.FT_ADDRESS_CITY:
+            case 77:
                 return "City"
-            case this.FT_ADDRESS_JURISDICTION_CODE:
+            case 78:
                 return "Jurisdiction code"
-            case this.FT_ADDRESS_POSTAL_CODE:
+            case 79:
                 return "Postal code"
-            case this.FT_DOCUMENT_NUMBER_CHECK_DIGIT:
+            case 80:
                 return "Check digit for document number"
-            case this.FT_DATE_OF_BIRTH_CHECK_DIGIT:
+            case 81:
                 return "Check digit for date of birth"
-            case this.FT_DATE_OF_EXPIRY_CHECK_DIGIT:
+            case 82:
                 return "Check digit for date of expiry"
-            case this.FT_PERSONAL_NUMBER_CHECK_DIGIT:
+            case 83:
                 return "Check digit for personal number"
-            case this.FT_FINAL_CHECK_DIGIT:
+            case 84:
                 return "Final check digit"
-            case this.FT_PASSPORT_NUMBER_CHECK_DIGIT:
+            case 85:
                 return "Check digit for passport number"
-            case this.FT_INVITATION_NUMBER_CHECK_DIGIT:
+            case 86:
                 return "Check digit for invitation number"
-            case this.FT_VISA_ID_CHECK_DIGIT:
+            case 87:
                 return "Check digit for visa ID"
-            case this.FT_SURNAME_AND_GIVEN_NAMES_CHECK_DIGIT:
+            case 88:
                 return "Check digit for surname and given names"
-            case this.FT_VISA_VALID_UNTIL_CHECK_DIGIT:
+            case 89:
                 return "Check digit for visa expiry date"
-            case this.FT_PERMIT_DL_CLASS:
+            case 90:
                 return "Permit class"
-            case this.FT_PERMIT_DATE_OF_EXPIRY:
+            case 91:
                 return "Permit expiry date"
-            case this.FT_PERMIT_IDENTIFIER:
+            case 92:
                 return "Permit identifier"
-            case this.FT_PERMIT_DATE_OF_ISSUE:
+            case 93:
                 return "Permit issue date"
-            case this.FT_PERMIT_RESTRICTION_CODE:
+            case 94:
                 return "Permit restriction code"
-            case this.FT_PERMIT_ENDORSED:
+            case 95:
                 return "Permit endorsement code"
-            case this.FT_ISSUE_TIMESTAMP:
+            case 96:
                 return "Issue time"
-            case this.FT_NUMBER_OF_DUPLICATES:
+            case 97:
                 return "Number of duplicates"
-            case this.FT_MEDICAL_INDICATOR_CODES:
+            case 98:
                 return "Medical notes/codes"
-            case this.FT_NON_RESIDENT_INDICATOR:
+            case 99:
                 return "Non-resident indicator"
-            case this.FT_VISA_TYPE:
+            case 100:
                 return "Visa type"
-            case this.FT_VISA_VALID_FROM:
+            case 101:
                 return "Visa valid from"
-            case this.FT_VISA_VALID_UNTIL:
+            case 102:
                 return "Visa valid until"
-            case this.FT_DURATION_OF_STAY:
+            case 103:
                 return "Duration of stay"
-            case this.FT_NUMBER_OF_ENTRIES:
+            case 104:
                 return "Number of entries"
-            case this.FT_DAY:
+            case 105:
                 return "Day"
-            case this.FT_MONTH:
+            case 106:
                 return "Month"
-            case this.FT_YEAR:
+            case 107:
                 return "Year"
-            case this.FT_UNIQUE_CUSTOMER_IDENTIFIER:
+            case 108:
                 return "Unique customer identifier"
-            case this.FT_COMMERCIAL_VEHICLE_CODES:
+            case 109:
                 return "Commercial vehicle code"
-            case this.FT_AKA_DATE_OF_BIRTH:
+            case 110:
                 return "AKA Date of birth"
-            case this.FT_AKA_SOCIAL_SECURITY_NUMBER:
+            case 111:
                 return "AKA Social Insurance Number"
-            case this.FT_AKA_SURNAME:
+            case 112:
                 return "AKA Surname"
-            case this.FT_AKA_GIVEN_NAMES:
+            case 113:
                 return "AKA Given name"
-            case this.FT_AKA_NAME_SUFFIX:
+            case 114:
                 return "AKA Name suffix"
-            case this.FT_AKA_NAME_PREFIX:
+            case 115:
                 return "AKA Name prefix"
-            case this.FT_MAILING_ADDRESS_STREET:
+            case 116:
                 return "Mailing address - street"
-            case this.FT_MAILING_ADDRESS_CITY:
+            case 117:
                 return "Mailing address - city"
-            case this.FT_MAILING_ADDRESS_JURISDICTION_CODE:
+            case 118:
                 return "Mailing address - jurisdiction code"
-            case this.FT_MAILING_ADDRESS_POSTAL_CODE:
+            case 119:
                 return "Mailing address - postal code"
-            case this.FT_AUDIT_INFORMATION:
+            case 120:
                 return "Number for validation"
-            case this.FT_INVENTORY_NUMBER:
+            case 121:
                 return "Inventory number"
-            case this.FT_RACE_ETHNICITY:
+            case 122:
                 return "Race/ethnicity"
-            case this.FT_JURISDICTION_VEHICLE_CLASS:
+            case 123:
                 return "Jurisdiction vehicle class"
-            case this.FT_JURISDICTION_ENDORSEMENT_CODE:
+            case 124:
                 return "Jurisdiction endorsement code"
-            case this.FT_JURISDICTION_RESTRICTION_CODE:
+            case 125:
                 return "Jurisdiction restriction code"
-            case this.FT_FAMILY_NAME:
+            case 126:
                 return "Surname/given name at birth"
-            case this.FT_GIVEN_NAMES_RUS:
+            case 127:
                 return "Given name (National)"
-            case this.FT_VISA_ID_RUS:
+            case 128:
                 return "Visa ID (National)"
-            case this.FT_FATHERS_NAME:
+            case 129:
                 return "Father\'s name"
-            case this.FT_FATHERS_NAME_RUS:
+            case 130:
                 return "Father\'s name (National)"
-            case this.FT_SURNAME_AND_GIVEN_NAMES_RUS:
+            case 131:
                 return "Surname and given names (National)"
-            case this.FT_PLACE_OF_BIRTH_RUS:
+            case 132:
                 return "Place of birth (National)"
-            case this.FT_AUTHORITY_RUS:
+            case 133:
                 return "Issuing authority (National)"
-            case this.FT_ISSUING_STATE_CODE_NUMERIC:
+            case 134:
                 return "Numeric issuing state code"
-            case this.FT_NATIONALITY_CODE_NUMERIC:
+            case 135:
                 return "Numeric nationality code"
-            case this.FT_ENGINE_POWER:
+            case 136:
                 return "Engine power"
-            case this.FT_ENGINE_VOLUME:
+            case 137:
                 return "Engine volume"
-            case this.FT_CHASSIS_NUMBER:
+            case 138:
                 return "Chassis number"
-            case this.FT_ENGINE_NUMBER:
+            case 139:
                 return "Engine number"
-            case this.FT_ENGINE_MODEL:
+            case 140:
                 return "Engine model"
-            case this.FT_VEHICLE_CATEGORY:
+            case 141:
                 return "Vehicle category"
-            case this.FT_IDENTITY_CARD_NUMBER:
+            case 142:
                 return "Identity card number"
-            case this.FT_CONTROL_NO:
+            case 143:
                 return "Control number"
-            case this.FT_PARRENTS_GIVEN_NAMES:
+            case 144:
                 return "Parents\' given names"
-            case this.FT_SECOND_SURNAME:
+            case 145:
                 return "Second surname"
-            case this.FT_MIDDLE_NAME:
+            case 146:
                 return "Middle name"
-            case this.FT_REG_CERT_VIN:
+            case 147:
                 return "Vehicle identification number"
-            case this.FT_REG_CERT_VIN_CHECK_DIGIT:
+            case 148:
                 return "Check digit for VIN"
-            case this.FT_REG_CERT_VIN_CHECKSUM:
+            case 149:
                 return "Checksum for VIN"
-            case this.FT_LINE_1_CHECK_DIGIT:
+            case 150:
                 return "Check digit for line 1"
-            case this.FT_LINE_2_CHECK_DIGIT:
+            case 151:
                 return "Check digit for line 2"
-            case this.FT_LINE_3_CHECK_DIGIT:
+            case 152:
                 return "Check digit for line 3"
-            case this.FT_LINE_1_CHECKSUM:
+            case 153:
                 return "Checksum for line 1"
-            case this.FT_LINE_2_CHECKSUM:
+            case 154:
                 return "Checksum for line 2"
-            case this.FT_LINE_3_CHECKSUM:
+            case 155:
                 return "Checksum for line 3"
-            case this.FT_REG_CERT_REG_NUMBER_CHECK_DIGIT:
+            case 156:
                 return "Check digit for registration number"
-            case this.FT_REG_CERT_REG_NUMBER_CHECKSUM:
+            case 157:
                 return "Checksum for registration number"
-            case this.FT_REG_CERT_VEHICLE_ITS_CODE:
+            case 158:
                 return "Vehicle ITS code"
-            case this.FT_CARD_ACCESS_NUMBER:
+            case 159:
                 return "Card access number"
-            case this.FT_MARITAL_STATUS:
+            case 160:
                 return "Marital status"
-            case this.FT_COMPANY_NAME:
+            case 161:
                 return "Company name"
-            case this.FT_SPECIAL_NOTES:
+            case 162:
                 return "Special notes"
-            case this.FT_SURNAME_OF_SPOSE:
+            case 163:
                 return "Spouse\'s surname"
-            case this.FT_TRACKING_NUMBER:
+            case 164:
                 return "Tracking number"
-            case this.FT_BOOKLET_NUMBER:
+            case 165:
                 return "Booklet number"
-            case this.FT_CHILDREN:
+            case 166:
                 return "Children"
-            case this.FT_COPY:
+            case 167:
                 return "Copy"
-            case this.FT_SERIAL_NUMBER:
+            case 168:
                 return "Serial number"
-            case this.FT_DOSSIER_NUMBER:
+            case 169:
                 return "Dossier number"
-            case this.FT_AKA_SURNAME_AND_GIVEN_NAMES:
+            case 170:
                 return "AKA Full name"
-            case this.FT_TERRITORIAL_VALIDITY:
+            case 171:
                 return "Territorial validity"
-            case this.FT_MRZ_STRINGS_WITH_CORRECT_CHECK_SUMS:
+            case 172:
                 return "MRZ lines with correct checksums"
-            case this.FT_DL_CDL_RESTRICTION_CODE:
+            case 173:
                 return "CDL Restriction Code"
-            case this.FT_DL_UNDER_18_DATE:
+            case 174:
                 return "Date of 18th birthday"
-            case this.FT_DL_RECORD_CREATED:
+            case 175:
                 return "Record created"
-            case this.FT_DL_DUPLICATE_DATE:
+            case 176:
                 return "Date of duplicate issue"
-            case this.FT_DL_ISS_TYPE:
+            case 177:
                 return "Card type"
-            case this.FT_MILITARY_BOOK_NUMBER:
+            case 178:
                 return "Military ID number"
-            case this.FT_DESTINATION:
+            case 179:
                 return "Destination"
-            case this.FT_BLOOD_GROUP:
+            case 180:
                 return "Blood group"
-            case this.FT_SEQUENCE_NUMBER:
+            case 181:
                 return "Sequence number"
-            case this.FT_REG_CERT_BODY_TYPE:
+            case 182:
                 return "Body type"
-            case this.FT_REG_CERT_CAR_MARK:
+            case 183:
                 return "Vehicle make"
-            case this.FT_TRANSACTION_NUMBER:
+            case 184:
                 return "Transaction number"
-            case this.FT_AGE:
+            case 185:
                 return "Age"
-            case this.FT_FOLIO_NUMBER:
+            case 186:
                 return "Folio number"
-            case this.FT_VOTER_KEY:
+            case 187:
                 return "Voter Key"
-            case this.FT_ADDRESS_MUNICIPALITY:
+            case 188:
                 return "Municipality"
-            case this.FT_ADDRESS_LOCATION:
+            case 189:
                 return "Location"
-            case this.FT_SECTION:
+            case 190:
                 return "Section"
-            case this.FT_OCR_NUMBER:
+            case 191:
                 return "OCR number"
-            case this.FT_FEDERAL_ELECTIONS:
+            case 192:
                 return "Federal elections"
-            case this.FT_REFERENCE_NUMBER:
+            case 193:
                 return "Unique number"
-            case this.FT_OPTIONAL_DATA_CHECKSUM:
+            case 194:
                 return "Checksum for optional data"
-            case this.FT_OPTIONAL_DATA_CHECK_DIGIT:
+            case 195:
                 return "Check digit for optional data"
-            case this.FT_VISA_NUMBER:
+            case 196:
                 return "Visa Number"
-            case this.FT_VISA_NUMBER_CHECKSUM:
+            case 197:
                 return "Checksum for visa number"
-            case this.FT_VISA_NUMBER_CHECK_DIGIT:
+            case 198:
                 return "Check digit for visa number"
-            case this.FT_VOTER:
+            case 199:
                 return "Voter"
-            case this.FT_PREVIOUS_TYPE:
+            case 200:
                 return "Type/number of the previous document"
-            case this.FT_FIELD_FROM_MRZ:
+            case 220:
                 return "Field from MRZ"
-            case this.FT_CURRENT_DATE:
+            case 221:
                 return "Current date"
-            case this.FT_STATUS_DATE_OF_EXPIRY:
+            case 251:
                 return "Status Expiry Date"
-            case this.FT_BANKNOTE_NUMBER:
+            case 252:
                 return "Banknote number"
-            case this.FT_CSC_CODE:
+            case 253:
                 return "CSC Code"
-            case this.FT_ARTISTIC_NAME:
+            case 254:
                 return "Pseudonym"
-            case this.FT_ACADEMIC_TITLE:
+            case 255:
                 return "Academic title"
-            case this.FT_ADDRESS_COUNTRY:
+            case 256:
                 return "Country"
-            case this.FT_ADDRESS_ZIPCODE:
+            case 257:
                 return "ZIP code"
-            case this.FT_E_ID_RESIDENCE_PERMIT_1:
+            case 258:
                 return "Residence permit 1"
-            case this.FT_E_ID_RESIDENCE_PERMIT_2:
+            case 259:
                 return "Residence permit 2"
-            case this.FT_E_ID_PLACE_OF_BIRTH_STREET:
+            case 260:
                 return "Place of Birth: Street"
-            case this.FT_E_ID_PLACE_OF_BIRTH_CITY:
+            case 261:
                 return "Place of Birth: City"
-            case this.FT_E_ID_PLACE_OF_BIRTH_STATE:
+            case 262:
                 return "Place of Birth: State"
-            case this.FT_E_ID_PLACE_OF_BIRTH_COUNTRY:
+            case 263:
                 return "Place of Birth: Country"
-            case this.FT_E_ID_PLACE_OF_BIRTH_ZIPCODE:
+            case 264:
                 return "Place of Birth: Postal code"
-            case this.FT_CDL_CLASS:
+            case 265:
                 return "CDL Class"
-            case this.FT_DL_UNDER_19_DATE:
+            case 266:
                 return "Date of 19th birthday"
-            case this.FT_WEIGHT_POUNDS:
+            case 267:
                 return "Weight (pound)"
-            case this.FT_LIMITED_DURATION_DOCUMENT_INDICATOR:
+            case 268:
                 return "Indicator of document limited duration"
-            case this.FT_ENDORSEMENT_EXPIRATION_DATE:
+            case 269:
                 return "Endorsement expiration date"
-            case this.FT_REVISION_DATE:
+            case 270:
                 return "Revision date"
-            case this.FT_COMPLIANCE_TYPE:
+            case 271:
                 return "Compliance type"
-            case this.FT_FAMILY_NAME_TRUNCATION:
+            case 272:
                 return "Truncated surname/given name at birth"
-            case this.FT_FIRST_NAME_TRUNCATION:
+            case 273:
                 return "First name truncation"
-            case this.FT_MIDDLE_NAME_TRUNCATION:
+            case 274:
                 return "Middle name truncation"
-            case this.FT_EXAM_DATE:
+            case 275:
                 return "Exam date"
-            case this.FT_ORGANIZATION:
+            case 276:
                 return "Organization"
-            case this.FT_DEPARTMENT:
+            case 277:
                 return "Department"
-            case this.FT_PAY_GRADE:
+            case 278:
                 return "Pay grade"
-            case this.FT_RANK:
+            case 279:
                 return "Rank"
-            case this.FT_BENEFITS_NUMBER:
+            case 280:
                 return "Benefits number"
-            case this.FT_SPONSOR_SERVICE:
+            case 281:
                 return "Sponsor service"
-            case this.FT_SPONSOR_STATUS:
+            case 282:
                 return "Sponsor status"
-            case this.FT_SPONSOR:
+            case 283:
                 return "Sponsor"
-            case this.FT_RELATIONSHIP:
+            case 284:
                 return "Relationship"
-            case this.FT_USCIS:
+            case 285:
                 return "USCIS"
-            case this.FT_CATEGORY:
+            case 286:
                 return "Category"
-            case this.FT_CONDITIONS:
+            case 287:
                 return "Conditions"
-            case this.FT_IDENTIFIER:
+            case 288:
                 return "Identifier"
-            case this.FT_CONFIGURATION:
+            case 289:
                 return "Configuration"
-            case this.FT_DISCRETIONARY_DATA:
+            case 290:
                 return "Discretionary data"
-            case this.FT_LINE_1_OPTIONAL_DATA:
+            case 291:
                 return "Optional data from line 1"
-            case this.FT_LINE_2_OPTIONAL_DATA:
+            case 292:
                 return "Optional data from line 2"
-            case this.FT_LINE_3_OPTIONAL_DATA:
+            case 293:
                 return "Optional data from line 3"
-            case this.FT_EQV_CODE:
+            case 294:
                 return "EQV code"
-            case this.FT_ALT_CODE:
+            case 295:
                 return "ALT code"
-            case this.FT_BINARY_CODE:
+            case 296:
                 return "Binary code"
-            case this.FT_PSEUDO_CODE:
+            case 297:
                 return "Pseudocode"
-            case this.FT_FEE:
+            case 298:
                 return "Fee"
-            case this.FT_STAMP_NUMBER:
+            case 299:
                 return "Stamp number"
-            case this.FT_GNIB_NUMBER:
-                return "GNIB number"
-            case this.FT_DEPT_NUMBER:
-                return "Department number"
-            case this.FT_TELEX_CODE:
-                return "Telegraph code"
-            case this.FT_ALLERGIES:
-                return "Allergies"
-            case this.FT_SP_CODE:
-                return "Special code"
-            case this.FT_COURT_CODE:
-                return "Court code"
-            case this.FT_CTY:
-                return "County"
-            case this.FT_SPONSOR_SSN:
-                return "Sponsor SSN"
-            case this.FT_DO_D_NUMBER:
-                return "DoD number"
-            case this.FT_MC_NOVICE_DATE:
-                return "Expiry date of Motorcycle Novice status"
-            case this.FT_DUF_NUMBER:
-                return "DUF number"
-            case this.FT_AGY:
-                return "AGY"
-            case this.FT_PNR_CODE:
-                return "PNR code"
-            case this.FT_FROM_AIRPORT_CODE:
-                return "Code of the airport of departure"
-            case this.FT_TO_AIRPORT_CODE:
-                return "Code of the airport of arrival"
-            case this.FT_FLIGHT_NUMBER:
-                return "Flight number"
-            case this.FT_DATE_OF_FLIGHT:
-                return "Date of flight"
-            case this.FT_SEAT_NUMBER:
-                return "Seat number"
-            case this.FT_DATE_OF_ISSUE_BOARDING_PASS:
-                return "Date of boarding pass issue"
-            case this.FT_CCW_UNTIL:
-                return "CCW until"
-            case this.FT_REFERENCE_NUMBER_CHECKSUM:
-                return "Unique number checksum"
-            case this.FT_REFERENCE_NUMBER_CHECK_DIGIT:
-                return "Unique number check digit"
-            case this.FT_ROOM_NUMBER:
-                return "Room number"
-            case this.FT_RELIGION:
-                return "Religion"
-            case this.FT_REMAINDER_TERM:
-                return "Months to expire"
-            case this.FT_ELECTRONIC_TICKET_INDICATOR:
-                return "Electronic ticket indicator"
-            case this.FT_COMPARTMENT_CODE:
-                return "Compartment code"
-            case this.FT_CHECK_IN_SEQUENCE_NUMBER:
-                return "Check-in sequence number"
-            case this.FT_AIRLINE_DESIGNATOR_OF_BOARDING_PASS_ISSUER:
-                return "Airline designator of boarding pass issuer"
-            case this.FT_AIRLINE_NUMERIC_CODE:
-                return "Airline numeric code"
-            case this.FT_TICKET_NUMBER:
-                return "Ticket number"
-            case this.FT_FREQUENT_FLYER_AIRLINE_DESIGNATOR:
-                return "Frequent flyer airline designator"
-            case this.FT_FREQUENT_FLYER_NUMBER:
-                return "Frequent flyer number"
-            case this.FT_FREE_BAGGAGE_ALLOWANCE:
-                return "Free baggage allowance"
-            case this.FT_PDF_417_CODEC:
-                return "PDF417 codec"
-            case this.FT_IDENTITY_CARD_NUMBER_CHECKSUM:
-                return "Checksum for identity card number"
-            case this.FT_IDENTITY_CARD_NUMBER_CHECK_DIGIT:
-                return "Check digit for identity card number"
-            case this.FT_VETERAN:
-                return "Veteran"
-            case this.FT_DL_CLASS_CODE_A_1_FROM:
-                return "DL category A1 valid from"
-            case this.FT_DL_CLASS_CODE_A_1_TO:
-                return "DL category A1 valid to"
-            case this.FT_DL_CLASS_CODE_A_1_NOTES:
-                return "DL category A1 codes"
-            case this.FT_DL_CLASS_CODE_A_FROM:
-                return "DL category A valid from"
-            case this.FT_DL_CLASS_CODE_A_TO:
-                return "DL category A valid to"
-            case this.FT_DL_CLASS_CODE_A_NOTES:
-                return "DL category A codes"
-            case this.FT_DL_CLASS_CODE_B_FROM:
-                return "DL category B valid from"
-            case this.FT_DL_CLASS_CODE_B_TO:
-                return "DL category B valid to"
-            case this.FT_DL_CLASS_CODE_B_NOTES:
-                return "DL category B codes"
-            case this.FT_DL_CLASS_CODE_C_1_FROM:
-                return "DL category C1 valid from"
-            case this.FT_DL_CLASS_CODE_C_1_TO:
-                return "DL category C1 valid to"
-            case this.FT_DL_CLASS_CODE_C_1_NOTES:
-                return "DL category C1 codes"
-            case this.FT_DL_CLASS_CODE_C_FROM:
-                return "DL category C valid from"
-            case this.FT_DL_CLASS_CODE_C_TO:
-                return "DL category C valid to"
-            case this.FT_DL_CLASS_CODE_C_NOTES:
-                return "DL category C codes"
-            case this.FT_DL_CLASS_CODE_D_1_FROM:
-                return "DL category D1 valid from"
-            case this.FT_DL_CLASS_CODE_D_1_TO:
-                return "DL category D1 valid to"
-            case this.FT_DL_CLASS_CODE_D_1_NOTES:
-                return "DL category D1 codes"
-            case this.FT_DL_CLASS_CODE_D_FROM:
-                return "DL category D valid from"
-            case this.FT_DL_CLASS_CODE_D_TO:
-                return "DL category D valid to"
-            case this.FT_DL_CLASS_CODE_D_NOTES:
-                return "DL category D codes"
-            case this.FT_DL_CLASS_CODE_BE_FROM:
-                return "DL category BE valid from"
-            case this.FT_DL_CLASS_CODE_BE_TO:
-                return "DL category BE valid to"
-            case this.FT_DL_CLASS_CODE_BE_NOTES:
-                return "DL category BE codes"
-            case this.FT_DL_CLASS_CODE_C_1_E_FROM:
-                return "DL category C1E valid from"
-            case this.FT_DL_CLASS_CODE_C_1_E_TO:
-                return "DL category C1E valid to"
-            case this.FT_DL_CLASS_CODE_C_1_E_NOTES:
-                return "DL category C1E codes"
-            case this.FT_DL_CLASS_CODE_CE_FROM:
-                return "DL category CE valid from"
-            case this.FT_DL_CLASS_CODE_CE_TO:
-                return "DL category CE valid to"
-            case this.FT_DL_CLASS_CODE_CE_NOTES:
-                return "DL category CE codes"
-            case this.FT_DL_CLASS_CODE_D_1_E_FROM:
-                return "DL category D1E valid from"
-            case this.FT_DL_CLASS_CODE_D_1_E_TO:
-                return "DL category D1E valid to"
-            case this.FT_DL_CLASS_CODE_D_1_E_NOTES:
-                return "DL category D1E codes"
-            case this.FT_DL_CLASS_CODE_DE_FROM:
-                return "DL category DE valid from"
-            case this.FT_DL_CLASS_CODE_DE_TO:
-                return "DL category DE valid to"
-            case this.FT_DL_CLASS_CODE_DE_NOTES:
-                return "DL category DE codes"
-            case this.FT_DL_CLASS_CODE_M_FROM:
-                return "DL category M valid from"
-            case this.FT_DL_CLASS_CODE_M_TO:
-                return "DL category M valid to"
-            case this.FT_DL_CLASS_CODE_M_NOTES:
-                return "DL category M codes"
-            case this.FT_DL_CLASS_CODE_L_FROM:
-                return "DL category L valid from"
-            case this.FT_DL_CLASS_CODE_L_TO:
-                return "DL category L valid to"
-            case this.FT_DL_CLASS_CODE_L_NOTES:
-                return "DL category L codes"
-            case this.FT_DL_CLASS_CODE_T_FROM:
-                return "DL category T valid from"
-            case this.FT_DL_CLASS_CODE_T_TO:
-                return "DL category T valid to"
-            case this.FT_DL_CLASS_CODE_T_NOTES:
-                return "DL category T codes"
-            case this.FT_DL_CLASS_CODE_AM_FROM:
-                return "DL category AM valid from"
-            case this.FT_DL_CLASS_CODE_AM_TO:
-                return "DL category AM valid to"
-            case this.FT_DL_CLASS_CODE_AM_NOTES:
-                return "DL category AM codes"
-            case this.FT_DL_CLASS_CODE_A_2_FROM:
-                return "DL category A2 valid from"
-            case this.FT_DL_CLASS_CODE_A_2_TO:
-                return "DL category A2 valid to"
-            case this.FT_DL_CLASS_CODE_A_2_NOTES:
-                return "DL category A2 codes"
-            case this.FT_DL_CLASS_CODE_B_1_FROM:
-                return "DL category B1 valid from"
-            case this.FT_DL_CLASS_CODE_B_1_TO:
-                return "DL category B1 valid to"
-            case this.FT_DL_CLASS_CODE_B_1_NOTES:
-                return "DL category B1 codes"
-            case this.FT_SURNAME_AT_BIRTH:
-                return "Surname at birth"
-            case this.FT_CIVIL_STATUS:
-                return "Civil status"
-            case this.FT_NUMBER_OF_SEATS:
-                return "Number of seats"
-            case this.FT_NUMBER_OF_STANDING_PLACES:
-                return "Number of standing places"
-            case this.FT_MAX_SPEED:
-                return "Max speed"
-            case this.FT_FUEL_TYPE:
-                return "Fuel type"
-            case this.FT_EC_ENVIRONMENTAL_TYPE:
-                return "Vehicle environmental type"
-            case this.FT_POWER_WEIGHT_RATIO:
-                return "Power-to-weight ratio"
-            case this.FT_MAX_MASS_OF_TRAILER_BRAKED:
-                return "Max mass of trailer (braked)"
-            case this.FT_MAX_MASS_OF_TRAILER_UNBRAKED:
-                return "Max mass of trailer (unbraked)"
-            case this.FT_TRANSMISSION_TYPE:
-                return "Transmission type"
-            case this.FT_TRAILER_HITCH:
-                return "Trailer hitch"
-            case this.FT_ACCOMPANIED_BY:
-                return "Accompanied by"
-            case this.FT_POLICE_DISTRICT:
-                return "Police district"
-            case this.FT_FIRST_ISSUE_DATE:
-                return "First issue date"
-            case this.FT_PAYLOAD_CAPACITY:
-                return "Payload capacity"
-            case this.FT_NUMBER_OF_AXELS:
-                return "Number of axles"
-            case this.FT_PERMISSIBLE_AXLE_LOAD:
-                return "Permissible axle load"
-            case this.FT_PRECINCT:
-                return "Precinct"
-            case this.FT_INVITED_BY:
-                return "Invited by"
-            case this.FT_PURPOSE_OF_ENTRY:
-                return "Purpose of entry"
-            case this.FT_SKIN_COLOR:
-                return "Skin color"
-            case this.FT_COMPLEXION:
-                return "Complexion"
-            case this.FT_AIRPORT_FROM:
-                return "Airport of departure"
-            case this.FT_AIRPORT_TO:
-                return "Airport of arrival"
-            case this.FT_AIRLINE_NAME:
-                return "Airline name"
-            case this.FT_AIRLINE_NAME_FREQUENT_FLYER:
-                return "Airline loyalty program for frequent flyers"
-            case this.FT_LICENSE_NUMBER:
-                return "License number"
-            case this.FT_IN_TANKS:
-                return "In tanks"
-            case this.FT_EXEPT_IN_TANKS:
-                return "Except in tanks"
-            case this.FT_FAST_TRACK:
-                return "Fast Track service"
-            case this.FT_OWNER:
-                return "Owner"
-            case this.FT_MRZ_STRINGS_ICAO_RFID:
-                return "MRZ lines from ICAO RFID"
-            case this.FT_NUMBER_OF_CARD_ISSUANCE:
-                return "Number of card issuances"
-            case this.FT_NUMBER_OF_CARD_ISSUANCE_CHECKSUM:
-                return "Checksum for number of card issuances"
-            case this.FT_NUMBER_OF_CARD_ISSUANCE_CHECK_DIGIT:
-                return "Check digit for number of card issuances"
-            case this.FT_CENTURY_DATE_OF_BIRTH:
-                return "Century of birth"
-            case this.FT_DL_CLASSCODE_A3_FROM:
-                return "DL category A3 valid from"
-            case this.FT_DL_CLASSCODE_A3_TO:
-                return "DL category A3 valid to"
-            case this.FT_DL_CLASSCODE_A3_NOTES:
-                return "DL category A3 codes"
-            case this.FT_DL_CLASSCODE_C2_FROM:
-                return "DL category C2 valid from"
-            case this.FT_DL_CLASSCODE_C2_TO:
-                return "DL category C2 valid to"
-            case this.FT_DL_CLASSCODE_C2_NOTES:
-                return "DL category C2 codes"
-            case this.FT_DL_CLASSCODE_B2_FROM:
-                return "DL category B2 valid from"
-            case this.FT_DL_CLASSCODE_B2_TO:
-                return "DL category B2 valid to"
-            case this.FT_DL_CLASSCODE_B2_NOTES:
-                return "DL category B2 codes"
-            case this.FT_DL_CLASSCODE_D2_FROM:
-                return "DL category D2 valid from"
-            case this.FT_DL_CLASSCODE_D2_TO:
-                return "DL category D2 valid to"
-            case this.FT_DL_CLASSCODE_D2_NOTES:
-                return "DL category D2 codes"
-            case this.FT_DL_CLASSCODE_B2E_FROM:
-                return "DL category B2E valid from"
-            case this.FT_DL_CLASSCODE_B2E_TO:
-                return "DL category B2E valid to"
-            case this.FT_DL_CLASSCODE_B2E_NOTES:
-                return "DL category B2E codes"
-            case this.FT_DL_CLASSCODE_G_FROM:
-                return "DL category G valid from"
-            case this.FT_DL_CLASSCODE_G_TO:
-                return "DL category G valid to"
-            case this.FT_DL_CLASSCODE_G_NOTES:
-                return "DL category G codes"
-            case this.FT_DL_CLASSCODE_J_FROM:
-                return "DL category J valid from"
-            case this.FT_DL_CLASSCODE_J_TO:
-                return "DL category J valid to"
-            case this.FT_DL_CLASSCODE_J_NOTES:
-                return "DL category J codes"
-            case this.FT_DL_CLASSCODE_LC_FROM:
-                return "DL category LC valid from"
-            case this.FT_DL_CLASSCODE_LC_TO:
-                return "DL category LC valid to"
-            case this.FT_DLC_LASSCODE_LC_NOTES:
-                return "DL category LC codes"
-            case this.FT_BANKCARDNUMBER:
-                return "Bank card number"
-            case this.FT_BANKCARDVALIDTHRU:
-                return "Bank card validity"
-            case this.FT_TAX_NUMBER:
-                return "Tax number"
-            case this.FT_SBH_SECURITYOPTIONS:
+            case 300:
                 return "SBH security options"
-            case this.FT_SBH_INTEGRITYOPTIONS:
+            case 301:
                 return "SBH integrity options"
-            case this.FT_DATE_OF_CREATION:
+            case 302:
                 return "Creation date"
-            case this.FT_VALIDITY_PERIOD:
+            case 303:
                 return "Validity period"
-            case this.FT_PATRON_HEADER_VERSION:
+            case 304:
                 return "Patron header version"
-            case this.FT_BDB_TYPE:
+            case 305:
                 return "BDB type"
-            case this.FT_BIOMETRIC_TYPE:
+            case 306:
                 return "Biometric type"
-            case this.FT_BIOMETRIC_SUBTYPE:
+            case 307:
                 return "Biometric subtype"
-            case this.FT_BIOMETRIC_PRODUCTID:
+            case 308:
                 return "Biometric product ID"
-            case this.FT_BIOMETRIC_FORMAT_OWNER:
+            case 309:
                 return "Biometric format owner"
-            case this.FT_BIOMETRIC_FORMAT_TYPE:
+            case 310:
                 return "Biometric format type"
-            case this.FT_PHONE:
+            case 311:
                 return "Phone"
-            case this.FT_PROFESSION:
+            case 312:
                 return "Profession"
-            case this.FT_TITLE:
+            case 313:
                 return "Position"
-            case this.FT_PERSONAL_SUMMARY:
+            case 314:
                 return "Personal data summary"
-            case this.FT_OTHER_VALID_ID:
+            case 315:
                 return "Other valid IDs"
-            case this.FT_CUSTODY_INFO:
+            case 316:
                 return "Custody info"
-            case this.FT_OTHER_NAME:
+            case 317:
                 return "Other name"
-            case this.FT_OBSERVATIONS:
+            case 318:
                 return "Observations"
-            case this.FT_TAX:
+            case 319:
                 return "Tax"
-            case this.FT_DATE_OF_PERSONALIZATION:
+            case 320:
                 return "Personalization date"
-            case this.FT_PERSONALIZATION_SN:
+            case 321:
                 return "Serial number of personalization"
-            case this.FT_OTHERPERSON_NAME:
+            case 322:
                 return "Other person, name"
-            case this.FT_PERSONTONOTIFY_DATE_OF_RECORD:
+            case 323:
                 return "Notify person: Date of record"
-            case this.FT_PERSONTONOTIFY_NAME:
+            case 324:
                 return "Notify person: Name"
-            case this.FT_PERSONTONOTIFY_PHONE:
+            case 325:
                 return "Notify person: Phone"
-            case this.FT_PERSONTONOTIFY_ADDRESS:
+            case 326:
                 return "Notify person: Address"
-            case this.FT_DS_CERTIFICATE_ISSUER:
+            case 327:
                 return "DS certificate issuer"
-            case this.FT_DS_CERTIFICATE_SUBJECT:
+            case 328:
                 return "DS certificate subject"
-            case this.FT_DS_CERTIFICATE_VALIDFROM:
+            case 329:
                 return "DS certificate valid from"
-            case this.FT_DS_CERTIFICATE_VALIDTO:
+            case 330:
                 return "DS certificate valid to"
-            case this.FT_VRC_DATAOBJECT_ENTRY:
+            case 331:
                 return "Vehicle data from the DG1 data group"
-            case this.FT_GRANDFATHERNAME:
-                return "Grandfather\'s name"
-            case this.FT_HEALTH_NUMBER:
-                return "Health insurance number"
-            case this.FT_TYPE_APPROVAL_NUMBER:
+            case 332:
                 return "Type of approval number"
-            case this.FT_ADMINISTRATIVE_NUMBER:
+            case 333:
                 return "Administrative number"
-            case this.FT_DOCUMENT_DISCRIMINATOR:
+            case 334:
                 return "Document discriminator"
-            case this.FT_DATA_DISCRIMINATOR:
+            case 335:
                 return "Data discriminator"
-            case this.FT_ISO_ISSUER_ID_NUMBER:
+            case 336:
                 return "ID number of ISO issuer"
-            case this.FT_SELECTEE_INDICATOR:
+            case 340:
+                return "GNIB number"
+            case 341:
+                return "Department number"
+            case 342:
+                return "Telegraph code"
+            case 343:
+                return "Allergies"
+            case 344:
+                return "Special code"
+            case 345:
+                return "Court code"
+            case 346:
+                return "County"
+            case 347:
+                return "Sponsor SSN"
+            case 348:
+                return "DoD number"
+            case 349:
+                return "Expiry date of Motorcycle Novice status"
+            case 350:
+                return "DUF number"
+            case 351:
+                return "AGY"
+            case 352:
+                return "PNR code"
+            case 353:
+                return "Code of the airport of departure"
+            case 354:
+                return "Code of the airport of arrival"
+            case 355:
+                return "Flight number"
+            case 356:
+                return "Date of flight"
+            case 357:
+                return "Seat number"
+            case 358:
+                return "Date of boarding pass issue"
+            case 359:
+                return "CCW until"
+            case 360:
+                return "Unique number checksum"
+            case 361:
+                return "Unique number check digit"
+            case 362:
+                return "Room number"
+            case 363:
+                return "Religion"
+            case 364:
+                return "Months to expire"
+            case 365:
+                return "Electronic ticket indicator"
+            case 366:
+                return "Compartment code"
+            case 367:
+                return "Check-in sequence number"
+            case 368:
+                return "Airline designator of boarding pass issuer"
+            case 369:
+                return "Airline numeric code"
+            case 370:
+                return "Ticket number"
+            case 371:
+                return "Frequent flyer airline designator"
+            case 372:
+                return "Frequent flyer number"
+            case 373:
+                return "Free baggage allowance"
+            case 374:
+                return "PDF417 codec"
+            case 375:
+                return "Checksum for identity card number"
+            case 376:
+                return "Check digit for identity card number"
+            case 377:
+                return "Veteran"
+            case 378:
+                return "DL category A1 valid from"
+            case 379:
+                return "DL category A1 valid to"
+            case 380:
+                return "DL category A1 codes"
+            case 381:
+                return "DL category A valid from"
+            case 382:
+                return "DL category A valid to"
+            case 383:
+                return "DL category A codes"
+            case 384:
+                return "DL category B valid from"
+            case 385:
+                return "DL category B valid to"
+            case 386:
+                return "DL category B codes"
+            case 387:
+                return "DL category C1 valid from"
+            case 388:
+                return "DL category C1 valid to"
+            case 389:
+                return "DL category C1 codes"
+            case 390:
+                return "DL category C valid from"
+            case 391:
+                return "DL category C valid to"
+            case 392:
+                return "DL category C codes"
+            case 393:
+                return "DL category D1 valid from"
+            case 394:
+                return "DL category D1 valid to"
+            case 395:
+                return "DL category D1 codes"
+            case 396:
+                return "DL category D valid from"
+            case 397:
+                return "DL category D valid to"
+            case 398:
+                return "DL category D codes"
+            case 399:
+                return "DL category BE valid from"
+            case 400:
+                return "DL category BE valid to"
+            case 401:
+                return "DL category BE codes"
+            case 402:
+                return "DL category C1E valid from"
+            case 403:
+                return "DL category C1E valid to"
+            case 404:
+                return "DL category C1E codes"
+            case 405:
+                return "DL category CE valid from"
+            case 406:
+                return "DL category CE valid to"
+            case 407:
+                return "DL category CE codes"
+            case 408:
+                return "DL category D1E valid from"
+            case 409:
+                return "DL category D1E valid to"
+            case 410:
+                return "DL category D1E codes"
+            case 411:
+                return "DL category DE valid from"
+            case 412:
+                return "DL category DE valid to"
+            case 413:
+                return "DL category DE codes"
+            case 414:
+                return "DL category M valid from"
+            case 415:
+                return "DL category M valid to"
+            case 416:
+                return "DL category M codes"
+            case 417:
+                return "DL category L valid from"
+            case 418:
+                return "DL category L valid to"
+            case 419:
+                return "DL category L codes"
+            case 420:
+                return "DL category T valid from"
+            case 421:
+                return "DL category T valid to"
+            case 422:
+                return "DL category T codes"
+            case 423:
+                return "DL category AM valid from"
+            case 424:
+                return "DL category AM valid to"
+            case 425:
+                return "DL category AM codes"
+            case 426:
+                return "DL category A2 valid from"
+            case 427:
+                return "DL category A2 valid to"
+            case 428:
+                return "DL category A2 codes"
+            case 429:
+                return "DL category B1 valid from"
+            case 430:
+                return "DL category B1 valid to"
+            case 431:
+                return "DL category B1 codes"
+            case 432:
+                return "Surname at birth"
+            case 433:
+                return "Civil status"
+            case 434:
+                return "Number of seats"
+            case 435:
+                return "Number of standing places"
+            case 436:
+                return "Max speed"
+            case 437:
+                return "Fuel type"
+            case 438:
+                return "Vehicle environmental type"
+            case 439:
+                return "Power-to-weight ratio"
+            case 440:
+                return "Max mass of trailer (braked)"
+            case 441:
+                return "Max mass of trailer (unbraked)"
+            case 442:
+                return "Transmission type"
+            case 443:
+                return "Trailer hitch"
+            case 444:
+                return "Accompanied by"
+            case 445:
+                return "Police district"
+            case 446:
+                return "First issue date"
+            case 447:
+                return "Payload capacity"
+            case 448:
+                return "Number of axles"
+            case 449:
+                return "Permissible axle load"
+            case 450:
+                return "Precinct"
+            case 451:
+                return "Invited by"
+            case 452:
+                return "Purpose of entry"
+            case 453:
+                return "Skin color"
+            case 454:
+                return "Complexion"
+            case 455:
+                return "Airport of departure"
+            case 456:
+                return "Airport of arrival"
+            case 457:
+                return "Airline name"
+            case 458:
+                return "Airline loyalty program for frequent flyers"
+            case 459:
+                return "License number"
+            case 460:
+                return "In tanks"
+            case 461:
+                return "Except in tanks"
+            case 462:
+                return "Fast Track service"
+            case 463:
+                return "Owner"
+            case 464:
+                return "MRZ lines from ICAO RFID"
+            case 465:
+                return "Number of card issuances"
+            case 466:
+                return "Checksum for number of card issuances"
+            case 467:
+                return "Check digit for number of card issuances"
+            case 468:
+                return "Century of birth"
+            case 469:
+                return "DL category A3 valid from"
+            case 470:
+                return "DL category A3 valid to"
+            case 471:
+                return "DL category A3 codes"
+            case 472:
+                return "DL category C2 valid from"
+            case 473:
+                return "DL category C2 valid to"
+            case 474:
+                return "DL category C2 codes"
+            case 475:
+                return "DL category B2 valid from"
+            case 476:
+                return "DL category B2 valid to"
+            case 477:
+                return "DL category B2 codes"
+            case 478:
+                return "DL category D2 valid from"
+            case 479:
+                return "DL category D2 valid to"
+            case 480:
+                return "DL category D2 codes"
+            case 481:
+                return "DL category B2E valid from"
+            case 482:
+                return "DL category B2E valid to"
+            case 483:
+                return "DL category B2E codes"
+            case 484:
+                return "DL category G valid from"
+            case 485:
+                return "DL category G valid to"
+            case 486:
+                return "DL category G codes"
+            case 487:
+                return "DL category J valid from"
+            case 488:
+                return "DL category J valid to"
+            case 489:
+                return "DL category J codes"
+            case 490:
+                return "DL category LC valid from"
+            case 491:
+                return "DL category LC valid to"
+            case 492:
+                return "DL category LC codes"
+            case 493:
+                return "Bank card number"
+            case 494:
+                return "Bank card validity"
+            case 495:
+                return "Tax number"
+            case 496:
+                return "Health insurance number"
+            case 497:
+                return "Grandfather\'s name"
+            case 498:
                 return "Selectee indicator"
-            case this.FT_MOTHER_SURNAME:
+            case 499:
                 return "Mother\'s surname"
-            case this.FT_MOTHER_GIVENNAME:
+            case 500:
                 return "Mother\'s given name"
-            case this.FT_FATHER_SURNAME:
+            case 501:
                 return "Father\'s surname"
-            case this.FT_FATHER_GIVENNAME:
+            case 502:
                 return "Father\'s given name"
-            case this.FT_MOTHER_DATEOFBIRTH:
+            case 503:
                 return "Mother\'s date of birth"
-            case this.FT_FATHER_DATEOFBIRTH:
+            case 504:
                 return "Father\'s date of birth"
-            case this.FT_MOTHER_PERSONALNUMBER:
+            case 505:
                 return "Mother\'s personal number"
-            case this.FT_FATHER_PERSONALNUMBER:
+            case 506:
                 return "Father\'s personal number"
-            case this.FT_MOTHER_PLACEOFBIRTH:
+            case 507:
                 return "Mother\'s place of birth"
-            case this.FT_FATHER_PLACEOFBIRTH:
+            case 508:
                 return "Father\'s place of birth"
-            case this.FT_MOTHER_COUNTRYOFBIRTH:
+            case 509:
                 return "Mother\'s country of birth"
-            case this.FT_FATHER_COUNTRYOFBIRTH:
+            case 510:
                 return "Father\'s country of birth"
-            case this.FT_DATE_FIRST_RENEWAL:
+            case 511:
                 return "Date of first renewal"
-            case this.FT_DATE_SECOND_RENEWAL:
+            case 512:
                 return "Date of second renewal"
-            case this.FT_PLACE_OF_EXAMINATION:
+            case 513:
                 return "Place of examination"
-            case this.FT_APPLICATION_NUMBER:
+            case 514:
                 return "Application number"
-            case this.FT_VOUCHER_NUMBER:
+            case 515:
                 return "Voucher number"
-            case this.FT_AUTHORIZATION_NUMBER:
+            case 516:
                 return "Authorization number"
-            case this.FT_FACULTY:
+            case 517:
                 return "Faculty"
-            case this.FT_FORM_OF_EDUCATION:
+            case 518:
                 return "Form of education"
-            case this.FT_DNI_NUMBER:
+            case 519:
                 return "DNI number"
-            case this.FT_RETIREMENT_NUMBER:
+            case 520:
                 return "Retirement number"
-            case this.FT_PROFESSIONAL_ID_NUMBER:
+            case 521:
                 return "Professional ID number"
-            case this.FT_AGE_AT_ISSUE:
+            case 522:
                 return "Age at issue"
-            case this.FT_YEARS_SINCE_ISSUE:
+            case 523:
                 return "Years since issue"
-            case this.FT_DLCLASSCODE_BTP_FROM:
+            case 524:
                 return "DL category BTP valid from"
-            case this.FT_DLCLASSCODE_BTP_NOTES:
+            case 525:
                 return "DL category BTP codes"
-            case this.FT_DLCLASSCODE_BTP_TO:
+            case 526:
                 return "DL category BTP valid to"
-            case this.FT_DLCLASSCODE_C3_FROM:
+            case 527:
                 return "DL category C3 valid from"
-            case this.FT_DLCLASSCODE_C3_NOTES:
+            case 528:
                 return "DL category C3 codes"
-            case this.FT_DLCLASSCODE_C3_TO:
+            case 529:
                 return "DL category C3 valid to"
-            case this.FT_DLCLASSCODE_E_FROM:
+            case 530:
                 return "DL category E valid from"
-            case this.FT_DLCLASSCODE_E_NOTES:
+            case 531:
                 return "DL category E codes"
-            case this.FT_DLCLASSCODE_E_TO:
+            case 532:
                 return "DL category E valid to"
-            case this.FT_DLCLASSCODE_F_FROM:
+            case 533:
                 return "DL category F valid from"
-            case this.FT_DLCLASSCODE_F_NOTES:
+            case 534:
                 return "DL category F codes"
-            case this.FT_DLCLASSCODE_F_TO:
+            case 535:
                 return "DL category F valid to"
-            case this.FT_DLCLASSCODE_FA_FROM:
+            case 536:
                 return "DL category FA valid from"
-            case this.FT_DLCLASSCODE_FA_NOTES:
+            case 537:
                 return "DL category FA codes"
-            case this.FT_DLCLASSCODE_FA_TO:
+            case 538:
                 return "DL category FA valid to"
-            case this.FT_DLCLASSCODE_FA1_FROM:
+            case 539:
                 return "DL category FA1 valid from"
-            case this.FT_DLCLASSCODE_FA1_NOTES:
+            case 540:
                 return "DL category FA1 codes"
-            case this.FT_DLCLASSCODE_FA1_TO:
+            case 541:
                 return "DL category FA1 valid to"
-            case this.FT_DLCLASSCODE_FB_FROM:
+            case 542:
                 return "DL category FB valid from"
-            case this.FT_DLCLASSCODE_FB_NOTES:
+            case 543:
                 return "DL category FB codes"
-            case this.FT_DLCLASSCODE_FB_TO:
+            case 544:
                 return "DL category FB valid to"
-            case this.FT_DLCLASSCODE_G1_FROM:
+            case 545:
                 return "DL category G1 valid from"
-            case this.FT_DLCLASSCODE_G1_NOTES:
+            case 546:
                 return "DL category G1 codes"
-            case this.FT_DLCLASSCODE_G1_TO:
+            case 547:
                 return "DL category G1 valid to"
-            case this.FT_DLCLASSCODE_H_FROM:
+            case 548:
                 return "DL category H valid from"
-            case this.FT_DLCLASSCODE_H_NOTES:
+            case 549:
                 return "DL category H codes"
-            case this.FT_DLCLASSCODE_H_TO:
+            case 550:
                 return "DL category H valid to"
-            case this.FT_DLCLASSCODE_I_FROM:
+            case 551:
                 return "DL category I valid from"
-            case this.FT_DLCLASSCODE_I_NOTES:
+            case 552:
                 return "DL category I codes"
-            case this.FT_DLCLASSCODE_I_TO:
+            case 553:
                 return "DL category I valid to"
-            case this.FT_DLCLASSCODE_K_FROM:
+            case 554:
                 return "DL category K valid from"
-            case this.FT_DLCLASSCODE_K_NOTES:
+            case 555:
                 return "DL category K codes"
-            case this.FT_DLCLASSCODE_K_TO:
+            case 556:
                 return "DL category K valid to"
-            case this.FT_DLCLASSCODE_LK_FROM:
+            case 557:
                 return "DL category LK valid from"
-            case this.FT_DLCLASSCODE_LK_NOTES:
+            case 558:
                 return "DL category LK codes"
-            case this.FT_DLCLASSCODE_LK_TO:
+            case 559:
                 return "DL category LK valid to"
-            case this.FT_DLCLASSCODE_N_FROM:
+            case 560:
                 return "DL category N valid from"
-            case this.FT_DLCLASSCODE_N_NOTES:
+            case 561:
                 return "DL category N codes"
-            case this.FT_DLCLASSCODE_N_TO:
+            case 562:
                 return "DL category N valid to"
-            case this.FT_DLCLASSCODE_S_FROM:
+            case 563:
                 return "DL category S valid from"
-            case this.FT_DLCLASSCODE_S_NOTES:
+            case 564:
                 return "DL category S codes"
-            case this.FT_DLCLASSCODE_S_TO:
+            case 565:
                 return "DL category S valid to"
-            case this.FT_DLCLASSCODE_TB_FROM:
+            case 566:
                 return "DL category TB valid from"
-            case this.FT_DLCLASSCODE_TB_NOTES:
+            case 567:
                 return "DL category TB codes"
-            case this.FT_DLCLASSCODE_TB_TO:
+            case 568:
                 return "DL category TB valid to"
-            case this.FT_DLCLASSCODE_TM_FROM:
+            case 569:
                 return "DL category TM valid from"
-            case this.FT_DLCLASSCODE_TM_NOTES:
+            case 570:
                 return "DL category TM codes"
-            case this.FT_DLCLASSCODE_TM_TO:
+            case 571:
                 return "DL category TM valid to"
-            case this.FT_DLCLASSCODE_TR_FROM:
+            case 572:
                 return "DL category TR valid from"
-            case this.FT_DLCLASSCODE_TR_NOTES:
+            case 573:
                 return "DL category TR codes"
-            case this.FT_DLCLASSCODE_TR_TO:
+            case 574:
                 return "DL category TR valid to"
-            case this.FT_DLCLASSCODE_TV_FROM:
+            case 575:
                 return "DL category TV valid from"
-            case this.FT_DLCLASSCODE_TV_NOTES:
+            case 576:
                 return "DL category TV codes"
-            case this.FT_DLCLASSCODE_TV_TO:
+            case 577:
                 return "DL category TV valid to"
-            case this.FT_DLCLASSCODE_V_FROM:
+            case 578:
                 return "DL category V valid from"
-            case this.FT_DLCLASSCODE_V_NOTES:
+            case 579:
                 return "DL category V codes"
-            case this.FT_DLCLASSCODE_V_TO:
+            case 580:
                 return "DL category V valid to"
-            case this.FT_DLCLASSCODE_W_FROM:
+            case 581:
                 return "DL category W valid from"
-            case this.FT_DLCLASSCODE_W_NOTES:
+            case 582:
                 return "DL category W codes"
-            case this.FT_DLCLASSCODE_W_TO:
+            case 583:
                 return "DL category W valid to"
-            case this.FT_CALIBER:
-                return "Caliber"
-            case this.FT_CITIZENSHIP_OF_FIRST_PERSON:
-                return "Citizenship of the first person"
-            case this.FT_CITIZENSHIP_OF_SECOND_PERSON:
-                return "Citizenship of the second person"
-            case this.FT_CVV:
-                return "CVV/CVC"
-            case this.FT_DATE_OF_BIRTH_OF_HUSBAND:
-                return "Date of birth of husband"
-            case this.FT_DATE_OF_BIRTH_OF_WIFE:
-                return "Date of birth of wife"
-            case this.FT_MAKE:
-                return "Make"
-            case this.FT_MODEL:
-                return "Model"
-            case this.FT_NUMBER_OF_CYLINDERS:
-                return "Number of cylinders"
-            case this.FT_SURNAME_OF_HUSBAND_AFTER_REGISTRATION:
-                return "Surname of husband after registration"
-            case this.FT_SURNAME_OF_WIFE_AFTER_REGISTRATION:
-                return "Surname of wife after registration"
-            case this.FT_URL:
+            case 584:
                 return "URL"
-            case this.FT_DATE_OF_INSURANCE_EXPIRY:
+            case 585:
+                return "Caliber"
+            case 586:
+                return "Model"
+            case 587:
+                return "Make"
+            case 588:
+                return "Number of cylinders"
+            case 589:
+                return "Surname of husband after registration"
+            case 590:
+                return "Surname of wife after registration"
+            case 591:
+                return "Date of birth of wife"
+            case 592:
+                return "Date of birth of husband"
+            case 593:
+                return "Citizenship of the first person"
+            case 594:
+                return "Citizenship of the second person"
+            case 595:
+                return "CVV/CVC"
+            case 596:
                 return "Expiry date of insurance"
-            case this.FT_MORTGAGE_BY:
+            case 597:
                 return "Mortgage by"
-            case this.FT_OLD_DOCUMENT_NUMBER:
+            case 598:
                 return "Old document number"
-            case this.FT_OLD_DATE_OF_ISSUE:
+            case 599:
                 return "Old date of issue"
-            case this.FT_OLD_PLACE_OF_ISSUE:
+            case 600:
                 return "Old place of issue"
-            case this.FT_DLCLASSCODE_LR_FROM:
+            case 601:
                 return "DL category LR valid from"
-            case this.FT_DLCLASSCODE_LR_TO:
+            case 602:
                 return "DL category LR valid to"
-            case this.FT_DLCLASSCODE_LR_NOTES:
+            case 603:
                 return "DL category LR codes"
-            case this.FT_DLCLASSCODE_MR_FROM:
+            case 604:
                 return "DL category MR valid from"
-            case this.FT_DLCLASSCODE_MR_TO:
+            case 605:
                 return "DL category MR valid to"
-            case this.FT_DLCLASSCODE_MR_NOTES:
+            case 606:
                 return "DL category MR codes"
-            case this.FT_DLCLASSCODE_HR_FROM:
+            case 607:
                 return "DL category HR valid from"
-            case this.FT_DLCLASSCODE_HR_TO:
+            case 608:
                 return "DL category HR valid to"
-            case this.FT_DLCLASSCODE_HR_NOTES:
+            case 609:
                 return "DL category HR codes"
-            case this.FT_DLCLASSCODE_HC_FROM:
+            case 610:
                 return "DL category HC valid from"
-            case this.FT_DLCLASSCODE_HC_TO:
+            case 611:
                 return "DL category HC valid to"
-            case this.FT_DLCLASSCODE_HC_NOTES:
+            case 612:
                 return "DL category HC codes"
-            case this.FT_DLCLASSCODE_MC_FROM:
+            case 613:
                 return "DL category MC valid from"
-            case this.FT_DLCLASSCODE_MC_TO:
+            case 614:
                 return "DL category MC valid to"
-            case this.FT_DLCLASSCODE_MC_NOTES:
+            case 615:
                 return "DL category MC codes"
-            case this.FT_DLCLASSCODE_RE_FROM:
+            case 616:
                 return "DL category RE valid from"
-            case this.FT_DLCLASSCODE_RE_TO:
+            case 617:
                 return "DL category RE valid to"
-            case this.FT_DLCLASSCODE_RE_NOTES:
+            case 618:
                 return "DL category RE codes"
-            case this.FT_DLCLASSCODE_R_FROM:
+            case 619:
                 return "DL category R valid from"
-            case this.FT_DLCLASSCODE_R_TO:
+            case 620:
                 return "DL category R valid to"
-            case this.FT_DLCLASSCODE_R_NOTES:
+            case 621:
                 return "DL category R codes"
-            case this.FT_DLCLASSCODE_CA_FROM:
+            case 622:
                 return "DL category CA valid from"
-            case this.FT_DLCLASSCODE_CA_TO:
+            case 623:
                 return "DL category CA valid to"
-            case this.FT_DLCLASSCODE_CA_NOTES:
+            case 624:
                 return "DL category CA codes"
+            case 625:
+                return "Citizenship status"
+            case 626:
+                return "Military service from"
+            case 627:
+                return "Military service to"
             default:
                 return value
         }

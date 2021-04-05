@@ -231,6 +231,7 @@ class JSONConstructor {
     }
 
     static String generateBitmap(Bitmap bitmap) {
+        if (bitmap == null) return "";
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
@@ -925,10 +926,10 @@ class JSONConstructor {
             result.put("highResolution", input.highResolution);
             result.put("graphicResult", generateDocumentReaderGraphicResult(input.graphicResult, context));
             result.put("textResult", generateDocumentReaderTextResult(input.textResult, context));
-            result.put("documentPosition", generateElementPosition(input.documentPosition));
-            result.put("barcodePosition", generateElementPosition(input.barcodePosition));
-            result.put("mrzPosition", generateElementPosition(input.mrzPosition));
-            result.put("imageQuality", generateImageQualityGroup(input.imageQuality));
+            result.put("documentPosition", generateList(input.documentPosition, JSONConstructor::generateElementPosition));
+            result.put("barcodePosition", generateList(input.barcodePosition, JSONConstructor::generateElementPosition));
+            result.put("mrzPosition", generateList(input.mrzPosition, JSONConstructor::generateElementPosition));
+            result.put("imageQuality", generateList(input.imageQuality, JSONConstructor::generateImageQualityGroup));
             result.put("rawResult", input.rawResult);
             result.put("documentReaderNotification", generateDocumentReaderNotification(input.documentReaderNotification));
             result.put("rfidSessionData", generateRFIDSessionData(input.rfidSessionData));
@@ -1819,14 +1820,34 @@ class JSONConstructor {
                 result.graphicResult = DocumentReaderGraphicResultFromJSON(input.getJSONObject("graphicResult"));
             if (input.has("textResult"))
                 result.textResult = DocumentReaderTextResultFromJSON(input.getJSONObject("textResult"));
-            if (input.has("documentPosition"))
-                result.documentPosition = ElementPositionFromJSON(input.getJSONObject("documentPosition"));
-            if (input.has("barcodePosition"))
-                result.barcodePosition = ElementPositionFromJSON(input.getJSONObject("barcodePosition"));
-            if (input.has("mrzPosition"))
-                result.mrzPosition = ElementPositionFromJSON(input.getJSONObject("mrzPosition"));
-            if (input.has("imageQuality"))
-                result.imageQuality = ImageQualityGroupFromJSON(input.getJSONObject("imageQuality"));
+            if (input.has("documentPosition")){
+                JSONArray jsonArray = input.getJSONArray("documentPosition");
+                List<ElementPosition> array = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++)
+                    array.add(ElementPositionFromJSON(jsonArray.getJSONObject(i)));
+                result.documentPosition = array;
+            }
+            if (input.has("barcodePosition")){
+                JSONArray jsonArray = input.getJSONArray("barcodePosition");
+                List<ElementPosition> array = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++)
+                    array.add(ElementPositionFromJSON(jsonArray.getJSONObject(i)));
+                result.barcodePosition = array;
+            }
+            if (input.has("mrzPosition")){
+                JSONArray jsonArray = input.getJSONArray("mrzPosition");
+                List<ElementPosition> array = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++)
+                    array.add(ElementPositionFromJSON(jsonArray.getJSONObject(i)));
+                result.mrzPosition = array;
+            }
+            if (input.has("imageQuality")){
+                JSONArray jsonArray = input.getJSONArray("imageQuality");
+                List<ImageQualityGroup> array = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++)
+                    array.add(ImageQualityGroupFromJSON(jsonArray.getJSONObject(i)));
+                result.imageQuality = array;
+            }
             if (input.has("rawResult"))
                 result.rawResult = input.getString("rawResult");
             if (input.has("documentReaderNotification"))
