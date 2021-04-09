@@ -97,7 +97,7 @@ class RegulaConfig {
         if (opts.has("isCameraTorchCheckDisabled"))
             editor.setIsCameraTorchCheckDisabled(opts.getBoolean("isCameraTorchCheckDisabled"));
         if (opts.has("recordScanningProcess"))
-            editor.setDoRecordProcessingVideo(opts.getBoolean("doRecordProcessingVideo"));
+            editor.setDoRecordProcessingVideo(opts.getBoolean("recordScanningProcess"));
 
         editor.apply();
     }
