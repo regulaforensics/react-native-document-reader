@@ -8,7 +8,7 @@
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString*>*)supportedEvents {
-    return @[@"prepareDatabaseProgressChangeEvent", @"completionEvent"];
+    return @[@"prepareDatabaseProgressChangeEvent", @"completionEvent",  @"videoEncoderCompletionEvent"];
 }
 
 static NSNumber* _databasePercentageDownloaded;
