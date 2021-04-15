@@ -1405,6 +1405,9 @@ const eImageQualityCheckType = {
     IQC_IMAGE_GLARES: 0,
     IQC_IMAGE_FOCUS: 1,
     IQC_IMAGE_RESOLUTION: 2,
+    IQC_IMAGE_COLORNESS: 3,
+    IQC_PERSPECTIVE: 4,
+    IQC_BOUNDS: 5,
 }
 
 const eProcessGLCommands = {
