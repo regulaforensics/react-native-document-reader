@@ -209,10 +209,10 @@
         for(RGLImageQualityGroup* item in input.imageQualityGroup)
             if(item != nil)
                 [array addObject:[self generateRGLImageQualityGroup:item]];
-        result[@"imageQualityGroup"] = array;
+        result[@"imageQuality"] = array;
     }
     result[@"overallResult"] = @(input.overallResult);
-    result[@"authenticityResults"] = [self generateRGLDocumentReaderAuthenticityResult:input.authenticityResults];
+    result[@"authenticityResult"] = [self generateRGLDocumentReaderAuthenticityResult:input.authenticityResults];
     result[@"rfidSessionData"] = [self generateRGLRFIDSessionData:input.rfidSessionData];
     result[@"chipPage"] = @(input.chipPage);
     result[@"resolutionType"] = @(input.resolutionType);

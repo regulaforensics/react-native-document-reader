@@ -1228,9 +1228,11 @@ const DocReaderFrame = {
 }
 
 const DocReaderOrientation = {
-    ROTATE: 0,
+    ALL: 0,
     PORTRAIT: 1,
     LANDSCAPE: 2,
+    LANDSCAPE_LEFT: 3,
+    LANDSCAPE_RIGHT: 4,
 }
 
 const eCheckDiagnose = {
