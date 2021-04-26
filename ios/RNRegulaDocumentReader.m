@@ -8,7 +8,7 @@
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString*>*)supportedEvents {
-    return @[@"prepareDatabaseProgressChangeEvent", @"completionEvent"];
+    return @[@"prepareDatabaseProgressChangeEvent", @"completionEvent",  @"videoEncoderCompletionEvent"];
 }
 
 static NSNumber* _databasePercentageDownloaded;
@@ -33,20 +33,28 @@ typedef void (^Callback)(NSString* response);
 
 -(RGLDocumentReaderCompletion _Nonnull)getCompletion {
     return ^(RGLDocReaderAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error) {
-        [self sendEventWithName:@"completionEvent" body:@{@"msg": [JSONConstructor generateCompletion:[JSONConstructor generateDocReaderAction: action] :results :error :nil]}];
+        [self sendEventWithName:@"completionEvent" body:@{@"msg": [JSONConstructor dictToString:[JSONConstructor generateCompletion:[JSONConstructor generateDocReaderAction: action] :results :error :nil]]}];
     };
 }
 
 -(RGLRFIDProcessCompletion _Nonnull)getRFIDCompletion {
     return ^(RGLRFIDCompleteAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error, RGLRFIDErrorCodes errorCode) {
-        [self sendEventWithName:@"completionEvent" body:@{@"msg": [JSONConstructor generateCompletion:[JSONConstructor generateRFIDCompleteAction: action] :results :error :nil]}];
+        [self sendEventWithName:@"completionEvent" body:@{@"msg": [JSONConstructor dictToString:[JSONConstructor generateCompletion:[JSONConstructor generateRFIDCompleteAction: action] :results :error :nil]]}];
     };
 }
 
 -(RGLRFIDNotificationCallback _Nonnull)getRFIDNotificationCallback {
     return ^(RGLRFIDNotificationAction notificationAction, RGLRFIDNotify* _Nullable notify) {
-        [self sendEventWithName:@"completionEvent" body:@{@"msg": [JSONConstructor generateCompletion:[JSONConstructor generateRFIDNotificationAction:notificationAction] :nil :nil :notify]}];
+        [self sendEventWithName:@"completionEvent" body:@{@"msg": [JSONConstructor dictToString:[JSONConstructor generateCompletion:[JSONConstructor generateRFIDNotificationAction:notificationAction] :nil :nil :notify]]}];
     };
+}
+
+- (void)didFinishRecordingToFile:(NSURL *)fileURL {
+    [self sendEventWithName:@"videoEncoderCompletionEvent" body:@{@"msg": [JSONConstructor dictToString:[JSONConstructor generateVideoEncoderCompletion:fileURL :nil]]}];
+}
+
+- (void)didFailWithError:(NSError *)error {
+    [self sendEventWithName:@"videoEncoderCompletionEvent" body:@{@"msg": [JSONConstructor dictToString:[JSONConstructor generateVideoEncoderCompletion:nil :error]]}];
 }
 
 RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(RCTResponseSenderBlock)sCallback:(RCTResponseSenderBlock)eCallback) {
@@ -319,7 +327,7 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
 }
 
 - (void) selectedScenario:(Callback)successCallback :(Callback)errorCallback{
-    [self result:[JSONConstructor generateScenario:RGLDocReader.shared.selectedScenario] :successCallback];
+    [self result:[JSONConstructor dictToString:[JSONConstructor generateRGLScenario:RGLDocReader.shared.selectedScenario]] :successCallback];
 }
 
 - (void) stopScanner:(Callback)successCallback :(Callback)errorCallback{
@@ -441,7 +449,7 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
     BOOL success = false;
     for(RGLScenario *scenario in RGLDocReader.shared.availableScenarios)
         if([scenario.identifier isEqualToString:scenarioID]){
-            [self result:[JSONConstructor generateScenario:scenario] :successCallback];
+            [self result:[JSONConstructor dictToString:[JSONConstructor generateRGLScenario:scenario]] :successCallback];
             success = true;
             break;
         }
@@ -452,15 +460,16 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
 - (void) getAvailableScenarios:(Callback)successCallback :(Callback)errorCallback{
     NSMutableArray *availableScenarios = [[NSMutableArray alloc] init];
     for(RGLScenario *scenario in RGLDocReader.shared.availableScenarios)
-        [availableScenarios addObject:[JSONConstructor generateScenario:scenario]];
+        [availableScenarios addObject:[JSONConstructor dictToString:[JSONConstructor generateRGLScenario:scenario]]];
     [self result:[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:availableScenarios options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding] :successCallback];
 }
 
 -(RGLDocumentReaderInitializationCompletion)getInitCompletion:(Callback)successCallback :(Callback)errorCallback{
     return ^(BOOL successful, NSError * _Nullable error ) {
-        if (successful)
+        if (successful){
+            [RGLDocReader shared].functionality.recordScanningProcessDelegate = self;
             [self result:@"init complete" :successCallback];
-        else
+        }else
             [self result:[NSString stringWithFormat:@"%@/%@", @"init failed: ", error.description] :errorCallback];
     };
 }

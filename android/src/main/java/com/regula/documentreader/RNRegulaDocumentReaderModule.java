@@ -24,24 +24,26 @@ import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion;
 import com.regula.documentreader.api.enums.DocReaderAction;
+import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.params.ImageInputParam;
 import com.regula.documentreader.api.params.rfid.PKDCertificate;
 import com.regula.documentreader.api.results.DocumentReaderResults;
-import com.regula.documentreader.api.errors.DocumentReaderException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.regula.documentreader.api.DocumentReader.Instance;
 
-@SuppressWarnings({"ConstantConditions", "unused", "RedundantSuppression"})
+@SuppressWarnings({"ConstantConditions", "RedundantSuppression"})
 public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
     private final static String prepareDatabaseProgressChangeEvent = "prepareDatabaseProgressChangeEvent";
     private final static String completionEvent = "completionEvent";
+    private final static String videoEncoderCompletionEvent = "videoEncoderCompletionEvent";
     private static int databaseDownloadProgress = 0;
     JSONArray data;
     private final ReactContext reactContext;
@@ -99,17 +101,24 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         return (T) data.get(index);
     }
 
-    private void sendProgress(int progress) {
+    private void send(String event, String data) {
         WritableMap map = Arguments.createMap();
-        map.putString("msg", progress + "");
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(prepareDatabaseProgressChangeEvent, map);
+        map.putString("msg", data);
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(event, map);
+    }
+
+    private void sendProgress(int progress) {
+        send(prepareDatabaseProgressChangeEvent, progress + "");
     }
 
     private void sendCompletion(int action, DocumentReaderResults results, Throwable error) {
-        WritableMap map = Arguments.createMap();
-        map.putString("msg", JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(completionEvent, map);
+        send(completionEvent, JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
     }
+
+    private void sendVideoEncoderCompletion(String sessionId, File file) {
+        send(videoEncoderCompletionEvent, JSONConstructor.generateVideoEncoderCompletion(sessionId, file).toString());
+    }
+
 
     private interface Callback {
         void success(Object o);
@@ -122,6 +131,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     @ReactMethod
+    @SuppressWarnings("unused")
     public void exec(String moduleName, String action, ReadableArray args, com.facebook.react.bridge.Callback successCallback, com.facebook.react.bridge.Callback errorCallback) {
         data = new JSONArray(args.toArrayList());
         Callback callback = new Callback() {
@@ -334,7 +344,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     private void getAvailableScenarios(Callback callback) throws JSONException {
-        callback.success(JSONConstructor.generateList(Instance().availableScenarios, JSONConstructor::generateDocumentReaderScenario, getContext()).toString());
+        callback.success(JSONConstructor.generateList(Instance().availableScenarios, JSONConstructor::generateDocumentReaderScenario).toString());
     }
 
     private void getAPIVersion(Callback callback) {
@@ -383,19 +393,19 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     private void getConfig(Callback callback) throws JSONException {
-        callback.success(RegulaConfig.getConfig(Instance(), getContext()).toString());
+        callback.success(RegulaConfig.getConfig(Instance()).toString());
     }
 
     private void getRfidScenario(Callback callback) {
         callback.success(Instance().rfidScenario().toJson());
     }
 
-    private void selectedScenario(Callback callback) throws JSONException {
-        callback.success(JSONConstructor.generateDocumentReaderScenario(Instance().getScenario(Instance().processParams().getScenario())).toString());
+    private void selectedScenario(Callback callback) {
+        callback.success(JSONConstructor.generateDocumentReaderScenarioFull(Instance().getScenario(Instance().processParams().getScenario())).toString());
     }
 
-    private void getScenario(Callback callback, String scenario) throws JSONException {
-        callback.success(JSONConstructor.generateDocumentReaderScenario(Instance().getScenario(scenario)).toString());
+    private void getScenario(Callback callback, String scenario) {
+        callback.success(JSONConstructor.generateDocumentReaderScenarioFull(Instance().getScenario(scenario)).toString());
     }
 
     private void getLicenseExpiryDate(Callback callback) {
@@ -446,7 +456,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     private void recognizeImageWithImageInputParams(@SuppressWarnings("unused") Callback callback, String base64Image, final JSONObject params) throws JSONException {
-        Instance().recognizeImage(JSONConstructor.bitmapFromBase64(base64Image), new ImageInputParam(params.getInt("width"), params.getInt("height"), params.getInt("type")), getCompletion());
+        Instance().recognizeImage(Helpers.bitmapFromBase64(base64Image), new ImageInputParam(params.getInt("width"), params.getInt("height"), params.getInt("type")), getCompletion());
     }
 
     private void recognizeImageWithOpts(Callback callback, String base64Image, final JSONObject opts) throws JSONException {
@@ -456,14 +466,14 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void recognizeImage(@SuppressWarnings("unused") Callback callback, String base64Image) {
         stopBackgroundRFID();
-        Instance().recognizeImage(JSONConstructor.bitmapFromBase64(base64Image), getCompletion());
+        Instance().recognizeImage(Helpers.bitmapFromBase64(base64Image), getCompletion());
     }
 
     private void recognizeImages(@SuppressWarnings("unused") Callback callback, JSONArray base64Images) throws JSONException {
         stopBackgroundRFID();
         Bitmap[] images = new Bitmap[base64Images.length()];
         for (int i = 0; i < images.length; i++)
-            images[i] = JSONConstructor.bitmapFromBase64(base64Images.getString(i));
+            images[i] = Helpers.bitmapFromBase64(base64Images.getString(i));
         Instance().recognizeImages(images, getCompletion());
     }
 
@@ -501,7 +511,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     private void recognizeImageFrame(@SuppressWarnings("unused") Callback callback, String base64Image, final JSONObject opts) throws JSONException {
-        Instance().recognizeImageFrame(JSONConstructor.bitmapFromBase64(base64Image), new ImageInputParam(opts.getInt("width"), opts.getInt("height"), opts.getInt("type")), getCompletion());
+        Instance().recognizeImageFrame(Helpers.bitmapFromBase64(base64Image), new ImageInputParam(opts.getInt("width"), opts.getInt("height"), opts.getInt("type")), getCompletion());
     }
 
     private void recognizeVideoFrame(@SuppressWarnings("unused") Callback callback, String byteString, final JSONObject opts) throws JSONException {
@@ -624,9 +634,10 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private IDocumentReaderInitCompletion getInitCompletion(Callback callback) {
         return (success, error) -> {
-            if (success)
+            if (success) {
+                Instance().setVideoEncoderCompletion(this::sendVideoEncoderCompletion);
                 callback.success("init completed");
-            else
+            } else
                 callback.error("Init failed:" + error);
         };
     }
