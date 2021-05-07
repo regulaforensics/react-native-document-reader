@@ -529,6 +529,7 @@ class JSONConstructor {
             result.put("count", input.count);
             result.put("result", input.result);
             result.put("imageQualityList", generateList(input.imageQualityList, JSONConstructor::generateImageQuality));
+            result.put("pageIndex", input.pageIndex);
         } catch (JSONException ignored) {
         }
         return result;
@@ -926,6 +927,30 @@ class JSONConstructor {
         return result;
     }
 
+    static JSONObject generatePKDCertificate(PKDCertificate input) {
+        JSONObject result = new JSONObject();
+        if (input == null) return result;
+        try {
+            result.put("binaryData", input.binaryData);
+            result.put("resourceType", input.resourceType);
+            result.put("privateKey", input.privateKey);
+        } catch (JSONException ignored) {
+        }
+        return result;
+    }
+
+    static JSONObject generateImageInputParam(ImageInputParam input) {
+        JSONObject result = new JSONObject();
+        if (input == null) return result;
+        try {
+            result.put("width", input.width);
+            result.put("height", input.height);
+            result.put("type", input.type);
+        } catch (JSONException ignored) {
+        }
+        return result;
+    }
+
     static JSONObject generateDocumentReaderResults(DocumentReaderResults input, Context context) {
         JSONObject result = new JSONObject();
         if (input == null) return result;
@@ -1244,6 +1269,8 @@ class JSONConstructor {
                     array.add(ImageQualityFromJSON(jsonArray.getJSONObject(i)));
                 result.imageQualityList = array;
             }
+            if (input.has("pageIndex"))
+                result.pageIndex = input.getInt("pageIndex");
         } catch (JSONException ignored) {
         }
         return result;
@@ -1808,6 +1835,34 @@ class JSONConstructor {
                 result.elementType = input.getInt("elementType");
             if (input.has("elementDiagnose"))
                 result.elementDiagnose = input.getInt("elementDiagnose");
+        } catch (JSONException ignored) {
+        }
+        return result;
+    }
+
+    static PKDCertificate PKDCertificateFromJSON(JSONObject input) {
+        PKDCertificate result = new PKDCertificate();
+        try {
+            if (input.has("binaryData"))
+                result.binaryData = input.getString("binaryData");
+            if (input.has("resourceType"))
+                result.resourceType = input.getInt("resourceType");
+            if (input.has("privateKey"))
+                result.privateKey = input.getString("privateKey");
+        } catch (JSONException ignored) {
+        }
+        return result;
+    }
+
+    static ImageInputParam ImageInputParamFromJSON(JSONObject input) {
+        ImageInputParam result = new ImageInputParam();
+        try {
+            if (input.has("width"))
+                result.width = input.getInt("width");
+            if (input.has("height"))
+                result.height = input.getInt("height");
+            if (input.has("type"))
+                result.type = input.getInt("type");
         } catch (JSONException ignored) {
         }
         return result;
