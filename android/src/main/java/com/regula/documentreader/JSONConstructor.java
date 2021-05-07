@@ -11,6 +11,8 @@ import com.regula.documentreader.api.enums.PDF417Info;
 import com.regula.documentreader.api.enums.eGraphicFieldType;
 import com.regula.documentreader.api.enums.eRPRM_Lights;
 import com.regula.documentreader.api.params.FaceMetaData;
+import com.regula.documentreader.api.params.ImageInputParam;
+import com.regula.documentreader.api.params.rfid.PKDCertificate;
 import com.regula.documentreader.api.results.Bounds;
 import com.regula.documentreader.api.results.Coordinate;
 import com.regula.documentreader.api.results.DocReaderFieldRect;
