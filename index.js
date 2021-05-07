@@ -5241,9 +5241,4 @@ DocumentReader.showScannerWithCameraIDAndOpts = (cameraID, options, successCallb
 DocumentReader.recognizeImageWithImageInputParams = (image, params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithImageInputParams", [image, params], successCallback, errorCallback)
 DocumentReader.recognizeImageWithCameraMode = (image, mode, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithCameraMode", [image, mode], successCallback, errorCallback)
 
-DocumentReader.DocumentReaderResults = DocumentReaderResults
-DocumentReader.Enum = Enum
-DocumentReader.DocumentReaderScenario = DocumentReaderScenario
-DocumentReader.DocumentReaderCompletion = DocumentReaderCompletion
-
 export default DocumentReader
