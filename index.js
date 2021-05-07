@@ -1,9 +1,9 @@
 import { NativeModules } from 'react-native'
-const { RNRegulaDocumentReader } = NativeModules
+export const { RNRegulaDocumentReader } = NativeModules
 
 // Classes
 
-class DocumentReaderScenario {
+export class DocumentReaderScenario {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderScenario()
@@ -18,7 +18,7 @@ class DocumentReaderScenario {
     }
 }
 
-class DocumentReaderScenarioFull {
+export class DocumentReaderScenarioFull {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderScenarioFull()
@@ -41,7 +41,7 @@ class DocumentReaderScenarioFull {
     }
 }
 
-class FaceMetaData {
+export class FaceMetaData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new FaceMetaData()
@@ -54,7 +54,7 @@ class FaceMetaData {
     }
 }
 
-class Bounds {
+export class Bounds {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Bounds()
@@ -68,7 +68,7 @@ class Bounds {
     }
 }
 
-class Rect {
+export class Rect {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Rect()
@@ -82,7 +82,7 @@ class Rect {
     }
 }
 
-class DocReaderFieldRect {
+export class DocReaderFieldRect {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocReaderFieldRect()
@@ -96,7 +96,7 @@ class DocReaderFieldRect {
     }
 }
 
-class DocumentReaderGraphicField {
+export class DocumentReaderGraphicField {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderGraphicField()
@@ -114,7 +114,7 @@ class DocumentReaderGraphicField {
     }
 }
 
-class DocumentReaderGraphicResult {
+export class DocumentReaderGraphicResult {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderGraphicResult()
@@ -128,7 +128,7 @@ class DocumentReaderGraphicResult {
     }
 }
 
-class DocumentReaderValue {
+export class DocumentReaderValue {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderValue()
@@ -149,7 +149,7 @@ class DocumentReaderValue {
     }
 }
 
-class DocumentReaderTextField {
+export class DocumentReaderTextField {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderTextField()
@@ -169,7 +169,7 @@ class DocumentReaderTextField {
     }
 }
 
-class DocumentReaderTextResult {
+export class DocumentReaderTextResult {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderTextResult()
@@ -184,7 +184,7 @@ class DocumentReaderTextResult {
     }
 }
 
-class Coordinate {
+export class Coordinate {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Coordinate()
@@ -196,7 +196,7 @@ class Coordinate {
     }
 }
 
-class ElementPosition {
+export class ElementPosition {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new ElementPosition()
@@ -222,7 +222,7 @@ class ElementPosition {
     }
 }
 
-class ImageQuality {
+export class ImageQuality {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new ImageQuality()
@@ -235,7 +235,7 @@ class ImageQuality {
     }
 }
 
-class ImageQualityGroup {
+export class ImageQualityGroup {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new ImageQualityGroup()
@@ -252,7 +252,7 @@ class ImageQualityGroup {
     }
 }
 
-class DocumentReaderDocumentType {
+export class DocumentReaderDocumentType {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderDocumentType()
@@ -276,7 +276,7 @@ class DocumentReaderDocumentType {
     }
 }
 
-class DocumentReaderNotification {
+export class DocumentReaderNotification {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderNotification()
@@ -289,7 +289,7 @@ class DocumentReaderNotification {
     }
 }
 
-class AccessControlProcedureType {
+export class AccessControlProcedureType {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new AccessControlProcedureType()
@@ -306,7 +306,7 @@ class AccessControlProcedureType {
     }
 }
 
-class FileData {
+export class FileData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new FileData()
@@ -320,7 +320,7 @@ class FileData {
     }
 }
 
-class CertificateData {
+export class CertificateData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new CertificateData()
@@ -332,7 +332,7 @@ class CertificateData {
     }
 }
 
-class SecurityObjectCertificates {
+export class SecurityObjectCertificates {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new SecurityObjectCertificates()
@@ -343,7 +343,7 @@ class SecurityObjectCertificates {
     }
 }
 
-class File {
+export class File {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new File()
@@ -376,7 +376,7 @@ class File {
     }
 }
 
-class Application {
+export class Application {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Application()
@@ -396,7 +396,7 @@ class Application {
     }
 }
 
-class Value {
+export class Value {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Value()
@@ -411,7 +411,7 @@ class Value {
     }
 }
 
-class Attribute {
+export class Attribute {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Attribute()
@@ -423,7 +423,7 @@ class Attribute {
     }
 }
 
-class Authority {
+export class Authority {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Authority()
@@ -439,7 +439,7 @@ class Authority {
     }
 }
 
-class Extension {
+export class Extension {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Extension()
@@ -451,7 +451,7 @@ class Extension {
     }
 }
 
-class Validity {
+export class Validity {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Validity()
@@ -463,7 +463,7 @@ class Validity {
     }
 }
 
-class CertificateChain {
+export class CertificateChain {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new CertificateChain()
@@ -492,7 +492,7 @@ class CertificateChain {
     }
 }
 
-class SignerInfo {
+export class SignerInfo {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new SignerInfo()
@@ -523,7 +523,7 @@ class SignerInfo {
     }
 }
 
-class SecurityObject {
+export class SecurityObject {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new SecurityObject()
@@ -544,7 +544,7 @@ class SecurityObject {
     }
 }
 
-class CardProperties {
+export class CardProperties {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new CardProperties()
@@ -568,7 +568,7 @@ class CardProperties {
     }
 }
 
-class RFIDSessionData {
+export class RFIDSessionData {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new RFIDSessionData()
@@ -597,7 +597,7 @@ class RFIDSessionData {
     }
 }
 
-class DocumentReaderAuthenticityCheck {
+export class DocumentReaderAuthenticityCheck {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderAuthenticityCheck()
@@ -615,7 +615,7 @@ class DocumentReaderAuthenticityCheck {
     }
 }
 
-class PDF417Info {
+export class PDF417Info {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new PDF417Info()
@@ -628,7 +628,7 @@ class PDF417Info {
     }
 }
 
-class RFIDSessionDataStatus {
+export class RFIDSessionDataStatus {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new RFIDSessionDataStatus()
@@ -645,7 +645,7 @@ class RFIDSessionDataStatus {
     }
 }
 
-class DocumentReaderBarcodeResult {
+export class DocumentReaderBarcodeResult {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderBarcodeResult()
@@ -659,7 +659,7 @@ class DocumentReaderBarcodeResult {
     }
 }
 
-class DocumentReaderBarcodeField {
+export class DocumentReaderBarcodeField {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderBarcodeField()
@@ -677,7 +677,7 @@ class DocumentReaderBarcodeField {
     }
 }
 
-class DocumentReaderAuthenticityResult {
+export class DocumentReaderAuthenticityResult {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderAuthenticityResult()
@@ -692,7 +692,7 @@ class DocumentReaderAuthenticityResult {
     }
 }
 
-class DocumentReaderAuthenticityElement {
+export class DocumentReaderAuthenticityElement {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderAuthenticityElement()
@@ -707,7 +707,7 @@ class DocumentReaderAuthenticityElement {
     }
 }
 
-class DocumentReaderCompletion {
+export class DocumentReaderCompletion {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderCompletion()
@@ -720,7 +720,7 @@ class DocumentReaderCompletion {
     }
 }
 
-class Throwable {
+export class Throwable {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new Throwable()
@@ -737,7 +737,7 @@ class Throwable {
     }
 }
 
-class StackTraceElement {
+export class StackTraceElement {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new StackTraceElement()
@@ -753,7 +753,7 @@ class StackTraceElement {
     }
 }
 
-class PKDCertificate {
+export class PKDCertificate {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new PKDCertificate()
@@ -766,7 +766,7 @@ class PKDCertificate {
     }
 }
 
-class ImageInputParam {
+export class ImageInputParam {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new ImageInputParam()
@@ -779,7 +779,7 @@ class ImageInputParam {
     }
 }
 
-class DocumentReaderResults {
+export class DocumentReaderResults {
     getTextFieldValueByType({ fieldType, lcid = 0, source = -1, original = false }) {
         if (this.textResult == null) return null
         const field = this.findByTypeAndLcid(fieldType, lcid)
@@ -935,7 +935,7 @@ class DocumentReaderResults {
 
 // Enum
 
-const BarcodeResult = {
+export const BarcodeResult = {
     NO_ERR: 0,
     NULL_PTR_ERR: -6001,
     BAD_ARG_ERR: -6002,
@@ -968,7 +968,7 @@ const BarcodeResult = {
     IPDECODE_ERROR_LOADING_DEV_TABLE: -4512,
 }
 
-const BarcodeType = {
+export const BarcodeType = {
     UNKNOWN: 0,
     BCT_CODE128: 1,
     CODE39: 2,
@@ -990,24 +990,24 @@ const BarcodeType = {
     CODE11: 18,
 }
 
-const CameraMode = {
+export const CameraMode = {
     AUTO: 0,
     CAMERA1: 1,
     CAMERA2: 2,
 }
 
-const CameraTypes = {
+export const CameraTypes = {
     FRONT: "front",
     BACK: "back",
 }
 
-const CaptureMode = {
+export const CaptureMode = {
     AUTO: 0,
     CAPTURE_VIDEO: 1,
     CAPTURE_FRAME: 2,
 }
 
-const diDocType = {
+export const diDocType = {
     dtNotDefined: 0,
     dtPassport: 11,
     dtIdentityCard: 12,
@@ -1236,7 +1236,7 @@ const diDocType = {
     dtCertificateOfProficiency: 238,
 }
 
-const DocFormat = {
+export const DocFormat = {
     ID1: 0,
     ID2: 1,
     ID3: 2,
@@ -1245,7 +1245,7 @@ const DocFormat = {
     FLEXIBLE: 1002,
 }
 
-const DocReaderAction = {
+export const DocReaderAction = {
     COMPLETE: 1,
     PROCESS: 0,
     CANCEL: 2,
@@ -1255,14 +1255,14 @@ const DocReaderAction = {
     MORE_PAGES_AVAILABLE: 8,
 }
 
-const DocReaderFrame = {
+export const DocReaderFrame = {
     MAX: "max",
     SCENARIO_DEFAULT: "id1",
     NONE: "none",
     DOCUMENT: "document",
 }
 
-const DocReaderOrientation = {
+export const DocReaderOrientation = {
     ALL: 0,
     PORTRAIT: 1,
     LANDSCAPE: 2,
@@ -1270,7 +1270,7 @@ const DocReaderOrientation = {
     LANDSCAPE_RIGHT: 4,
 }
 
-const eCheckDiagnose = {
+export const eCheckDiagnose = {
     UNKNOWN: 0,
     PASS: 1,
     INVALID_INPUT_DATA: 2,
@@ -1354,13 +1354,13 @@ const eCheckDiagnose = {
     LAST_DIAGNOSE_VALUE: 162,
 }
 
-const eCheckResult = {
+export const eCheckResult = {
     CH_CHECK_ERROR: 0,
     CH_CHECK_OK: 1,
     CH_CHECK_WAS_NOT_DONE: 2,
 }
 
-const eGraphicFieldType = {
+export const eGraphicFieldType = {
     GF_PORTRAIT: 201,
     GF_FINGERPR: 202,
     GF_EYE: 203,
@@ -1436,7 +1436,7 @@ const eGraphicFieldType = {
     }
 }
 
-const eImageQualityCheckType = {
+export const eImageQualityCheckType = {
     IQC_IMAGE_GLARES: 0,
     IQC_IMAGE_FOCUS: 1,
     IQC_IMAGE_RESOLUTION: 2,
@@ -1445,7 +1445,7 @@ const eImageQualityCheckType = {
     IQC_BOUNDS: 5,
 }
 
-const eProcessGLCommands = {
+export const eProcessGLCommands = {
     ePC_ProcMgr_SetLicense: 12100,
     ePC_ProcMgr_Process: 12101,
     ePC_ProcMgr_ProcessAsync: 12102,
@@ -1458,7 +1458,7 @@ const eProcessGLCommands = {
     ePC_ProcMgr_ComparePortraits: 12111,
 }
 
-const eRequestCommand = {
+export const eRequestCommand = {
     eReqCmd_RFid_SendData: 100,
     eReqCmd_RFid_Notify: 101,
     eReqCmd_RFid_GetDataForScenario: 102,
@@ -1467,7 +1467,7 @@ const eRequestCommand = {
     eReqCmd_GetGuid: 400,
 }
 
-const eRFID_AccessControl_ProcedureType = {
+export const eRFID_AccessControl_ProcedureType = {
     ACPT_UNDEFINED: 0,
     ACPT_BAC: 1,
     ACPT_PACE: 2,
@@ -1478,21 +1478,21 @@ const eRFID_AccessControl_ProcedureType = {
     ACPT_CARD_INFO: 10,
 }
 
-const eRFID_AuthenticationProcedureType = {
+export const eRFID_AuthenticationProcedureType = {
     aptUndefined: 0,
     aptStandard: 1,
     aptAdvanced: 2,
     aptGeneral: 3,
 }
 
-const eRFID_BaudRate = {
+export const eRFID_BaudRate = {
     rfbr_106: 1,
     rfbr_212: 2,
     rfbr_424: 4,
     rfbr_848: 8,
 }
 
-const eRFID_CertificateType = {
+export const eRFID_CertificateType = {
     CT_UNDEFINED: 0,
     CT_CSCA: 1,
     CT_CSCA_LINK: 2,
@@ -1502,7 +1502,7 @@ const eRFID_CertificateType = {
     CT_DEF_LS: 6,
 }
 
-const eRFID_DataFile_Type = {
+export const eRFID_DataFile_Type = {
     DFT_UNSPECIFIED: 0,
     DFT_PASSPORT_DG1: 1,
     DFT_PASSPORT_DG2: 2,
@@ -1749,7 +1749,7 @@ const eRFID_DataFile_Type = {
     }
 }
 
-const eRFID_NotificationAndErrorCodes = {
+export const eRFID_NotificationAndErrorCodes = {
     RFID_NOTIFICATION_ERROR: 65536,
     RFID_NOTIFICATION_DOCUMENT_READY: 65537,
     RFID_NOTIFICATION_READ_PROTOCOL4: 65539,
@@ -2681,7 +2681,7 @@ const eRFID_NotificationAndErrorCodes = {
     }
 }
 
-const eRFID_Password_Type = {
+export const eRFID_Password_Type = {
     PPT_UNKNOWN: 0,
     PPT_MRZ: 1,
     PPT_CAN: 2,
@@ -2691,12 +2691,12 @@ const eRFID_Password_Type = {
     PPT_SAI: 6,
 }
 
-const eRFID_SDK_ProfilerType = {
+export const eRFID_SDK_ProfilerType = {
     SPT_DOC_9303_EDITION_2006: 0x00000001,
     SPT_DOC_9303_LDS_PKI_MAINTENANCE: 0x00000002,
 }
 
-const eRFID_TerminalType = {
+export const eRFID_TerminalType = {
     TET_UNDEFINED: 0,
     TET_INSPECTION_SYSTEM: 1,
     TET_AUTHENTICATION_TERMINAL: 2,
@@ -2704,7 +2704,7 @@ const eRFID_TerminalType = {
     TET_UNAUTHENTICATED_TERMINAL: 4,
 }
 
-const eRPRM_Authenticity = {
+export const eRPRM_Authenticity = {
     NONE: 0,
     UV_LUMINESCENCE: 1,
     IR_B900: 2,
@@ -2723,7 +2723,7 @@ const eRPRM_Authenticity = {
     HOLOGRAMS_DETECTION: 524288,
 }
 
-const eRPRM_FieldVerificationResult = {
+export const eRPRM_FieldVerificationResult = {
     RCF_DISABLED: 0,
     RCF_VERIFIED: 1,
     RCF_NOT_VERIFIED: 2,
@@ -2731,7 +2731,7 @@ const eRPRM_FieldVerificationResult = {
     RCF_COMPARE_FALSE: 4,
 }
 
-const eRPRM_Lights = {
+export const eRPRM_Lights = {
     NONE: 0,
     RPRM_LIGHT_UV: 128,
     RPRM_LIGHT_WHITE_FULL: 6,
@@ -2748,7 +2748,7 @@ const eRPRM_Lights = {
     }
 }
 
-const eRPRM_ResultType = {
+export const eRPRM_ResultType = {
     NONE: -1,
     RPRM_RESULT_TYPE_EMPTY: 0,
     RPRM_RESULT_TYPE_RAW_IMAGE: 1,
@@ -2785,7 +2785,7 @@ const eRPRM_ResultType = {
     RPRM_RESULT_TYPE_MRZ_POSITION: 61,
 }
 
-const eRPRM_SecurityFeatureType = {
+export const eRPRM_SecurityFeatureType = {
     NONE: -1,
     SECURITY_FEATURE_TYPE_BLANK: 0,
     SECURITY_FEATURE_TYPE_FILL: 1,
@@ -2818,7 +2818,7 @@ const eRPRM_SecurityFeatureType = {
     DOCUMENT_CANCELLING_DETECTOR: 28,
 }
 
-const eSignManagementAction = {
+export const eSignManagementAction = {
     smaUndefined: 0,
     smaCreatePIN: 1,
     smaChangePIN: 2,
@@ -2829,7 +2829,7 @@ const eSignManagementAction = {
     smaSignData: 7,
 }
 
-const eVisualFieldType = {
+export const eVisualFieldType = {
     FT_DOCUMENT_CLASS_CODE: 0,
     FT_ISSUING_STATE_CODE: 1,
     FT_DOCUMENT_NUMBER: 2,
@@ -4570,19 +4570,19 @@ const eVisualFieldType = {
     }
 }
 
-const FontStyle = {
+export const FontStyle = {
     NORMAL: 0,
     BOLD: 1,
     ITALIC: 2,
     BOLD_ITALIC: 3,
 }
 
-const FrameShapeType = {
+export const FrameShapeType = {
     LINE: 0,
     CORNER: 1,
 }
 
-const LCID = {
+export const LCID = {
     LATIN: 0,
     AFRIKAANS: 1078,
     ALBANIAN: 1052,
@@ -5015,7 +5015,7 @@ const LCID = {
     }
 }
 
-const PKDResourceType = {
+export const PKDResourceType = {
     CERTIFICATE_PA: 0,
     CERTIFICATE_TA: 1,
     LDIF: 2,
@@ -5049,18 +5049,18 @@ const PKDResourceType = {
     }
 }
 
-const ProcessingFinishedStatus = {
+export const ProcessingFinishedStatus = {
     NOT_READY: 0,
     READY: 1,
     TIMEOUT: 2,
 }
 
-const RGLMeasureSystem = {
+export const RGLMeasureSystem = {
     METRIC: 0,
     IMPERIAL: 1,
 }
 
-const ScenarioIdentifier = {
+export const ScenarioIdentifier = {
     SCENARIO_MRZ: "Mrz",
     SCENARIO_BARCODE: "Barcode",
     SCENARIO_LOCATE: "Locate",
@@ -5081,13 +5081,13 @@ const ScenarioIdentifier = {
     SCENARIO_CAPTURE: "Capture",
 }
 
-const LineCap = {
+export const LineCap = {
     Butt: 0,
     Round: 1,
     Square: 2,
 }
 
-const UIInterfaceOrientationMask = {
+export const UIInterfaceOrientationMask = {
     Portrait: 0,
     LandscapeLeft: 1,
     LandscapeRight: 2,
@@ -5097,7 +5097,7 @@ const UIInterfaceOrientationMask = {
     AllButUpsideDown: 6,
 }
 
-const AVCaptureSessionPreset = {
+export const AVCaptureSessionPreset = {
     Low: 0,
     Medium: 1,
     High: 2,
@@ -5114,13 +5114,13 @@ const AVCaptureSessionPreset = {
     Cif352x288: 13,
 }
 
-const AVCaptureDevicePosition = {
+export const AVCaptureDevicePosition = {
     Front: 0,
     Back: 1,
     Unspecified: 2,
 }
 
-const UIViewContentMode = {
+export const UIViewContentMode = {
     ScaleToFill: 0,
     ScaleAspectFit: 1,
     ScaleAspectFill: 2,
@@ -5136,7 +5136,7 @@ const UIViewContentMode = {
     BottomRight: 12,
 }
 
-const Enum = {
+export const Enum = {
    BarcodeResult,
    BarcodeType,
    CameraMode,
@@ -5246,4 +5246,4 @@ DocumentReader.Enum = Enum
 DocumentReader.DocumentReaderScenario = DocumentReaderScenario
 DocumentReader.DocumentReaderCompletion = DocumentReaderCompletion
 
-export default { DocumentReader, RNRegulaDocumentReader }
+export default DocumentReader
