@@ -11,8 +11,6 @@ import com.regula.documentreader.api.enums.PDF417Info;
 import com.regula.documentreader.api.enums.eGraphicFieldType;
 import com.regula.documentreader.api.enums.eRPRM_Lights;
 import com.regula.documentreader.api.params.FaceMetaData;
-import com.regula.documentreader.api.params.ImageInputParam;
-import com.regula.documentreader.api.params.rfid.PKDCertificate;
 import com.regula.documentreader.api.results.Bounds;
 import com.regula.documentreader.api.results.Coordinate;
 import com.regula.documentreader.api.results.DocReaderFieldRect;
@@ -1837,34 +1835,6 @@ class JSONConstructor {
                 result.elementType = input.getInt("elementType");
             if (input.has("elementDiagnose"))
                 result.elementDiagnose = input.getInt("elementDiagnose");
-        } catch (JSONException ignored) {
-        }
-        return result;
-    }
-
-    static PKDCertificate PKDCertificateFromJSON(JSONObject input) {
-        PKDCertificate result = new PKDCertificate();
-        try {
-            if (input.has("binaryData"))
-                result.binaryData = input.getString("binaryData");
-            if (input.has("resourceType"))
-                result.resourceType = input.getInt("resourceType");
-            if (input.has("privateKey"))
-                result.privateKey = input.getString("privateKey");
-        } catch (JSONException ignored) {
-        }
-        return result;
-    }
-
-    static ImageInputParam ImageInputParamFromJSON(JSONObject input) {
-        ImageInputParam result = new ImageInputParam();
-        try {
-            if (input.has("width"))
-                result.width = input.getInt("width");
-            if (input.has("height"))
-                result.height = input.getInt("height");
-            if (input.has("type"))
-                result.type = input.getInt("type");
         } catch (JSONException ignored) {
         }
         return result;
