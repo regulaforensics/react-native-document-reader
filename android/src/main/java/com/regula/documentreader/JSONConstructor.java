@@ -927,30 +927,6 @@ class JSONConstructor {
         return result;
     }
 
-    static JSONObject generatePKDCertificate(PKDCertificate input) {
-        JSONObject result = new JSONObject();
-        if (input == null) return result;
-        try {
-            result.put("binaryData", input.binaryData);
-            result.put("resourceType", input.resourceType);
-            result.put("privateKey", input.privateKey);
-        } catch (JSONException ignored) {
-        }
-        return result;
-    }
-
-    static JSONObject generateImageInputParam(ImageInputParam input) {
-        JSONObject result = new JSONObject();
-        if (input == null) return result;
-        try {
-            result.put("width", input.width);
-            result.put("height", input.height);
-            result.put("type", input.type);
-        } catch (JSONException ignored) {
-        }
-        return result;
-    }
-
     static JSONObject generateDocumentReaderResults(DocumentReaderResults input, Context context) {
         JSONObject result = new JSONObject();
         if (input == null) return result;
