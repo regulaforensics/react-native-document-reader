@@ -3782,6 +3782,15 @@ export const eVisualFieldType = {
     FT_CITIZENSHIP_STATUS: 625,
     FT_MILITARY_SERVICE_FROM: 626,
     FT_MILITARY_SERVICE_TO: 627,
+    FT_DLCLASSCODE_NT_FROM: 628,
+    FT_DLCLASSCODE_NT_TO: 629,
+    FT_DLCLASSCODE_NT_NOTES: 630,
+    FT_DLCLASSCODE_TN_FROM: 631,
+    FT_DLCLASSCODE_TN_TO: 632,
+    FT_DLCLASSCODE_TN_NOTES: 633,
+    FT_DLCLASSCODE_D3_FROM: 634,
+    FT_DLCLASSCODE_D3_TO: 635,
+    FT_DLCLASSCODE_D3_NOTES: 636,
 
     getTranslation(value: number) {
         switch (value) {
@@ -4939,6 +4948,24 @@ export const eVisualFieldType = {
                 return "Military service from"
             case 627:
                 return "Military service to"
+            case 628:
+                return "DL category NT valid from"
+            case 629:
+                return "DL category NT valid to"
+            case 630:
+                return "DL category NT codes"
+            case 631:
+                return "DL category TN valid from"
+            case 632:
+                return "DL category TN valid to"
+            case 633:
+                return "DL category TN codes"
+            case 634:
+                return "DL category D3 valid from"
+            case 635:
+                return "DL category D3 valid to"
+            case 636:
+                return "DL category D3 codes"
             default:
                 return value.toString()
         }
