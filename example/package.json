@@ -15,8 +15,8 @@
     "react-native": "0.63.4",
     "react-native-check-box": "^2.1.7",
     "react-native-customized-image-picker": "^1.1.0",
-    "@regulaforensics/react-native-document-reader-api": "^5.5.0",
-    "@regulaforensics/react-native-document-reader-core-fullrfid": "^5.5.0",
+    "@regulaforensics/react-native-document-reader-api": "^5.6.0",
+    "@regulaforensics/react-native-document-reader-core-fullrfid": "^5.6.0",
     "react-native-progress": "^4.1.2",
     "react-native-fs": "^2.16.6",
     "react-native-radio-buttons-group": "^1.0.7"

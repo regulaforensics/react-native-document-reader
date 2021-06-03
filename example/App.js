@@ -1,15 +1,13 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Button, Text, Image, ScrollView, NativeEventEmitter, Platform, TouchableOpacity } from 'react-native'
-import Regula from '@regulaforensics/react-native-document-reader-api'
+import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario,RNRegulaDocumentReader } from '@regulaforensics/react-native-document-reader-api'
 import * as RNFS from 'react-native-fs'
 import RadioGroup from 'react-native-radio-buttons-group'
 import ImagePicker from 'react-native-customized-image-picker'
 import * as Progress from 'react-native-progress'
 import CheckBox from 'react-native-check-box'
 
-const eventManager = new NativeEventEmitter(Regula.RNRegulaDocumentReader)
-const DocumentReader = Regula.DocumentReader
-const Enum = DocumentReader.Enum
+const eventManager = new NativeEventEmitter(RNRegulaDocumentReader)
 
 var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license"
 var certDir = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/certificates") : "certificates"
@@ -44,7 +42,7 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     eventManager.addListener('prepareDatabaseProgressChangeEvent', e => this.setState({ fullName: "Downloading database: " + e["msg"] + "%" }))
-    eventManager.addListener('completionEvent', e => this.handleCompletion(DocumentReader.DocumentReaderCompletion.fromJson(JSON.parse(e["msg"]))))
+    eventManager.addListener('completionEvent', e => this.handleCompletion(DocumentReaderCompletion.fromJson(JSON.parse(e["msg"]))))
     DocumentReader.prepareDatabase("Full", (respond) => {
       console.log(respond)
       readFile(licPath, 'base64').then((res) => {
@@ -62,7 +60,7 @@ export default class App extends Component {
             var scenariosL = []
             for (var i in scenariosTemp) {
               scenariosL.push({
-                label: DocumentReader.DocumentReaderScenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
+                label: DocumentReaderScenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
                 value: i
               })
             }
