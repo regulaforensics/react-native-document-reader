@@ -1,11 +1,11 @@
-#ifndef JSONConstructor_h
-#define JSONConstructor_h
+#ifndef RGLJSONConstructor_h
+#define RGLJSONConstructor_h
 
 #import <DocumentReader/DocumentReader.h>
 @import CoreGraphics;
 @import UIKit;
 
-@interface JSONConstructor : NSObject
+@interface RGLJSONConstructor : NSObject
 +(NSString* _Nonnull)dictToString:(NSMutableDictionary* _Nonnull)input;
 +(NSMutableDictionary* _Nonnull)generateNSDictionary:(NSDictionary<NSNumber*, NSNumber*>* _Nullable)input;
 +(RGLPKDCertificate* _Nullable)RGLPKDCertificateFromJson:(NSDictionary* _Nullable) dict;
