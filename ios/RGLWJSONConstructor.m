@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
-#import "RGLJSONConstructor.h"
+#import "RGLWJSONConstructor.h"
 
-@implementation RGLJSONConstructor
+@implementation RGLWJSONConstructor
 
 +(NSString*)dictToString:(NSMutableDictionary*)input {
     return [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:input options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding];
