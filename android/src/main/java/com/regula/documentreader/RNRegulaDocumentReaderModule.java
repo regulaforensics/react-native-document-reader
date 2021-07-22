@@ -23,10 +23,16 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion;
+import com.regula.documentreader.api.completions.IRfidNotificationCompletion;
+import com.regula.documentreader.api.completions.IRfidPKDCertificateCompletion;
+import com.regula.documentreader.api.completions.IRfidReaderRequest;
+import com.regula.documentreader.api.completions.IRfidTASignatureCompletion;
 import com.regula.documentreader.api.enums.DocReaderAction;
 import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.params.ImageInputParam;
 import com.regula.documentreader.api.params.rfid.PKDCertificate;
+import com.regula.documentreader.api.params.rfid.authorization.PAResourcesIssuer;
+import com.regula.documentreader.api.params.rfid.authorization.TAChallenge;
 import com.regula.documentreader.api.results.DocumentReaderResults;
 
 import org.json.JSONArray;
@@ -296,8 +302,20 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "setRfidSessionStatus":
                     setRfidSessionStatus(callback, args(0));
                     break;
+                case "providePACertificates":
+                    providePACertificates(callback, args(0));
+                    break;
+                case "provideTACertificates":
+                    provideTACertificates(callback, args(0));
+                    break;
+                case "provideTASignature":
+                    provideTASignature(callback, args(0));
+                    break;
                 case "initializeReaderWithDatabasePath":
                     initializeReaderWithDatabasePath(callback, args(0), args(1));
+                    break;
+                case "initializeReaderWithDatabase":
+                    initializeReaderWithDatabase(callback, args(0), args(1));
                     break;
                 case "recognizeImageFrame":
                     recognizeImageFrame(callback, args(0), args(1));
@@ -445,6 +463,13 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             callback.success("already initialized");
     }
 
+    private void initializeReaderWithDatabase(Callback callback, Object license, Object db) {
+        if (!Instance().getDocumentReaderIsReady())
+            Instance().initializeReader(getContext(), Base64.decode(license.toString(), Base64.DEFAULT), Base64.decode(db.toString(), Base64.DEFAULT), getInitCompletion(callback));
+        else
+            callback.success("already initialized");
+    }
+
     private void startNewSession(Callback callback) {
         Instance().startNewSession();
         callback.success();
@@ -541,7 +566,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void startRFIDReader(@SuppressWarnings("unused") Callback callback) {
         stopBackgroundRFID();
-        Instance().startRFIDReader(getContext(), getCompletion());
+        Instance().startRFIDReader(getContext(), getCompletion(), getIRfidReaderRequest(), getIRfidNotificationCompletion());
     }
 
     private void stopRFIDReader(Callback callback) {
@@ -575,6 +600,43 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     private void readRFID(@SuppressWarnings("unused") Callback callback) {
         backgroundRFIDEnabled = true;
         startForegroundDispatch(getActivity());
+    }
+
+    private void providePACertificates(Callback callback, JSONArray certificatesJSON) throws JSONException {
+        if (paCertificateCompletion == null) {
+            callback.error("paCertificateCompletion is null");
+            return;
+        }
+        PKDCertificate[] certificates = new PKDCertificate[certificatesJSON.length()];
+        for (int i = 0; i < certificatesJSON.length(); i++) {
+            JSONObject certificate = certificatesJSON.getJSONObject(i);
+            certificates[i] = new PKDCertificate(Base64.decode(certificate.get("binaryData").toString(), Base64.DEFAULT), certificate.getInt("resourceType"), certificate.has("privateKey") ? Base64.decode(certificate.get("privateKey").toString(), Base64.DEFAULT) : null);
+        }
+        paCertificateCompletion.onCertificatesReceived(certificates);
+        callback.success();
+    }
+
+    private void provideTACertificates(Callback callback, JSONArray certificatesJSON) throws JSONException {
+        if (taCertificateCompletion == null) {
+            callback.error("taCertificateCompletion is null");
+            return;
+        }
+        PKDCertificate[] certificates = new PKDCertificate[certificatesJSON.length()];
+        for (int i = 0; i < certificatesJSON.length(); i++) {
+            JSONObject certificate = certificatesJSON.getJSONObject(i);
+            certificates[i] = new PKDCertificate(Base64.decode(certificate.get("binaryData").toString(), Base64.DEFAULT), certificate.getInt("resourceType"), certificate.has("privateKey") ? Base64.decode(certificate.get("privateKey").toString(), Base64.DEFAULT) : null);
+        }
+        taCertificateCompletion.onCertificatesReceived(certificates);
+        callback.success();
+    }
+
+    private void provideTASignature(Callback callback, Object signature) {
+        if (taSignatureCompletion == null) {
+            callback.error("taSignatureCompletion is null");
+            return;
+        }
+        taSignatureCompletion.onSignatureReceived(Base64.decode(signature.toString(), Base64.DEFAULT));
+        callback.success();
     }
 
     private void setCameraSessionIsPaused(Callback callback, @SuppressWarnings("unused") boolean ignored) {
@@ -640,5 +702,31 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             } else
                 callback.error("Init failed:" + error);
         };
+    }
+
+    private IRfidReaderRequest getIRfidReaderRequest() {
+        return new IRfidReaderRequest() {
+            @Override
+            public void onRequestPACertificates(byte[] serialNumber, PAResourcesIssuer issuer, IRfidPKDCertificateCompletion completion) {
+                paCertificateCompletion = completion;
+                sendPACertificateCompletion(serialNumber, issuer);
+            }
+
+            @Override
+            public void onRequestTACertificates(String keyCAR, IRfidPKDCertificateCompletion completion) {
+                taCertificateCompletion = completion;
+                sendTACertificateCompletion(keyCAR);
+            }
+
+            @Override
+            public void onRequestTASignature(TAChallenge challenge, IRfidTASignatureCompletion completion) {
+                taSignatureCompletion = completion;
+                sendTASignatureCompletion(challenge);
+            }
+        };
+    }
+
+    private IRfidNotificationCompletion getIRfidNotificationCompletion() {
+        return (notificationType, value) -> sendIRfidNotificationCompletion(notificationType);
     }
 }

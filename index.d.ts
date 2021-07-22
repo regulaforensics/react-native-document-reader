@@ -1025,7 +1025,7 @@ export class DocumentReaderAuthenticityElement {
 export class DocumentReaderCompletion {
     action?: number
     results?: DocumentReaderResults
-    error?: Throwable
+    error?: DocumentReaderException
 
     static fromJson(jsonObject?: any): DocumentReaderCompletion {
         if (jsonObject == null) return null
@@ -1033,7 +1033,33 @@ export class DocumentReaderCompletion {
 
         result.action = jsonObject["action"]
         result.results = DocumentReaderResults.fromJson(jsonObject["results"])
-        result.error = Throwable.fromJson(jsonObject["error"])
+        result.error = DocumentReaderException.fromJson(jsonObject["error"])
+
+        return result
+    }
+}
+
+export class DocumentReaderException {
+    errorCode?: number
+    localizedMessage?: string
+    message?: string
+    string?: string
+    stackTrace?: StackTraceElement[]
+
+    static fromJson(jsonObject?: any): DocumentReaderException {
+        if (jsonObject == null) return null
+        const result = new DocumentReaderException
+
+        result.errorCode = jsonObject["errorCode"]
+        result.localizedMessage = jsonObject["localizedMessage"]
+        result.message = jsonObject["message"]
+        result.string = jsonObject["string"]
+        result.stackTrace = []
+        if (jsonObject["stackTrace"] != null) {
+            for (const i in jsonObject["stackTrace"]) {
+                result.stackTrace.push(StackTraceElement.fromJson(jsonObject["stackTrace"][i]))
+            }
+        }
 
         return result
     }
@@ -1115,6 +1141,74 @@ export class ImageInputParam {
         result.width = jsonObject["width"]
         result.height = jsonObject["height"]
         result.type = jsonObject["type"]
+
+        return result
+    }
+}
+
+export class PAResourcesIssuer {
+    data?: any[]
+    friendlyName?: string
+    attributes?: PAAttribute[]
+
+    static fromJson(jsonObject?: any): PAResourcesIssuer {
+        if (jsonObject == null) return null
+        const result = new PAResourcesIssuer
+
+        result.data = []
+        if (jsonObject["data"] != null) {
+            for (const i in jsonObject["data"]) {
+                result.data.push(jsonObject["data"][i])
+            }
+        }
+        result.friendlyName = jsonObject["friendlyName"]
+        result.attributes = []
+        if (jsonObject["attributes"] != null) {
+            for (const i in jsonObject["attributes"]) {
+                result.attributes.push(PAAttribute.fromJson(jsonObject["attributes"][i]))
+            }
+        }
+
+        return result
+    }
+}
+
+export class PAAttribute {
+    type?: string
+    value?: string
+
+    static fromJson(jsonObject?: any): PAAttribute {
+        if (jsonObject == null) return null
+        const result = new PAAttribute
+
+        result.type = jsonObject["type"]
+        result.value = jsonObject["value"]
+
+        return result
+    }
+}
+
+export class TAChallenge {
+    data?: any[]
+    auxPCD?: string
+    challengePICC?: string
+    hashPK?: string
+    idPICC?: string
+
+    static fromJson(jsonObject?: any): TAChallenge {
+        if (jsonObject == null) return null
+        const result = new TAChallenge
+
+        result.data = []
+        if (jsonObject["data"] != null) {
+            for (const i in jsonObject["data"]) {
+                result.data.push(jsonObject["data"][i])
+            }
+        }
+        result.auxPCD = jsonObject["auxPCD"]
+        result.challengePICC = jsonObject["challengePICC"]
+        result.hashPK = jsonObject["hashPK"]
+        result.idPICC = jsonObject["idPICC"]
 
         return result
     }
@@ -1643,6 +1737,25 @@ export const DocReaderOrientation = {
     LANDSCAPE: 2,
     LANDSCAPE_LEFT: 3,
     LANDSCAPE_RIGHT: 4,
+}
+
+export const DocumentReaderExceptionEnum = {
+    NATIVE_JAVA_EXCEPTION: 0,
+    DOCUMENT_READER_STATE_EXCEPTION: 1,
+    DOCUMENT_READER_WRONG_INPUT: 2,
+    INITIALIZATION_FAILED: 3,
+    DOCUMENT_READER_BLE_EXCEPTION: 201,
+    DB_DOWNLOAD_ERROR: 301,
+    LICENSE_ABSENT_OR_CORRUPTED: 101,
+    LICENSE_INVALID_DATE: 102,
+    LICENSE_INVALID_VERSION: 103,
+    LICENSE_INVALID_DEVICE_ID: 104,
+    LICENSE_INVALID_SYSTEM_OR_APP_ID: 105,
+    LICENSE_NO_CAPABILITIES: 106,
+    LICENSE_NO_AUTHENTICITY: 107,
+    LICENSE_NO_DATABASE: 110,
+    LICENSE_DATABASE_INCORRECT: 111,
+    FEATURE_BLUETOOTH_LE_NOT_SUPPORTED: 701,
 }
 
 export const eCheckDiagnose = {
@@ -3805,6 +3918,7 @@ export const eVisualFieldType = {
     FT_DLCLASSCODE_D3_FROM: 634,
     FT_DLCLASSCODE_D3_TO: 635,
     FT_DLCLASSCODE_D3_NOTES: 636,
+    FT_ALT_DATE_OF_EXPIRY: 637,
 
     getTranslation(value: number) {
         switch (value) {
@@ -4980,6 +5094,8 @@ export const eVisualFieldType = {
                 return "DL category D3 valid to"
             case 636:
                 return "DL category D3 codes"
+            case 637:
+                return "Alternative date of expiry"
             default:
                 return value.toString()
         }
@@ -4996,6 +5112,12 @@ export const FontStyle = {
 export const FrameShapeType = {
     LINE: 0,
     CORNER: 1,
+}
+
+export const IRfidNotificationCompletion = {
+    RFID_EVENT_CHIP_DETECTED: 1,
+    RFID_EVENT_READING_ERROR: 2,
+    RFID_EXTRA_ERROR_CODE: "rfid.error.code",
 }
 
 export const LCID = {
@@ -5563,6 +5685,7 @@ export const Enum = {
    DocReaderAction,
    DocReaderFrame,
    DocReaderOrientation,
+   DocumentReaderExceptionEnum,
    eCheckDiagnose,
    eCheckResult,
    eGraphicFieldType,
@@ -5587,6 +5710,7 @@ export const Enum = {
    eVisualFieldType,
    FontStyle,
    FrameShapeType,
+   IRfidNotificationCompletion,
    LCID,
    PKDResourceType,
    ProcessingFinishedStatus,
@@ -5648,7 +5772,11 @@ export default class DocumentReader {
     static prepareDatabase(databaseType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImage(image: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setRfidSessionStatus(status: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static providePACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static provideTACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static provideTASignature(certificates: byte[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static initializeReaderWithDatabasePath(license: string, path: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static initializeReaderWithDatabase(license: string, db: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImageFrame(image: string, params: ImageInputParam, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImageWithOpts(image: string, options: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeVideoFrame(byteString: string, params: ImageInputParam, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
