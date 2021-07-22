@@ -50,10 +50,17 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     private final static String prepareDatabaseProgressChangeEvent = "prepareDatabaseProgressChangeEvent";
     private final static String completionEvent = "completionEvent";
     private final static String videoEncoderCompletionEvent = "videoEncoderCompletionEvent";
+    private final static String rfidNotificationCompletionEvent = "rfidNotificationCompletionEvent";
+    private final static String paCertificateCompletionEvent = "paCertificateCompletionEvent";
+    private final static String taCertificateCompletionEvent = "taCertificateCompletionEvent";
+    private final static String taSignatureCompletionEvent = "taSignatureCompletionEvent";
     private static int databaseDownloadProgress = 0;
     JSONArray data;
     private final ReactContext reactContext;
     private boolean backgroundRFIDEnabled = false;
+    private IRfidPKDCertificateCompletion paCertificateCompletion;
+    private IRfidPKDCertificateCompletion taCertificateCompletion;
+    private IRfidTASignatureCompletion taSignatureCompletion;
 
     public RNRegulaDocumentReaderModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -117,12 +124,28 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         send(prepareDatabaseProgressChangeEvent, progress + "");
     }
 
-    private void sendCompletion(int action, DocumentReaderResults results, Throwable error) {
+    private void sendCompletion(int action, DocumentReaderResults results, DocumentReaderException error) {
         send(completionEvent, JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
     }
 
     private void sendVideoEncoderCompletion(String sessionId, File file) {
         send(videoEncoderCompletionEvent, JSONConstructor.generateVideoEncoderCompletion(sessionId, file).toString());
+    }
+
+    private void sendIRfidNotificationCompletion(int notification) {
+        send(rfidNotificationCompletionEvent, notification + "");
+    }
+
+    private void sendPACertificateCompletion(byte[] serialNumber, PAResourcesIssuer issuer) {
+        send(paCertificateCompletionEvent, JSONConstructor.generatePACertificateCompletion(serialNumber, issuer).toString());
+    }
+
+    private void sendTACertificateCompletion(String keyCAR) {
+        send(taCertificateCompletionEvent, keyCAR);
+    }
+
+    private void sendTASignatureCompletion(TAChallenge challenge) {
+        send(taSignatureCompletionEvent, JSONConstructor.generateTAChallenge(challenge).toString());
     }
 
 
