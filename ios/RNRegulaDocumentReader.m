@@ -1,6 +1,39 @@
 @import UIKit;
 #import "RNRegulaDocumentReader.h"
 
+NSString* rfidNotificationCompletionEvent = @"rfidNotificationCompletionEvent";
+NSString* paCertificateCompletionEvent = @"paCertificateCompletionEvent";
+NSString* taCertificateCompletionEvent = @"taCertificateCompletionEvent";
+NSString* taSignatureCompletionEvent = @"taSignatureCompletionEvent";
+RGLRFIDCertificatesCallback paCertificateCompletion;
+RGLRFIDCertificatesCallback taCertificateCompletion;
+RFIDDelegateNoPA* rfidDelegateNoPA;
+typedef void (^RGLRFIDSignatureCallback)(NSData *signature);
+RGLRFIDSignatureCallback taSignatureCompletion;
+RNRegulaDocumentReader* plugin;
+
+@implementation RFIDDelegateNoPA
+
+- (void)onRequestTACertificatesWithKey:(NSString *)keyCAR callback:(RGLRFIDCertificatesCallback)callback {
+    taCertificateCompletion = callback;
+    [plugin sendEventWithName:taCertificateCompletionEvent body:@{@"msg": keyCAR}];
+}
+
+- (void)onRequestTASignatureWithChallenge:(RGLTAChallenge *)challenge callback:(void(^)(NSData *signature))callback {
+    taSignatureCompletion = callback;
+    [plugin sendEventWithName:taSignatureCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRGLTAChallenge:challenge]]}];
+}
+
+- (void)didChipConnected {
+    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": @1}]; // int RFID_EVENT_CHIP_DETECTED = 1;
+}
+
+- (void)didReceivedError:(RGLRFIDErrorCodes)errorCode {
+    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": @2}]; // int RFID_EVENT_READING_ERROR = 2;
+}
+
+@end
+
 @implementation RNRegulaDocumentReader
 
 @synthesize bridge = _bridge;
@@ -57,7 +90,31 @@ typedef void (^Callback)(NSString* response);
     [self sendEventWithName:@"videoEncoderCompletionEvent" body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateVideoEncoderCompletion:nil :error]]}];
 }
 
+- (void)onRequestPACertificatesWithSerial:(NSData *)serialNumber issuer:(RGLPAResourcesIssuer *)issuer callback:(RGLRFIDCertificatesCallback)callback {
+    paCertificateCompletion = callback;
+    [self sendEventWithName:paCertificateCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generatePACertificateCompletion:serialNumber :issuer]]}];
+}
+
+- (void)onRequestTACertificatesWithKey:(NSString *)keyCAR callback:(RGLRFIDCertificatesCallback)callback {
+    taCertificateCompletion = callback;
+    [self sendEventWithName:taCertificateCompletionEvent body:@{@"msg": keyCAR}];
+}
+
+- (void)onRequestTASignatureWithChallenge:(RGLTAChallenge *)challenge callback:(void(^)(NSData *signature))callback {
+    taSignatureCompletion = callback;
+    [self sendEventWithName:taSignatureCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRGLTAChallenge:challenge]]}];
+}
+
+- (void)didChipConnected {
+    [self sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": @1}]; // int RFID_EVENT_CHIP_DETECTED = 1;
+}
+
+- (void)didReceivedError:(RGLRFIDErrorCodes)errorCode {
+    [self sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": @2}]; // int RFID_EVENT_READING_ERROR = 2;
+}
+
 RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(RCTResponseSenderBlock)sCallback:(RCTResponseSenderBlock)eCallback) {
+    plugin = self;
     Callback successCallback = ^(NSString* response){
         sCallback(@[response]);
     };
@@ -549,32 +606,6 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         else
             [self result:[NSString stringWithFormat:@"%@/%@", @"database preparation failed: ", error.description] :errorCallback];
     };
-}
-
-@end
-
-@implementation RFIDDelegateNoPA
-
-- (void)onRequestTACertificatesWithKey:(NSString *)keyCAR callback:(RGLRFIDCertificatesCallback)callback {
-    taCertificateCompletion = callback;
-    if(taCertificateCompletionEvent != nil)
-        taCertificateCompletionEvent(keyCAR);
-}
-
-- (void)onRequestTASignatureWithChallenge:(RGLTAChallenge *)challenge callback:(void(^)(NSData *signature))callback {
-    taSignatureCompletion = callback;
-    if(taSignatureCompletionEvent != nil)
-        taSignatureCompletionEvent([RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRGLTAChallenge:challenge]]);
-}
-
-- (void)didChipConnected {
-    if(rfidNotificationCompletionEvent != nil)
-        rfidNotificationCompletionEvent(@1); // int RFID_EVENT_CHIP_DETECTED = 1;
-}
-
-- (void)didReceivedError:(RGLRFIDErrorCodes)errorCode {
-    if(rfidNotificationCompletionEvent != nil)
-        rfidNotificationCompletionEvent(@2); // int RFID_EVENT_READING_ERROR = 2;
 }
 
 @end
