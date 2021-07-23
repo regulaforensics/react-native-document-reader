@@ -5593,6 +5593,12 @@ export const ProcessingFinishedStatus = {
     TIMEOUT: 2,
 }
 
+export const RFIDDelegate = {
+    NULL: 0,
+    NO_PA: 1,
+    FULL: 2,
+}
+
 export const RGLMeasureSystem = {
     METRIC: 0,
     IMPERIAL: 1,
@@ -5714,6 +5720,7 @@ export const Enum = {
    LCID,
    PKDResourceType,
    ProcessingFinishedStatus,
+   RFIDDelegate,
    RGLMeasureSystem,
    ScenarioIdentifier,
    LineCap,
@@ -5759,6 +5766,7 @@ export default class DocumentReader {
     static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static readRFID(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getRfidSessionStatus(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setRfidDelegate(delegate: int, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setEnableCoreLogs(logs: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static addPKDCertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setCameraSessionIsPaused(paused: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void

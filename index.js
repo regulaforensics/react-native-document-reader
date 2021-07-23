@@ -5191,6 +5191,12 @@ export const ProcessingFinishedStatus = {
     TIMEOUT: 2,
 }
 
+export const RFIDDelegate = {
+    NULL: 0,
+    NO_PA: 1,
+    FULL: 2,
+}
+
 export const RGLMeasureSystem = {
     METRIC: 0,
     IMPERIAL: 1,
@@ -5312,6 +5318,7 @@ export const Enum = {
    LCID,
    PKDResourceType,
    ProcessingFinishedStatus,
+   RFIDDelegate,
    RGLMeasureSystem,
    ScenarioIdentifier,
    LineCap,
@@ -5358,6 +5365,7 @@ DocumentReader.resetConfiguration = (successCallback, errorCallback) => RNRegula
 DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
 DocumentReader.readRFID = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "readRFID", [], successCallback, errorCallback)
 DocumentReader.getRfidSessionStatus = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidSessionStatus", [], successCallback, errorCallback)
+DocumentReader.setRfidDelegate = (delegate, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidDelegate", [delegate], successCallback, errorCallback)
 DocumentReader.setEnableCoreLogs = (logs, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setEnableCoreLogs", [logs], successCallback, errorCallback)
 DocumentReader.addPKDCertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "addPKDCertificates", [certificates], successCallback, errorCallback)
 DocumentReader.setCameraSessionIsPaused = (paused, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setCameraSessionIsPaused", [paused], successCallback, errorCallback)

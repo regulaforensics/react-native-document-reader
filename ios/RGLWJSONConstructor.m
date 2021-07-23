@@ -168,6 +168,19 @@
     return result;
 }
 
++(NSString*)generateNSData:(NSData *)input {
+    return [NSKeyedUnarchiver unarchiveObjectWithData:input];
+}
+
++(NSMutableDictionary* _Nonnull)generatePACertificateCompletion:(NSData *)serialNumber :(RGLPAResourcesIssuer *)issuer{
+    NSMutableDictionary *result = [NSMutableDictionary new];
+
+    result[@"serialNumber"] = [self generateNSData:serialNumber];
+    result[@"issuer"] = [self generateRGLPAResourcesIssuer:issuer];
+
+    return result;
+}
+
     // To JSON
 
 +(NSMutableDictionary* _Nonnull)generateRGLDocumentReaderResults:(RGLDocumentReaderResults* _Nullable)input {
@@ -847,6 +860,46 @@
 
     result[@"code"] = @(input.code);
     result[@"localizedDescription"] = input.localizedDescription;
+
+    return result;
+}
+
++(NSMutableDictionary* _Nonnull)generateRGLPAResourcesIssuer:(RGLPAResourcesIssuer* _Nullable)input {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    if(input == nil) return result;
+
+    result[@"data"] = [NSKeyedUnarchiver unarchiveObjectWithData:input.data];
+    result[@"friendlyName"] = input.friendlyName;
+    if(input.attributes != nil){
+        NSMutableArray *array = [NSMutableArray new];
+        for(RGLPAAttribute* item in input.attributes)
+            if(item != nil)
+                [array addObject:[self generateRGLPAAttribute:item]];
+        result[@"attributes"] = array;
+    }
+
+    return result;
+}
+
++(NSMutableDictionary* _Nonnull)generateRGLPAAttribute:(RGLPAAttribute* _Nullable)input {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    if(input == nil) return result;
+
+    result[@"value"] = input.value;
+    result[@"type"] = input.type;
+
+    return result;
+}
+
++(NSMutableDictionary* _Nonnull)generateRGLTAChallenge:(RGLTAChallenge* _Nullable)input {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    if(input == nil) return result;
+
+    result[@"data"] = [NSKeyedUnarchiver unarchiveObjectWithData:input.data];
+    result[@"auxPCD"] = input.auxPCD;
+    result[@"challengePICC"] = input.challengePICC;
+    result[@"hashPK"] = input.hashPK;
+    result[@"idPICC"] = input.idPICC;
 
     return result;
 }
