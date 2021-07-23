@@ -81,6 +81,8 @@ export default class App extends Component {
             DocumentReader.getDocumentReaderIsReady((isReady) => {
               if (isReady) {
                 this.setState({ fullName: "Ready" })
+                if(Platform.OS === 'ios')
+                  DocumentReader.serRfidDelegate(Enum.RFIDDelegate.NO_PA, (r) => {}, error => console.log(error))
                 // addCertificates()
               } else
                 this.setState({ fullName: "Failed" })
