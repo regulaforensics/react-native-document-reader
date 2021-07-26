@@ -118,7 +118,6 @@
 
     switch (action) {
         case 0:
-            result[@"results"] = [self generateResultsWithNotification:[self generateRGLRFIDNotify:notify]];
             break;
         case 1:
             result[@"results"] = [self generateRGLDocumentReaderResults:results];
@@ -147,7 +146,8 @@
     }
 
     result[@"action"] = [NSNumber numberWithInteger:action];
-    result[@"error"] = [self generateNSError:error];
+    if(error != nil)
+        result[@"error"] = [self generateNSError:error];
 
     return result;
 }

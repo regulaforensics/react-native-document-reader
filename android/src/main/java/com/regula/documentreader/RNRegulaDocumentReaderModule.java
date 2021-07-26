@@ -592,7 +592,12 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void startRFIDReader(@SuppressWarnings("unused") Callback callback) {
         stopBackgroundRFID();
-        Instance().startRFIDReader(getContext(), getCompletion(), getIRfidReaderRequest(), getIRfidNotificationCompletion());
+        IRfidReaderRequest delegate = null;
+        if(rfidDelegate == RFIDDelegate.NO_PA)
+            delegate = getIRfidReaderRequestNoPA();
+        if(rfidDelegate == RFIDDelegate.FULL)
+            delegate = getIRfidReaderRequest();
+        Instance().startRFIDReader(getContext(), getCompletion(), delegate, getIRfidNotificationCompletion());
     }
 
     private void stopRFIDReader(Callback callback) {
@@ -669,8 +674,9 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         callback.error("setCameraSessionIsPaused() is an ios-only method");
     }
 
-    private void setRfidDelegate(Callback callback, @SuppressWarnings("unused") int ignored) {
-        callback.error("setRfidDelegate() is an ios-only method");
+    private void setRfidDelegate(Callback callback, int delegate) {
+        rfidDelegate = delegate;
+        callback.success();
     }
 
     private void getCameraSessionIsPaused(Callback callback) {
@@ -739,6 +745,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             @Override
             public void onRequestPACertificates(byte[] serialNumber, PAResourcesIssuer issuer, IRfidPKDCertificateCompletion completion) {
                 paCertificateCompletion = completion;
+                completion.onCertificatesReceived(new PKDCertificate[0]);
                 sendPACertificateCompletion(serialNumber, issuer);
             }
 
@@ -755,6 +762,37 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             }
         };
     }
+
+    private IRfidReaderRequest getIRfidReaderRequestNoPA() {
+        return new IRfidReaderRequest() {
+            @Override
+            public void onRequestPACertificates(byte[] serialNumber, PAResourcesIssuer issuer, IRfidPKDCertificateCompletion completion) {
+                paCertificateCompletion = null;
+                completion.onCertificatesReceived(new PKDCertificate[0]);
+            }
+
+            @Override
+            public void onRequestTACertificates(String keyCAR, IRfidPKDCertificateCompletion completion) {
+                taCertificateCompletion = completion;
+                sendTACertificateCompletion(keyCAR);
+            }
+
+            @Override
+            public void onRequestTASignature(TAChallenge challenge, IRfidTASignatureCompletion completion) {
+                taSignatureCompletion = completion;
+                sendTASignatureCompletion(challenge);
+            }
+        };
+    }
+
+    private static int rfidDelegate = RFIDDelegate.NULL;
+
+    private static class RFIDDelegate {
+        public static final int NULL = 0;
+        public static final int NO_PA = 1;
+        public static final int FULL = 2;
+    }
+
 
     private IRfidNotificationCompletion getIRfidNotificationCompletion() {
         return (notificationType, value) -> sendIRfidNotificationCompletion(notificationType);

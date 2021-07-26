@@ -275,7 +275,6 @@ class JSONConstructor {
             switch (action) {
                 case DocReaderAction.PROCESS:
                 case DocReaderAction.PROCESS_WHITE_UV_IMAGES:
-                    result.put("results", "");
                     break;
                 case DocReaderAction.NOTIFICATION:
                     result.put("results", generateDocumentReaderResultsNotification(results));
@@ -287,7 +286,8 @@ class JSONConstructor {
                     result.put("results", generateDocumentReaderResults(results, context));
                     break;
             }
-            result.put("error", generateDocumentReaderException(error));
+            if (error != null)
+                result.put("error", generateDocumentReaderException(error));
         } catch (JSONException ignored) {
         }
 
