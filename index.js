@@ -714,7 +714,25 @@ export class DocumentReaderCompletion {
 
         result.action = jsonObject["action"]
         result.results = DocumentReaderResults.fromJson(jsonObject["results"])
-        result.error = Throwable.fromJson(jsonObject["error"])
+        result.error = DocumentReaderException.fromJson(jsonObject["error"])
+
+        return result
+    }
+}
+
+export class DocumentReaderException {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocumentReaderException()
+
+        result.errorCode = jsonObject["errorCode"]
+        result.localizedMessage = jsonObject["localizedMessage"]
+        result.message = jsonObject["message"]
+        result.string = jsonObject["string"]
+        result.stackTrace = []
+        if (jsonObject["stackTrace"] != null)
+            for (const i in jsonObject["stackTrace"])
+                result.stackTrace.push(StackTraceElement.fromJson(jsonObject["stackTrace"][i]))
 
         return result
     }
@@ -774,6 +792,55 @@ export class ImageInputParam {
         result.width = jsonObject["width"]
         result.height = jsonObject["height"]
         result.type = jsonObject["type"]
+
+        return result
+    }
+}
+
+export class PAResourcesIssuer {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new PAResourcesIssuer()
+
+        result.data = []
+        if (jsonObject["data"] != null)
+            for (const i in jsonObject["data"])
+                result.data.push(jsonObject["data"][i])
+        result.friendlyName = jsonObject["friendlyName"]
+        result.attributes = []
+        if (jsonObject["attributes"] != null)
+            for (const i in jsonObject["attributes"])
+                result.attributes.push(PAAttribute.fromJson(jsonObject["attributes"][i]))
+
+        return result
+    }
+}
+
+export class PAAttribute {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new PAAttribute()
+
+        result.type = jsonObject["type"]
+        result.value = jsonObject["value"]
+
+        return result
+    }
+}
+
+export class TAChallenge {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new TAChallenge()
+
+        result.data = []
+        if (jsonObject["data"] != null)
+            for (const i in jsonObject["data"])
+                result.data.push(jsonObject["data"][i])
+        result.auxPCD = jsonObject["auxPCD"]
+        result.challengePICC = jsonObject["challengePICC"]
+        result.hashPK = jsonObject["hashPK"]
+        result.idPICC = jsonObject["idPICC"]
 
         return result
     }
@@ -1268,6 +1335,25 @@ export const DocReaderOrientation = {
     LANDSCAPE: 2,
     LANDSCAPE_LEFT: 3,
     LANDSCAPE_RIGHT: 4,
+}
+
+export const DocumentReaderExceptionEnum = {
+    NATIVE_JAVA_EXCEPTION: 0,
+    DOCUMENT_READER_STATE_EXCEPTION: 1,
+    DOCUMENT_READER_WRONG_INPUT: 2,
+    INITIALIZATION_FAILED: 3,
+    DOCUMENT_READER_BLE_EXCEPTION: 201,
+    DB_DOWNLOAD_ERROR: 301,
+    LICENSE_ABSENT_OR_CORRUPTED: 101,
+    LICENSE_INVALID_DATE: 102,
+    LICENSE_INVALID_VERSION: 103,
+    LICENSE_INVALID_DEVICE_ID: 104,
+    LICENSE_INVALID_SYSTEM_OR_APP_ID: 105,
+    LICENSE_NO_CAPABILITIES: 106,
+    LICENSE_NO_AUTHENTICITY: 107,
+    LICENSE_NO_DATABASE: 110,
+    LICENSE_DATABASE_INCORRECT: 111,
+    FEATURE_BLUETOOTH_LE_NOT_SUPPORTED: 701,
 }
 
 export const eCheckDiagnose = {
@@ -3430,6 +3516,7 @@ export const eVisualFieldType = {
     FT_DLCLASSCODE_D3_FROM: 634,
     FT_DLCLASSCODE_D3_TO: 635,
     FT_DLCLASSCODE_D3_NOTES: 636,
+    FT_ALT_DATE_OF_EXPIRY: 637,
 
     getTranslation: function (value) {
         switch (value) {
@@ -4605,6 +4692,8 @@ export const eVisualFieldType = {
                 return "DL category D3 valid to"
             case 636:
                 return "DL category D3 codes"
+            case 637:
+                return "Alternative date of expiry"
             default:
                 return value
         }
@@ -4621,6 +4710,12 @@ export const FontStyle = {
 export const FrameShapeType = {
     LINE: 0,
     CORNER: 1,
+}
+
+export const IRfidNotificationCompletion = {
+    RFID_EVENT_CHIP_DETECTED: 1,
+    RFID_EVENT_READING_ERROR: 2,
+    RFID_EXTRA_ERROR_CODE: "rfid.error.code",
 }
 
 export const LCID = {
@@ -5096,6 +5191,12 @@ export const ProcessingFinishedStatus = {
     TIMEOUT: 2,
 }
 
+export const RFIDDelegate = {
+    NULL: 0,
+    NO_PA: 1,
+    FULL: 2,
+}
+
 export const RGLMeasureSystem = {
     METRIC: 0,
     IMPERIAL: 1,
@@ -5188,6 +5289,7 @@ export const Enum = {
    DocReaderAction,
    DocReaderFrame,
    DocReaderOrientation,
+   DocumentReaderExceptionEnum,
    eCheckDiagnose,
    eCheckResult,
    eGraphicFieldType,
@@ -5212,9 +5314,11 @@ export const Enum = {
    eVisualFieldType,
    FontStyle,
    FrameShapeType,
+   IRfidNotificationCompletion,
    LCID,
    PKDResourceType,
    ProcessingFinishedStatus,
+   RFIDDelegate,
    RGLMeasureSystem,
    ScenarioIdentifier,
    LineCap,
@@ -5261,6 +5365,7 @@ DocumentReader.resetConfiguration = (successCallback, errorCallback) => RNRegula
 DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
 DocumentReader.readRFID = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "readRFID", [], successCallback, errorCallback)
 DocumentReader.getRfidSessionStatus = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidSessionStatus", [], successCallback, errorCallback)
+DocumentReader.setRfidDelegate = (delegate, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidDelegate", [delegate], successCallback, errorCallback)
 DocumentReader.setEnableCoreLogs = (logs, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setEnableCoreLogs", [logs], successCallback, errorCallback)
 DocumentReader.addPKDCertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "addPKDCertificates", [certificates], successCallback, errorCallback)
 DocumentReader.setCameraSessionIsPaused = (paused, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setCameraSessionIsPaused", [paused], successCallback, errorCallback)
@@ -5274,7 +5379,11 @@ DocumentReader.initializeReader = (license, successCallback, errorCallback) => R
 DocumentReader.prepareDatabase = (databaseType, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "prepareDatabase", [databaseType], successCallback, errorCallback)
 DocumentReader.recognizeImage = (image, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImage", [image], successCallback, errorCallback)
 DocumentReader.setRfidSessionStatus = (status, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidSessionStatus", [status], successCallback, errorCallback)
+DocumentReader.providePACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "providePACertificates", [certificates], successCallback, errorCallback)
+DocumentReader.provideTACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTACertificates", [certificates], successCallback, errorCallback)
+DocumentReader.provideTASignature = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTASignature", [certificates], successCallback, errorCallback)
 DocumentReader.initializeReaderWithDatabasePath = (license, path, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabasePath", [license, path], successCallback, errorCallback)
+DocumentReader.initializeReaderWithDatabase = (license, db, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabase", [license, db], successCallback, errorCallback)
 DocumentReader.recognizeImageFrame = (image, params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageFrame", [image, params], successCallback, errorCallback)
 DocumentReader.recognizeImageWithOpts = (image, options, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithOpts", [image, options], successCallback, errorCallback)
 DocumentReader.recognizeVideoFrame = (byteString, params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeVideoFrame", [byteString, params], successCallback, errorCallback)

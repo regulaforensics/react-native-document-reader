@@ -23,10 +23,16 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion;
+import com.regula.documentreader.api.completions.IRfidNotificationCompletion;
+import com.regula.documentreader.api.completions.IRfidPKDCertificateCompletion;
+import com.regula.documentreader.api.completions.IRfidReaderRequest;
+import com.regula.documentreader.api.completions.IRfidTASignatureCompletion;
 import com.regula.documentreader.api.enums.DocReaderAction;
 import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.params.ImageInputParam;
 import com.regula.documentreader.api.params.rfid.PKDCertificate;
+import com.regula.documentreader.api.params.rfid.authorization.PAResourcesIssuer;
+import com.regula.documentreader.api.params.rfid.authorization.TAChallenge;
 import com.regula.documentreader.api.results.DocumentReaderResults;
 
 import org.json.JSONArray;
@@ -44,10 +50,17 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     private final static String prepareDatabaseProgressChangeEvent = "prepareDatabaseProgressChangeEvent";
     private final static String completionEvent = "completionEvent";
     private final static String videoEncoderCompletionEvent = "videoEncoderCompletionEvent";
+    private final static String rfidNotificationCompletionEvent = "rfidNotificationCompletionEvent";
+    private final static String paCertificateCompletionEvent = "paCertificateCompletionEvent";
+    private final static String taCertificateCompletionEvent = "taCertificateCompletionEvent";
+    private final static String taSignatureCompletionEvent = "taSignatureCompletionEvent";
     private static int databaseDownloadProgress = 0;
     JSONArray data;
     private final ReactContext reactContext;
     private boolean backgroundRFIDEnabled = false;
+    private IRfidPKDCertificateCompletion paCertificateCompletion;
+    private IRfidPKDCertificateCompletion taCertificateCompletion;
+    private IRfidTASignatureCompletion taSignatureCompletion;
 
     public RNRegulaDocumentReaderModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -111,12 +124,28 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         send(prepareDatabaseProgressChangeEvent, progress + "");
     }
 
-    private void sendCompletion(int action, DocumentReaderResults results, Throwable error) {
+    private void sendCompletion(int action, DocumentReaderResults results, DocumentReaderException error) {
         send(completionEvent, JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
     }
 
     private void sendVideoEncoderCompletion(String sessionId, File file) {
         send(videoEncoderCompletionEvent, JSONConstructor.generateVideoEncoderCompletion(sessionId, file).toString());
+    }
+
+    private void sendIRfidNotificationCompletion(int notification) {
+        send(rfidNotificationCompletionEvent, notification + "");
+    }
+
+    private void sendPACertificateCompletion(byte[] serialNumber, PAResourcesIssuer issuer) {
+        send(paCertificateCompletionEvent, JSONConstructor.generatePACertificateCompletion(serialNumber, issuer).toString());
+    }
+
+    private void sendTACertificateCompletion(String keyCAR) {
+        send(taCertificateCompletionEvent, keyCAR);
+    }
+
+    private void sendTASignatureCompletion(TAChallenge challenge) {
+        send(taSignatureCompletionEvent, JSONConstructor.generateTAChallenge(challenge).toString());
     }
 
 
@@ -257,6 +286,9 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "getRfidSessionStatus":
                     getRfidSessionStatus(callback);
                     break;
+                case "setRfidDelegate":
+                    setRfidDelegate(callback, args(0));
+                    break;
                 case "setEnableCoreLogs":
                     setEnableCoreLogs(callback, args(0));
                     break;
@@ -296,8 +328,20 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "setRfidSessionStatus":
                     setRfidSessionStatus(callback, args(0));
                     break;
+                case "providePACertificates":
+                    providePACertificates(callback, args(0));
+                    break;
+                case "provideTACertificates":
+                    provideTACertificates(callback, args(0));
+                    break;
+                case "provideTASignature":
+                    provideTASignature(callback, args(0));
+                    break;
                 case "initializeReaderWithDatabasePath":
                     initializeReaderWithDatabasePath(callback, args(0), args(1));
+                    break;
+                case "initializeReaderWithDatabase":
+                    initializeReaderWithDatabase(callback, args(0), args(1));
                     break;
                 case "recognizeImageFrame":
                     recognizeImageFrame(callback, args(0), args(1));
@@ -445,6 +489,13 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             callback.success("already initialized");
     }
 
+    private void initializeReaderWithDatabase(Callback callback, Object license, Object db) {
+        if (!Instance().getDocumentReaderIsReady())
+            Instance().initializeReader(getContext(), Base64.decode(license.toString(), Base64.DEFAULT), Base64.decode(db.toString(), Base64.DEFAULT), getInitCompletion(callback));
+        else
+            callback.success("already initialized");
+    }
+
     private void startNewSession(Callback callback) {
         Instance().startNewSession();
         callback.success();
@@ -541,7 +592,12 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void startRFIDReader(@SuppressWarnings("unused") Callback callback) {
         stopBackgroundRFID();
-        Instance().startRFIDReader(getContext(), getCompletion());
+        IRfidReaderRequest delegate = null;
+        if(rfidDelegate == RFIDDelegate.NO_PA)
+            delegate = getIRfidReaderRequestNoPA();
+        if(rfidDelegate == RFIDDelegate.FULL)
+            delegate = getIRfidReaderRequest();
+        Instance().startRFIDReader(getContext(), getCompletion(), delegate, getIRfidNotificationCompletion());
     }
 
     private void stopRFIDReader(Callback callback) {
@@ -577,8 +633,50 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         startForegroundDispatch(getActivity());
     }
 
+    private void providePACertificates(Callback callback, JSONArray certificatesJSON) throws JSONException {
+        if (paCertificateCompletion == null) {
+            callback.error("paCertificateCompletion is null");
+            return;
+        }
+        PKDCertificate[] certificates = new PKDCertificate[certificatesJSON.length()];
+        for (int i = 0; i < certificatesJSON.length(); i++) {
+            JSONObject certificate = certificatesJSON.getJSONObject(i);
+            certificates[i] = new PKDCertificate(Base64.decode(certificate.get("binaryData").toString(), Base64.DEFAULT), certificate.getInt("resourceType"), certificate.has("privateKey") ? Base64.decode(certificate.get("privateKey").toString(), Base64.DEFAULT) : null);
+        }
+        paCertificateCompletion.onCertificatesReceived(certificates);
+        callback.success();
+    }
+
+    private void provideTACertificates(Callback callback, JSONArray certificatesJSON) throws JSONException {
+        if (taCertificateCompletion == null) {
+            callback.error("taCertificateCompletion is null");
+            return;
+        }
+        PKDCertificate[] certificates = new PKDCertificate[certificatesJSON.length()];
+        for (int i = 0; i < certificatesJSON.length(); i++) {
+            JSONObject certificate = certificatesJSON.getJSONObject(i);
+            certificates[i] = new PKDCertificate(Base64.decode(certificate.get("binaryData").toString(), Base64.DEFAULT), certificate.getInt("resourceType"), certificate.has("privateKey") ? Base64.decode(certificate.get("privateKey").toString(), Base64.DEFAULT) : null);
+        }
+        taCertificateCompletion.onCertificatesReceived(certificates);
+        callback.success();
+    }
+
+    private void provideTASignature(Callback callback, Object signature) {
+        if (taSignatureCompletion == null) {
+            callback.error("taSignatureCompletion is null");
+            return;
+        }
+        taSignatureCompletion.onSignatureReceived(Base64.decode(signature.toString(), Base64.DEFAULT));
+        callback.success();
+    }
+
     private void setCameraSessionIsPaused(Callback callback, @SuppressWarnings("unused") boolean ignored) {
         callback.error("setCameraSessionIsPaused() is an ios-only method");
+    }
+
+    private void setRfidDelegate(Callback callback, int delegate) {
+        rfidDelegate = delegate;
+        callback.success();
     }
 
     private void getCameraSessionIsPaused(Callback callback) {
@@ -640,5 +738,63 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             } else
                 callback.error("Init failed:" + error);
         };
+    }
+
+    private IRfidReaderRequest getIRfidReaderRequest() {
+        return new IRfidReaderRequest() {
+            @Override
+            public void onRequestPACertificates(byte[] serialNumber, PAResourcesIssuer issuer, IRfidPKDCertificateCompletion completion) {
+                paCertificateCompletion = completion;
+                completion.onCertificatesReceived(new PKDCertificate[0]);
+                sendPACertificateCompletion(serialNumber, issuer);
+            }
+
+            @Override
+            public void onRequestTACertificates(String keyCAR, IRfidPKDCertificateCompletion completion) {
+                taCertificateCompletion = completion;
+                sendTACertificateCompletion(keyCAR);
+            }
+
+            @Override
+            public void onRequestTASignature(TAChallenge challenge, IRfidTASignatureCompletion completion) {
+                taSignatureCompletion = completion;
+                sendTASignatureCompletion(challenge);
+            }
+        };
+    }
+
+    private IRfidReaderRequest getIRfidReaderRequestNoPA() {
+        return new IRfidReaderRequest() {
+            @Override
+            public void onRequestPACertificates(byte[] serialNumber, PAResourcesIssuer issuer, IRfidPKDCertificateCompletion completion) {
+                paCertificateCompletion = null;
+                completion.onCertificatesReceived(new PKDCertificate[0]);
+            }
+
+            @Override
+            public void onRequestTACertificates(String keyCAR, IRfidPKDCertificateCompletion completion) {
+                taCertificateCompletion = completion;
+                sendTACertificateCompletion(keyCAR);
+            }
+
+            @Override
+            public void onRequestTASignature(TAChallenge challenge, IRfidTASignatureCompletion completion) {
+                taSignatureCompletion = completion;
+                sendTASignatureCompletion(challenge);
+            }
+        };
+    }
+
+    private static int rfidDelegate = RFIDDelegate.NULL;
+
+    private static class RFIDDelegate {
+        public static final int NULL = 0;
+        public static final int NO_PA = 1;
+        public static final int FULL = 2;
+    }
+
+
+    private IRfidNotificationCompletion getIRfidNotificationCompletion() {
+        return (notificationType, value) -> sendIRfidNotificationCompletion(notificationType);
     }
 }
