@@ -1,6 +1,9 @@
 @import UIKit;
 #import "RNRegulaDocumentReader.h"
 
+NSString* videoEncoderCompletionEvent = @"videoEncoderCompletionEvent";
+NSString* completionEvent = @"completionEvent";
+NSString* prepareDatabaseProgressChangeEvent = @"prepareDatabaseProgressChangeEvent";
 NSString* rfidNotificationCompletionEvent = @"rfidNotificationCompletionEvent";
 NSString* paCertificateCompletionEvent = @"paCertificateCompletionEvent";
 NSString* taCertificateCompletionEvent = @"taCertificateCompletionEvent";
@@ -41,7 +44,15 @@ RNRegulaDocumentReader* plugin;
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString*>*)supportedEvents {
-    return @[@"prepareDatabaseProgressChangeEvent", @"completionEvent",  @"videoEncoderCompletionEvent"];
+    return @[
+        prepareDatabaseProgressChangeEvent,
+        completionEvent,
+        videoEncoderCompletionEvent,
+        rfidNotificationCompletionEvent,
+        paCertificateCompletionEvent,
+        taCertificateCompletionEvent,
+        taSignatureCompletionEvent
+    ];
 }
 
 static NSNumber* _databasePercentageDownloaded;
@@ -58,7 +69,7 @@ typedef void (^Callback)(NSString* response);
 -(void (^_Nullable)(NSProgress * _Nonnull progress))getProgressHandler:(Callback)successCallback :(Callback)errorCallback{
     return ^(NSProgress * _Nonnull progress) {
         if(RNRegulaDocumentReader.databasePercentageDownloaded != [NSNumber numberWithDouble:progress.fractionCompleted * 100]){
-            [self sendEventWithName:@"prepareDatabaseProgressChangeEvent" body:@{@"msg": [NSString stringWithFormat:@"%.1f", progress.fractionCompleted * 100]}];
+            [self sendEventWithName:prepareDatabaseProgressChangeEvent body:@{@"msg": [NSString stringWithFormat:@"%.1f", progress.fractionCompleted * 100]}];
             [RNRegulaDocumentReader setDatabasePercentageDownloaded:[NSNumber numberWithDouble:progress.fractionCompleted * 100]];
         }
     };
@@ -66,28 +77,28 @@ typedef void (^Callback)(NSString* response);
 
 -(RGLDocumentReaderCompletion _Nonnull)getCompletion {
     return ^(RGLDocReaderAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error) {
-        [self sendEventWithName:@"completionEvent" body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateDocReaderAction: action] :results :error :nil]]}];
+        [self sendEventWithName:completionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateDocReaderAction: action] :results :error :nil]]}];
     };
 }
 
 -(RGLRFIDProcessCompletion _Nonnull)getRFIDCompletion {
     return ^(RGLRFIDCompleteAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error, RGLRFIDErrorCodes errorCode) {
-        [self sendEventWithName:@"completionEvent" body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateRFIDCompleteAction: action] :results :error :nil]]}];
+        [self sendEventWithName:completionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateRFIDCompleteAction: action] :results :error :nil]]}];
     };
 }
 
 -(RGLRFIDNotificationCallback _Nonnull)getRFIDNotificationCallback {
     return ^(RGLRFIDNotificationAction notificationAction, RGLRFIDNotify* _Nullable notify) {
-        [self sendEventWithName:@"completionEvent" body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateRFIDNotificationAction:notificationAction] :nil :nil :notify]]}];
+        [self sendEventWithName:completionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateRFIDNotificationAction:notificationAction] :nil :nil :notify]]}];
     };
 }
 
 - (void)didFinishRecordingToFile:(NSURL *)fileURL {
-    [self sendEventWithName:@"videoEncoderCompletionEvent" body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateVideoEncoderCompletion:fileURL :nil]]}];
+    [self sendEventWithName:videoEncoderCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateVideoEncoderCompletion:fileURL :nil]]}];
 }
 
 - (void)didFailWithError:(NSError *)error {
-    [self sendEventWithName:@"videoEncoderCompletionEvent" body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateVideoEncoderCompletion:nil :error]]}];
+    [self sendEventWithName:videoEncoderCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateVideoEncoderCompletion:nil :error]]}];
 }
 
 - (void)onRequestPACertificatesWithSerial:(NSData *)serialNumber issuer:(RGLPAResourcesIssuer *)issuer callback:(RGLRFIDCertificatesCallback)callback {
