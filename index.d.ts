@@ -3919,6 +3919,9 @@ export const eVisualFieldType = {
     FT_DLCLASSCODE_D3_TO: 635,
     FT_DLCLASSCODE_D3_NOTES: 636,
     FT_ALT_DATE_OF_EXPIRY: 637,
+    FT_DLCLASSCODE_CD_FROM: 638,
+    FT_DLCLASSCODE_CD_TO: 639,
+    FT_DLCLASSCODE_CD_NOTES: 640,
 
     getTranslation(value: number) {
         switch (value) {
@@ -5096,6 +5099,12 @@ export const eVisualFieldType = {
                 return "DL category D3 codes"
             case 637:
                 return "Alternative date of expiry"
+            case 638:
+                return "DL category CD valid from"
+            case 639:
+                return "DL category CD valid to"
+            case 640:
+                return "DL category CD codes"
             default:
                 return value.toString()
         }
@@ -5731,6 +5740,7 @@ export const Enum = {
 }
 
 export default class DocumentReader {
+    static initializeReaderAutomatically(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAPIVersion(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAvailableScenarios(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static isRFIDAvailableForUse(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
@@ -5783,6 +5793,7 @@ export default class DocumentReader {
     static providePACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTASignature(certificates: byte[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static parseCoreResults(json: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static initializeReaderWithDatabasePath(license: string, path: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static initializeReaderWithDatabase(license: string, db: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImageFrame(image: string, params: ImageInputParam, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void

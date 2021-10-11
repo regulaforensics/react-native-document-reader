@@ -3517,6 +3517,9 @@ export const eVisualFieldType = {
     FT_DLCLASSCODE_D3_TO: 635,
     FT_DLCLASSCODE_D3_NOTES: 636,
     FT_ALT_DATE_OF_EXPIRY: 637,
+    FT_DLCLASSCODE_CD_FROM: 638,
+    FT_DLCLASSCODE_CD_TO: 639,
+    FT_DLCLASSCODE_CD_NOTES: 640,
 
     getTranslation: function (value) {
         switch (value) {
@@ -4694,6 +4697,12 @@ export const eVisualFieldType = {
                 return "DL category D3 codes"
             case 637:
                 return "Alternative date of expiry"
+            case 638:
+                return "DL category CD valid from"
+            case 639:
+                return "DL category CD valid to"
+            case 640:
+                return "DL category CD codes"
             default:
                 return value
         }
@@ -5330,6 +5339,7 @@ export const Enum = {
 
 const DocumentReader = {}
 
+DocumentReader.initializeReaderAutomatically = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderAutomatically", [], successCallback, errorCallback)
 DocumentReader.getAPIVersion = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAPIVersion", [], successCallback, errorCallback)
 DocumentReader.getAvailableScenarios = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAvailableScenarios", [], successCallback, errorCallback)
 DocumentReader.isRFIDAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isRFIDAvailableForUse", [], successCallback, errorCallback)
@@ -5382,6 +5392,7 @@ DocumentReader.setRfidSessionStatus = (status, successCallback, errorCallback) =
 DocumentReader.providePACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "providePACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTASignature = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTASignature", [certificates], successCallback, errorCallback)
+DocumentReader.parseCoreResults = (json, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "parseCoreResults", [json], successCallback, errorCallback)
 DocumentReader.initializeReaderWithDatabasePath = (license, path, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabasePath", [license, path], successCallback, errorCallback)
 DocumentReader.initializeReaderWithDatabase = (license, db, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabase", [license, db], successCallback, errorCallback)
 DocumentReader.recognizeImageFrame = (image, params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageFrame", [image, params], successCallback, errorCallback)

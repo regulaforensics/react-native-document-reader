@@ -34,7 +34,7 @@ $ pod install
 5. iOS:
   * Copy the `regula.license` file to the `example/ios/DocumentReader` folder.
   * Change the Bundle Identifier to the one you have specified during the registration at [licensing.regulaforensics.com](https://licensing.regulaforensics.com).
-  * Run `react-native run-ios` inside `example` folder - this is just one way to run the app. You can also run it directly from within Xcode.
+  * Run `npx react-native run-ios` inside `example` folder - this is just one way to run the app. You can also run it directly from within Xcode.
 
 ### Troubleshooting license issues
 If you have issues with license verification when running the application, please verify that next is true:

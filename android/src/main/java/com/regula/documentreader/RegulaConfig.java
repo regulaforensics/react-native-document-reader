@@ -278,7 +278,7 @@ class RegulaConfig {
         if (opts.has("statusBackgroundColor"))
             editor.setStatusBackgroundColor(opts.getString("statusBackgroundColor"));
 
-        editor.apply();
+        editor.applyImmediately(context);
     }
 
     private static JSONObject getFunctionality(Functionality functionality) throws JSONException {
