@@ -41,7 +41,13 @@ RNRegulaDocumentReader* plugin;
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString*>*)supportedEvents {
-    return @[@"prepareDatabaseProgressChangeEvent", @"completionEvent",  @"videoEncoderCompletionEvent"];
+    return @[@"prepareDatabaseProgressChangeEvent",
+             @"completionEvent",
+             @"videoEncoderCompletionEvent",
+             rfidNotificationCompletionEvent,
+             paCertificateCompletionEvent,
+             taCertificateCompletionEvent,
+             taSignatureCompletionEvent];
 }
 
 static NSNumber* _databasePercentageDownloaded;
