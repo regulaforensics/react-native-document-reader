@@ -1,9 +1,6 @@
 @import UIKit;
 #import "RNRegulaDocumentReader.h"
 
-NSString* videoEncoderCompletionEvent = @"videoEncoderCompletionEvent";
-NSString* completionEvent = @"completionEvent";
-NSString* prepareDatabaseProgressChangeEvent = @"prepareDatabaseProgressChangeEvent";
 NSString* rfidNotificationCompletionEvent = @"rfidNotificationCompletionEvent";
 NSString* paCertificateCompletionEvent = @"paCertificateCompletionEvent";
 NSString* taCertificateCompletionEvent = @"taCertificateCompletionEvent";
@@ -44,15 +41,13 @@ RNRegulaDocumentReader* plugin;
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString*>*)supportedEvents {
-    return @[
-        prepareDatabaseProgressChangeEvent,
-        completionEvent,
-        videoEncoderCompletionEvent,
-        rfidNotificationCompletionEvent,
-        paCertificateCompletionEvent,
-        taCertificateCompletionEvent,
-        taSignatureCompletionEvent
-    ];
+    return @[@"prepareDatabaseProgressChangeEvent",
+             @"completionEvent",
+             @"videoEncoderCompletionEvent",
+             rfidNotificationCompletionEvent,
+             paCertificateCompletionEvent,
+             taCertificateCompletionEvent,
+             taSignatureCompletionEvent];
 }
 
 static NSNumber* _databasePercentageDownloaded;
@@ -69,7 +64,7 @@ typedef void (^Callback)(NSString* response);
 -(void (^_Nullable)(NSProgress * _Nonnull progress))getProgressHandler:(Callback)successCallback :(Callback)errorCallback{
     return ^(NSProgress * _Nonnull progress) {
         if(RNRegulaDocumentReader.databasePercentageDownloaded != [NSNumber numberWithDouble:progress.fractionCompleted * 100]){
-            [self sendEventWithName:prepareDatabaseProgressChangeEvent body:@{@"msg": [NSString stringWithFormat:@"%.1f", progress.fractionCompleted * 100]}];
+            [self sendEventWithName:@"prepareDatabaseProgressChangeEvent" body:@{@"msg": [NSString stringWithFormat:@"%.1f", progress.fractionCompleted * 100]}];
             [RNRegulaDocumentReader setDatabasePercentageDownloaded:[NSNumber numberWithDouble:progress.fractionCompleted * 100]];
         }
     };
@@ -77,28 +72,28 @@ typedef void (^Callback)(NSString* response);
 
 -(RGLDocumentReaderCompletion _Nonnull)getCompletion {
     return ^(RGLDocReaderAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error) {
-        [self sendEventWithName:completionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateDocReaderAction: action] :results :error :nil]]}];
+        [self sendEventWithName:@"completionEvent" body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateDocReaderAction: action] :results :error :nil]]}];
     };
 }
 
 -(RGLRFIDProcessCompletion _Nonnull)getRFIDCompletion {
     return ^(RGLRFIDCompleteAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error, RGLRFIDErrorCodes errorCode) {
-        [self sendEventWithName:completionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateRFIDCompleteAction: action] :results :error :nil]]}];
+        [self sendEventWithName:@"completionEvent" body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateRFIDCompleteAction: action] :results :error :nil]]}];
     };
 }
 
 -(RGLRFIDNotificationCallback _Nonnull)getRFIDNotificationCallback {
     return ^(RGLRFIDNotificationAction notificationAction, RGLRFIDNotify* _Nullable notify) {
-        [self sendEventWithName:completionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateRFIDNotificationAction:notificationAction] :nil :nil :notify]]}];
+        [self sendEventWithName:@"completionEvent" body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateCompletion:[RGLWJSONConstructor generateRFIDNotificationAction:notificationAction] :nil :nil :notify]]}];
     };
 }
 
 - (void)didFinishRecordingToFile:(NSURL *)fileURL {
-    [self sendEventWithName:videoEncoderCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateVideoEncoderCompletion:fileURL :nil]]}];
+    [self sendEventWithName:@"videoEncoderCompletionEvent" body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateVideoEncoderCompletion:fileURL :nil]]}];
 }
 
 - (void)didFailWithError:(NSError *)error {
-    [self sendEventWithName:videoEncoderCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateVideoEncoderCompletion:nil :error]]}];
+    [self sendEventWithName:@"videoEncoderCompletionEvent" body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateVideoEncoderCompletion:nil :error]]}];
 }
 
 - (void)onRequestPACertificatesWithSerial:(NSData *)serialNumber issuer:(RGLPAResourcesIssuer *)issuer callback:(RGLRFIDCertificatesCallback)callback {
@@ -133,7 +128,9 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         eCallback(@[response]);
     };
 
-    if([action isEqualToString:@"getAPIVersion"])
+    if([action isEqualToString:@"initializeReaderAutomatically"])
+        [self initializeReaderAutomatically :successCallback :errorCallback];
+    else if([action isEqualToString:@"getAPIVersion"])
         [self getAPIVersion :successCallback :errorCallback];
     else if([action isEqualToString:@"getAvailableScenarios"])
         [self getAvailableScenarios :successCallback :errorCallback];
@@ -237,6 +234,8 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         [self provideTACertificates :[args objectAtIndex:0] :successCallback :errorCallback];
     else if([action isEqualToString:@"provideTASignature"])
         [self provideTASignature :[args objectAtIndex:0] :successCallback :errorCallback];
+    else if([action isEqualToString:@"parseCoreResults"])
+        [self parseCoreResults :[args objectAtIndex:0] :successCallback :errorCallback];
     else if([action isEqualToString:@"initializeReaderWithDatabasePath"])
         [self initializeReaderWithDatabasePath :[args objectAtIndex:0] :[args objectAtIndex:1] :successCallback :errorCallback];
     else if([action isEqualToString:@"initializeReaderWithDatabase"])
@@ -255,6 +254,12 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         [self recognizeImageWithCameraMode :[args objectAtIndex:0] :[args objectAtIndex:1] :successCallback :errorCallback];
     else
         [self result:[NSString stringWithFormat:@"%@/%@", @"method not implemented: ", action] :errorCallback];
+}
+
+- (void) initializeReaderAutomatically:(Callback)successCallback :(Callback)errorCallback{
+    NSString *dataPath = [[NSBundle mainBundle] pathForResource:@"regula.license" ofType:nil];
+    NSData *licenseData = [NSData dataWithContentsOfFile:dataPath];
+    [RGLDocReader.shared initializeReaderWithConfig:[RGLConfig configWithLicenseData:licenseData] completion:[self getInitCompletion :successCallback :errorCallback]];
 }
 
 - (void) resetConfiguration:(Callback)successCallback :(Callback)errorCallback{
@@ -298,7 +303,11 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
 }
 
 - (void) initializeReader:(NSString*)licenseString :(Callback)successCallback :(Callback)errorCallback{
-    [RGLDocReader.shared initializeReader:[[NSData alloc] initWithBase64EncodedString:licenseString options:0] completion:[self getInitCompletion :successCallback :errorCallback]];
+    [RGLDocReader.shared initializeReaderWithConfig:[RGLConfig configWithLicenseData:[[NSData alloc] initWithBase64EncodedString:licenseString options:0]] completion:[self getInitCompletion :successCallback :errorCallback]];
+}
+
+- (void) parseCoreResults:(NSString*)json :(Callback)successCallback :(Callback)errorCallback{
+    [self result:[RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRGLDocumentReaderResults:[RGLDocumentReaderResults initWithRawString: json]]] :successCallback];
 }
 
 - (void) startRFIDReader:(Callback)successCallback :(Callback)errorCallback{
@@ -308,7 +317,7 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
 }
 
 - (void) initializeReaderWithDatabasePath:(NSString*)licenseString :(NSString*)databasePath :(Callback)successCallback :(Callback)errorCallback{
-    [RGLDocReader.shared initializeReader:[[NSData alloc] initWithBase64EncodedString:licenseString options:0] databasePath:databasePath completion:[self getInitCompletion :successCallback :errorCallback]];
+    [RGLDocReader.shared initializeReaderWithConfig:[RGLConfig configWithLicenseData:[[NSData alloc] initWithBase64EncodedString:licenseString options:0] licenseUpdateCheck:true databasePath:databasePath] completion:[self getInitCompletion :successCallback :errorCallback]];
 }
 
 - (void) prepareDatabase:(NSString*)dbID :(Callback)successCallback :(Callback)errorCallback{
