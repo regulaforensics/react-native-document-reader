@@ -25,11 +25,11 @@ RNRegulaDocumentReader* plugin;
 }
 
 - (void)didChipConnected {
-    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": @1}]; // int RFID_EVENT_CHIP_DETECTED = 1;
+    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletion:1]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
 }
 
 - (void)didReceivedError:(RGLRFIDErrorCodes)errorCode {
-    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": @2}]; // int RFID_EVENT_READING_ERROR = 2;
+    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletionWithError:2:errorCode]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
 }
 
 @end
@@ -112,11 +112,11 @@ typedef void (^Callback)(NSString* response);
 }
 
 - (void)didChipConnected {
-    [self sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": @1}]; // int RFID_EVENT_CHIP_DETECTED = 1;
+    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletion:1]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
 }
 
 - (void)didReceivedError:(RGLRFIDErrorCodes)errorCode {
-    [self sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": @2}]; // int RFID_EVENT_READING_ERROR = 2;
+    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletionWithError:2:errorCode]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
 }
 
 RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(RCTResponseSenderBlock)sCallback:(RCTResponseSenderBlock)eCallback) {

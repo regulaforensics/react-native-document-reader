@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.IsoDep;
+import android.os.Bundle;
 import android.util.Base64;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -139,8 +140,8 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         send(videoEncoderCompletionEvent, JSONConstructor.generateVideoEncoderCompletion(sessionId, file).toString());
     }
 
-    private void sendIRfidNotificationCompletion(int notification) {
-        send(rfidNotificationCompletionEvent, notification + "");
+    private void sendIRfidNotificationCompletion(int notification, Bundle value) {
+        send(rfidNotificationCompletionEvent, JSONConstructor.generateRfidNotificationCompletion(notification, value).toString());
     }
 
     private void sendPACertificateCompletion(byte[] serialNumber, PAResourcesIssuer issuer) {
@@ -633,7 +634,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             delegate = getIRfidReaderRequestNoPA();
         if (rfidDelegate == RFIDDelegate.FULL)
             delegate = getIRfidReaderRequest();
-        Instance().startRFIDReader(getContext(), getCompletion(), delegate, getIRfidNotificationCompletion());
+        Instance().startRFIDReader(getContext(), getCompletion(), delegate, this::sendIRfidNotificationCompletion);
     }
 
     private void stopRFIDReader(Callback callback) {
@@ -827,10 +828,5 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         public static final int NULL = 0;
         public static final int NO_PA = 1;
         public static final int FULL = 2;
-    }
-
-
-    private IRfidNotificationCompletion getIRfidNotificationCompletion() {
-        return (notificationType, value) -> sendIRfidNotificationCompletion(notificationType);
     }
 }

@@ -1039,6 +1039,21 @@ export class DocumentReaderCompletion {
     }
 }
 
+export class RfidNotificationCompletion {
+    notification?: number
+    value?: number
+
+    static fromJson(jsonObject?: any): RfidNotificationCompletion {
+        if (jsonObject == null) return null
+        const result = new RfidNotificationCompletion
+
+        result.notification = jsonObject["notification"]
+        result.value = jsonObject["value"]
+
+        return result
+    }
+}
+
 export class DocumentReaderException {
     errorCode?: number
     localizedMessage?: string

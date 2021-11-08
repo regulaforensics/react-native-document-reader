@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.util.Base64;
 
 import com.regula.documentreader.api.enums.DocReaderAction;
@@ -288,6 +289,18 @@ class JSONConstructor {
             }
             if (error != null)
                 result.put("error", generateDocumentReaderException(error));
+        } catch (JSONException ignored) {
+        }
+
+        return result;
+    }
+
+    static JSONObject generateRfidNotificationCompletion(int notification, Bundle value) {
+        JSONObject result = new JSONObject();
+        try {
+            result.put("notification", notification);
+            if(value != null)
+            result.put("value", value.get(RFID_EXTRA_ERROR_CODE));
         } catch (JSONException ignored) {
         }
 

@@ -62,6 +62,23 @@
     return result;
 }
 
++(NSMutableDictionary*)generateRfidNotificationCompletion:(NSInteger)notification {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+
+    result[@"notification"] = [NSNumber numberWithInteger:notification];
+
+    return result;
+}
+
++(NSMutableDictionary*)generateRfidNotificationCompletionWithError:(NSInteger)notification :(NSInteger)value {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+
+    result[@"notification"] = [NSNumber numberWithInteger:notification];
+    result[@"value"] = [NSNumber numberWithInteger:value];
+
+    return result;
+}
+
 +(NSInteger)generateDocReaderAction:(RGLDocReaderAction)input {
     NSInteger result = 0;
     switch (input) {
