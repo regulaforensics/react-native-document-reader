@@ -1,5 +1,7 @@
 package com.regula.documentreader;
 
+import static com.regula.documentreader.api.completions.IRfidNotificationCompletion.RFID_EXTRA_ERROR_CODE;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
