@@ -742,7 +742,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     private IDocumentReaderCompletion getCompletion() {
         return (action, results, error) -> {
             sendCompletion(action, results, error);
-            if (action == DocReaderAction.ERROR || action == DocReaderAction.CANCEL || (action == DocReaderAction.COMPLETE && results.rfidResult == 1))
+            if (action == DocReaderAction.ERROR || action == DocReaderAction.CANCEL || (action == DocReaderAction.COMPLETE && results != null && results.rfidResult == 1))
                 stopBackgroundRFID();
         };
     }
