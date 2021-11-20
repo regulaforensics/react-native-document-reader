@@ -25,7 +25,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion;
-import com.regula.documentreader.api.completions.IRfidNotificationCompletion;
 import com.regula.documentreader.api.completions.IRfidPKDCertificateCompletion;
 import com.regula.documentreader.api.completions.IRfidReaderRequest;
 import com.regula.documentreader.api.completions.IRfidTASignatureCompletion;
