@@ -56,6 +56,10 @@
 +(NSMutableDictionary* _Nonnull)generateRGLPAResourcesIssuer:(RGLPAResourcesIssuer* _Nullable)input;
 +(NSMutableDictionary* _Nonnull)generateRGLPAAttribute:(RGLPAAttribute* _Nullable)input;
 +(NSMutableDictionary* _Nonnull)generateRGLTAChallenge:(RGLTAChallenge* _Nullable)input;
++(NSMutableDictionary* _Nonnull)generateRGLDocumentReaderResultsStatus:(RGLDocumentReaderResultsStatus* _Nullable)input;
++(NSMutableDictionary* _Nonnull)generateRGLOpticalStatus:(RGLOpticalStatus* _Nullable)input;
++(NSMutableDictionary* _Nonnull)generateRGLVDSNCData:(RGLVDSNCData* _Nullable)input;
++(NSMutableDictionary* _Nonnull)generateRGLBytesData:(RGLBytesData* _Nullable)input;
 +(NSMutableDictionary* _Nonnull)generateRGLRFIDNotify:(RGLRFIDNotify* _Nullable)input;
 
 @end

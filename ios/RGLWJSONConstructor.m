@@ -252,6 +252,8 @@
     result[@"elapsedTime"] = @(input.elapsedTime);
     result[@"elapsedTimeRFID"] = @(input.elapsedTimeRFID);
     result[@"rawResult"] = input.rawResult;
+    result[@"status"] = [self generateRGLDocumentReaderResultsStatus:input.status];
+    result[@"vdsncData"] = [self generateRGLVDSNCData:input.vdsncData];
 
     return result;
 }
@@ -917,6 +919,79 @@
     result[@"challengePICC"] = input.challengePICC;
     result[@"hashPK"] = input.hashPK;
     result[@"idPICC"] = input.idPICC;
+
+    return result;
+}
+
++(NSMutableDictionary* _Nonnull)generateRGLDocumentReaderResultsStatus:(RGLDocumentReaderResultsStatus* _Nullable)input {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    if(input == nil) return result;
+
+    result[@"overallStatus"] = @(input.overallStatus);
+    result[@"optical"] = @(input.optical);
+    result[@"detailsOptical"] = [self generateRGLOpticalStatus:input.detailsOptical];
+    result[@"rfid"] = @(input.rfid);
+    result[@"detailsRFID"] = [self generateRGLRFIDSessionDataStatus:input.detailsRFID];
+    result[@"portrait"] = @(input.portrait);
+    result[@"stopList"] = @(input.stopList);
+
+    return result;
+}
+
++(NSMutableDictionary* _Nonnull)generateRGLOpticalStatus:(RGLOpticalStatus* _Nullable)input {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    if(input == nil) return result;
+
+    result[@"overallStatus"] = @(input.overallStatus);
+    result[@"mrz"] = @(input.mrz);
+    result[@"text"] = @(input.text);
+    result[@"docType"] = @(input.docType);
+    result[@"security"] = @(input.security);
+    result[@"imageQA"] = @(input.imageQA);
+    result[@"expiry"] = @(input.expiry);
+    result[@"vds"] = @(input.vds);
+    result[@"pagesCount"] = @(input.pagesCount);
+
+    return result;
+}
+
++(NSMutableDictionary* _Nonnull)generateRGLVDSNCData:(RGLVDSNCData* _Nullable)input {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    if(input == nil) return result;
+
+    result[@"type"] = input.type;
+    result[@"version"] = @(input.version);
+    result[@"issuingCountry"] = input.issuingCountry;
+    result[@"message"] = [self generateNSDictionary:input.message];
+    result[@"signatureAlgorithm"] = input.signatureAlgorithm;
+    result[@"signature"] = [self generateRGLBytesData:input.signature];
+    result[@"certificate"] = [self generateRGLBytesData:input.certificate];
+    if(input.certificateChain != nil){
+        NSMutableArray *array = [NSMutableArray new];
+        for(RGLCertificateChain* item in input.certificateChain)
+            if(item != nil)
+                [array addObject:[self generateRGLCertificateChain:item]];
+        result[@"certificateChain"] = array;
+    }
+    if(input.notifications != nil){
+        NSMutableArray *array = [NSMutableArray new];
+        for(NSNumber* item in input.notifications)
+            if(item != nil)
+                [array addObject:item];
+        result[@"notifications"] = array;
+    }
+
+    return result;
+}
+
++(NSMutableDictionary* _Nonnull)generateRGLBytesData:(RGLBytesData* _Nullable)input {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    if(input == nil) return result;
+
+    result[@"data"] = input.data;
+    result[@"length"] = @(input.length);
+    result[@"status"] = @(input.status);
+    result[@"type"] = @(input.type);
 
     return result;
 }
