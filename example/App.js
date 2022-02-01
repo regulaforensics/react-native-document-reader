@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Button, Text, Image, ScrollView, NativeEventEmitter, Platform, TouchableOpacity } from 'react-native'
-import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario,RNRegulaDocumentReader } from '@regulaforensics/react-native-document-reader-api'
+import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader } from '@regulaforensics/react-native-document-reader-api'
 import * as RNFS from 'react-native-fs'
 import RadioGroup from 'react-native-radio-buttons-group'
-import ImagePicker from 'react-native-customized-image-picker'
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import * as Progress from 'react-native-progress'
 import CheckBox from 'react-native-check-box'
+import { LogBox } from 'react-native';
 
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 const eventManager = new NativeEventEmitter(RNRegulaDocumentReader)
 
 var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license"
@@ -63,14 +65,14 @@ export default class App extends Component {
             for (var i in scenariosTemp) {
               scenariosL.push({
                 label: DocumentReaderScenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
-                value: i
+                id: i
               })
             }
             this.setState({ scenarios: scenariosL })
             this.setState({ selectedScenario: this.state.scenarios[0]['label'] })
             this.setState({ radio: null })
             this.setState({
-              radio: <RadioGroup style={{ alignSelf: 'stretch' }} radioButtons={this.state.scenarios} onPress={(data) => {
+              radio: <RadioGroup containerStyle={styles.radio} radioButtons={this.state.scenarios} onPress={(data) => {
                 var selectedItem
                 for (var index in data)
                   if (data[index]['selected'])
@@ -81,7 +83,7 @@ export default class App extends Component {
             DocumentReader.getDocumentReaderIsReady((isReady) => {
               if (isReady) {
                 this.setState({ fullName: "Ready" })
-                DocumentReader.setRfidDelegate(Enum.RFIDDelegate.NO_PA, (r) => {}, error => console.log(error))
+                DocumentReader.setRfidDelegate(Enum.RFIDDelegate.NO_PA, (r) => { }, error => console.log(error))
                 // addCertificates()
               } else
                 this.setState({ fullName: "Failed" })
@@ -100,7 +102,7 @@ export default class App extends Component {
       selectedScenario: "",
       portrait: require('./images/portrait.png'),
       docFront: require('./images/id.png'),
-      radio: <RadioGroup style={{ alignSelf: 'stretch' }} radioButtons={[{ label: 'Loading', value: 0 }]} onPress={null} />
+      radio: <RadioGroup containerStyle={styles.radio} radioButtons={[{ label: 'Loading', id: 0 }]} onPress={null} />
     }
   }
 
@@ -221,7 +223,7 @@ export default class App extends Component {
                 padding: 5,
               }}>
                 Portrait
-        </Text>
+              </Text>
               <Image
                 style={{
                   height: 150,
@@ -238,7 +240,7 @@ export default class App extends Component {
                 padding: 5,
               }}>
                 Document image
-        </Text>
+              </Text>
               <Image
                 style={{
                   height: 150,
@@ -250,7 +252,7 @@ export default class App extends Component {
             </View>
           </View>
 
-          <ScrollView style={{ padding: 5, alignSelf: 'stretch' }}>
+          <ScrollView style={{ padding: 5, alignSelf: 'center' }} showsVerticalScrollIndicator={false}>
             {this.state.radio}
           </ScrollView>
 
@@ -295,12 +297,21 @@ export default class App extends Component {
             <Text style={{ padding: 5 }}></Text>
             <Button color="#4285F4"
               onPress={() => {
-                this.clearResults()
-                this.setState({ fullName: "COPYING IMAGE..." })
-                ImagePicker.openPicker({
-                  multiple: true,
-                  includeBase64: true
-                }).then(response => {
+                launchImageLibrary({
+                  mediaType: 'photo',
+                  includeBase64: true,
+                  selectionLimit: 10
+                }, r => {
+                  if (r.errorCode != null) {
+                    console.log("error code: " + r.errorCode)
+                    console.log("error message: " + r.errorMessage)
+                    this.setState({ fullName: r.errorMessage })
+                    return
+                  }
+                  if (r.didCancel) return
+                  this.clearResults()
+                  this.setState({ fullName: "COPYING IMAGE..." })
+                  var response = r.assets
                   DocumentReader.setConfig({
                     functionality: {
                       videoCaptureMotionControl: true,
@@ -319,12 +330,10 @@ export default class App extends Component {
                   var images = []
 
                   for (var i = 0; i < response.length; i++) {
-                    images.push(response[i].data)
+                    images.push(response[i].base64)
                   }
                   this.setState({ fullName: "PROCESSING..." })
                   DocumentReader.recognizeImages(images, s => { }, e => console.log(e))
-                }).catch(e => {
-                  console.log("ImagePicker: " + e)
                 })
               }}
               title="     Scan image     "
@@ -346,6 +355,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
     marginBottom: 12,
+  },
+  radio: {
+    alignItems: 'flex-start'
   },
   welcome: {
     fontSize: 20,

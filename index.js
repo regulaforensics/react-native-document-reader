@@ -8,8 +8,6 @@ export class DocumentReaderScenario {
         if (jsonObject == null) return null
         const result = new DocumentReaderScenario()
 
-        result.uvTorch = jsonObject["uvTorch"]
-        result.seriesProcessMode = jsonObject["seriesProcessMode"]
         result.name = jsonObject["name"]
         result.caption = jsonObject["caption"]
         result.description = jsonObject["description"]
@@ -18,10 +16,10 @@ export class DocumentReaderScenario {
     }
 }
 
-export class DocumentReaderScenarioFull {
+export class CoreDetailedScenario {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
-        const result = new DocumentReaderScenarioFull()
+        const result = new CoreDetailedScenario()
 
         result.uvTorch = jsonObject["uvTorch"]
         result.frameOrientation = jsonObject["frameOrientation"]
@@ -720,6 +718,18 @@ export class DocumentReaderCompletion {
     }
 }
 
+export class RfidNotificationCompletion {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new RfidNotificationCompletion()
+
+        result.notification = jsonObject["notification"]
+        result.value = jsonObject["value"]
+
+        return result
+    }
+}
+
 export class DocumentReaderException {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
@@ -841,6 +851,98 @@ export class TAChallenge {
         result.challengePICC = jsonObject["challengePICC"]
         result.hashPK = jsonObject["hashPK"]
         result.idPICC = jsonObject["idPICC"]
+
+        return result
+    }
+}
+
+export class DocumentReaderResultsStatus {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocumentReaderResultsStatus()
+
+        result.overallStatus = jsonObject["overallStatus"]
+        result.optical = jsonObject["optical"]
+        result.detailsOptical = DetailsOptical.fromJson(jsonObject["detailsOptical"])
+        result.rfid = jsonObject["rfid"]
+        result.detailsRFID = DetailsRFID.fromJson(jsonObject["detailsRFID"])
+        result.portrait = jsonObject["portrait"]
+        result.stopList = jsonObject["stopList"]
+
+        return result
+    }
+}
+
+export class DetailsOptical {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DetailsOptical()
+
+        result.overallStatus = jsonObject["overallStatus"]
+        result.mrz = jsonObject["mrz"]
+        result.text = jsonObject["text"]
+        result.docType = jsonObject["docType"]
+        result.security = jsonObject["security"]
+        result.imageQA = jsonObject["imageQA"]
+        result.expiry = jsonObject["expiry"]
+        result.vds = jsonObject["vds"]
+        result.pagesCount = jsonObject["pagesCount"]
+
+        return result
+    }
+}
+
+export class DetailsRFID {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DetailsRFID()
+
+        result.pa = jsonObject["pa"]
+        result.ca = jsonObject["ca"]
+        result.aa = jsonObject["aa"]
+        result.ta = jsonObject["ta"]
+        result.bac = jsonObject["bac"]
+        result.pace = jsonObject["pace"]
+        result.overallStatus = jsonObject["overallStatus"]
+
+        return result
+    }
+}
+
+export class VDSNCData {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new VDSNCData()
+
+        result.type = jsonObject["type"]
+        result.version = jsonObject["version"]
+        result.issuingCountry = jsonObject["issuingCountry"]
+        result.message = jsonObject["message"]
+        result.signatureAlgorithm = jsonObject["signatureAlgorithm"]
+        result.signature = BytesData.fromJson(jsonObject["signature"])
+        result.certificate = BytesData.fromJson(jsonObject["certificate"])
+        result.certificateChain = []
+        if (jsonObject["certificateChain"] != null)
+            for (const i in jsonObject["certificateChain"])
+                result.certificateChain.push(CertificateChain.fromJson(jsonObject["certificateChain"][i]))
+        result.notifications = []
+        if (jsonObject["notifications"] != null)
+            for (const i in jsonObject["notifications"])
+                result.notifications.push(jsonObject["notifications"][i])
+
+        return result
+    }
+}
+
+export class BytesData {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new BytesData()
+
+        result.data = jsonObject["data"]
+        result.length = jsonObject["length"]
+        result.status = jsonObject["status"]
+        result.type = jsonObject["type"]
 
         return result
     }
@@ -995,6 +1097,8 @@ export class DocumentReaderResults {
         if (jsonObject["documentType"] != null)
             for (const i in jsonObject["documentType"])
                 result.documentType.push(DocumentReaderDocumentType.fromJson(jsonObject["documentType"][i]))
+        result.status = DocumentReaderResultsStatus.fromJson(jsonObject["status"])
+        result.vdsncData = VDSNCData.fromJson(jsonObject["vdsncData"])
 
         return result
     }
@@ -1600,6 +1704,10 @@ export const eRFID_CertificateType = {
     CT_MLS: 4,
     CT_DEV_LS: 5,
     CT_DEF_LS: 6,
+    CT_BLS: 7,
+    CT_LDS2: 8,
+    CT_BCS: 9,
+    CT_BCSNC: 10,
 }
 
 export const eRFID_DataFile_Type = {
@@ -1683,165 +1791,173 @@ export const eRFID_DataFile_Type = {
     DFT_SESSION: 701,
     DFT_LOGDATA: 702,
     DFT_CHIP_PROPERTIES: 703,
+    DFT_SAM_DATA: 800,
+    DFT_SAM_DATA_MAX: 832,
+    DFT_VDS: 900,
+    DFT_VDSNC: 901,
     DFT_USERDEFINED: 1000,
 
     getTranslation: function (value) {
         switch (value) {
-            case this.DFT_MIFARE_DATA:
-                return "MIFARE data"
-            case this.DFT_DL_COM:
-                return "EF.COM"
-            case this.DFT_PASSPORT_DG1:
-                return "Machine Readable Zone (DG1)"
-            case this.DFT_ID_DG1:
-                return "Document type" + " (DG1)"
-            case this.DFT_DL_DG1:
-                return "Text data elements (DG1)"
-            case this.DFT_PASSPORT_DG2:
-                return "Biometry - Facial data (DG2)"
-            case this.DFT_ID_DG2:
-                return "Issuing state" + " (DG2)"
-            case this.DFT_DL_DG2:
-                return "License holder information (DG2)"
-            case this.DFT_PASSPORT_DG3:
-                return "Biometry - Fingerprint(s) (DG3)"
-            case this.DFT_ID_DG3:
-                return "Date of expiry" + " (DG3)"
-            case this.DFT_DL_DG3:
-                return "Issuing authority details (DG3)"
-            case this.DFT_PASSPORT_DG4:
-                return "Biometry - Iris Data (DG4)"
-            case this.DFT_ID_DG4:
-                return "Given name" + " (DG4)"
-            case this.DFT_DL_DG4:
-                return "Portrait image (DG4)"
-            case this.DFT_PASSPORT_DG5:
-                return "Portrait(s) (DG5)"
-            case this.DFT_ID_DG5:
-                return "Surname/given name at birth" + " (DG5)"
-            case this.DFT_DL_DG5:
-                return "Signature / usual mark image (DG5)"
-            case this.DFT_PASSPORT_DG6:
-                return "not defined (DG6)"
-            case this.DFT_ID_DG6:
-                return "Pseudonym" + " (DG6)"
-            case this.DFT_DL_DG6:
-                return "Biometry - Facial data (DG6)"
-            case this.DFT_PASSPORT_DG7:
-                return "Signature / usual mark image (DG7)"
-            case this.DFT_ID_DG7:
-                return "Academic title" + " (DG7)"
-            case this.DFT_DL_DG7:
-                return "Biometry - Fingerprint(s) (DG7)"
-            case this.DFT_PASSPORT_DG8:
-                return "not defined (DG8)"
-            case this.DFT_ID_DG8:
-                return "Date of birth" + " (DG8)"
-            case this.DFT_DL_DG8:
-                return "Biometry - Iris Data (DG8)"
-            case this.DFT_PASSPORT_DG9:
-                return "not defined (DG9)"
-            case this.DFT_ID_DG9:
-                return "Place of birth" + " (DG9)"
-            case this.DFT_DL_DG9:
-                return "Biometry - Other (DG9)"
-            case this.DFT_PASSPORT_DG10:
-                return "not defined (DG10)"
-            case this.DFT_ID_DG10:
-                return "Nationality" + " (DG10)"
-            case this.DFT_DL_DG10:
-                return "not defined (DG10)"
-            case this.DFT_PASSPORT_DG11:
-                return "Additional personal detail(s) (DG11)"
-            case this.DFT_ID_DG11:
-                return "Sex" + " (DG11)"
-            case this.DFT_DL_DG11:
-                return "Optional domestic data (DG11)"
-            case this.DFT_PASSPORT_DG12:
-                return "Additional document details (DG12)"
-            case this.DFT_ID_DG12:
-                return "Optional details" + " (DG12)"
-            case this.DFT_DL_DG12:
-                return "Non-match alert (DG12)"
-            case this.DFT_PASSPORT_DG13:
-                return "Optional detail(s) (DG13)"
-            case this.DFT_ID_DG13:
-                return "Undefined" + " (DG13)"
-            case this.DFT_DL_DG13:
-                return "Active Authentication info (DG13)"
-            case this.DFT_PASSPORT_DG14:
-                return "EAC info (DG14)"
-            case this.DFT_ID_DG14:
-                return "Undefined" + " (DG14)"
-            case this.DFT_DL_DG14:
-                return "EAC info (DG14)"
-            case this.DFT_PASSPORT_DG15:
-                return "Active Authentication info (DG15)"
-            case this.DFT_ID_DG15:
-                return "Undefined" + " (DG15)"
-            case this.DFT_PASSPORT_DG16:
-                return "Person(s) to notify (DG16)"
-            case this.DFT_ID_DG16:
-                return "Undefined" + " (DG16)"
-            case this.DFT_PASSPORT_DG17:
-                return "DG17"
-            case this.DFT_ID_DG17:
-                return "Place of registration" + " (DG17)"
-            case this.DFT_PASSPORT_DG18:
-                return "DG18"
-            case this.DFT_ID_DG18:
-                return "Place of registration" + " (DG18)"
-            case this.DFT_PASSPORT_DG19:
-                return "DG19"
-            case this.DFT_ID_DG19:
-                return "Residence permit 1" + " (DG19)"
-            case this.DFT_PASSPORT_DG20:
-                return "DG20"
-            case this.DFT_ID_DG20:
-                return "Residence permit 2" + " (DG20)"
-            case this.DFT_ID_DG21:
-                return "Optional details" + " (DG21)"
-            case this.DFT_DL_SOD:
-                return "EF.SOD"
-            case this.DFT_PASSPORT_CVCA:
-                return "EF.CVCA"
-            case this.DFT_MIFARE_VALIDITY:
-                return "MIFARE validity"
-            case this.DFT_PACE_CARDACCESS:
-                return "EF.CardAccess"
-            case this.DFT_PACE_CARDSECURITY:
-                return "EF.CardSecurity"
-            case this.DFT_PACE_CHIPSECURITY:
-                return "EF.ChipSecurity"
-            case this.DFT_CERTIFICATE:
-                return "Certificate"
-            case this.DFT_APP_DIRECTORY:
-                return "App directory"
-            case this.DFT_ATR:
-                return "DFT_ATR"
-            case this.DFT_CHIP_PROPERTIES:
-                return "DFT_CHIP_PROPERTIES"
-            case this.DFT_DEFECTLIST:
-                return "DFT_DEFECTLIST"
-            case this.DFT_DEVIATIONLIST:
-                return "DFT_DEVIATIONLIST"
-            case this.DFT_DL_CE:
-                return "DFT_DL_CE"
-            case this.DFT_DL_CVCA:
-                return "DFT_DL_CVCA"
-            case this.DFT_ESIGN_PK:
-                return "DFT_ESIGN_PK"
-            case this.DFT_ESIGN_SIGNEDDATA:
-                return "DFT_ESIGN_SIGNEDDATA"
-            case this.DFT_LOGDATA:
-                return "DFT_LOGDATA"
-            case this.DFT_MASTERLIST:
-                return "DFT_MASTERLIST"
-            case this.DFT_SESSION:
-                return "DFT_SESSION"
-            case this.DFT_UNSPECIFIED:
+            case 0:
                 return "DFT_UNSPECIFIED"
-            case this.DFT_USERDEFINED:
+            case 1:
+                return "Machine Readable Zone (DG1)"
+            case 2:
+                return "Biometry - Facial data (DG2)"
+            case 3:
+                return "Biometry - Fingerprint(s) (DG3)"
+            case 4:
+                return "Biometry - Iris Data (DG4)"
+            case 5:
+                return "Portrait(s) (DG5)"
+            case 6:
+                return "not defined (DG6)"
+            case 7:
+                return "Signature / usual mark image (DG7)"
+            case 8:
+                return "not defined (DG8)"
+            case 9:
+                return "not defined (DG9)"
+            case 10:
+                return "not defined (DG10)"
+            case 11:
+                return "Additional personal detail(s) (DG11)"
+            case 12:
+                return "Additional document details (DG12)"
+            case 13:
+                return "Optional detail(s) (DG13)"
+            case 14:
+                return "EAC info (DG14)"
+            case 15:
+                return "Active Authentication info (DG15)"
+            case 16:
+                return "Person(s) to notify (DG16)"
+            case 17:
+                return "DG17"
+            case 18:
+                return "DG18"
+            case 19:
+                return "DG19"
+            case 20:
+                return "DG20"
+            case 21:
+                return "EF.SOD"
+            case 165:
+                return "EF.SOD"
+            case 22:
+                return "EF.CVCA"
+            case 23:
+                return "EF.COM"
+            case 150:
+                return "EF.COM"
+            case 101:
+                return "Document type" + " (DG1)"
+            case 102:
+                return "Issuing state" + " (DG2)"
+            case 103:
+                return "Date of expiry" + " (DG3)"
+            case 104:
+                return "Given name" + " (DG4)"
+            case 105:
+                return "Surname/given name at birth" + " (DG5)"
+            case 106:
+                return "Pseudonym" + " (DG6)"
+            case 107:
+                return "Academic title" + " (DG7)"
+            case 108:
+                return "Date of birth" + " (DG8)"
+            case 109:
+                return "Place of birth" + " (DG9)"
+            case 110:
+                return "Nationality" + " (DG10)"
+            case 111:
+                return "Sex" + " (DG11)"
+            case 112:
+                return "Optional details" + " (DG12)"
+            case 113:
+                return "Undefined" + " (DG13)"
+            case 114:
+                return "Undefined" + " (DG14)"
+            case 115:
+                return "Undefined" + " (DG15)"
+            case 116:
+                return "Undefined" + " (DG16)"
+            case 117:
+                return "Place of registration" + " (DG17)"
+            case 118:
+                return "Place of registration" + " (DG18)"
+            case 119:
+                return "Residence permit 1" + " (DG19)"
+            case 120:
+                return "Residence permit 2" + " (DG20)"
+            case 121:
+                return "Optional details" + " (DG21)"
+            case 151:
+                return "Text data elements (DG1)"
+            case 152:
+                return "License holder information (DG2)"
+            case 153:
+                return "Issuing authority details (DG3)"
+            case 154:
+                return "Portrait image (DG4)"
+            case 155:
+                return "Signature / usual mark image (DG5)"
+            case 156:
+                return "Biometry - Facial data (DG6)"
+            case 157:
+                return "Biometry - Fingerprint(s) (DG7)"
+            case 158:
+                return "Biometry - Iris Data (DG8)"
+            case 159:
+                return "Biometry - Other (DG9)"
+            case 160:
+                return "not defined (DG10)"
+            case 161:
+                return "Optional domestic data (DG11)"
+            case 162:
+                return "Non-match alert (DG12)"
+            case 163:
+                return "Active Authentication info (DG13)"
+            case 164:
+                return "EAC info (DG14)"
+            case 166:
+                return "DFT_DL_CE"
+            case 167:
+                return "DFT_DL_CVCA"
+            case 200:
+                return "EF.CardAccess"
+            case 201:
+                return "EF.CardSecurity"
+            case 202:
+                return "EF.ChipSecurity"
+            case 300:
+                return "MIFARE data"
+            case 301:
+                return "MIFARE validity"
+            case 400:
+                return "DFT_ATR"
+            case 500:
+                return "DFT_ESIGN_PK"
+            case 501:
+                return "DFT_ESIGN_SIGNEDDATA"
+            case 600:
+                return "Certificate"
+            case 601:
+                return "DFT_MASTERLIST"
+            case 602:
+                return "DFT_DEFECTLIST"
+            case 603:
+                return "DFT_DEVIATIONLIST"
+            case 700:
+                return "App directory"
+            case 701:
+                return "DFT_SESSION"
+            case 702:
+                return "DFT_LOGDATA"
+            case 703:
+                return "DFT_CHIP_PROPERTIES"
+            case 1000:
                 return "DFT_USERDEFINED"
             default:
                 return value
@@ -1906,6 +2022,7 @@ export const eRFID_NotificationAndErrorCodes = {
     RFID_ERROR_INVALID_PARAMETER: -2147418108,
     RFID_ERROR_NOT_INITIALIZED: -2147418107,
     RFID_Error_NotEnoughMemory: -2147418106,
+    RFID_ERROR_NOT_ENOUGH_DATA: -2147418105,
     RFID_ERROR_INVALID_DIRECTORY: -2147418104,
     RFID_ERROR_UNKNOWN_COMMAND: -2147418103,
     RFID_ERROR_FILE_IO_ERROR: -2147418102,
@@ -1984,11 +2101,25 @@ export const eRFID_NotificationAndErrorCodes = {
     RFID_LAYER6_EXT_AUTH_FAILURE: -2046819576,
     RFID_LAYER6_GENERAL_AUTH_FAILURE: -2046819575,
     RFID_ERROR_FAILED: -1,
+    RFID_ERROR_CODES_LAYER_34_NO_ERROR: -2080374784,
+    RFID_ERROR_CODES_LAYER_34_TIMEOUT: -2080309248,
+    RFID_ERROR_CODES_LAYER_34_COLLISION: -2080243712,
+    RFID_ERROR_CODES_LAYER_34_CRC: -2080178176,
+    RFID_ERROR_CODES_LAYER_34_DATA_INTEGRITY: -2080112640,
+    RFID_ERROR_CODES_LAYER_34_DATA_LENGTH: -2080047104,
+    RFID_ERROR_CODES_LAYER_34_RFU: -2079981568,
+    RFID_ERROR_CODES_LAYER_34_COLLISION_TOO_MANY: -2079916032,
+    RFID_ERROR_CODES_LAYER_34_PROTOCOL_B: -2079850496,
+    RFID_ERROR_CODES_LAYER_34_DATA_CONTENTS: -2079784960,
+    RFID_ERROR_CODES_LAYER_34_PROTOCOL: -2079719424,
+    RFID_ERROR_CODES_LAYER_34_GLOBAL_TIMEOUT: -2079653888,
+    RFID_ERROR_CODES_LAYER_34_MIFARE_AUTH: -2079588352,
+    RFID_ERROR_CODES_LAYER_34_SAM_ERROR: -2079522816,
+    RFID_ERROR_CODES_LAYER_34_SAM_COLLISION: -2079457280,
+    RFID_ERROR_CODES_LAYER_34_SAM_ACKNOWLEDGE: -2079391744,
 
     getTranslation: function (value) {
         switch (value) {
-            case this.RFID_ERROR_NO_ERROR:
-                return "OK"
             case -2147483647:
                 return "Error - ASN: Incorrect data"
             case -2147483646:
@@ -2003,6 +2134,8 @@ export const eRFID_NotificationAndErrorCodes = {
                 return "Error - ASN Signed data: Version incorrect data"
             case -2147483631:
                 return "Error - ASN Signed data: Digest algorithms incorrect data"
+            case -2147483630:
+                return "Error - ASN LDS object: Version info incorrect data"
             case -2147483629:
                 return "Error - ASN LDS object: Incorrect data"
             case -2147483628:
@@ -2011,8 +2144,6 @@ export const eRFID_NotificationAndErrorCodes = {
                 return "Error - ASN LDS object: Digest algorithm incorrect data"
             case -2147483626:
                 return "Error - ASN LDS object: DG hashes incorrect data"
-            case -2147483630:
-                return "Error - ASN LDS object: Version info incorrect data"
             case -2147483625:
                 return "Error - ASN Certificate: Incorrect data"
             case -2147483624:
@@ -2057,10 +2188,10 @@ export const eRFID_NotificationAndErrorCodes = {
                 return "Error - ICAO Signer info: Unsupported signature algorithm"
             case -2147483596:
                 return "Error - ICAO Signer info: Message digest error"
-            case -2147483594:
-                return "Error - ICAO Signer info: Signed attributes missed"
             case -2147483595:
                 return "Error - Auth: Signer info cannot find certificate"
+            case -2147483594:
+                return "Error - ICAO Signer info: Signed attributes missed"
             case -2147483568:
                 return "Error - Auth: Error"
             case -2147483567:
@@ -2085,6 +2216,68 @@ export const eRFID_NotificationAndErrorCodes = {
                 return "Error - Auth: Signature check failed"
             case -2147483536:
                 return "Error - DG: Wrong Tag"
+            case -2147458430:
+                return "LAYER6: Reading beyond EOF / Unexpected EOF"
+            case -2147458429:
+                return "LAYER6: PWD Deactivated"
+            case -2147458112:
+                return "LAYER6: PWD Blocked"
+            case -2147458111:
+                return "LAYER6: PWD Suspended"
+            case -2147456637:
+                return "LAYER6: PWD Blocked 2"
+            case -2147456636:
+                return "LAYER6: PWD Deactivated 2"
+            case -2147456635:
+                return "LAYER6: PWD Suspended 2"
+            case -2147456384:
+                return "LAYER6: Incorrect Params"
+            case -2147456382:
+                return "LAYER6: File selection failure / file not found"
+            case -2147456376:
+                return "LAYER6: No Reference Data"
+            case -2147456256:
+                return "LAYER6: Reading beyond EOF / Unexpected EOF"
+            case -2147418112:
+                return "RFID: Creation or connection to Graph Manager COM server failed"
+            case -2147418111:
+                return "RFID: No chip is detected"
+            case -2147418110:
+                return "RFID: Unavailable"
+            case -2147418108:
+                return "RFID: Invalid parameter in ExecuteCommand() call found"
+            case -2147418107:
+                return "RFID: Device is uninitialized"
+            case -2147418106:
+                return "RFID: Out of memory"
+            case -2147418104:
+                return "RFID: Invalid directory"
+            case -2147418103:
+                return "RFID: Unknown command"
+            case -2147418102:
+                return "RFID File: IO Error"
+            case -2147418101:
+                return "RFID: RFID is Busy"
+            case -2147418100:
+                return "RFID: Firmware need to be updated with newer version"
+            case -2147352576:
+                return "PCSC: Failed"
+            case -2147352575:
+                return "PCSC: Reader is unavailable"
+            case -2147352574:
+                return "PCSC: Card cannot be connected"
+            case -2147352573:
+                return "PCSC: Card is not connected"
+            case -2147352572:
+                return "PCSC: Operation is cancelled"
+            case -2147352571:
+                return "PCSC: Card Is Busy"
+            case -2147352570:
+                return "PCSC: Failed Smart Card"
+            case -2147352560:
+                return "PCSC: ExtLe Failed"
+            case -2146409536:
+                return "LAYER6: PWD Failed"
             case -2130706400:
                 return "Error - PACE: Info Not Available"
             case -2130706399:
@@ -2153,12 +2346,6 @@ export const eRFID_NotificationAndErrorCodes = {
                 return "Error - AA: Incorrect Trailer"
             case -2130706345:
                 return "Error - AA: Unsupported Digest Algorithm"
-            case -2130706320:
-                return "Error - RI: Sector Key Cannot Find"
-            case -2130706319:
-                return "Error - RI: Sector Key Incorrect Data"
-            case -2130706318:
-                return "Error - RI: Sector Key Incomplete Data"
             case -2130706336:
                 return "Error - CV Certificate: Missing mandatory data PK"
             case -2130706334:
@@ -2169,6 +2356,12 @@ export const eRFID_NotificationAndErrorCodes = {
                 return "Error - CV Certificate: Private key unsupported"
             case -2130706331:
                 return "Error - CV Certificate: Private key invalid params"
+            case -2130706320:
+                return "Error - RI: Sector Key Cannot Find"
+            case -2130706319:
+                return "Error - RI: Sector Key Incorrect Data"
+            case -2130706318:
+                return "Error - RI: Sector Key Incomplete Data"
             case -2130706080:
                 return "Error - CV Certificate: Incorrect data"
             case -2130706079:
@@ -2191,6 +2384,134 @@ export const eRFID_NotificationAndErrorCodes = {
                 return "Error - CV Certificate: Private key incorrect data"
             case -2130706070:
                 return "Error - CV Certificate: Private key missing"
+            case -2097152000:
+                return "RFID: Not Performed"
+            case -2097151999:
+                return "RFID: Session Is Closed"
+            case -2097151998:
+                return "RFID: Terminal Unsupported Operation"
+            case -2097151984:
+                return "RFID: Terminal Type Unknown"
+            case -2097151983:
+                return "RFID: Terminal Type Bad Certificate"
+            case -2097151982:
+                return "RFID: Terminal Type Not Set"
+            case -2097151981:
+                return "RFID: Procedure Type Unknown"
+            case -2097151980:
+                return "RFID: Procedure Type Unsupported"
+            case -2097151979:
+                return "RFID: Procedure Type Not Set"
+            case -2097151978:
+                return "RFID: Access Key Unknown Type"
+            case -2097151977:
+                return "RFID: Access Key Unsupported SM Type"
+            case -2097151976:
+                return "RFID: Access Key Incorrect SM Type"
+            case -2097151975:
+                return "RFID: Access Key Restricted"
+            case -2097151974:
+                return "RFID: Access Key Incorrect Data"
+            case -2097151973:
+                return "RFID: Access Key Not Set"
+            case -2097151972:
+                return "RFID: Pwd Management Not Authorized"
+            case -2097151968:
+                return "RFID: Access Control UnknownType"
+            case -2097151967:
+                return "RFID: Requires SM"
+            case -2097151966:
+                return "RFID: Requires PACE"
+            case -2097151965:
+                return "RFID: Requires CA Keys"
+            case -2097151964:
+                return "RFID: Requires TA"
+            case -2097151963:
+                return "RFID: Requires CA"
+            case -2097151962:
+                return "RFID: Incorrect Option CA"
+            case -2097151961:
+                return "RFID: CA Failed"
+            case -2097151960:
+                return "RFID: TA Failed"
+            case -2097151959:
+                return "RFID: AA Failed"
+            case -2097151958:
+                return "RFID: RI Failed"
+            case -2097151952:
+                return "RFID: SO Signature Check Failed"
+            case -2097151951:
+                return "RFID: Hash Check Failed"
+            case -2097151936:
+                return "RFID: Invalid Aux Data Date Of Expiry"
+            case -2097151935:
+                return "RFID: Invalid Aux Data Date Of Birth"
+            case -2097151934:
+                return "RFID: Invalid Aux Data Community ID"
+            case -2097151920:
+                return "RFID: eSign Requires App Selection"
+            case -2097151919:
+                return "RFID: eSign PIN Not Set"
+            case -2097151918:
+                return "RFID: eSign PIN Not Verified"
+            case -2097151904:
+                return "RFID: Incorrect data"
+            case -2097086464:
+                return "RFID File: Not Enough Data"
+            case -2097020928:
+                return "RFID File: Incorrect Data"
+            case -2096955392:
+                return "RFID File: Unexpected Data"
+            case -2096889856:
+                return "RFID File: Contents Unexpected Data"
+            case -2096824320:
+                return "RFID File: Wrong Tag"
+            case -2096758784:
+                return "RFID File: Cannot Use Data"
+            case -2096693248:
+                return "RFID File: Cannot Read Data"
+            case -2096627712:
+                return "RFID File: Access Denied"
+            case -2046820352:
+                return "LAYER6: Secure Messaging was not activated"
+            case -2046820351:
+                return "LAYER6: ISO7816_A_03 \"Application selection failure\""
+            case -2046820096:
+                return "LAYER6: ISO7816_B_01 \"Mutual authentication MAC failure\""
+            case -2046820095:
+                return "LAYER6: ISO7816_B_02 \"Mutual authentication encryption failure\""
+            case -2046820094:
+                return "LAYER6: ISO7816_B_03 \"Mutual authentication failure\""
+            case -2046819840:
+                return "LAYER6: SM failure – MAC missing"
+            case -2046819839:
+                return "LAYER6: SM failure – cryptogram missing"
+            case -2046819838:
+                return "LAYER6: SM failure – secured status bytes missing"
+            case -2046819837:
+                return "LAYER6: SM failure – incorrect MAC"
+            case -2046819836:
+                return "LAYER6: SM failure – incorrect cryptogram"
+            case -2046819584:
+                return "LAYER6: Not TLV response data"
+            case -2046819583:
+                return "LAYER6: Wrong data length (APDU_INS_GET_CHALLENGE)"
+            case -2046819582:
+                return "LAYER6: APDU_INS_INTERNAL_AUTHENTICATE failure"
+            case -2046819581:
+                return "LAYER6: MSE:Set KAT failure"
+            case -2046819580:
+                return "LAYER6: MSE:Set DST failure"
+            case -2046819579:
+                return "LAYER6: PSO CERTIFICATE failure"
+            case -2046819578:
+                return "LAYER6: MSE:Set AT failure"
+            case -2046819577:
+                return "LAYER6: GET CHALLENGE failure"
+            case -2046819576:
+                return "LAYER6: APDU_INS_EXTERNAL_AUTHENTICATE (External Authentication) failure"
+            case -2046819575:
+                return "LAYER6: General Authenticity Failure"
             case -1879048191:
                 return "Notification - ASN certificate: Incorrect version"
             case -1879048190:
@@ -2213,6 +2534,94 @@ export const eRFID_NotificationAndErrorCodes = {
                 return "Notification - ASN certificate: Incorrect issuer subject DS"
             case -1879048169:
                 return "Notification - ASN certificate: Duplicating extensions"
+            case -1879048160:
+                return "Notification - ICAO COM: LDS version incorrect"
+            case -1879048159:
+                return "Notification - ICAO COM: LDS version missing"
+            case -1879048158:
+                return "Notification - ICAO COM: Unicode version incorrect"
+            case -1879048157:
+                return "Notification - ICAO COM: Unicode version missing"
+            case -1879048156:
+                return "Notification - ICAO COM: DGPM incorrect"
+            case -1879048155:
+                return "Notification - ICAO COM: DGPM missing"
+            case -1879048154:
+                return "Notification - ICAO COM: DGPM unexpected"
+            case -1879048144:
+                return "Notification - ICAO application: LDS version unsupported"
+            case -1879048143:
+                return "Notification - ICAO application: Unicode version unsupported"
+            case -1879048142:
+                return "Notification - ICAO application: LDS version inconsistent"
+            case -1879048141:
+                return "Notification - ICAO application: Unicode version inconsistent"
+            case -1879047936:
+                return "Notification - ASN signed data: OID incorrect"
+            case -1879047935:
+                return "Notification - ICAO signed data: Version incorrect"
+            case -1879047934:
+                return "Notification - ICAO signed data: Digest algorithms empty"
+            case -1879047933:
+                return "Notification - ICAO signed data: Digest algorithms unsupported"
+            case -1879047932:
+                return "Notification - ICAO LDS object: Incorrect content OID"
+            case -1879047931:
+                return "Notification - ICAO LDS object: DG number incorrect"
+            case -1879047930:
+                return "Notification - ICAO LDS object: DG hash missing"
+            case -1879047929:
+                return "Notification - ICAO LDS object: DG hash extra"
+            case -1879047928:
+                return "Notification - ICAO LDS object: Version incorrect"
+            case -1879047927:
+                return "Notification - ICAO signed data: Signer infos multiple entries"
+            case -1879047926:
+                return "Notification - ASN signer info: Version incorrect"
+            case -1879047925:
+                return "Notification - ASN signer info: SID incorrect choice"
+            case -1879047924:
+                return "Notification - ASN signer info: SID digest algorithm not listed"
+            case -1879047923:
+                return "Notification - ASN signer info: Message digest attr missing"
+            case -1879047922:
+                return "Notification - ASN signer info: Message digest attr data"
+            case -1879047921:
+                return "Notification - ASN signer info: Message digest attr value"
+            case -1879047920:
+                return "Notification - ASN signer info: Content type attr missing"
+            case -1879047919:
+                return "Notification - ASN signer info: Content type attr data"
+            case -1879047918:
+                return "Notification - ASN signer info: Content type attr value"
+            case -1879047915:
+                return "Notification - Auth signer info: Certificate validity"
+            case -1879047914:
+                return "Notification - Auth signer info: Certificate root is not trusted"
+            case -1879047913:
+                return "Notification - Auth signer info: Certificate cannot find CSCA"
+            case -1879047912:
+                return "Notification - Auth signer info: Certificate revoked"
+            case -1879047911:
+                return "Notification - Auth signer info: Certificate signature invalid"
+            case -1879047910:
+                return "Notification: Unsupported image format"
+            case -1879047909:
+                return "Notification - ASN signer info: Signing time attr missing"
+            case -1879047908:
+                return "Notification - ASN signer info: Signing time attr data"
+            case -1879047907:
+                return "Notification - ASN signer info: Signing time attr value"
+            case -1879047776:
+                return "Notification - ASN signed data: Version incorrect"
+            case -1879047760:
+                return "Notification - ICAO signed data: Certificates missed"
+            case -1879047759:
+                return "Notification - ICAO signed data: Certificates empty"
+            case -1879047758:
+                return "Notification - ICAO signed data: CRLs incorrect usage"
+            case -1879047744:
+                return "Notification - ICAO master list: Version incorrect"
             case -1879047680:
                 return "Notification - ICAO certificate: Version missed"
             case -1879047679:
@@ -2335,124 +2744,6 @@ export const eRFID_NotificationAndErrorCodes = {
                 return "Notification - ICAO certificate extension: CRL dist point empty"
             case -1879047616:
                 return "Notification - ICAO certificate extension: CRL dist point point missed"
-            case -1879048160:
-                return "Notification - ICAO COM: LDS version incorrect"
-            case -1879048159:
-                return "Notification - ICAO COM: LDS version missing"
-            case -1879048158:
-                return "Notification - ICAO COM: Unicode version incorrect"
-            case -1879048157:
-                return "Notification - ICAO COM: Unicode version missing"
-            case -1879048156:
-                return "Notification - ICAO COM: DGPM incorrect"
-            case -1879048155:
-                return "Notification - ICAO COM: DGPM missing"
-            case -1879048154:
-                return "Notification - ICAO COM: DGPM unexpected"
-            case -1879048144:
-                return "Notification - ICAO application: LDS version unsupported"
-            case -1879048143:
-                return "Notification - ICAO application: Unicode version unsupported"
-            case -1879048142:
-                return "Notification - ICAO application: LDS version inconsistent"
-            case -1879048141:
-                return "Notification - ICAO application: Unicode version inconsistent"
-            case -1879047936:
-                return "Notification - ASN signed data: OID incorrect"
-            case -1879047776:
-                return "Notification - ASN signed data: Version incorrect"
-            case -1879047935:
-                return "Notification - ICAO signed data: Version incorrect"
-            case -1879047934:
-                return "Notification - ICAO signed data: Digest algorithms empty"
-            case -1879047933:
-                return "Notification - ICAO signed data: Digest algorithms unsupported"
-            case -1879047927:
-                return "Notification - ICAO signed data: Signer infos multiple entries"
-            case -1879047760:
-                return "Notification - ICAO signed data: Certificates missed"
-            case -1879047759:
-                return "Notification - ICAO signed data: Certificates empty"
-            case -1879047758:
-                return "Notification - ICAO signed data: CRLs incorrect usage"
-            case -1879047932:
-                return "Notification - ICAO LDS object: Incorrect content OID"
-            case -1879047931:
-                return "Notification - ICAO LDS object: DG number incorrect"
-            case -1879047930:
-                return "Notification - ICAO LDS object: DG hash missing"
-            case -1879047929:
-                return "Notification - ICAO LDS object: DG hash extra"
-            case -1879047928:
-                return "Notification - ICAO LDS object: Version incorrect"
-            case -1879047744:
-                return "Notification - ICAO master list: Version incorrect"
-            case -1879047926:
-                return "Notification - ASN signer info: Version incorrect"
-            case -1879047925:
-                return "Notification - ASN signer info: SID incorrect choice"
-            case -1879047924:
-                return "Notification - ASN signer info: SID digest algorithm not listed"
-            case -1879047923:
-                return "Notification - ASN signer info: Message digest attr missing"
-            case -1879047922:
-                return "Notification - ASN signer info: Message digest attr data"
-            case -1879047921:
-                return "Notification - ASN signer info: Message digest attr value"
-            case -1879047920:
-                return "Notification - ASN signer info: Content type attr missing"
-            case -1879047919:
-                return "Notification - ASN signer info: Content type attr data"
-            case -1879047918:
-                return "Notification - ASN signer info: Content type attr value"
-            case -1879047909:
-                return "Notification - ASN signer info: Signing time attr missing"
-            case -1879047908:
-                return "Notification - ASN signer info: Signing time attr data"
-            case -1879047907:
-                return "Notification - ASN signer info: Signing time attr value"
-            case -1879047915:
-                return "Notification - Auth signer info: Certificate validity"
-            case -1879047914:
-                return "Notification - Auth signer info: Certificate root is not trusted"
-            case -1879047913:
-                return "Notification - Auth signer info: Certificate cannot find CSCA"
-            case -1879047912:
-                return "Notification - Auth signer info: Certificate revoked"
-            case -1879047911:
-                return "Notification - Auth signer info: Certificate signature invalid"
-            case -1879047910:
-                return "Notification: Unsupported image format"
-            case 139272:
-                return "Notification - MRZ: Document type unknown"
-            case 139273:
-                return "Notification - MRZ: Issuing state syntax error"
-            case 139274:
-                return "Notification - MRZ: Name is void"
-            case 139277:
-                return "Notification - MRZ: Number incorrect checksum"
-            case 139278:
-                return "Notification - MRZ: Nationality syntax error"
-            case 139279:
-                return "Notification - MRZ: DOB syntax error"
-            case 139280:
-                return "Notification - MRZ: DOB error"
-            case 139281:
-                return "Notification - MRZ: DOB incorrect checksum"
-            case 139282:
-                return "Notification - MRZ: Sex incorrect"
-            case 139283:
-                return "Notification - MRZ: DOE syntax error"
-            case 139284:
-                return "Notification - MRZ: DOE error"
-            case 139285:
-                return "Notification - MRZ: DOE incorrect checksum"
-            case 139286:
-                return "Notification - MRZ: Optional data incorrect checksum"
-            case 139287:
-                return "Notification - MRZ: Incorrect checksum"
-            case 139288:
-                return "Notification - MRZ: Incorrect"
             case -1878982656:
                 return "Notification - Biometrics: Format owner missing"
             case -1878917120:
@@ -2581,200 +2872,42 @@ export const eRFID_NotificationAndErrorCodes = {
                 return "Notification - Auth ML signer info: Certificate revoked"
             case -1845493479:
                 return "Notification - Auth ML signer info: Certificate signature invalid"
-            case this.RFID_ERROR_ALREADY_DONE:
-                return "RFID: Requested operation is already done"
-            case this.RFID_ERROR_FAILED:
+            case -1:
                 return "RFID: Failed"
-            case this.RFID_Error_GraphManager:
-                return "RFID: Creation or connection to Graph Manager COM server failed"
-            case this.RFID_ERROR_NO_CHIP_DETECTED:
-                return "RFID: No chip is detected"
-            case this.RFID_ERROR_NOT_AVAILABLE:
-                return "RFID: Unavailable"
-            case this.RFID_ERROR_INVALID_PARAMETER:
-                return "RFID: Invalid parameter in ExecuteCommand() call found"
-            case this.RFID_ERROR_NOT_INITIALIZED:
-                return "RFID: Device is uninitialized"
-            case this.RFID_Error_NotEnoughMemory:
-                return "RFID: Out of memory"
-            case this.RFID_ERROR_INVALID_DIRECTORY:
-                return "RFID: Invalid directory"
-            case this.RFID_ERROR_UNKNOWN_COMMAND:
-                return "RFID: Unknown command"
-            case this.RFID_ERROR_FILE_IO_ERROR:
-                return "RFID File: IO Error"
-            case this.RFID_ERROR_BUSY:
-                return "RFID: RFID is Busy"
-            case -2147418100:
-                return "RFID: Firmware need to be updated with newer version"
-            case -2147352576:
-                return "PCSC: Failed"
-            case -2147352575:
-                return "PCSC: Reader is unavailable"
-            case -2147352574:
-                return "PCSC: Card cannot be connected"
-            case -2147352573:
-                return "PCSC: Card is not connected"
-            case -2147352572:
-                return "PCSC: Operation is cancelled"
-            case -2147352571:
-                return "PCSC: Card Is Busy"
-            case -2147352570:
-                return "PCSC: Failed Smart Card"
-            case -2147352560:
-                return "PCSC: ExtLe Failed"
-            case -2046820352:
-                return "LAYER6: Secure Messaging was not activated"
-            case -2046820351:
-                return "LAYER6: ISO7816_A_03 \"Application selection failure\""
-            case -2046820096:
-                return "LAYER6: ISO7816_B_01 \"Mutual authentication MAC failure\""
-            case -2046820095:
-                return "LAYER6: ISO7816_B_02 \"Mutual authentication encryption failure\""
-            case -2046820094:
-                return "LAYER6: ISO7816_B_03 \"Mutual authentication failure\""
-            case -2046819840:
-                return "LAYER6: SM failure – MAC missing"
-            case -2046819839:
-                return "LAYER6: SM failure – cryptogram missing"
-            case -2046819838:
-                return "LAYER6: SM failure – secured status bytes missing"
-            case -2046819837:
-                return "LAYER6: SM failure – incorrect MAC"
-            case -2046819836:
-                return "LAYER6: SM failure – incorrect cryptogram"
-            case -2046819584:
-                return "LAYER6: Not TLV response data"
-            case -2046819583:
-                return "LAYER6: Wrong data length (APDU_INS_GET_CHALLENGE)"
-            case -2046819582:
-                return "LAYER6: APDU_INS_INTERNAL_AUTHENTICATE failure"
-            case -2046819581:
-                return "LAYER6: MSE:Set KAT failure"
-            case -2046819580:
-                return "LAYER6: MSE:Set DST failure"
-            case -2046819579:
-                return "LAYER6: PSO CERTIFICATE failure"
-            case -2046819578:
-                return "LAYER6: MSE:Set AT failure"
-            case -2046819577:
-                return "LAYER6: GET CHALLENGE failure"
-            case -2046819576:
-                return "LAYER6: APDU_INS_EXTERNAL_AUTHENTICATE (External Authentication) failure"
-            case -2046819575:
-                return "LAYER6: General Authenticity Failure"
-            case -2147456382:
-                return "LAYER6: File selection failure / file not found"
-            case -2147458430:
-                return "LAYER6: Reading beyond EOF / Unexpected EOF"
-            case -2147456256:
-                return "LAYER6: Reading beyond EOF / Unexpected EOF"
-            case -2147456384:
-                return "LAYER6: Incorrect Params"
-            case -2147456376:
-                return "LAYER6: No Reference Data"
-            case -2147458111:
-                return "LAYER6: PWD Suspended"
-            case -2147458112:
-                return "LAYER6: PWD Blocked"
-            case -2147458429:
-                return "LAYER6: PWD Deactivated"
-            case -2147456637:
-                return "LAYER6: PWD Blocked 2"
-            case -2147456636:
-                return "LAYER6: PWD Deactivated 2"
-            case -2147456635:
-                return "LAYER6: PWD Suspended 2"
-            case -2146409536:
-                return "LAYER6: PWD Failed"
-            case -2097152000:
-                return "RFID: Not Performed"
-            case -2097151999:
-                return "RFID: Session Is Closed"
-            case -2097151998:
-                return "RFID: Terminal Unsupported Operation"
-            case -2097151984:
-                return "RFID: Terminal Type Unknown"
-            case -2097151983:
-                return "RFID: Terminal Type Bad Certificate"
-            case -2097151982:
-                return "RFID: Terminal Type Not Set"
-            case -2097151981:
-                return "RFID: Procedure Type Unknown"
-            case -2097151980:
-                return "RFID: Procedure Type Unsupported"
-            case -2097151979:
-                return "RFID: Procedure Type Not Set"
-            case -2097151978:
-                return "RFID: Access Key Unknown Type"
-            case -2097151977:
-                return "RFID: Access Key Unsupported SM Type"
-            case -2097151976:
-                return "RFID: Access Key Incorrect SM Type"
-            case -2097151975:
-                return "RFID: Access Key Restricted"
-            case -2097151974:
-                return "RFID: Access Key Incorrect Data"
-            case -2097151973:
-                return "RFID: Access Key Not Set"
-            case -2097151972:
-                return "RFID: Pwd Management Not Authorized"
-            case -2097151968:
-                return "RFID: Access Control UnknownType"
-            case -2097151967:
-                return "RFID: Requires SM"
-            case -2097151966:
-                return "RFID: Requires PACE"
-            case -2097151965:
-                return "RFID: Requires CA Keys"
-            case -2097151964:
-                return "RFID: Requires TA"
-            case -2097151963:
-                return "RFID: Requires CA"
-            case -2097151962:
-                return "RFID: Incorrect Option CA"
-            case -2097151961:
-                return "RFID: CA Failed"
-            case -2097151960:
-                return "RFID: TA Failed"
-            case -2097151959:
-                return "RFID: AA Failed"
-            case -2097151958:
-                return "RFID: RI Failed"
-            case -2097151952:
-                return "RFID: SO Signature Check Failed"
-            case -2097151951:
-                return "RFID: Hash Check Failed"
-            case -2097151936:
-                return "RFID: Invalid Aux Data Date Of Expiry"
-            case -2097151935:
-                return "RFID: Invalid Aux Data Date Of Birth"
-            case -2097151934:
-                return "RFID: Invalid Aux Data Community ID"
-            case -2097151920:
-                return "RFID: eSign Requires App Selection"
-            case -2097151919:
-                return "RFID: eSign PIN Not Set"
-            case -2097151918:
-                return "RFID: eSign PIN Not Verified"
-            case -2097151904:
-                return "RFID: Incorrect data"
-            case -2097086464:
-                return "RFID File: Not Enough Data"
-            case -2097020928:
-                return "RFID File: Incorrect Data"
-            case -2096955392:
-                return "RFID File: Unexpected Data"
-            case -2096889856:
-                return "RFID File: Contents Unexpected Data"
-            case -2096824320:
-                return "RFID File: Wrong Tag"
-            case -2096758784:
-                return "RFID File: Cannot Use Data"
-            case -2096693248:
-                return "RFID File: Cannot Read Data"
-            case this.RFID_ERROR_SESSION_FILE_ACCESS_DENIED:
-                return "RFID File: Access Denied"
+            case 1:
+                return "OK"
+            case 2:
+                return "RFID: Requested operation is already done"
+            case 139272:
+                return "Notification - MRZ: Document type unknown"
+            case 139273:
+                return "Notification - MRZ: Issuing state syntax error"
+            case 139274:
+                return "Notification - MRZ: Name is void"
+            case 139277:
+                return "Notification - MRZ: Number incorrect checksum"
+            case 139278:
+                return "Notification - MRZ: Nationality syntax error"
+            case 139279:
+                return "Notification - MRZ: DOB syntax error"
+            case 139280:
+                return "Notification - MRZ: DOB error"
+            case 139281:
+                return "Notification - MRZ: DOB incorrect checksum"
+            case 139282:
+                return "Notification - MRZ: Sex incorrect"
+            case 139283:
+                return "Notification - MRZ: DOE syntax error"
+            case 139284:
+                return "Notification - MRZ: DOE error"
+            case 139285:
+                return "Notification - MRZ: DOE incorrect checksum"
+            case 139286:
+                return "Notification - MRZ: Optional data incorrect checksum"
+            case 139287:
+                return "Notification - MRZ: Incorrect checksum"
+            case 139288:
+                return "Notification - MRZ: Incorrect"
             default:
                 return value
         }
@@ -2874,6 +3007,8 @@ export const eRPRM_ResultType = {
     RPRM_RESULT_TYPE_DATABASE_CHECK: 28,
     RPRM_RESULT_TYPE_FINGERPRINT_TEMPLATE_ISO: 29,
     RPRM_RESULT_TYPE_INPUT_IMAGE_QUALITY: 30,
+    RPRM_RESULT_TYPE_IMAGES: 37,
+    RPRM_RESULT_TYPE_HOLO_PARAMS: 47,
     RPRM_RESULT_TYPE_DOCUMENT_POSITION: 85,
     RPRM_RESULT_TYPE_CUSTOM: 100,
     RFID_RESULT_TYPE_RFID_RAW_DATA: 101,
@@ -2883,6 +3018,7 @@ export const eRPRM_ResultType = {
     RFID_RESULT_TYPE_RFID_ORIGINAL_GRAPHICS: 105,
     RPRM_RESULT_TYPE_BARCODE_POSITION: 62,
     RPRM_RESULT_TYPE_MRZ_POSITION: 61,
+    RPRM_RESULT_TYPE_STATUS: 33,
 }
 
 export const eRPRM_SecurityFeatureType = {
@@ -3520,6 +3656,11 @@ export const eVisualFieldType = {
     FT_DLCLASSCODE_CD_FROM: 638,
     FT_DLCLASSCODE_CD_TO: 639,
     FT_DLCLASSCODE_CD_NOTES: 640,
+    FT_PAYMENT_PERIOD_TO: 643,
+    FT_PAYMENT_PERIOD_FROM: 642,
+    FT_ISSUER_IDENTIFICATION_NUMBER: 641,
+    FT_VACCINATION_CERTIFICATE_IDENTIFIER: 644,
+    FT_FIRST_NAME: 645,
 
     getTranslation: function (value) {
         switch (value) {
@@ -3672,9 +3813,9 @@ export const eVisualFieldType = {
             case 73:
                 return "Issuing authority code"
             case 74:
-                return "Area of birthplace"
+                return "Country/region of birth"
             case 75:
-                return "State code of birthplace"
+                return "Birth state code"
             case 76:
                 return "Street"
             case 77:
@@ -3948,15 +4089,15 @@ export const eVisualFieldType = {
             case 259:
                 return "Residence permit 2"
             case 260:
-                return "Place of Birth: Street"
+                return "Place of birth: Street"
             case 261:
-                return "Place of Birth: City"
+                return "Place of birth: City"
             case 262:
-                return "Place of Birth: State"
+                return "Place of birth: State"
             case 263:
-                return "Place of Birth: Country"
+                return "Place of birth: Country"
             case 264:
-                return "Place of Birth: Postal code"
+                return "Place of birth: Postal code"
             case 265:
                 return "CDL Class"
             case 266:
@@ -4703,6 +4844,16 @@ export const eVisualFieldType = {
                 return "DL category CD valid to"
             case 640:
                 return "DL category CD codes"
+            case 641:
+                return "Issuer identification number"
+            case 642:
+                return "Payment period from"
+            case 643:
+                return "Payment period to"
+            case 644:
+                return "Unique vaccination certificate identifier"
+            case 645:
+                return "First name"
             default:
                 return value
         }

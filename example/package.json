@@ -7,29 +7,28 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint .",
-    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
+    "lint": "eslint ."
   },
   "dependencies": {
-    "react": "16.13.1",
-    "react-native": "0.63.4",
+    "@regulaforensics/react-native-document-reader-api": "^6.1.0",
+    "@regulaforensics/react-native-document-reader-core-fullrfid": "^6.1.0",
+    "react": "17.0.2",
+    "react-native": "^0.67.0",
     "react-native-check-box": "^2.1.7",
-    "react-native-customized-image-picker": "^1.1.0",
-    "@regulaforensics/react-native-document-reader-api": "^5.8.1",
-    "@regulaforensics/react-native-document-reader-core-fullrfid": "^5.8.0",
-    "react-native-progress": "^4.1.2",
-    "react-native-fs": "^2.16.6",
-    "react-native-radio-buttons-group": "^1.0.7"
+    "react-native-fs": "^2.18.0",
+    "react-native-image-picker": "^4.1.2",
+    "react-native-progress": "5.0.0",
+    "react-native-radio-buttons-group": "^2.2.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.2",
-    "@babel/runtime": "^7.6.2",
-    "@react-native-community/eslint-config": "^0.0.5",
-    "babel-jest": "^24.9.0",
-    "eslint": "^6.5.1",
-    "jest": "^24.9.0",
-    "metro-react-native-babel-preset": "^0.58.0",
-    "react-test-renderer": "16.11.0"
+    "@babel/core": "7.16.0",
+    "@babel/runtime": "7.16.0",
+    "@react-native-community/eslint-config": "2.0.0",
+    "babel-jest": "26.6.3",
+    "eslint": "7.14.0",
+    "jest": "26.6.3",
+    "metro-react-native-babel-preset": "^0.66.2",
+    "react-test-renderer": "17.0.2"
   },
   "jest": {
     "preset": "react-native"
