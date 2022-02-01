@@ -317,7 +317,7 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
 }
 
 - (void) initializeReaderWithDatabasePath:(NSString*)licenseString :(NSString*)databasePath :(Callback)successCallback :(Callback)errorCallback{
-    [RGLDocReader.shared initializeReaderWithConfig:[RGLConfig configWithLicenseData:[[NSData alloc] initWithBase64EncodedString:licenseString options:0] licenseUpdateCheck:true databasePath:databasePath] completion:[self getInitCompletion :successCallback :errorCallback]];
+    [RGLDocReader.shared initializeReaderWithConfig:[RGLConfig configWithLicenseData:[[NSData alloc] initWithBase64EncodedString:licenseString options:0] licenseUpdateCheck:true databasePath:databasePath delayedNNLoadEnabled:false] completion:[self getInitCompletion :successCallback :errorCallback]];
 }
 
 - (void) prepareDatabase:(NSString*)dbID :(Callback)successCallback :(Callback)errorCallback{
