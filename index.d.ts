@@ -395,7 +395,7 @@ export class DocumentReaderDocumentType {
 
 export class DocumentReaderNotification {
     code?: number
-    number?: number
+    attachment?: number
     value?: number
 
     static fromJson(jsonObject?: any): DocumentReaderNotification {
@@ -403,7 +403,7 @@ export class DocumentReaderNotification {
         const result = new DocumentReaderNotification
 
         result.code = jsonObject["code"]
-        result.number = jsonObject["number"]
+        result.attachment = jsonObject["attachment"]
         result.value = jsonObject["value"]
 
         return result
@@ -1362,6 +1362,66 @@ export class BytesData {
     }
 }
 
+export class DocumentReaderUvFiberElement {
+    rectArray?: DocReaderFieldRect[]
+    rectCount?: number
+    expectedCount?: number
+    width?: number[]
+    length?: number[]
+    area?: number[]
+    colorValues?: number[]
+    status?: number
+    elementType?: number
+    elementDiagnose?: number
+    elementTypeName?: string
+    elementDiagnoseName?: string
+
+    static fromJson(jsonObject?: any): DocumentReaderUvFiberElement {
+        if (jsonObject == null) return null
+        const result = new DocumentReaderUvFiberElement
+
+        result.rectArray = []
+        if (jsonObject["rectArray"] != null) {
+            for (const i in jsonObject["rectArray"]) {
+                result.rectArray.push(DocReaderFieldRect.fromJson(jsonObject["rectArray"][i]))
+            }
+        }
+        result.rectCount = jsonObject["rectCount"]
+        result.expectedCount = jsonObject["expectedCount"]
+        result.width = []
+        if (jsonObject["width"] != null) {
+            for (const i in jsonObject["width"]) {
+                result.width.push(jsonObject["width"][i])
+            }
+        }
+        result.length = []
+        if (jsonObject["length"] != null) {
+            for (const i in jsonObject["length"]) {
+                result.length.push(jsonObject["length"][i])
+            }
+        }
+        result.area = []
+        if (jsonObject["area"] != null) {
+            for (const i in jsonObject["area"]) {
+                result.area.push(jsonObject["area"][i])
+            }
+        }
+        result.colorValues = []
+        if (jsonObject["colorValues"] != null) {
+            for (const i in jsonObject["colorValues"]) {
+                result.colorValues.push(jsonObject["colorValues"][i])
+            }
+        }
+        result.status = jsonObject["status"]
+        result.elementType = jsonObject["elementType"]
+        result.elementDiagnose = jsonObject["elementDiagnose"]
+        result.elementTypeName = jsonObject["elementTypeName"]
+        result.elementDiagnoseName = jsonObject["elementDiagnoseName"]
+
+        return result
+    }
+}
+
 export class DocumentReaderResults {
     chipPage?: number
     overallResult?: number
@@ -2099,6 +2159,1060 @@ export const eImageQualityCheckType = {
     IQC_PORTRAIT: 7,
 }
 
+export const eLDS_ParsingErrorCodes = {
+    ERR_LDS_OK: 1,
+    ERR_LDS_ASN_INCORRECT_DATA: -2147483647,
+    RR_LDS_ASN_NOT_ENOUGH_DATA: -2147483646,
+    ERR_LDS_ASN_CONTENTS_UNEXPECTED_DATA: -2147483645,
+    ERR_LDS_ASN_SIGNED_DATA_INCORRECT_DATA: -2147483640,
+    ERR_LDS_ASN_SIGNED_DATA_ENCAP_CONTENTS_INCORRECT_DATA: -2147483639,
+    ERR_LDS_ASN_SIGNED_DATA_VERSION_INCORRECT_DATA: -2147483638,
+    ERR_LDS_ASN_SIGNED_DATA_DIGEST_ALGORITHMS_INCORRECT_DATA: -2147483631,
+    ERR_LDS_ASN_LDS_OBJECT_INCORRECT_DATA: -2147483629,
+    ERR_LDS_ASN_LDS_OBJECT_VERSION_INCORRECT_DATA: -2147483628,
+    ERR_LDS_ASN_LDS_OBJECT_DIGEST_ALGORITHM_INCORRECT_DATA: -2147483627,
+    ERR_LDS_ASN_LDS_OBJECT_DG_HASHES_INCORRECT_DATA: -2147483626,
+    ERR_LDS_ASN_LDS_OBJECT_VERSION_INFO_INCORRECT_DATA: -2147483630,
+    ERR_LDS_ASN_CERTIFICATE_INCORRECT_DATA: -2147483625,
+    ERR_LDS_ASN_CERTIFICATE_VERSION_INCORRECT_DATA: -2147483624,
+    ERR_LDS_ASN_CERTIFICATE_SN_INCORRECT_DATA: -2147483623,
+    ERR_LDS_ASN_CERTIFICATE_SIGNATURE_INCORRECT_DATA: -2147483622,
+    ERR_LDS_ASN_CERTIFICATE_ISSUER_INCORRECT_DATA: -2147483621,
+    ERR_LDS_ASN_CERTIFICATE_VALIDITY_INCORRECT_DATA: -2147483620,
+    ERR_LDS_ASN_CERTIFICATE_SUBJECT_INCORRECT_DATA: -2147483619,
+    ERR_LDS_ASN_CERTIFICATE_SUBJECT_PK_INCORRECT_DATA: -2147483618,
+    ERR_LDS_ASN_CERTIFICATE_EXTENSIONS_INCORRECT_DATA: -2147483617,
+    ERR_LDS_ASN_SIGNER_INFO_INCORRECT_DATA: -2147483616,
+    ERR_LDS_ASN_SIGNER_INFO_VERSION_INCORRECT_DATA: -2147483615,
+    ERR_LDS_ASN_SIGNER_INFO_SID_INCORRECT_DATA: -2147483614,
+    ERR_LDS_ASN_SIGNER_INFO_DIGEST_ALG_INCORRECT_DATA: -2147483613,
+    ERR_LDS_ASN_SIGNER_INFO_SIGNED_ATTRS_INCORRECT_DATA: -2147483612,
+    ERR_LDS_ASN_SIGNER_INFO_SIGN_ALG_INCORRECT_DATA: -2147483611,
+    ERR_LDS_ASN_SIGNER_INFO_SIGNATURE_INCORRECT_DATA: -2147483610,
+    ERR_LDS_ASN_SIGNER_INFO_UNSIGNED_ATTRS_INCORRECT_DATA: -2147483609,
+    ERR_LDS_ICAO_LDS_OBJECT_UNSUPPORTED_DIGEST_ALGORITHM: -2147483600,
+    ERR_LDS_ICAO_SIGNED_DATA_SIGNER_INFOS_EMPTY: -2147483599,
+    ERR_LDS_ICAO_SIGNER_INFO_UNSUPPORTED_DIGEST_ALGORITHM: -2147483598,
+    ERR_LDS_ICAO_SIGNER_INFO_UNSUPPORTED_SIGNATURE_ALGORITHM: -2147483597,
+    ERR_LDS_ICAO_SIGNER_INFO_MESSAGE_DIGEST_ERROR: -2147483596,
+    ERR_LDS_ICAO_SIGNER_INFO_SIGNED_ATTRS_MISSED: -2147483594,
+    ERR_LDS_AUTH_SIGNER_INFO_CANT_FIND_CERTIFICATE: -2147483595,
+    ERR_LDS_AUTH_ERROR: -2147483568,
+    ERR_LDS_AUTH_UNSUPPORTED_SIGNATURE_ALGORITHM: -2147483567,
+    ERR_LDS_AUTH_UNSUPPORTED_PUBLIC_KEY_ALGORITHM: -2147483566,
+    ERR_LDS_AUTH_MESSED_ALGORITHMS: -2147483565,
+    ERR_LDS_AUTH_PUBLIC_KEY_DATA_INVALID: -2147483564,
+    ERR_LDS_AUTH_ALGORITHM_PARAMETERS_DATA_INVALID: -2147483563,
+    ERR_LDS_AUTH_SIGNATURE_DATA_INVALID: -2147483562,
+    ERR_LDS_AUTH_UNSUPPORTED_DIGEST_ALGORITHM: -2147483561,
+    ERR_LDS_AUTH_SIGNATURE_DATA_INCORRECT: -2147483560,
+    ERR_LDS_AUTH_ALGORITHM_PARAMETERS_NOT_DEFINED: -2147483559,
+    ERR_LDS_AUTH_SIGNATURE_CHECK_FAILED: -2147483558,
+    ERR_LDS_DG_WRONG_TAH: -2147483536,
+    ERR_LDS_DG_CONTENTS_UNEXPECTED_DATA: -2147483535,
+    ERR_LDS_BAP_SYMMETRIC_CYPHER_CANT_INITIALIZE: -2130706415,
+    ERR_LDS_PACE_INFO_NOT_AVAILABLE: -2130706400,
+    ERR_LDS_PACE_SYMMETRIC_CYPHER_CANT_INITIALIZE: -2130706399,
+    ERR_LDS_PACE_KEY_AGREEMENT_CANT_INITIALIZE: -2130706398,
+    ERR_LDS_PACE_EPHEMERAL_KEYS_CANT_CREATE: -2130706397,
+    ERR_LDS_PACE_MAPPING_CANT_DECODE_NONCE: -2130706396,
+    ERR_LDS_PACE_SHARED_SECRET_CANT_CREATE: -2130706395,
+    ERR_LDS_PACE_DOMAIN_PARAMS_UNSUPPORTED_FORMAT: -2130706394,
+    ERR_LDS_PACE_EPHEMERAL_KEYS_INCORRECT: -2130706393,
+    ERR_LDS_PACE_MAPPING_EPHEMERAL_KEYS_INCORRECT: -2130706392,
+    ERR_LDS_PACE_MAPPING_CANT_PERFORM: -2130706391,
+    ERR_LDS_PACE_NON_MATCHING_AUTH_TOKENS: -2130706390,
+    ERR_LDS_PACE_CAM_DATA_INCORRECT: -2130706389,
+    ERR_LDS_PACE_CAM_DATA_CANT_VERIFY: -2130706388,
+    ERR_LDS_PACE_CAM_DATA_NON_MATCHING: -2130706387,
+    ERR_LDS_PACE_IM_SCHEME_INCORRECT: -2130706386,
+    ERR_LDS_PACE_IM_RANDOM_MAPPING_FAILED: -2130706385,
+    ERR_LDS_CA_CANT_FIND_PUBLIC_KEY: -2130706384,
+    ERR_LDS_CA_CANT_FIND_INFO: -2130706383,
+    ERR_LDS_CA_INCORRECT_VERSION: -2130706382,
+    ERR_LDS_CA_CANT_FIND_DOMAIN_PARAMETERS: -2130706381,
+    ERR_LDS_CA_KEY_AGREEMENT_CANT_INITIALIZE: -2130706380,
+    ERR_LDS_CA_PUBLIC_KEY_UNSUPPORTED_ALGORITHM: -2130706379,
+    ERR_LDS_CA_EPHEMERAL_KEYS_CANT_CREATE: -2130706378,
+    ERR_LDS_CA_SHARED_SECRET_CANT_CREATE: -2130706377,
+    ERR_LDS_CA_NON_MATCHING_AUTH_TOKENS: -2130706376,
+    ERR_LDS_TA_INCORRECT_VERSION: -2130706368,
+    ERR_LDS_TA_CANT_BUILD_CERTIFICATE_CHAIN: -2130706367,
+    ERR_LDS_TA_CANT_FIND_IS_PRIVATE_KEY: -2130706366,
+    ERR_LDS_TA_PUBLIC_KEY_UNSUPPORTED_ALGORITHM: -2130706365,
+    ERR_LDS_TA_SIGNATURE_BUILDING_ERROR: -2130706364,
+    ERR_LDS_TA_INVALID_KEY_ALGORITHM_PARAMETERS: -2130706363,
+    ERR_LDS_AA_PUBLIC_KEY_UNSUPPORTED_ALGORITHM: -2130706352,
+    ERR_LDS_AA_PUBLIC_KEY_INCORRECT_DATA: -2130706351,
+    ERR_LDS_AA_PUBLIC_KEY_INCORRECT_PARAMETERS: -2130706350,
+    ERR_LDS_AA_PUBLIC_KEY_UNDEFINED_PARAMETERS: -2130706349,
+    ERR_LDS_AA_SIGNATURE_INCORRECT_DATA: -2130706348,
+    ERR_LDS_AA_UNSUPPORTED_RECOVERY_SCHEME: -2130706347,
+    ERR_LDS_AA_INCORRECT_TRAILER: -2130706346,
+    ERR_LDS_AA_UNSUPPORTED_DIGEST_ALGORITHM: -2130706345,
+    ERR_LDS_RI_SECTOR_KEY_CANT_FIND: -2130706320,
+    ERR_LDS_RI_SECTOR_KEY_INCORRECT_DATA: -2130706319,
+    ERR_LDS_RI_SECTOR_KEY_INCOMPLETE_DATA: -2130706318,
+    ERR_LDS_CV_CERTIFICATE_MISSING_MANDATORY_DATA_PK: -2130706336,
+    ERR_LDS_CV_CERTIFICATE_PUBLIC_KEY_UNSUPPORTED: -2130706334,
+    ERR_LDS_CV_CERTIFICATE_CHAT_UNSUPPORTED_TERMINAL_TYPE: -2130706333,
+    ERR_LDS_CV_CERTIFICATE_PRIVATE_KEY_UNSUPPORTED: 135266310,
+    ERR_LDS_CV_CERTIFICATE_PRIVATE_KEY_INVALID_PARAMS: -2130706331,
+    ERR_LDS_CV_CERTIFICATE_INCORRECT_DATA: -2130706080,
+    ERR_LDS_CV_CERTIFICATE_CPI_INCORRECT_DATA: -2130706079,
+    ERR_LDS_CV_CERTIFICATE_CAR_INCORRECT_DATA: -2130706078,
+    ERR_LDS_CV_CERTIFICATE_PUBLIC_KEY_INCORRECT_DATA: -2130706077,
+    ERR_LDS_CV_CERTIFICATE_CHR_INCORRECT_DATA: -2130706076,
+    ERR_LDS_CV_CERTIFICATE_CHAT_INCORRECT_DATA: -2130706075,
+    ERR_LDS_CV_CERTIFICATE_VALID_FROM_INCORRECT_DATA: -2130706074,
+    ERR_LDS_CV_CERTIFICATE_VALID_TO_INCORRECT_DATA: -2130706073,
+    ERR_LDS_CV_CERTIFICATE_EXTENSIONS_INCORRECT_DATA: -2130706072,
+    ERR_LDS_CV_CERTIFICATE_PRIVATE_KEY_INCORRECT_DATA: -2130706071,
+    ERR_LDS_CV_CERTIFICATE_PRIVATE_KEY_MISSING: -2130706070,
+    ERR_LDS_VDS_UNSUPPORTED_VERSION: -2130705920,
+    ERR_LDS_VDS_ISSUING_COUNTRY_SIZE: -2130705919,
+    ERR_LDS_VDS_ISSUING_COUNTRY_INCORRECT_DATA: -2130705918,
+    ERR_LDS_VDS_SIGNER_CERTIFICATE_SIZE: -2130705917,
+    ERR_LDS_VDS_SIGNER_CERTIFICATE_DATA: -2130705916,
+    ERR_LDS_VDS_SIGNATURE_INCORRECT_DATA: -2130705915,
+    ERR_LDS_VDS_NC_INCORRECT_DATA: -2130705664,
+    ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_DATA: -2130705663,
+    ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_HEADER: -2130705662,
+    ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_TYPE: -2130705661,
+    ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_VERSION: -2130705660,
+    ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_ISSUING_COUNTRY: -2130705659,
+    ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_MESSAGE: -2130705658,
+    ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_SIGNATURE: -2130705657,
+    ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_SIG_ALGORITHM: -2130705656,
+    ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_CERTIFICATE: -2130705655,
+    ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_SIG_VALUE: -2130705654,
+
+    getTranslation(value: number) {
+        switch (value) {
+            case -2147483647:
+                return "Error - ASN: Incorrect data"
+            case -2147483646:
+                return "Error - ASN: Not enough data"
+            case -2147483645:
+                return "Error - ASN: Contents unexpected data"
+            case -2147483640:
+                return "Error - ASN Signed data: Incorrect data"
+            case -2147483639:
+                return "Error - ASN Signed data: Encap contents incorrect data"
+            case -2147483638:
+                return "Error - ASN Signed data: Version incorrect data"
+            case -2147483631:
+                return "Error - ASN Signed data: Digest algorithms incorrect data"
+            case -2147483630:
+                return "Error - ASN LDS object: Version info incorrect data"
+            case -2147483629:
+                return "Error - ASN LDS object: Incorrect data"
+            case -2147483628:
+                return "Error - ASN LDS object: Version incorrect data"
+            case -2147483627:
+                return "Error - ASN LDS object: Digest algorithm incorrect data"
+            case -2147483626:
+                return "Error - ASN LDS object: DG hashes incorrect data"
+            case -2147483625:
+                return "Error - ASN Certificate: Incorrect data"
+            case -2147483624:
+                return "Error - ASN Certificate: Version incorrect data"
+            case -2147483623:
+                return "Error - ASN Certificate: SN incorrect data"
+            case -2147483622:
+                return "Error - ASN Certificate: Signature incorrect data"
+            case -2147483621:
+                return "Error - ASN Certificate: Issuer incorrect data"
+            case -2147483620:
+                return "Error - ASN Certificate: Validity incorrect data"
+            case -2147483619:
+                return "Error - ASN Certificate: Subject incorrect data"
+            case -2147483618:
+                return "Error - ASN Certificate: Subject PK incorrect data"
+            case -2147483617:
+                return "Error - ASN Certificate: Extensions incorrect data"
+            case -2147483616:
+                return "Error - ASN Signer info: Incorrect data"
+            case -2147483615:
+                return "Error - ASN Signer info: Version incorrect data"
+            case -2147483614:
+                return "Error - ASN Signer info: SID incorrect data"
+            case -2147483613:
+                return "Error - ASN Signer info: Digest algorithms incorrect data"
+            case -2147483612:
+                return "Error - ASN Signer info: Signed attributes incorrect data"
+            case -2147483611:
+                return "Error - ASN Signer info: Sign algorithms incorrect data"
+            case -2147483610:
+                return "Error - ASN Signer info: Signature incorrect data"
+            case -2147483609:
+                return "Error - ASN Signer info: Unsigned attributes incorrect data"
+            case -2147483600:
+                return "Error - ICAO LDS object: Unsupported digest algorithm"
+            case -2147483599:
+                return "Error - ICAO Signed data: Signer info empty"
+            case -2147483598:
+                return "Error - ICAO Signer info: Unsupported digest algorithm"
+            case -2147483597:
+                return "Error - ICAO Signer info: Unsupported signature algorithm"
+            case -2147483596:
+                return "Error - ICAO Signer info: Message digest error"
+            case -2147483595:
+                return "Error - Auth: Signer info cannot find certificate"
+            case -2147483594:
+                return "Error - ICAO Signer info: Signed attributes missed"
+            case -2147483568:
+                return "Error - Auth: Error"
+            case -2147483567:
+                return "Error - Auth: Unsupported signature algorithm"
+            case -2147483566:
+                return "Error - Auth: Unsupported public key algorithm"
+            case -2147483565:
+                return "Error - Auth: Messed algorithms"
+            case -2147483564:
+                return "Error - Auth: Public key data invalid"
+            case -2147483563:
+                return "Error - Auth: Algorithm parameters data invalid"
+            case -2147483562:
+                return "Error - Auth: Signature data invalid"
+            case -2147483561:
+                return "Error - Auth: Unsupported digest algorithm"
+            case -2147483560:
+                return "Error - Auth: Signature data incorrect"
+            case -2147483559:
+                return "Error - Auth: Algorithm parameters not defined"
+            case -2147483558:
+                return "Error - Auth: Signature check failed"
+            case -2147483536:
+                return "Error - DG: Wrong Tag"
+            case -2147483535:
+                return "Error - DG: Contents unexpected data"
+            case -2130706415:
+                return "Error - BAP: Symmetric Cypher Cannot Initialize"
+            case -2130706400:
+                return "Error - PACE: Info Not Available"
+            case -2130706399:
+                return "Error - PACE: Symmetric Cypher Cannot Initialize"
+            case -2130706398:
+                return "Error - PACE: Key Agreement Cannot Initialize"
+            case -2130706397:
+                return "Error - PACE: Ephemeral Keys Cannot Create"
+            case -2130706396:
+                return "Error - PACE: Mapping Cannot Decode Nonce"
+            case -2130706395:
+                return "Error - PACE: Shared Secret Cannot Create"
+            case -2130706394:
+                return "Error - PACE: Domain Params Unsupported Format"
+            case -2130706393:
+                return "Error - PACE: Ephemeral Keys Incorrect"
+            case -2130706392:
+                return "Error - PACE: Mapping Ephemeral Keys Incorrect"
+            case -2130706391:
+                return "Error - PACE: Mapping Cannot Perform"
+            case -2130706390:
+                return "Error - PACE: Non-Matching Auth Tokens"
+            case -2130706389:
+                return "Error - PACE: CAM data incorrect"
+            case -2130706388:
+                return "Error - PACE: CAM data cannot verify"
+            case -2130706387:
+                return "Error - PACE: CAM data non-matching"
+            case -2130706386:
+                return "Error - PACE: IM scheme incorrect"
+            case -2130706385:
+                return "Error - PACE: Random mapping failed"
+            case -2130706384:
+                return "Error - CA: Cannot Find Public Key"
+            case -2130706383:
+                return "Error - CA: Cannot Find Info"
+            case -2130706382:
+                return "Error - CA: Incorrect Version"
+            case -2130706381:
+                return "Error - CA: Cannot Find Domain Parameters"
+            case -2130706380:
+                return "Error - CA: Key Agreement Cannot Initialize"
+            case -2130706379:
+                return "Error - CA: Public Key Unsupported Algorithm"
+            case -2130706378:
+                return "Error - CA: Ephemeral Keys Cannot Create"
+            case -2130706377:
+                return "Error - CA: Shared Secret Cannot Create"
+            case -2130706376:
+                return "Error - CA: Non-Matching Auth Tokens"
+            case -2130706368:
+                return "Error - TA: Incorrect Version"
+            case -2130706367:
+                return "Error - TA: Cannot Build Certificate Chain"
+            case -2130706366:
+                return "Error - TA: Cannot Find IS Private Key"
+            case -2130706365:
+                return "Error - TA: Public Key Unsupported Algorithm"
+            case -2130706364:
+                return "Error - TA: Signature Building Error"
+            case -2130706363:
+                return "Error - TA: Invalid Key Algorithm Parameters"
+            case -2130706352:
+                return "Error - AA: Public Key Unsupported Algorithm"
+            case -2130706351:
+                return "Error - AA: Public Key Incorrect Data"
+            case -2130706350:
+                return "Error - AA: Public Key Incorrect Parameters"
+            case -2130706349:
+                return "Error - AA: Public Key Undefined Parameters"
+            case -2130706348:
+                return "Error - AA: Signature Incorrect Data"
+            case -2130706347:
+                return "Error - AA: Unsupported recovery scheme"
+            case -2130706346:
+                return "Error - AA: Incorrect Trailer"
+            case -2130706345:
+                return "Error - AA: Unsupported Digest Algorithm"
+            case -2130706336:
+                return "Error - CV Certificate: Missing mandatory data PK"
+            case -2130706334:
+                return "Error - CV Certificate: Public key unsupported"
+            case -2130706333:
+                return "Error - CV Certificate: CHAT unsupported terminal type"
+            case -2130706331:
+                return "Error - CV Certificate: Private key invalid params"
+            case -2130706320:
+                return "Error - RI: Sector Key Cannot Find"
+            case -2130706319:
+                return "Error - RI: Sector Key Incorrect Data"
+            case -2130706318:
+                return "Error - RI: Sector Key Incomplete Data"
+            case -2130706080:
+                return "Error - CV Certificate: Incorrect data"
+            case -2130706079:
+                return "Error - CV Certificate: CPI incorrect data"
+            case -2130706078:
+                return "Error - CV Certificate: CAR incorrect data"
+            case -2130706077:
+                return "Error - CV Certificate: Public key incorrect data"
+            case -2130706076:
+                return "Error - CV Certificate: CHR incorrect data"
+            case -2130706075:
+                return "Error - CV Certificate: CHAT incorrect data"
+            case -2130706074:
+                return "Error - CV Certificate: Valid from incorrect data"
+            case -2130706073:
+                return "Error - CV Certificate: Valid to incorrect data"
+            case -2130706072:
+                return "Error - CV Certificate: Extensions incorrect data"
+            case -2130706071:
+                return "Error - CV Certificate: Private key incorrect data"
+            case -2130706070:
+                return "Error - CV Certificate: Private key missing"
+            case -2130705920:
+                return "Error - VDS: Unsupported version"
+            case -2130705919:
+                return "Error - VDS: Issuing country size"
+            case -2130705918:
+                return "Error - VDS: Issuing country incorrect data"
+            case -2130705917:
+                return "Error - VDS: Signature certificate size"
+            case -2130705916:
+                return "Error - VDS: Signature certificate data"
+            case -2130705915:
+                return "Error - VDS: Signature incorrect data"
+            case -2130705664:
+                return "Error - VDS: Incorrect data"
+            case -2130705663:
+                return "Error - VDS: Missing or incorrect data"
+            case -2130705662:
+                return "Error - VDS: Missing or incorrect header"
+            case -2130705661:
+                return "Error - VDS: Missing or incorrect type"
+            case -2130705660:
+                return "Error - VDS: Missing or incorrect version"
+            case -2130705659:
+                return "Error - VDS: Missing or incorrect issuing country"
+            case -2130705658:
+                return "Error - VDS: Missing or incorrect message"
+            case -2130705657:
+                return "Error - VDS: Missing or incorrect signature"
+            case -2130705656:
+                return "Error - VDS: Missing or incorrect signature algorithm"
+            case -2130705655:
+                return "Error - VDS: Missing or incorrect certificate"
+            case -2130705654:
+                return "Error - VDS: Missing or incorrect signature value"
+            case 1:
+                return "OK"
+            case 135266310:
+                return "Error - CV Certificate: Private key unsupported"
+            case 2147483599:
+                return "Error - ICAO Signed data: Signer info empty"
+            default:
+                return value.toString()
+        }
+    }
+}
+
+export const eLDS_ParsingNotificationCodes = {
+    NTF_LDS_ASN_CERTIFICATE_INCORRECT_VERSION: -1879048191,
+    NTF_LDS_ASN_CERTIFICATE_NON_MATCHING_SIGNATURE_ALGORITHM: -1879048190,
+    NTF_LDS_ASN_CERTIFICATE_INCORRECT_TIME_CODING: -1879048189,
+    NTF_LDS_ASN_CERTIFICATE_INCORRECT_USE_OF_GENERALIZED_TIME: -1879048188,
+    NTF_LDS_ASN_CERTIFICATE_EMPTY_ISSUER: -1879048187,
+    NTF_LDS_ASN_CERTIFICATE_EMPTY_SUBJECT: -1879048186,
+    NTF_LDS_ASN_CERTIFICATE_UNSUPPORTED_CRITICAL_EXTENSION: -1879048184,
+    NTF_LDS_ASN_CERTIFICATE_FORCED_DEFAULT_CSCA_ROLE: -1879048178,
+    NTF_LDS_ASN_CERTIFICATE_FORCED_DEFAULT_DS_ROLE: -1879048177,
+    NTF_LDS_ASN_CERTIFICATE_INCORRECT_ISSUER_SUBJECT_DS: -1879048176,
+    NTF_LDS_ASN_CERTIFICATE_DUPLICATING_EXTENSIONS: -1879048169,
+    NTF_LDS_ICAO_CERTIFICATE_VERSION_MISSED: -1879047680,
+    NTF_LDS_ICAO_CERTIFICATE_VERSION_INCORRECT: -1879047679,
+    NTF_LDS_ICAO_CERTIFICATE_ISSUER_COUNTRY_MISSED: -1879047678,
+    NTF_LDS_ICAO_CERTIFICATE_ISSUER_COMMON_NAME_MISSED: -1879047677,
+    NTF_LDS_ICAO_CERTIFICATE_ISSUER_COUNTRY_NON_COMPLIANT: -1879047676,
+    NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COUNTRY_MISSED: -1879047675,
+    NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COMMON_NAME_MISSED: -1879047674,
+    NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COUNTRY_NON_COMPLIANT: -1879047673,
+    NTF_LDS_ICAO_CERTIFICATE_USING_NON_COMPLIANT_DATA: -1879047672,
+    NTF_LDS_ICAO_CERTIFICATE_UNSUPPORTED_SIGNATURE_ALGORITHM: -1879047671,
+    NTF_LDS_ICAO_CERTIFICATE_UNSUPPORTED_PUBLIC_KEY_ALGORITHM: -1879047670,
+    NTF_LDS_ICAO_CERTIFICATE_MISSED_EXTENSIONS: -1879047669,
+    NTF_LDS_ICAO_CERTIFICATE_VALIDITY: -1879047668,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_USING_NON_COMPLIANT_DATA: -1879047667,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_KEY_USAGE_MISSED: -1879047666,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_KEY_USAGE_NOT_CRITICAL: -1879047665,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_KEY_USAGE_INCORRECT_DATA: -1879047664,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_MISSED: -1879047663,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_INCORRECT_USAGE1: -1879047662,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_INCORRECT_USAGE2: -1879047661,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_NOT_CRITICAL: -1879047660,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_INCORRECT_DATA: -1879047659,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_PATH_LEN_C_MISSED: -1879047658,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_PATH_LEN_C_INCORRECT: -1879047657,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_EXT_KEY_USAGE_NOT_CRITICAL: -1879047656,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_EXT_KEY_USAGE_INCORRECT_USAGE: -1879047655,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_EXT_KEY_USAGE_INCORRECT_DATA: -1879047654,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_AUTH_KEY_ID_MISSED: -1879047653,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_AUTH_KEY_ID_INCORRECT_DATA: -1879047652,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_AUTH_KEY_ID_KEY_ID_MISSED: -1879047651,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_KEY_ID_MISSED: -1879047650,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_KEY_ID_INCORRECT_DATA: -1879047649,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_PRIVATE_KEY_UP_MISSED: -1879047648,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_PRIVATE_KEY_UP_INCORRECT_DATA: -1879047647,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_PRIVATE_KEY_UP_EMPTY: -1879047646,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_MISSED: -1879047645,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_INCORRECT_DATA: -1879047644,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_EMPTY: -1879047643,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_NON_COMPLIANT: -1879047642,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_CRITICAL: -1879047640,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_DN_EMPTY: -1879047639,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_DN_INCORRECT: -1879047638,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_DN_NON_COMPLIANT: -1879047637,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_MISSED: -1879047636,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_INCORRECT_DATA: -1879047635,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_EMPTY: -1879047634,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_NON_COMPLIANT: -1879047633,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_CRITICAL: -1879047631,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_DN_EMPTY: -1879047630,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_DN_INCORRECT: -1879047629,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_DN_NON_COMPLIANT: -1879047628,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_MISSED: -1879047627,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_INCORRECT_DATA: -1879047626,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_VERSION: -1879047625,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_DOC_TYPES: -1879047624,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_DOC_TYPES_EMPTY: -1879047623,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_CERT_POLICIES_INCORRECT_DATA: -1879047622,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_CERT_POLICIES_EMPTY: -1879047621,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_CERT_POLICIES_POLICY_ID_MISSED: -1879047620,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_CRL_DIST_POINT_MISSED: -1879047619,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_CRL_DIST_POINT_INCORRECT_DATA: -1879047618,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_CRL_DIST_POINT_EMPTY: -1879047617,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_CRL_DIST_POINT_POINT_MISSED: -1879047616,
+    NTF_LDS_ICAO_CERTIFICATE_SN_NON_COMPLIANT: -1879047615,
+    NTF_LDS_ICAO_CERTIFICATE_ISSUER_SN_NON_COMPLIANT: -1879047614,
+    NTF_LDS_ICAO_CERTIFICATE_SUBJECT_SN_NON_COMPLIANT: -1879047613,
+    NTF_LDS_ICAO_CERTIFICATE_ISSUER_ATTRIBUTE_NON_COMPLIANT: -1879047612,
+    NTF_LDS_ICAO_CERTIFICATE_SUBJECT_ATTRIBUTE_NON_COMPLIANT: -1879047611,
+    NTF_LDS_ICAO_CERTIFICATE_ISSUER_SUBJECT_COUNTRY_NON_MATCHING: -1879047610,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_CSCA_ALT_NAMES_NON_MATCHING: -1879047609,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_NAME_CHANGE_INCORRECT_DATA: -1879047608,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_NAME_CHANGE_NON_COMPLIANT: -1879047607,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_NAME_CHANGE_CRITICAL: -1879047606,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_NON_COMPLIANT: -1879047605,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_CRITICAL: -1879047604,
+    NTF_LDS_ICAO_CERTIFICATE_EXT_OPTIONAL_CRITICAL: -1879047603,
+    NTF_LDS_ICAO_CERTIFICATE_SUBJECT_NON_COMPLIANT: -1879047602,
+    NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COMMON_NAME_NON_COMPLIANT: -1879047601,
+    NTF_LDS_ICAO_COM_LDS_VERSION_INCORRECT: -1879048160,
+    NTF_LDS_ICAO_COM_LDS_VERSION_MISSING: -1879048159,
+    NTF_LDS_ICAO_COM_UNICODE_VERSION_INCORRECT: -1879048158,
+    NTF_LDS_ICAO_COM_UNICODE_VERSION_MISSING: -1879048157,
+    NTF_LDS_ICAO_COM_DGPM_INCORRECT: -1879048156,
+    NTF_LDS_ICAO_COM_DGPM_MISSING: -1879048155,
+    NTF_LDS_ICAO_COM_DGPM_UNEXPECTED: -1879048154,
+    NTF_LDS_ICAO_APPLICATION_LDS_VERSION_UNSUPPORTED: -1879048144,
+    NTF_LDS_ICAO_APPLICATION_UNICODE_VERSION_UNSUPPORTED: -1879048143,
+    NTF_LDS_ICAO_APPLICATION_LDS_VERSION_INCONSISTENT: -1879048142,
+    NTF_LDS_ICAO_APPLICATION_UNICODE_VERSION_INCONSISTENT: -1879048141,
+    NTF_LDS_ASN_SIGNED_DATA_OID_INCORRECT: -1879047936,
+    NTF_LDS_ASN_SIGNED_DATA_VERSION_INCORRECT: -1879047776,
+    NTF_LDS_ASN_SIGNED_DATA_CONTENT_OID_INCORRECT: -1879047775,
+    NTF_LDS_ICAO_SIGNED_DATA_VERSION_INCORRECT: -1879047935,
+    NTF_LDS_ICAO_SIGNED_DATA_DIGEST_ALGORITHMS_EMPTY: -1879047934,
+    NTF_LDS_ICAO_SIGNED_DATA_DIGEST_ALGORITHMS_UNSUPPORTED: -1879047933,
+    NTF_LDS_ICAO_SIGNED_DATA_SIGNER_INFOS_MULTIPLE_ENTRIES: -1879047927,
+    NTF_LDS_ICAO_SIGNED_DATA_CERTIFICATES_MISSED: -1879047760,
+    NTF_LDS_ICAO_SIGNED_DATA_CERTIFICATES_EMPTY: -1879047759,
+    NTF_LDS_ICAO_SIGNED_DATA_CRLS_INCORRECT_USAGE: -1879047758,
+    NTF_LDS_ICAO_LDS_OBJECT_INCORRECT_CONTENT_OID: -1879047932,
+    NTF_LDS_ICAO_LDS_OBJECT_DG_NUMBER_INCORRECT: -1879047931,
+    NTF_LDS_ICAO_LDS_OBJECT_DG_HASH_MISSING: -1879047930,
+    NTF_LDS_ICAO_LDS_OBJECT_DG_HASH_EXTRA: -1879047929,
+    NTF_LDS_ICAO_LDS_OBJECT_VERSION_INCORRECT: -1879047928,
+    NTF_LDS_ICAO_MASTER_LIST_VERSION_INCORRECT: -1879047744,
+    NTF_LDS_ICAO_DEVIATION_LIST_VERSION_INCORRECT: -1879047736,
+    NTF_LDS_BSI_DEFECT_LIST_VERSION_INCORRECT: -1879047728,
+    NTF_LDS_BSI_BLACK_LIST_VERSION_INCORRECT: -1879047720,
+    NTF_LDS_ASN_SIGNER_INFO_VERSION_INCORRECT: -1879047926,
+    NTF_LDS_ASN_SIGNER_INFO_SID_INCORRECT_CHOICE: -1879047925,
+    NTF_LDS_ASN_SIGNER_INFO_SID_DIGEST_ALGORITHM_NOT_LISTED: -1879047924,
+    NTF_LDS_ASN_SIGNER_INFO_MESSAGE_DIGEST_ATTR_MISSING: -1879047923,
+    NTF_LDS_ASN_SIGNER_INFO_MESSAGE_DIGEST_ATTR_DATA: -1879047922,
+    NTF_LDS_ASN_SIGNER_INFO_MESSAGE_DIGEST_ATTR_Value: -1879047921,
+    NTF_LDS_ASN_SIGNER_INFO_CONTENT_TYPE_ATTR_MISSING: -1879047920,
+    NTF_LDS_ASN_SIGNER_INFO_CONTENT_TYPE_ATTR_DATA: -1879047919,
+    NTF_LDS_ASN_SIGNER_INFO_CONTENT_TYPE_ATTR_VALUE: -1879047918,
+    NTF_LDS_ASN_SIGNER_INFO_SIGNING_TIME_ATTR_MISSING: -1879047909,
+    NTF_LDS_ASN_SIGNER_INFO_SIGNING_TIME_ATTR_DATA: -1879047908,
+    NTF_LDS_ASN_SIGNER_INFO_SIGNING_TIME_ATTR_VALUE: -1879047907,
+    NTF_LDS_ASN_SIGNER_INFO_LIST_CONTENT_DESCRIPTION_ATTR_MISSING: -1879047906,
+    NTF_LDS_ASN_SIGNER_INFO_LIST_CONTENT_DESCRIPTION_ATTR_DATA: -1879047905,
+    NTF_LDS_AUTH_SIGNER_INFO_CERTIFICATE_VALIDITY: -1879047915,
+    NTF_LDS_AUTH_SIGNER_INFO_CERTIFICATE_ROOT_IS_NOT_TRUSTED: -1879047914,
+    NTF_LDS_AUTH_SIGNER_INFO_CERTIFICATE_CANT_FIND_CSCA: -1879047913,
+    NTF_LDS_AUTH_SIGNER_INFO_CERTIFICATE_REVOKED: -1879047912,
+    NTF_LDS_AUTH_SIGNER_INFO_CERTIFICATE_SIGNATURE_INVALID: -1879047911,
+    NTF_LDS_UNSUPPORTED_IMAGE_FORMAT: -1879047910,
+    NTF_LDS_MRZ_DOCUMENT_TYPE_UNKNOWN: 139272,
+    NTF_LDS_MRZ_ISSUING_STATE_SYNTAX_ERROR: 139273,
+    NTF_LDS_MRZ_NAME_IS_VOID: 139274,
+    NTF_LDS_MRZ_NUMBER_INCORRECT_CHECKSUM: 139277,
+    NTF_LDS_MRZ_NATIONALITY_SYNTAX_ERROR: 139278,
+    NTF_LDS_MRZ_DOB_SYNTAX_ERROR: 139279,
+    NTF_LDS_MRZ_DOB_ERROR: 139280,
+    NTF_LDS_MRZ_DOB_INCORRECT_CHECKSUM: 139281,
+    NTF_LDS_MRZ_SEX_INCORRECT: 139282,
+    NTF_LDS_MRZ_DOE_SYNTAX_ERROR: 139283,
+    NTF_LDS_MRZ_DOE_ERROR: 139284,
+    NTF_LDS_MRZ_DOE_INCORRECT_CHECKSUM: 139285,
+    NTF_LDS_MRZ_OPTIONAL_DATA_INCORRECT_CHECKSUM: 139286,
+    NTF_LDS_MRZ_INCORRECT_CHECKSUM: 139287,
+    NTF_LDS_MRZ_INCORRECT: 139288,
+    NTF_LDS_BIOMETRICS_FORMAT_OWNER_MISSING: -1878982656,
+    NTF_LDS_BIOMETRICS_FORMAT_OWNER_INCORRECT: -1878917120,
+    NTF_LDS_BIOMETRICS_FORMAT_TYPE_MISSING: -1878851584,
+    NTF_LDS_BIOMETRICS_FORMAT_TYPE_INCORRECT: -1878786048,
+    NTF_LDS_BIOMETRICS_TYPE_INCORRECT: -1878720512,
+    NTF_LDS_BIOMETRICS_SUB_TYPE_MISSING: -1878654976,
+    NTF_LDS_BIOMETRICS_SUB_TYPE_INCORRECT: -1878589440,
+    NTF_LDS_BIOMETRICS_BDB_IMAGE_MISSING: -1878523904,
+    NTF_LDS_BIOMETRICS_BDB_FORMAT_ID_INCORRECT: -1878458368,
+    NTF_LDS_BIOMETRICS_BDB_VERSION_INCORRECT: -1878392832,
+    NTF_LDS_BIOMETRICS_BDB_DATA_LENGTH_INCORRECT: -1878327296,
+    NTF_LDS_BIOMETRICS_BDB_DATA_GENDER: -1877999616,
+    NTF_LDS_BIOMETRICS_BDB_DATA_EYE_COLOR: -1877934080,
+    NTF_LDS_BIOMETRICS_BDB_DATA_HAIR_COLOR: -1877868544,
+    NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_YAW: -1877803008,
+    NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_PITCH: -1877737472,
+    NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_ROLL: -1877671936,
+    NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_U_YAW: -1877606400,
+    NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_U_PITCH: -1877540864,
+    NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_U_ROLL: -1877475328,
+    NTF_LDS_BIOMETRICS_BDB_DATA_FACE_IMAGE_TYPE: -1877409792,
+    NTF_LDS_BIOMETRICS_BDB_DATA_IMAGE_DATA_TYPE: -1877344256,
+    NTF_LDS_SI_PACE_INFO_UNSUPPORTED_STD_PARAMETERS: -1862270976,
+    NTF_LDS_SI_PACE_INFO_DEPRECATED_VERSION: -1862270975,
+    NTF_LDS_SI_PACE_DOMAIN_PARAMS_USING_STD_REF: -1862270974,
+    NTF_LDS_SI_PACE_DOMAIN_PARAMS_UNSUPPORTED_ALGORITHM: -1862270973,
+    NTF_LDS_SI_CA_INFO_INCORRECT_VERSION: -1862270972,
+    NTF_LDS_SI_CA_PUBLIC_KEY_UNSUPPORTED_ALGORITHM: -1862270971,
+    NTF_LDS_SI_CA_DOMAIN_PARAMS_UNSUPPORTED_ALGORITHM: -1862270970,
+    NTF_LDS_SI_TA_INFO_INCORRECT_VERSION: -1862270969,
+    NTF_LDS_SI_TA_INFO_FILE_ID_FOR_VERSION2: -1862270968,
+    NTF_LDS_SI_EID_SECURITY_UNSUPPORTED_DIGEST_ALGORITHM: -1862270967,
+    NTF_LDS_SI_RI_INFO_INCORRECT_VERSION: -1862270966,
+    NTF_LDS_SI_RI_DOMAIN_PARAMS_UNSUPPORTED_ALGORITHM: -1862270965,
+    NTF_LDS_SI_AA_INFO_INCORRECT_VERSION: -1862270964,
+    NTF_LDS_SI_AA_INFO_UNSUPPORTED_ALGORITHM: -1862270963,
+    NTF_LDS_SI_AA_INFO_INCONSISTENT_ALGORITHM_REFERENCE: -1862270962,
+    NTF_LDS_SI_STORAGE_PACE_INFO_NOT_AVAILABLE: -1862270720,
+    NTF_LDS_SI_STORAGE_PACE_INFO_NO_STD_PARAMETERS: -1862270719,
+    NTF_LDS_SI_STORAGE_PACE_INFO_NO_MATCHING_DOMAIN_PARAMS: -1862270718,
+    NTF_LDS_SI_STORAGE_CA_INFO_NOT_AVAILABLE: -1862270717,
+    NTF_LDS_SI_STORAGE_CA_DOMAIN_PARAMS_NO_REQUIRED_OPTION: -1862270716,
+    NTF_LDS_SI_STORAGE_CA_DOMAIN_PARAMS_NOT_AVAILABLE: -1862270715,
+    NTF_LDS_SI_STORAGE_CA_ANONYMOUS_INFOS: -1862270714,
+    NTF_LDS_SI_STORAGE_CA_INFO_NO_MATCHING_DOMAIN_PARAMS: -1862270713,
+    NTF_LDS_SI_STORAGE_CA_INFO_NO_MATCHING_PUBLIC_KEY: -1862270712,
+    NTF_LDS_SI_STORAGE_CA_INCORRECT_INFOS_QUANTITY: -1862270711,
+    NTF_LDS_SI_STORAGE_TA_INFO_NOT_AVAILABLE: -1862270710,
+    NTF_LDS_SI_STORAGE_CARD_INFO_LOCATOR_MULTIPLE_ENTRIES: -1862270709,
+    NTF_LDS_SI_STORAGE_EID_SECURITY_INFO_MULTIPLE_ENTRIES: -1862270708,
+    NTF_LDS_SI_STORAGE_PRIVILEGED_TI_MULTIPLE_ENTRIES: -1862270707,
+    NTF_LDS_SI_STORAGE_PRIVILEGED_TI_INCORRECT_USAGE: -1862270706,
+    NTF_LDS_SI_STORAGE_RI_DOMAIN_PARAMS_MULTIPLE_ENTRIES: -1862270705,
+    NTF_LDS_SI_STORAGE_PACE_INFOS_NON_CONSISTANT: -1862270704,
+    NTF_LDS_CV_CERTIFICATE_PROFILE_INCORRECT_VERSION: -1862270463,
+    NTF_LDS_CV_CERTIFICATE_VALIDITY: -1862270462,
+    NTF_LDS_CV_CERTIFICATE_NON_CV_CA_DOMAIN_PARAMETERS: -1862270461,
+    NTF_LDS_CV_CERTIFICATE_PRIVATE_KEY_INCORRECT_VERSION: -1862270460,
+    NTF_LDS_TA_PACE_STATIC_BINDING_USED: -1862270208,
+    NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_VALIDITY: -1845493483,
+    NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_ROOT_IS_NOT_TRUSTED: -1845493482,
+    NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_CANT_FIND_CSCA: -1845493481,
+    NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_REVOKED: -1845493480,
+    NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_SIGNATURE_INVALID: -1845493479,
+
+    getTranslation(value: number) {
+        switch (value) {
+            case -1879048191:
+                return "Notification - ASN certificate: Incorrect version"
+            case -1879048190:
+                return "Notification - ASN certificate: Non-matching signature algorithm"
+            case -1879048189:
+                return "Notification - ASN certificate: Incorrect time coding"
+            case -1879048188:
+                return "Notification - ASN certificate: Incorrect use of generalized time"
+            case -1879048187:
+                return "Notification - ASN certificate: Empty issuer"
+            case -1879048186:
+                return "Notification - ASN certificate: Empty subject"
+            case -1879048184:
+                return "Notification - ASN certificate: Unsupported critical extension"
+            case -1879048178:
+                return "Notification - ASN certificate: Forced default CSCA role"
+            case -1879048177:
+                return "Notification - ASN certificate: Forced Default DS role"
+            case -1879048176:
+                return "Notification - ASN certificate: Incorrect issuer subject DS"
+            case -1879048169:
+                return "Notification - ASN certificate: Duplicating extensions"
+            case -1879048160:
+                return "Notification - ICAO COM: LDS version incorrect"
+            case -1879048159:
+                return "Notification - ICAO COM: LDS version missing"
+            case -1879048158:
+                return "Notification - ICAO COM: Unicode version incorrect"
+            case -1879048157:
+                return "Notification - ICAO COM: Unicode version missing"
+            case -1879048156:
+                return "Notification - ICAO COM: DGPM incorrect"
+            case -1879048155:
+                return "Notification - ICAO COM: DGPM missing"
+            case -1879048154:
+                return "Notification - ICAO COM: DGPM unexpected"
+            case -1879048144:
+                return "Notification - ICAO application: LDS version unsupported"
+            case -1879048143:
+                return "Notification - ICAO application: Unicode version unsupported"
+            case -1879048142:
+                return "Notification - ICAO application: LDS version inconsistent"
+            case -1879048141:
+                return "Notification - ICAO application: Unicode version inconsistent"
+            case -1879047936:
+                return "Notification - ASN signed data: OID incorrect"
+            case -1879047935:
+                return "Notification - ICAO signed data: Version incorrect"
+            case -1879047934:
+                return "Notification - ICAO signed data: Digest algorithms empty"
+            case -1879047933:
+                return "Notification - ICAO signed data: Digest algorithms unsupported"
+            case -1879047932:
+                return "Notification - ICAO LDS object: Incorrect content OID"
+            case -1879047931:
+                return "Notification - ICAO LDS object: DG number incorrect"
+            case -1879047930:
+                return "Notification - ICAO LDS object: DG hash missing"
+            case -1879047929:
+                return "Notification - ICAO LDS object: DG hash extra"
+            case -1879047928:
+                return "Notification - ICAO LDS object: Version incorrect"
+            case -1879047927:
+                return "Notification - ICAO signed data: Signer infos multiple entries"
+            case -1879047926:
+                return "Notification - ASN signer info: Version incorrect"
+            case -1879047925:
+                return "Notification - ASN signer info: SID incorrect choice"
+            case -1879047924:
+                return "Notification - ASN signer info: SID digest algorithm not listed"
+            case -1879047923:
+                return "Notification - ASN signer info: Message digest attr missing"
+            case -1879047922:
+                return "Notification - ASN signer info: Message digest attr data"
+            case -1879047921:
+                return "Notification - ASN signer info: Message digest attr value"
+            case -1879047920:
+                return "Notification - ASN signer info: Content type attr missing"
+            case -1879047919:
+                return "Notification - ASN signer info: Content type attr data"
+            case -1879047918:
+                return "Notification - ASN signer info: Content type attr value"
+            case -1879047915:
+                return "Notification - Auth signer info: Certificate validity"
+            case -1879047914:
+                return "Notification - Auth signer info: Certificate root is not trusted"
+            case -1879047913:
+                return "Notification - Auth signer info: Certificate cannot find CSCA"
+            case -1879047912:
+                return "Notification - Auth signer info: Certificate revoked"
+            case -1879047911:
+                return "Notification - Auth signer info: Certificate signature invalid"
+            case -1879047910:
+                return "Notification: Unsupported image format"
+            case -1879047909:
+                return "Notification - ASN signer info: Signing time attr missing"
+            case -1879047908:
+                return "Notification - ASN signer info: Signing time attr data"
+            case -1879047907:
+                return "Notification - ASN signer info: Signing time attr value"
+            case -1879047906:
+                return "Notification - ASN signer info: List content description attr missing"
+            case -1879047905:
+                return "Notification - ASN signer info: List content description attr data"
+            case -1879047776:
+                return "Notification - ASN signed data: Version incorrect"
+            case -1879047775:
+                return "Notification - ASN signed data: Content OID incorrect"
+            case -1879047760:
+                return "Notification - ICAO signed data: Certificates missed"
+            case -1879047759:
+                return "Notification - ICAO signed data: Certificates empty"
+            case -1879047758:
+                return "Notification - ICAO signed data: CRLs incorrect usage"
+            case -1879047744:
+                return "Notification - ICAO master list: Version incorrect"
+            case -1879047736:
+                return "Notification - ICAO Deviation list: Version incorrect"
+            case -1879047728:
+                return "Notification - BSI: Defect  list version incorrect"
+            case -1879047720:
+                return "Notification - BSI: Black list version incorrect"
+            case -1879047680:
+                return "Notification - ICAO certificate: Version missed"
+            case -1879047679:
+                return "Notification - ICAO certificate: Version incorrect"
+            case -1879047678:
+                return "Notification - ICAO certificate: Issuer country missed"
+            case -1879047677:
+                return "Notification - ICAO certificate: Issuer common name missed"
+            case -1879047676:
+                return "Notification - ICAO certificate: Issuer country non-compliant"
+            case -1879047675:
+                return "Notification - ICAO certificate: Subject country missed"
+            case -1879047674:
+                return "Notification - ICAO certificate: Subject common name missed"
+            case -1879047673:
+                return "Notification - ICAO certificate: Subject country non-compliant"
+            case -1879047672:
+                return "Notification - ICAO certificate: Using non-compliant data"
+            case -1879047671:
+                return "Notification - ICAO certificate: Unsupported signature algorithm"
+            case -1879047670:
+                return "Notification - ICAO certificate: Unsupported public key algorithm"
+            case -1879047669:
+                return "Notification - ICAO certificate: Missed extensions"
+            case -1879047668:
+                return "Notification - ICAO certificate: Validity"
+            case -1879047667:
+                return "Notification - ICAO certificate extension: Using non-compliant data"
+            case -1879047666:
+                return "Notification - ICAO certificate extension: Key usage missed"
+            case -1879047665:
+                return "Notification - ICAO certificate extension: Key usage not critical"
+            case -1879047664:
+                return "Notification - ICAO certificate extension: Key usage incorrect data"
+            case -1879047663:
+                return "Notification - ICAO certificate extension: Basic constraints missed"
+            case -1879047662:
+                return "Notification - ICAO certificate extension: Basic constraints incorrect usage 1"
+            case -1879047661:
+                return "Notification - ICAO certificate extension: Basic constraints incorrect usage 2"
+            case -1879047660:
+                return "Notification - ICAO certificate extension: Basic constraints not critical"
+            case -1879047659:
+                return "Notification - ICAO certificate extension: Basic constraints incorrect data"
+            case -1879047658:
+                return "Notification - ICAO certificate extension: Basic constraints path LenC missed"
+            case -1879047657:
+                return "Notification - ICAO certificate extension: Basic constraints path LenC incorrect"
+            case -1879047656:
+                return "Notification - ICAO certificate extension: Ext key usage not critical"
+            case -1879047655:
+                return "Notification - ICAO certificate extension: Ext key usage incorrect usage"
+            case -1879047654:
+                return "Notification - ICAO certificate extension: Ext key usage incorrect data"
+            case -1879047653:
+                return "Notification - ICAO certificate extension Auth key: ID missed"
+            case -1879047652:
+                return "Notification - ICAO certificate extension Auth key: Incorrect data"
+            case -1879047651:
+                return "Notification - ICAO certificate extension Auth key: Key ID missed"
+            case -1879047650:
+                return "Notification - ICAO certificate extension: Subject key ID missed"
+            case -1879047649:
+                return "Notification - ICAO certificate extension: Subject key ID incorrect data"
+            case -1879047648:
+                return "Notification - ICAO certificate extension: Private key UP missed"
+            case -1879047647:
+                return "Notification - ICAO certificate extension: Private key UP incorrect data"
+            case -1879047646:
+                return "Notification - ICAO certificate extension: Private key UP empty"
+            case -1879047645:
+                return "Notification - ICAO certificate extension: Subject alt name missed"
+            case -1879047644:
+                return "Notification - ICAO certificate extension: Subject alt name incorrect data"
+            case -1879047643:
+                return "Notification - ICAO certificate extension: Subject alt name empty"
+            case -1879047642:
+                return "Notification - ICAO certificate extension: Subject alt name non-compliant"
+            case -1879047640:
+                return "Notification - ICAO certificate extension: Subject alt name critical"
+            case -1879047639:
+                return "Notification - ICAO certificate extension: Subject alt name DN empty"
+            case -1879047638:
+                return "Notification - ICAO certificate extension: Subject alt name DN incorrect"
+            case -1879047637:
+                return "Notification - ICAO certificate extension: Subject alt name DN non-compliant"
+            case -1879047636:
+                return "Notification - ICAO certificate extension: Issuer alt name missed"
+            case -1879047635:
+                return "Notification - ICAO certificate extension: Issuer alt name incorrect data"
+            case -1879047634:
+                return "Notification - ICAO certificate extension: Issuer alt name empty"
+            case -1879047633:
+                return "Notification - ICAO certificate extension: Issuer alt name non-compliant"
+            case -1879047631:
+                return "Notification - ICAO certificate extension: Issuer alt name critical"
+            case -1879047630:
+                return "Notification - ICAO certificate extension: Issuer alt name DN empty"
+            case -1879047629:
+                return "Notification - ICAO certificate extension: Issuer alt name DN incorrect"
+            case -1879047628:
+                return "Notification - ICAO certificate extension: Issuer alt name DN non-compliant"
+            case -1879047627:
+                return "Notification - ICAO certificate extension Doc type list: Missed"
+            case -1879047626:
+                return "Notification - ICAO certificate extension Doc type list: Incorrect data"
+            case -1879047625:
+                return "Notification - ICAO certificate extension Doc type list: Version"
+            case -1879047624:
+                return "Notification - ICAO certificate extension Doc type list: Doc types"
+            case -1879047623:
+                return "Notification - ICAO certificate extension Doc type list: Doc types empty"
+            case -1879047622:
+                return "Notification - ICAO certificate extension: Dert policies incorrect data"
+            case -1879047621:
+                return "Notification - ICAO certificate extension: Cert policies empty"
+            case -1879047620:
+                return "Notification - ICAO certificate extension: Cert policies policy ID missed"
+            case -1879047619:
+                return "Notification - ICAO certificate extension: CRL dist point missed"
+            case -1879047618:
+                return "Notification - ICAO certificate extension: CRL dist point incorrect data"
+            case -1879047617:
+                return "Notification - ICAO certificate extension: CRL dist point empty"
+            case -1879047616:
+                return "Notification - ICAO certificate extension: CRL dist point point missed"
+            case -1879047615:
+                return "Notification - ICAO certificate: SN non-compliant"
+            case -1879047614:
+                return "Notification - ICAO certificate: Issuer SN non-compliant"
+            case -1879047613:
+                return "Notification - ICAO certificate: Subject SN non-compliant"
+            case -1879047612:
+                return "Notification - ICAO certificate: Issuer attribute non-compliant"
+            case -1879047611:
+                return "Notification - ICAO certificate: Subject attribute non-compliant"
+            case -1879047610:
+                return "Notification - ICAO certificate: Issuer subject country non-matching"
+            case -1879047609:
+                return "Notification - ICAO certificate extension: CSCA alt names non-matching"
+            case -1879047608:
+                return "Notification - ICAO certificate extension: Name change incorrect data"
+            case -1879047607:
+                return "Notification - ICAO certificate extension: Name change non-compliant"
+            case -1879047606:
+                return "Notification - ICAO certificate extension: Name change critical"
+            case -1879047605:
+                return "Notification - ICAO certificate extension Doc type list: non-compliant"
+            case -1879047604:
+                return "Notification - ICAO certificate extension Doc type list: Critical"
+            case -1879047603:
+                return "Notification - ICAO certificate extension: Optional critical"
+            case -1879047602:
+                return "Notification - ICAO certificate: Subject non-compliant"
+            case -1879047601:
+                return "Notification - ICAO certificate: Subject common name non-compliant"
+            case -1878982656:
+                return "Notification - Biometrics: Format owner missing"
+            case -1878917120:
+                return "Notification - Biometrics: Format owner incorrect"
+            case -1878851584:
+                return "Notification - Biometrics: Format type missing"
+            case -1878786048:
+                return "Notification - Biometrics: Format type incorrect"
+            case -1878720512:
+                return "Notification - Biometrics: Type incorrect"
+            case -1878654976:
+                return "Notification - Biometrics: Subtype missing"
+            case -1878589440:
+                return "Notification - Biometrics: Subtype incorrect"
+            case -1878523904:
+                return "Notification - Biometrics: BDB image missing"
+            case -1878458368:
+                return "Notification - Biometrics: BDB format ID incorrect"
+            case -1878392832:
+                return "Notification - Biometrics: BDB version incorrect"
+            case -1878327296:
+                return "Notification - Biometrics: BDB data length incorrect"
+            case -1877999616:
+                return "Notification - Biometrics: BDB Data Gender"
+            case -1877934080:
+                return "Notification - Biometrics: BDB Data Eye Color"
+            case -1877868544:
+                return "Notification - Biometrics: BDB Data Hair Color"
+            case -1877803008:
+                return "Notification - Biometrics: BDB Data Pose Angle Yaw"
+            case -1877737472:
+                return "Notification - Biometrics: BDB Data Pose Angle Pitch"
+            case -1877671936:
+                return "Notification - Biometrics: BDB Data Pose Angle Roll"
+            case -1877606400:
+                return "Notification - Biometrics: BDB Data Pose Angle U Yaw"
+            case -1877540864:
+                return "Notification - Biometrics: BDB Data Pose Angle U Pitch"
+            case -1877475328:
+                return "Notification - Biometrics: BDB Data Pose Angle U Roll"
+            case -1877409792:
+                return "Notification - Biometrics: BDB Data Face Image Type"
+            case -1877344256:
+                return "Notification - Biometrics: BDB Data Image Data Type"
+            case -1862270976:
+                return "Notification - SI: PACE Info Unsupported Std Parameters"
+            case -1862270975:
+                return "Notification - SI: PACE Info Deprecated Version"
+            case -1862270974:
+                return "Notification - SI: PACE Domain Params Using Std Ref"
+            case -1862270973:
+                return "Notification - SI: PACE Domain Params Unsupported Algorithm"
+            case -1862270972:
+                return "Notification - SI: CA Info Incorrect Version"
+            case -1862270971:
+                return "Notification - SI: CA PublicKey Unsupported Algorithm"
+            case -1862270970:
+                return "Notification - SI: CA Domain Params Unsupported Algorithm"
+            case -1862270969:
+                return "Notification - SI: TA Info Incorrect Version"
+            case -1862270968:
+                return "Notification - SI: TA Info File ID For Version 2"
+            case -1862270967:
+                return "Notification - SI: eID Security Unsupported Digest Algorithm"
+            case -1862270966:
+                return "Notification - SI: RI info incorrect version"
+            case -1862270965:
+                return "Notification - SI: RI domain params unsupported algorithm"
+            case -1862270964:
+                return "Notification - SI: AA info incorrect version"
+            case -1862270963:
+                return "Notification - SI: AA info unsupported algorithm"
+            case -1862270962:
+                return "Notification - SI: AA info inconsistent algorithm reference"
+            case -1862270720:
+                return "Notification - SI: PACE Info Not Available"
+            case -1862270719:
+                return "Notification - SI: PACE Info No Std Parameters"
+            case -1862270718:
+                return "Notification - SI: PACE Info No Matching Domain Params"
+            case -1862270717:
+                return "Notification - SI: CA Info Not Available"
+            case -1862270716:
+                return "Notification - SI: CA Domain Params No Required Option"
+            case -1862270715:
+                return "Notification - SI: CA Domain Params Not Available"
+            case -1862270714:
+                return "Notification - SI: CA Anonymous Infos"
+            case -1862270713:
+                return "Notification - SI: CA Info No Matching Domain Params"
+            case -1862270712:
+                return "Notification - SI: CA Info No Matching Public Key"
+            case -1862270711:
+                return "Notification - SI: CA Incorrect Infos Quantity"
+            case -1862270710:
+                return "Notification - SI: TA Info Not Available"
+            case -1862270709:
+                return "Notification - SI: Card Info Locator Multiple Entries"
+            case -1862270708:
+                return "Notification - SI: eID Security Info Multiple Entries"
+            case -1862270707:
+                return "Notification - SI: Privileged TI Multiple Entries"
+            case -1862270706:
+                return "Notification - SI: Privileged TI Incorrect Usage"
+            case -1862270705:
+                return "Notification - SI: RI domain params multiple entries"
+            case -1862270704:
+                return "Notification - SI: Storage PACE Info Non Consistant"
+            case -1862270463:
+                return "Notification - CV Certificate: Profile incorrect version"
+            case -1862270462:
+                return "Notification - CV Certificate: Validity"
+            case -1862270461:
+                return "Notification - CV Certificate: Non CVCA domain parameters"
+            case -1862270460:
+                return "Notification - CV Certificate: Private key incorrect version"
+            case -1862270208:
+                return "Notification - TA: PACE static binding used"
+            case -1845493483:
+                return "Notification - Auth ML signer info: Certificate validity"
+            case -1845493482:
+                return "Notification - Auth ML signer info: Certificate root is not trusted"
+            case -1845493481:
+                return "Notification - Auth ML signer info: Certificate cannot find CSCA"
+            case -1845493480:
+                return "Notification - Auth ML signer info: Certificate revoked"
+            case -1845493479:
+                return "Notification - Auth ML signer info: Certificate signature invalid"
+            case 139272:
+                return "Notification - MRZ: Document type unknown"
+            case 139273:
+                return "Notification - MRZ: Issuing state syntax error"
+            case 139274:
+                return "Notification - MRZ: Name is void"
+            case 139277:
+                return "Notification - MRZ: Number incorrect checksum"
+            case 139278:
+                return "Notification - MRZ: Nationality syntax error"
+            case 139279:
+                return "Notification - MRZ: DOB syntax error"
+            case 139280:
+                return "Notification - MRZ: DOB error"
+            case 139281:
+                return "Notification - MRZ: DOB incorrect checksum"
+            case 139282:
+                return "Notification - MRZ: Sex incorrect"
+            case 139283:
+                return "Notification - MRZ: DOE syntax error"
+            case 139284:
+                return "Notification - MRZ: DOE error"
+            case 139285:
+                return "Notification - MRZ: DOE incorrect checksum"
+            case 139286:
+                return "Notification - MRZ: Optional data incorrect checksum"
+            case 139287:
+                return "Notification - MRZ: Incorrect checksum"
+            case 139288:
+                return "Notification - MRZ: Incorrect"
+            default:
+                return value.toString()
+        }
+    }
+}
+
 export const eProcessGLCommands = {
     ePC_ProcMgr_SetLicense: 12100,
     ePC_ProcMgr_Process: 12101,
@@ -2415,64 +3529,15 @@ export const eRFID_DataFile_Type = {
     }
 }
 
-export const eRFID_NotificationAndErrorCodes = {
-    RFID_NOTIFICATION_ERROR: 65536,
-    RFID_NOTIFICATION_DOCUMENT_READY: 65537,
-    RFID_NOTIFICATION_READ_PROTOCOL4: 65539,
-    RFID_NOTIFICATION_READ_PROTOCOL3: 65546,
-    RFID_NOTIFICATION_PROGRESS: 65547,
-    RFID_NOTIFICATION_TA_STEP: 65550,
-    RFID_NOTIFICATION_SM_REQUIRED: 65551,
-    RFID_NOTIFICATION_ISO_ERROR: 69632,
-    RFID_NOTIFICATION_PA_REQUEST: 77824,
-    RFID_NOTIFICATION_SM_ESTABLISHED: 81935,
-    RFID_NOTIFICATION_PCSC_READER_DISCONNECTED: 131072,
-    RFID_NOTIFICATION_PCSC_READER_LIST_CHANGED: 131073,
-    RFID_NOTIFICATION_PCSC_BYTES_RECEIVED: 131074,
-    RFID_NOTIFICATION_PCSC_TOTAL_READING_TIME: 131075,
-    RFID_NOTIFICATION_PCSC_DATA_RECEIVED: 131076,
-    RFID_NOTIFICATION_PCSC_BYTES_SENT: 131077,
-    RFID_NOTIFICATION_PCSC_TOTAL_READING_SPEED: 131078,
-    RFID_NOTIFICATION_PCSC_TOTAL_PROCESS_TIME: 131079,
-    RFID_NOTIFICATION_PCSC_READER_LIST_CHANGING: 131080,
-    RFID_NOTIFICATION_PCSC_EXT_LENGTH_SUPPORT: 131088,
-    RFID_NOTIFICATION_PA_CERTIFICATE_CHAIN: 131089,
-    RFID_NOTIFICATION_PA_CERTIFICATE_CHAIN_ITEM: 131090,
-    RFID_NOTIFICATION_SCENARIO: 131104,
-    RFID_NOTIFICATION_PCSC_READING_DATAGROUP: 196608,
-    RFID_NOTIFICATION_PCSC_FILE_NOT_FOUND: 262144,
-    RFID_NOTIFICATION_PCSC_END_OF_FILE: 327680,
-    RFID_NOTIFICATION_PCSC_FILE_ACCESS_DENIED: 393216,
-    RFID_NOTIFICATION_PCSC_APPLICATION_SELECTED: 458752,
-    RFID_NOTIFICATION_AC_PROCEDURE_START: 524288,
-    RFID_NOTIFICATION_AC_PROCEDURE_FINISH: 589824,
-    RFID_NOTIFICATION_PA_SECURITY_OBJECT_CHECK: 655360,
-    RFID_NOTIFICATION_PA_FILE_CHECK: 720896,
-    RFID_NOTIFICATION_PCSC_UPDATING_DATAGROUP: 786432,
-    RFID_NOTIFICATION_AUXILIARY_DATA_VALIDATION: 851968,
-    RFID_NOTIFICATION_RI_SECTOR_ID: 917504,
-    RFID_NOTIFICATION_BIOMETRICS_EMPTY_PLACEHOLDER: 983040,
+export const eRFID_ErrorCodes = {
     RFID_ERROR_NO_ERROR: 1,
     RFID_ERROR_ALREADY_DONE: 2,
-    RFID_LAYER6_FILE_EOF1: -2147458430,
-    RFID_LAYER6_PWD_DEACTIVATED: -2147458429,
-    RFID_LAYER6_PWD_BLOCKED: -2147458112,
-    RFID_LAYER6_PWD_SUSPENDED: -2147458111,
-    RFID_LAYER6_PWD_BLOCKED_2: -2147456637,
-    RFID_LAYER6_PWD_DEACTIVATED_2: -2147456636,
-    RFID_LAYER6_PWD_SUSPENDED_2: -2147456635,
-    RFID_LAYER6_MSE_SET_AT_FAILURE: -2046819578,
-    RFID_LAYER6_INCORRECT_PARAMS: -2147456384,
-    RFID_LAYER6_FILE_NOT_FOUND: -2147456382,
-    RFID_LAYER6_NO_REFERENCE_DATA: -2147456376,
-    RFID_LAYER6_FILE_EOF2: -2147456256,
-    RFID_Error_GraphManager: -2147418112,
+    RFID_ERROR_FAILED: -1,
     RFID_ERROR_NO_CHIP_DETECTED: -2147418111,
     RFID_ERROR_NOT_AVAILABLE: -2147418110,
     RFID_ERROR_INVALID_PARAMETER: -2147418108,
     RFID_ERROR_NOT_INITIALIZED: -2147418107,
-    RFID_Error_NotEnoughMemory: -2147418106,
-    RFID_ERROR_NOT_ENOUGH_DATA: -2147418105,
+    RFID_ERROR_NOT_ENOUGH_MEMORY: -2147418106,
     RFID_ERROR_INVALID_DIRECTORY: -2147418104,
     RFID_ERROR_UNKNOWN_COMMAND: -2147418103,
     RFID_ERROR_FILE_IO_ERROR: -2147418102,
@@ -2484,9 +3549,41 @@ export const eRFID_NotificationAndErrorCodes = {
     RFID_ERROR_PCSC_CARD_IS_NOT_CONNECTED: -2147352573,
     RFID_ERROR_PCSC_OPERATION_CANCELLED: -2147352572,
     RFID_ERROR_PCSC_CARD_IS_BUSY: -2147352571,
-    RFID_ERROR_PCSC_FAILED_S_CARD: -2147352570,
+    RFID_ERROR_PCSC_FAILED_SCARD: -2147352570,
     RFID_ERROR_PCSC_EXT_LE_FAILED: -2147352560,
-    RFID_LAYER6_PWD_FAILED: -2146409536,
+    RFID_ERROR_LAYER6_SECURITY_MANAGER: -2046820352,
+    RFID_ERROR_LAYER6_APP_SELECTION_FAILURE: -2046820351,
+    RFID_ERROR_LAYER6_MUTUAL_AUTH_MAC_FAIL: -2046820096,
+    RFID_ERROR_LAYER6_MUTUAL_AUTH_ENC_FAIL: -2046820095,
+    RFID_ERROR_LAYER6_MUTUAL_AUTH_FAILURE: -2046820094,
+    RFID_ERROR_LAYER6_MUTUAL_AUTH_FAILURE_DATA: -2046820093,
+    RFID_ERROR_LAYER6_SM_DO_8E_MISSING: -2046819840,
+    RFID_ERROR_LAYER6_SM_DO_87_MISSING: -2046819839,
+    RFID_ERROR_LAYER6_SM_DO_99_MISSING: -2046819838,
+    RFID_ERROR_LAYER6_SM_MAC_INCORRECT: -2046819837,
+    RFID_ERROR_LAYER6_SM_DO_87_INCORRECT: -2046819836,
+    RFID_ERROR_LAYER6_NON_TLV_RESPONSE_DATA: -2046819584,
+    RFID_ERROR_LAYER6_WRONG_RND_ICC_LENGTH: -2046819583,
+    RFID_ERROR_LAYER6_INT_AUTH_FAILURE: -2046819582,
+    RFID_ERROR_LAYER6_MSE_SET_KAT_FAILURE: -2046819581,
+    RFID_ERROR_LAYER6_MSE_SET_DST_FAILURE: -2046819580,
+    RFID_ERROR_LAYER6_PSO_CERTIFICATE_FAILURE: -2046819579,
+    RFID_ERROR_LAYER6_MSE_SET_AT_FAILURE: -2046819578,
+    RFID_ERROR_LAYER6_GET_CHALLENGE_FAILURE: -2046819577,
+    RFID_ERROR_LAYER6_EXT_AUTH_FAILURE: -2046819576,
+    RFID_ERROR_LAYER6_GENERAL_AUTH_FAILURE: -2046819575,
+    RFID_ERROR_LAYER6_FILE_NOT_FOUND: -2147456382,
+    RFID_ERROR_LAYER6_FILE_EOF1: -2147458430,
+    RFID_ERROR_LAYER6_FILE_EOF2: -2147456256,
+    RFID_ERROR_LAYER6_INCORRECT_PARAMS: -2147456384,
+    RFID_ERROR_LAYER6_NO_REFERENCE_DATA: -2147456376,
+    RFID_ERROR_LAYER6_PWD_SUSPEND: -2147458111,
+    RFID_ERROR_LAYER6_PWD_BLOCKED: -2147458112,
+    RFID_ERROR_LAYER6_PWD_DEACTIVATED: -2147458429,
+    RFID_ERROR_LAYER6_PWD_BLOCKED2: -2147456637,
+    RFID_ERROR_LAYER6_PWD_DEACTIVATED2: -2147456636,
+    RFID_ERROR_LAYER6_PWD_SUSPEND2: -2147456635,
+    RFID_ERROR_LAYER6_PWD_FAILED: -2146409536,
     RFID_ERROR_NOT_PERFORMED: -2097152000,
     RFID_ERROR_SESSION_IS_CLOSED: -2097151999,
     RFID_ERROR_SESSION_TERMINAL_UNSUPPORTED_OPERATION: -2097151998,
@@ -2494,7 +3591,7 @@ export const eRFID_NotificationAndErrorCodes = {
     RFID_ERROR_SESSION_TERMINAL_TYPE_BAD_CERTIFICATE: -2097151983,
     RFID_ERROR_SESSION_TERMINAL_TYPE_NOT_SET: -2097151982,
     RFID_ERROR_SESSION_PROCEDURE_TYPE_UNKNOWN: -2097151981,
-    RFID_ERROR_SESSION_PROCEDURE_TYPE_UNSUPPORTED: -2097151980,
+    RFID_ERROR_Session_Procedure_Type_Unsupported: -2097151980,
     RFID_ERROR_SESSION_PROCEDURE_TYPE_NOT_SET: -2097151979,
     RFID_ERROR_SESSION_ACCESS_KEY_UNKNOWN_TYPE: -2097151978,
     RFID_ERROR_SESSION_ACCESS_KEY_UNSUPPORTED_SM_TYPE: -2097151977,
@@ -2531,165 +3628,47 @@ export const eRFID_NotificationAndErrorCodes = {
     RFID_ERROR_SESSION_FILE_CANT_USE_DATA: -2096758784,
     RFID_ERROR_SESSION_FILE_CANT_READ_DATA: -2096693248,
     RFID_ERROR_SESSION_FILE_ACCESS_DENIED: -2096627712,
-    RFID_LAYER6_SECURITY_MANAGER: -2046820352,
-    RFID_LAYER6_APP_SELECTION_FAILURE: -2046820351,
-    RFID_LAYER6_MUTUAL_AUTH_MAC_FAIL: -2046820096,
-    RFID_LAYER6_MUTUAL_AUTH_ENC_FAIL: -2046820095,
-    RFID_LAYER6_MUTUAL_AUTH_FAILURE: -2046820094,
-    RFID_LAYER6_SM_DO8E_MISSING: -2046819840,
-    RFID_LAYER6_SM_DO87_MISSING: -2046819839,
-    RFID_LAYER6_SM_DO99_MISSING: -2046819838,
-    RFID_LAYER6_SM_MAC_INCORRECT: -2046819837,
-    RFID_LAYER6_SM_DO87_INCORRECT: -2046819836,
-    RFID_LAYER6_NON_TLV_RESPONSE_DATA: -2046819584,
-    RFID_LAYER6_WRONG_RND_ICC_LENGTH: -2046819583,
-    RFID_LAYER6_INT_AUTH_FAILURE: -2046819582,
-    RFID_LAYER6_MSE_SET_KAT_FAILURE: -2046819581,
-    RFID_LAYER6_MSE_SET_DST_FAILURE: -2046819580,
-    RFID_LAYER6_PSO_CERTIFICATE_FAILURE: -2046819579,
-    RFID_LAYER6_GET_CHALLENGE_FAILURE: -2046819577,
-    RFID_LAYER6_EXT_AUTH_FAILURE: -2046819576,
-    RFID_LAYER6_GENERAL_AUTH_FAILURE: -2046819575,
-    RFID_ERROR_FAILED: -1,
-    RFID_ERROR_CODES_LAYER_34_NO_ERROR: -2080374784,
-    RFID_ERROR_CODES_LAYER_34_TIMEOUT: -2080309248,
-    RFID_ERROR_CODES_LAYER_34_COLLISION: -2080243712,
-    RFID_ERROR_CODES_LAYER_34_CRC: -2080178176,
-    RFID_ERROR_CODES_LAYER_34_DATA_INTEGRITY: -2080112640,
-    RFID_ERROR_CODES_LAYER_34_DATA_LENGTH: -2080047104,
-    RFID_ERROR_CODES_LAYER_34_RFU: -2079981568,
-    RFID_ERROR_CODES_LAYER_34_COLLISION_TOO_MANY: -2079916032,
-    RFID_ERROR_CODES_LAYER_34_PROTOCOL_B: -2079850496,
-    RFID_ERROR_CODES_LAYER_34_DATA_CONTENTS: -2079784960,
-    RFID_ERROR_CODES_LAYER_34_PROTOCOL: -2079719424,
-    RFID_ERROR_CODES_LAYER_34_GLOBAL_TIMEOUT: -2079653888,
-    RFID_ERROR_CODES_LAYER_34_MIFARE_AUTH: -2079588352,
-    RFID_ERROR_CODES_LAYER_34_SAM_ERROR: -2079522816,
-    RFID_ERROR_CODES_LAYER_34_SAM_COLLISION: -2079457280,
-    RFID_ERROR_CODES_LAYER_34_SAM_ACKNOWLEDGE: -2079391744,
+    RFID_ERROR_LAYER34_NO_ERROR: -2080374784,
+    RFID_ERROR_LAYER34_TIME_OUT: -2080309248,
+    RFID_ERROR_LAYER34_COLLISION: -2080243712,
+    RFID_ERROR_LAYER34_CRC: -2080178176,
+    RFID_ERROR_LAYER34_DATA_INTEGRITY: -2080112640,
+    RFID_ERROR_LAYER34_DATA_LENGTH: -2080047104,
+    RFID_ERROR_Layer34_RFU: -2079981568,
+    RFID_ERROR_LAYER34_COLLISION_TOO_MANY: -2079916032,
+    RFID_ERROR_LAYER34_PROTOCOL_B: -2079850496,
+    RFID_ERROR_LAYER34_DATA_CONTENTS: -2079784960,
+    RFID_ERROR_LAYER34_PROTOCOL: -2079719424,
+    RFID_ERROR_LAYER34_GLOBAL_TIME_OUT: -2079653888,
+    RFID_ERROR_LAYER34_MIFARE_AUTH: -2079588352,
+    RFID_ERROR_LAYER34_SAM_ERROR: -2079522816,
+    RFID_ERROR_LAYER34_SAM_COLLISION: -2079457280,
+    RFID_ERROR_LAYER34_SAM_ACKNOWLEDGE: -2079391744,
 
     getTranslation(value: number) {
         switch (value) {
-            case -2147483647:
-                return "Error - ASN: Incorrect data"
-            case -2147483646:
-                return "Error - ASN: Not enough data"
-            case -2147483645:
-                return "Error - ASN: Contents unexpected data"
-            case -2147483640:
-                return "Error - ASN Signed data: Incorrect data"
-            case -2147483639:
-                return "Error - ASN Signed data: Encap contents incorrect data"
-            case -2147483638:
-                return "Error - ASN Signed data: Version incorrect data"
-            case -2147483631:
-                return "Error - ASN Signed data: Digest algorithms incorrect data"
-            case -2147483630:
-                return "Error - ASN LDS object: Version info incorrect data"
-            case -2147483629:
-                return "Error - ASN LDS object: Incorrect data"
-            case -2147483628:
-                return "Error - ASN LDS object: Version incorrect data"
-            case -2147483627:
-                return "Error - ASN LDS object: Digest algorithm incorrect data"
-            case -2147483626:
-                return "Error - ASN LDS object: DG hashes incorrect data"
-            case -2147483625:
-                return "Error - ASN Certificate: Incorrect data"
-            case -2147483624:
-                return "Error - ASN Certificate: Version incorrect data"
-            case -2147483623:
-                return "Error - ASN Certificate: SN incorrect data"
-            case -2147483622:
-                return "Error - ASN Certificate: Signature incorrect data"
-            case -2147483621:
-                return "Error - ASN Certificate: Issuer incorrect data"
-            case -2147483620:
-                return "Error - ASN Certificate: Validity incorrect data"
-            case -2147483619:
-                return "Error - ASN Certificate: Subject incorrect data"
-            case -2147483618:
-                return "Error - ASN Certificate: Subject PK incorrect data"
-            case -2147483617:
-                return "Error - ASN Certificate: Extensions incorrect data"
-            case -2147483616:
-                return "Error - ASN Signer info: Incorrect data"
-            case -2147483615:
-                return "Error - ASN Signer info: Version incorrect data"
-            case -2147483614:
-                return "Error - ASN Signer info: SID incorrect data"
-            case -2147483613:
-                return "Error - ASN Signer info: Digest algorithms incorrect data"
-            case -2147483612:
-                return "Error - ASN Signer info: Signed attributes incorrect data"
-            case -2147483611:
-                return "Error - ASN Signer info: Sign algorithms incorrect data"
-            case -2147483610:
-                return "Error - ASN Signer info: Signature incorrect data"
-            case -2147483609:
-                return "Error - ASN Signer info: Unsigned attributes incorrect data"
-            case -2147483600:
-                return "Error - ICAO LDS object: Unsupported digest algorithm"
-            case -2147483599:
-                return "Error - ICAO Signed data: Signer info empty"
-            case -2147483598:
-                return "Error - ICAO Signer info: Unsupported digest algorithm"
-            case -2147483597:
-                return "Error - ICAO Signer info: Unsupported signature algorithm"
-            case -2147483596:
-                return "Error - ICAO Signer info: Message digest error"
-            case -2147483595:
-                return "Error - Auth: Signer info cannot find certificate"
-            case -2147483594:
-                return "Error - ICAO Signer info: Signed attributes missed"
-            case -2147483568:
-                return "Error - Auth: Error"
-            case -2147483567:
-                return "Error - Auth: Unsupported signature algorithm"
-            case -2147483566:
-                return "Error - Auth: Unsupported public key algorithm"
-            case -2147483565:
-                return "Error - Auth: Messed algorithms"
-            case -2147483564:
-                return "Error - Auth: Public key data invalid"
-            case -2147483563:
-                return "Error - Auth: Algorithm parameters data invalid"
-            case -2147483562:
-                return "Error - Auth: Signature data invalid"
-            case -2147483561:
-                return "Error - Auth: Unsupported digest algorithm"
-            case -2147483560:
-                return "Error - Auth: Signature data incorrect"
-            case -2147483559:
-                return "Error - Auth: Algorithm parameters not defined"
-            case -2147483558:
-                return "Error - Auth: Signature check failed"
-            case -2147483536:
-                return "Error - DG: Wrong Tag"
             case -2147458430:
                 return "LAYER6: Reading beyond EOF / Unexpected EOF"
             case -2147458429:
-                return "LAYER6: PWD Deactivated"
+                return "LAYER6: PWD deactivated"
             case -2147458112:
-                return "LAYER6: PWD Blocked"
+                return "LAYER6: PWD blocked"
             case -2147458111:
-                return "LAYER6: PWD Suspended"
+                return "LAYER6: PWD suspended"
             case -2147456637:
-                return "LAYER6: PWD Blocked 2"
+                return "LAYER6: PWD blocked 2"
             case -2147456636:
-                return "LAYER6: PWD Deactivated 2"
+                return "LAYER6: PWD deactivated 2"
             case -2147456635:
-                return "LAYER6: PWD Suspended 2"
+                return "LAYER6: PWD suspended 2"
             case -2147456384:
-                return "LAYER6: Incorrect Params"
+                return "LAYER6: Incorrect params"
             case -2147456382:
                 return "LAYER6: File selection failure / file not found"
             case -2147456376:
-                return "LAYER6: No Reference Data"
+                return "LAYER6: No reference data"
             case -2147456256:
                 return "LAYER6: Reading beyond EOF / Unexpected EOF"
-            case -2147418112:
-                return "RFID: Creation or connection to Graph Manager COM server failed"
             case -2147418111:
                 return "RFID: No chip is detected"
             case -2147418110:
@@ -2707,221 +3686,147 @@ export const eRFID_NotificationAndErrorCodes = {
             case -2147418102:
                 return "RFID File: IO Error"
             case -2147418101:
-                return "RFID: RFID is Busy"
+                return "RFID: RFID is busy"
             case -2147418100:
-                return "RFID: Firmware need to be updated with newer version"
+                return "RFID: The firmware needs to be updated to a newer version"
             case -2147352576:
                 return "PCSC: Failed"
             case -2147352575:
-                return "PCSC: Reader is unavailable"
+                return "PCSC: The reader is unavailable"
             case -2147352574:
-                return "PCSC: Card cannot be connected"
+                return "PCSC: The card cannot be connected"
             case -2147352573:
-                return "PCSC: Card is not connected"
+                return "PCSC: The card is not connected"
             case -2147352572:
                 return "PCSC: Operation is cancelled"
             case -2147352571:
-                return "PCSC: Card Is Busy"
+                return "PCSC: The card is busy"
             case -2147352570:
                 return "PCSC: Failed Smart Card"
             case -2147352560:
                 return "PCSC: ExtLe Failed"
             case -2146409536:
-                return "LAYER6: PWD Failed"
-            case -2130706400:
-                return "Error - PACE: Info Not Available"
-            case -2130706399:
-                return "Error - PACE: Symmetric Cypher Cannot Initialize"
-            case -2130706398:
-                return "Error - PACE: Key Agreement Cannot Initialize"
-            case -2130706397:
-                return "Error - PACE: Ephemeral Keys Cannot Create"
-            case -2130706396:
-                return "Error - PACE: Mapping Cannot Decode Nonce"
-            case -2130706395:
-                return "Error - PACE: Shared Secret Cannot Create"
-            case -2130706394:
-                return "Error - PACE: Domain Params Unsupported Format"
-            case -2130706393:
-                return "Error - PACE: Ephemeral Keys Incorrect"
-            case -2130706392:
-                return "Error - PACE: Mapping Ephemeral Keys Incorrect"
-            case -2130706391:
-                return "Error - PACE: Mapping Cannot Perform"
-            case -2130706390:
-                return "Error - PACE: Non-Matching Auth Tokens"
-            case -2130706384:
-                return "Error - CA: Cannot Find Public Key"
-            case -2130706383:
-                return "Error - CA: Cannot Find Info"
-            case -2130706382:
-                return "Error - CA: Incorrect Version"
-            case -2130706381:
-                return "Error - CA: Cannot Find Domain Parameters"
-            case -2130706380:
-                return "Error - CA: Key Agreement Cannot Initialize"
-            case -2130706379:
-                return "Error - CA: Public Key Unsupported Algorithm"
-            case -2130706378:
-                return "Error - CA: Ephemeral Keys Cannot Create"
-            case -2130706377:
-                return "Error - CA: Shared Secret Cannot Create"
-            case -2130706376:
-                return "Error - CA: Non-Matching Auth Tokens"
-            case -2130706368:
-                return "Error - TA: Incorrect Version"
-            case -2130706367:
-                return "Error - TA: Cannot Build Certificate Chain"
-            case -2130706366:
-                return "Error - TA: Cannot Find IS Private Key"
-            case -2130706365:
-                return "Error - TA: Public Key Unsupported Algorithm"
-            case -2130706364:
-                return "Error - TA: Signature Building Error"
-            case -2130706363:
-                return "Error - TA: Invalid Key Algorithm Parameters"
-            case -2130706352:
-                return "Error - AA: Public Key Unsupported Algorithm"
-            case -2130706351:
-                return "Error - AA: Public Key Incorrect Data"
-            case -2130706350:
-                return "Error - AA: Public Key Incorrect Parameters"
-            case -2130706349:
-                return "Error - AA: Public Key Undefined Parameters"
-            case -2130706348:
-                return "Error - AA: Signature Incorrect Data"
-            case -2130706347:
-                return "Error - AA: Unsupported recovery scheme"
-            case -2130706346:
-                return "Error - AA: Incorrect Trailer"
-            case -2130706345:
-                return "Error - AA: Unsupported Digest Algorithm"
-            case -2130706336:
-                return "Error - CV Certificate: Missing mandatory data PK"
-            case -2130706334:
-                return "Error - CV Certificate: Public key unsupported"
-            case -2130706333:
-                return "Error - CV Certificate: CHAT unsupported terminal type"
-            case -2130706332:
-                return "Error - CV Certificate: Private key unsupported"
-            case -2130706331:
-                return "Error - CV Certificate: Private key invalid params"
-            case -2130706320:
-                return "Error - RI: Sector Key Cannot Find"
-            case -2130706319:
-                return "Error - RI: Sector Key Incorrect Data"
-            case -2130706318:
-                return "Error - RI: Sector Key Incomplete Data"
-            case -2130706080:
-                return "Error - CV Certificate: Incorrect data"
-            case -2130706079:
-                return "Error - CV Certificate: CPI incorrect data"
-            case -2130706078:
-                return "Error - CV Certificate: CAR incorrect data"
-            case -2130706077:
-                return "Error - CV Certificate: Public key incorrect data"
-            case -2130706076:
-                return "Error - CV Certificate: CHR incorrect data"
-            case -2130706075:
-                return "Error - CV Certificate: CHAT incorrect data"
-            case -2130706074:
-                return "Error - CV Certificate: Valid from incorrect data"
-            case -2130706073:
-                return "Error - CV Certificate: Valid to incorrect data"
-            case -2130706072:
-                return "Error - CV Certificate: Extensions incorrect data"
-            case -2130706071:
-                return "Error - CV Certificate: Private key incorrect data"
-            case -2130706070:
-                return "Error - CV Certificate: Private key missing"
+                return "LAYER6: PWD failed"
             case -2097152000:
-                return "RFID: Not Performed"
+                return "RFID: Not performed"
             case -2097151999:
-                return "RFID: Session Is Closed"
+                return "RFID: Session is closed"
             case -2097151998:
-                return "RFID: Terminal Unsupported Operation"
+                return "RFID: Unsupported terminal operation"
             case -2097151984:
-                return "RFID: Terminal Type Unknown"
+                return "RFID: Terminal type unknown"
             case -2097151983:
-                return "RFID: Terminal Type Bad Certificate"
+                return "RFID: Terminal type bad certificate"
             case -2097151982:
-                return "RFID: Terminal Type Not Set"
+                return "RFID: Terminal type not set"
             case -2097151981:
-                return "RFID: Procedure Type Unknown"
+                return "RFID: Unknown procedure type"
             case -2097151980:
-                return "RFID: Procedure Type Unsupported"
+                return "RFID: Unsupported procedure type"
             case -2097151979:
-                return "RFID: Procedure Type Not Set"
+                return "RFID: Procedure type not set"
             case -2097151978:
-                return "RFID: Access Key Unknown Type"
+                return "RFID: Access key unknown type"
             case -2097151977:
-                return "RFID: Access Key Unsupported SM Type"
+                return "RFID: Access key unsupported SM type"
             case -2097151976:
-                return "RFID: Access Key Incorrect SM Type"
+                return "RFID: Access key incorrect SM type"
             case -2097151975:
-                return "RFID: Access Key Restricted"
+                return "RFID: Access key restricted"
             case -2097151974:
-                return "RFID: Access Key Incorrect Data"
+                return "RFID: Access key incorrect data"
             case -2097151973:
-                return "RFID: Access Key Not Set"
+                return "RFID: Access key not set"
             case -2097151972:
-                return "RFID: Pwd Management Not Authorized"
+                return "RFID: PWD management not authorized"
             case -2097151968:
-                return "RFID: Access Control UnknownType"
+                return "RFID: Access control unknown type"
             case -2097151967:
-                return "RFID: Requires SM"
+                return "RFID: Access control unknown type"
             case -2097151966:
-                return "RFID: Requires PACE"
+                return "RFID: PACE required"
             case -2097151965:
-                return "RFID: Requires CA Keys"
+                return "RFID: CA keys required"
             case -2097151964:
-                return "RFID: Requires TA"
+                return "RFID: TA required"
             case -2097151963:
-                return "RFID: Requires CA"
+                return "RFID: CA required"
             case -2097151962:
-                return "RFID: Incorrect Option CA"
+                return "RFID: Incorrect option CA"
             case -2097151961:
-                return "RFID: CA Failed"
+                return "RFID: CA failed"
             case -2097151960:
-                return "RFID: TA Failed"
+                return "RFID: TA failed"
             case -2097151959:
-                return "RFID: AA Failed"
+                return "RFID: AA failed"
             case -2097151958:
-                return "RFID: RI Failed"
+                return "RFID: RI failed"
             case -2097151952:
-                return "RFID: SO Signature Check Failed"
+                return "RFID: SO signature check failed"
             case -2097151951:
-                return "RFID: Hash Check Failed"
+                return "RFID: Hash check failed"
             case -2097151936:
-                return "RFID: Invalid Aux Data Date Of Expiry"
+                return "RFID: Invalid aux data - date of expiry"
             case -2097151935:
-                return "RFID: Invalid Aux Data Date Of Birth"
+                return "RFID: Invalid aux data - date of birth"
             case -2097151934:
-                return "RFID: Invalid Aux Data Community ID"
+                return "RFID: Invalid aux data - community ID"
             case -2097151920:
-                return "RFID: eSign Requires App Selection"
+                return "RFID: eSign requires app selection"
             case -2097151919:
-                return "RFID: eSign PIN Not Set"
+                return "RFID: eSign PIN not set"
             case -2097151918:
-                return "RFID: eSign PIN Not Verified"
+                return "RFID: eSign PIN not verified"
             case -2097151904:
                 return "RFID: Incorrect data"
             case -2097086464:
-                return "RFID File: Not Enough Data"
+                return "RFID file: Insufficient data"
             case -2097020928:
-                return "RFID File: Incorrect Data"
+                return "RFID file: Incorrect data"
             case -2096955392:
-                return "RFID File: Unexpected Data"
+                return "RFID file: Unexpected data"
             case -2096889856:
-                return "RFID File: Contents Unexpected Data"
+                return "RFID file: Contains unexpected data"
             case -2096824320:
-                return "RFID File: Wrong Tag"
+                return "RFID file: Wrong tag"
             case -2096758784:
-                return "RFID File: Cannot Use Data"
+                return "RFID file: Cannot use data"
             case -2096693248:
-                return "RFID File: Cannot Read Data"
+                return "RFID file: Cannot read data"
             case -2096627712:
-                return "RFID File: Access Denied"
+                return "RFID file: Access denied"
+            case -2080374784:
+                return "RFID: Layer 34 - No error"
+            case -2080309248:
+                return "RFID: Layer 34 - Timeout"
+            case -2080243712:
+                return "RFID: Layer 34 - Collision"
+            case -2080178176:
+                return "RFID: Layer 34 - CRC"
+            case -2080112640:
+                return "RFID: Layer 34 - Data integrity"
+            case -2080047104:
+                return "RFID: Layer 34 - Data length"
+            case -2079981568:
+                return "RFID: Layer 34 - RFU"
+            case -2079916032:
+                return "RFID: Layer 34 - Too many collision"
+            case -2079850496:
+                return "RFID: Layer 34 - Protocol B"
+            case -2079784960:
+                return "RFID: Layer 34 - Data contents"
+            case -2079719424:
+                return "RFID: Layer 34 - Protocol"
+            case -2079653888:
+                return "RFID: Layer 34 - Globa timeout"
+            case -2079588352:
+                return "RFID: Layer 34 - MIFARE auth"
+            case -2079522816:
+                return "RFID: Layer 34 - SAM error"
+            case -2079457280:
+                return "RFID: Layer 34 - SAM collision"
+            case -2079391744:
+                return "RFID: Layer 34 - SAM acknowledge"
             case -2046820352:
                 return "LAYER6: Secure Messaging was not activated"
             case -2046820351:
@@ -2932,6 +3837,8 @@ export const eRFID_NotificationAndErrorCodes = {
                 return "LAYER6: ISO7816_B_02 \"Mutual authentication encryption failure\""
             case -2046820094:
                 return "LAYER6: ISO7816_B_03 \"Mutual authentication failure\""
+            case -2046820093:
+                return "null"
             case -2046819840:
                 return "LAYER6: SM failure – MAC missing"
             case -2046819839:
@@ -2959,409 +3866,58 @@ export const eRFID_NotificationAndErrorCodes = {
             case -2046819577:
                 return "LAYER6: GET CHALLENGE failure"
             case -2046819576:
-                return "LAYER6: APDU_INS_EXTERNAL_AUTHENTICATE (External Authentication) failure"
+                return "LAYER6: APDU_INS_EXTERNAL_AUTHENTICATE (external authentication) failure"
             case -2046819575:
                 return "LAYER6: General Authenticity Failure"
-            case -1879048191:
-                return "Notification - ASN certificate: Incorrect version"
-            case -1879048190:
-                return "Notification - ASN certificate: Non-matching signature algorithm"
-            case -1879048189:
-                return "Notification - ASN certificate: Incorrect time coding"
-            case -1879048188:
-                return "Notification - ASN certificate: Incorrect use of generalized time"
-            case -1879048187:
-                return "Notification - ASN certificate: Empty issuer"
-            case -1879048186:
-                return "Notification - ASN certificate: Empty subject"
-            case -1879048184:
-                return "Notification - ASN certificate: Unsupported critical extension"
-            case -1879048178:
-                return "Notification - ASN certificate: Forced default CSCA role"
-            case -1879048177:
-                return "Notification - ASN certificate: Forced Default DS role"
-            case -1879048176:
-                return "Notification - ASN certificate: Incorrect issuer subject DS"
-            case -1879048169:
-                return "Notification - ASN certificate: Duplicating extensions"
-            case -1879048160:
-                return "Notification - ICAO COM: LDS version incorrect"
-            case -1879048159:
-                return "Notification - ICAO COM: LDS version missing"
-            case -1879048158:
-                return "Notification - ICAO COM: Unicode version incorrect"
-            case -1879048157:
-                return "Notification - ICAO COM: Unicode version missing"
-            case -1879048156:
-                return "Notification - ICAO COM: DGPM incorrect"
-            case -1879048155:
-                return "Notification - ICAO COM: DGPM missing"
-            case -1879048154:
-                return "Notification - ICAO COM: DGPM unexpected"
-            case -1879048144:
-                return "Notification - ICAO application: LDS version unsupported"
-            case -1879048143:
-                return "Notification - ICAO application: Unicode version unsupported"
-            case -1879048142:
-                return "Notification - ICAO application: LDS version inconsistent"
-            case -1879048141:
-                return "Notification - ICAO application: Unicode version inconsistent"
-            case -1879047936:
-                return "Notification - ASN signed data: OID incorrect"
-            case -1879047935:
-                return "Notification - ICAO signed data: Version incorrect"
-            case -1879047934:
-                return "Notification - ICAO signed data: Digest algorithms empty"
-            case -1879047933:
-                return "Notification - ICAO signed data: Digest algorithms unsupported"
-            case -1879047932:
-                return "Notification - ICAO LDS object: Incorrect content OID"
-            case -1879047931:
-                return "Notification - ICAO LDS object: DG number incorrect"
-            case -1879047930:
-                return "Notification - ICAO LDS object: DG hash missing"
-            case -1879047929:
-                return "Notification - ICAO LDS object: DG hash extra"
-            case -1879047928:
-                return "Notification - ICAO LDS object: Version incorrect"
-            case -1879047927:
-                return "Notification - ICAO signed data: Signer infos multiple entries"
-            case -1879047926:
-                return "Notification - ASN signer info: Version incorrect"
-            case -1879047925:
-                return "Notification - ASN signer info: SID incorrect choice"
-            case -1879047924:
-                return "Notification - ASN signer info: SID digest algorithm not listed"
-            case -1879047923:
-                return "Notification - ASN signer info: Message digest attr missing"
-            case -1879047922:
-                return "Notification - ASN signer info: Message digest attr data"
-            case -1879047921:
-                return "Notification - ASN signer info: Message digest attr value"
-            case -1879047920:
-                return "Notification - ASN signer info: Content type attr missing"
-            case -1879047919:
-                return "Notification - ASN signer info: Content type attr data"
-            case -1879047918:
-                return "Notification - ASN signer info: Content type attr value"
-            case -1879047915:
-                return "Notification - Auth signer info: Certificate validity"
-            case -1879047914:
-                return "Notification - Auth signer info: Certificate root is not trusted"
-            case -1879047913:
-                return "Notification - Auth signer info: Certificate cannot find CSCA"
-            case -1879047912:
-                return "Notification - Auth signer info: Certificate revoked"
-            case -1879047911:
-                return "Notification - Auth signer info: Certificate signature invalid"
-            case -1879047910:
-                return "Notification: Unsupported image format"
-            case -1879047909:
-                return "Notification - ASN signer info: Signing time attr missing"
-            case -1879047908:
-                return "Notification - ASN signer info: Signing time attr data"
-            case -1879047907:
-                return "Notification - ASN signer info: Signing time attr value"
-            case -1879047776:
-                return "Notification - ASN signed data: Version incorrect"
-            case -1879047760:
-                return "Notification - ICAO signed data: Certificates missed"
-            case -1879047759:
-                return "Notification - ICAO signed data: Certificates empty"
-            case -1879047758:
-                return "Notification - ICAO signed data: CRLs incorrect usage"
-            case -1879047744:
-                return "Notification - ICAO master list: Version incorrect"
-            case -1879047680:
-                return "Notification - ICAO certificate: Version missed"
-            case -1879047679:
-                return "Notification - ICAO certificate: Version incorrect"
-            case -1879047678:
-                return "Notification - ICAO certificate: Issuer country missed"
-            case -1879047677:
-                return "Notification - ICAO certificate: Issuer common name missed"
-            case -1879047676:
-                return "Notification - ICAO certificate: Issuer country non-compliant"
-            case -1879047675:
-                return "Notification - ICAO certificate: Subject country missed"
-            case -1879047674:
-                return "Notification - ICAO certificate: Subject common name missed"
-            case -1879047673:
-                return "Notification - ICAO certificate: Subject country non-compliant"
-            case -1879047672:
-                return "Notification - ICAO certificate: Using non-compliant data"
-            case -1879047671:
-                return "Notification - ICAO certificate: Unsupported signature algorithm"
-            case -1879047670:
-                return "Notification - ICAO certificate: Unsupported public key algorithm"
-            case -1879047669:
-                return "Notification - ICAO certificate: Missed extensions"
-            case -1879047668:
-                return "Notification - ICAO certificate: Validity"
-            case -1879047667:
-                return "Notification - ICAO certificate extension: Using non-compliant data"
-            case -1879047666:
-                return "Notification - ICAO certificate extension: Key usage missed"
-            case -1879047665:
-                return "Notification - ICAO certificate extension: Key usage not critical"
-            case -1879047664:
-                return "Notification - ICAO certificate extension: Ext key usage incorrect data"
-            case -1879047663:
-                return "Notification - ICAO certificate extension: Basic constraints missed"
-            case -1879047662:
-                return "Notification - ICAO certificate extension: Basic constraints incorrect usage 1"
-            case -1879047661:
-                return "Notification - ICAO certificate extension: Basic constraints incorrect usage 2"
-            case -1879047660:
-                return "Notification - ICAO certificate extension: Basic constraints not critical"
-            case -1879047659:
-                return "Notification - ICAO certificate extension: Basic constraints incorrect data"
-            case -1879047658:
-                return "Notification - ICAO certificate extension: Basic constraints path LenC missed"
-            case -1879047657:
-                return "Notification - ICAO certificate extension: Basic constraints path LenC incorrect"
-            case -1879047656:
-                return "Notification - ICAO certificate extension: Ext key usage not critical"
-            case -1879047655:
-                return "Notification - ICAO certificate extension: Ext key usage incorrect usage"
-            case -1879047654:
-                return "Notification - ICAO certificate extension: Ext key usage incorrect data"
-            case -1879047653:
-                return "Notification - ICAO certificate extension Auth key: ID missed"
-            case -1879047652:
-                return "Notification - ICAO certificate extension Auth key: Incorrect data"
-            case -1879047651:
-                return "Notification - ICAO certificate extension Auth key: Key ID missed"
-            case -1879047650:
-                return "Notification - ICAO certificate extension: Subject key ID missed"
-            case -1879047649:
-                return "Notification - ICAO certificate extension: Subject key ID incorrect data"
-            case -1879047648:
-                return "Notification - ICAO certificate extension: Private key UP missed"
-            case -1879047647:
-                return "Notification - ICAO certificate extension: Private key UP incorrect data"
-            case -1879047646:
-                return "Notification - ICAO certificate extension: Private key UP empty"
-            case -1879047645:
-                return "Notification - ICAO certificate extension: Subject alt name missed"
-            case -1879047644:
-                return "Notification - ICAO certificate extension: Subject alt name incorrect data"
-            case -1879047643:
-                return "Notification - ICAO certificate extension: Subject alt name empty"
-            case -1879047642:
-                return "Notification - ICAO certificate extension: Subject alt name non-compliant"
-            case -1879047639:
-                return "Notification - ICAO certificate extension: Subject alt name DN empty"
-            case -1879047638:
-                return "Notification - ICAO certificate extension: Subject alt name DN incorrect"
-            case -1879047637:
-                return "Notification - ICAO certificate extension: Subject alt name DN non-compliant"
-            case -1879047636:
-                return "Notification - ICAO certificate extension: Issuer alt name missed"
-            case -1879047635:
-                return "Notification - ICAO certificate extension: Issuer alt name incorrect data"
-            case -1879047634:
-                return "Notification - ICAO certificate extension: Issuer alt name empty"
-            case -1879047633:
-                return "Notification - ICAO certificate extension: Issuer alt name non-compliant"
-            case -1879047630:
-                return "Notification - ICAO certificate extension: Issuer alt name DN empty"
-            case -1879047629:
-                return "Notification - ICAO certificate extension: Issuer alt name DN incorrect"
-            case -1879047628:
-                return "Notification - ICAO certificate extension: Issuer alt name DN non-compliant"
-            case -1879047627:
-                return "Notification - ICAO certificate extension Doc type list: Missed"
-            case -1879047626:
-                return "Notification - ICAO certificate extension Doc type list: Incorrect data"
-            case -1879047625:
-                return "Notification - ICAO certificate extension Doc type list: Version"
-            case -1879047624:
-                return "Notification - ICAO certificate extension Doc type list: Doc types"
-            case -1879047623:
-                return "Notification - ICAO certificate extension Doc type list: Doc types empty"
-            case -1879047622:
-                return "Notification - ICAO certificate extension: Dert policies incorrect data"
-            case -1879047621:
-                return "Notification - ICAO certificate extension: Cert policies empty"
-            case -1879047620:
-                return "Notification - ICAO certificate extension: Cert policies policy ID missed"
-            case -1879047619:
-                return "Notification - ICAO certificate extension: CRL dist point missed"
-            case -1879047618:
-                return "Notification - ICAO certificate extension: CRL dist point incorrect data"
-            case -1879047617:
-                return "Notification - ICAO certificate extension: CRL dist point empty"
-            case -1879047616:
-                return "Notification - ICAO certificate extension: CRL dist point point missed"
-            case -1878982656:
-                return "Notification - Biometrics: Format owner missing"
-            case -1878917120:
-                return "Notification - Biometrics: Format owner incorrect"
-            case -1878851584:
-                return "Notification - Biometrics: Format type missing"
-            case -1878786048:
-                return "Notification - Biometrics: Format type incorrect"
-            case -1878720512:
-                return "Notification - Biometrics: Type incorrect"
-            case -1878654976:
-                return "Notification - Biometrics: Subtype missing"
-            case -1878589440:
-                return "Notification - Biometrics: Subtype incorrect"
-            case -1878523904:
-                return "Notification - Biometrics: BDB image missing"
-            case -1878458368:
-                return "Notification - Biometrics: BDB format ID incorrect"
-            case -1878392832:
-                return "Notification - Biometrics: BDB version incorrect"
-            case -1878327296:
-                return "Notification - Biometrics: BDB data length incorrect"
-            case -1877999616:
-                return "Notification - Biometrics: BDB Data Gender"
-            case -1877934080:
-                return "Notification - Biometrics: BDB Data Eye Color"
-            case -1877868544:
-                return "Notification - Biometrics: BDB Data Hair Color"
-            case -1877803008:
-                return "Notification - Biometrics: BDB Data Pose Angle Yaw"
-            case -1877737472:
-                return "Notification - Biometrics: BDB Data Pose Angle Pitch"
-            case -1877671936:
-                return "Notification - Biometrics: BDB Data Pose Angle Roll"
-            case -1877606400:
-                return "Notification - Biometrics: BDB Data Pose Angle U Yaw"
-            case -1877540864:
-                return "Notification - Biometrics: BDB Data Pose Angle U Pitch"
-            case -1877475328:
-                return "Notification - Biometrics: BDB Data Pose Angle U Roll"
-            case -1877409792:
-                return "Notification - Biometrics: BDB Data Face Image Type"
-            case -1877344256:
-                return "Notification - Biometrics: BDB Data Image Data Type"
-            case -1862270976:
-                return "Notification - SI: PACE Info Unsupported Std Parameters"
-            case -1862270975:
-                return "Notification - SI: PACE Info Deprecated Version"
-            case -1862270974:
-                return "Notification - SI: PACE Domain Params Using Std Ref"
-            case -1862270973:
-                return "Notification - SI: PACE Domain Params Unsupported Algorithm"
-            case -1862270972:
-                return "Notification - SI: CA Info Incorrect Version"
-            case -1862270971:
-                return "Notification - SI: CA PublicKey Unsupported Algorithm"
-            case -1862270970:
-                return "Notification - SI: CA Domain Params Unsupported Algorithm"
-            case -1862270969:
-                return "Notification - SI: TA Info Incorrect Version"
-            case -1862270968:
-                return "Notification - SI: TA Info File ID For Version 2"
-            case -1862270967:
-                return "Notification - SI: eID Security Unsupported Digest Algorithm"
-            case -1862270966:
-                return "Notification - SI: RI info incorrect version"
-            case -1862270965:
-                return "Notification - SI: RI domain params unsupported algorithm"
-            case -1862270964:
-                return "Notification - SI: AA info incorrect version"
-            case -1862270963:
-                return "Notification - SI: AA info unsupported algorithm"
-            case -1862270962:
-                return "Notification - SI: AA info inconsistent algorithm reference"
-            case -1862270720:
-                return "Notification - SI: PACE Info Not Available"
-            case -1862270719:
-                return "Notification - SI: PACE Info No Std Parameters"
-            case -1862270718:
-                return "Notification - SI: PACE Info No Matching Domain Params"
-            case -1862270717:
-                return "Notification - SI: CA Info Not Available"
-            case -1862270716:
-                return "Notification - SI: CA Domain Params No Required Option"
-            case -1862270715:
-                return "Notification - SI: CA Domain Params Not Available"
-            case -1862270714:
-                return "Notification - SI: CA Anonymous Infos"
-            case -1862270713:
-                return "Notification - SI: CA Info No Matching Domain Params"
-            case -1862270712:
-                return "Notification - SI: CA Info No Matching Public Key"
-            case -1862270711:
-                return "Notification - SI: CA Incorrect Infos Quantity"
-            case -1862270710:
-                return "Notification - SI: TA Info Not Available"
-            case -1862270709:
-                return "Notification - SI: Card Info Locator Multiple Entries"
-            case -1862270708:
-                return "Notification - SI: eID Security Info Multiple Entries"
-            case -1862270707:
-                return "Notification - SI: Privileged TI Multiple Entries"
-            case -1862270706:
-                return "Notification - SI: Privileged TI Incorrect Usage"
-            case -1862270705:
-                return "Notification - SI: RI domain params multiple entries"
-            case -1862270704:
-                return "Notification - SI: Storage PACE Info Non Consistant"
-            case -1862270463:
-                return "Notification - CV Certificate: Profile incorrect version"
-            case -1862270462:
-                return "Notification - CV Certificate: Validity"
-            case -1862270461:
-                return "Notification - CV Certificate: Non CVCA domain parameters"
-            case -1862270460:
-                return "Notification - CV Certificate: Private key incorrect version"
-            case -1862270208:
-                return "Notification - TA: PACE static binding used"
-            case -1845493483:
-                return "Notification - Auth ML signer info: Certificate validity"
-            case -1845493482:
-                return "Notification - Auth ML signer info: Certificate root is not trusted"
-            case -1845493481:
-                return "Notification - Auth ML signer info: Certificate cannot find CSCA"
-            case -1845493480:
-                return "Notification - Auth ML signer info: Certificate revoked"
-            case -1845493479:
-                return "Notification - Auth ML signer info: Certificate signature invalid"
             case -1:
                 return "RFID: Failed"
             case 1:
-                return "OK"
+                return "RFID: No error"
             case 2:
-                return "RFID: Requested operation is already done"
-            case 139272:
-                return "Notification - MRZ: Document type unknown"
-            case 139273:
-                return "Notification - MRZ: Issuing state syntax error"
-            case 139274:
-                return "Notification - MRZ: Name is void"
-            case 139277:
-                return "Notification - MRZ: Number incorrect checksum"
-            case 139278:
-                return "Notification - MRZ: Nationality syntax error"
-            case 139279:
-                return "Notification - MRZ: DOB syntax error"
-            case 139280:
-                return "Notification - MRZ: DOB error"
-            case 139281:
-                return "Notification - MRZ: DOB incorrect checksum"
-            case 139282:
-                return "Notification - MRZ: Sex incorrect"
-            case 139283:
-                return "Notification - MRZ: DOE syntax error"
-            case 139284:
-                return "Notification - MRZ: DOE error"
-            case 139285:
-                return "Notification - MRZ: DOE incorrect checksum"
-            case 139286:
-                return "Notification - MRZ: Optional data incorrect checksum"
-            case 139287:
-                return "Notification - MRZ: Incorrect checksum"
-            case 139288:
-                return "Notification - MRZ: Incorrect"
+                return "RFID: The requested operation is already performed"
             default:
                 return value.toString()
         }
     }
+}
+
+export const eRFID_NotificationCodes = {
+    RFID_NOTIFICATION_ERROR: 65536,
+    RFID_NOTIFICATION_DOCUMENT_READY: 65537,
+    RFID_NOTIFICATION_READ_PROTOCOL4: 65539,
+    RFID_NOTIFICATION_READ_PROTOCOL3: 65546,
+    RFID_NOTIFICATION_PROGRESS: 65547,
+    RFID_NOTIFICATION_TA_STEP: 65550,
+    RFID_NOTIFICATION_SM_REQUIRED: 65551,
+    RFID_NOTIFICATION_ISO_ERROR: 69632,
+    RFID_NOTIFICATION_PA_REQUEST: 77824,
+    RFID_NOTIFICATION_SM_ESTABLISHED: 81935,
+    RFID_NOTIFICATION_PCSC_READER_DISCONNECTED: 131072,
+    RFID_NOTIFICATION_PCSC_READER_LIST_CHANGED: 131073,
+    RFID_NOTIFICATION_PCSC_BYTES_RECEIVED: 131074,
+    RFID_NOTIFICATION_PCSC_TOTAL_READING_TIME: 131075,
+    RFID_NOTIFICATION_PCSC_DATA_RECEIVED: 131076,
+    RFID_NOTIFICATION_PCSC_BYTES_SENT: 131077,
+    RFID_NOTIFICATION_PCSC_TOTAL_READING_SPEED: 131078,
+    RFID_NOTIFICATION_PCSC_TOTAL_PROCESS_TIME: 131079,
+    RFID_NOTIFICATION_PCSC_READER_LIST_CHANGING: 131080,
+    RFID_NOTIFICATION_PCSC_EXT_LENGTH_SUPPORT: 131088,
+    RFID_NOTIFICATION_PA_CERTIFICATE_CHAIN: 131089,
+    RFID_NOTIFICATION_PA_CERTIFICATE_CHAIN_ITEM: 131090,
+    RFID_NOTIFICATION_SCENARIO: 131104,
+    RFID_NOTIFICATION_PCSC_READING_DATAGROUP: 196608,
+    RFID_NOTIFICATION_PCSC_FILE_NOT_FOUND: 262144,
+    RFID_NOTIFICATION_PCSC_END_OF_FILE: 327680,
+    RFID_NOTIFICATION_PCSC_FILE_ACCESS_DENIED: 393216,
+    RFID_NOTIFICATION_PCSC_APPLICATION_SELECTED: 458752,
+    RFID_NOTIFICATION_AC_PROCEDURE_START: 524288,
+    RFID_NOTIFICATION_AC_PROCEDURE_FINISH: 589824,
+    RFID_NOTIFICATION_PA_SECURITY_OBJECT_CHECK: 655360,
+    RFID_NOTIFICATION_PA_FILE_CHECK: 720896,
+    RFID_NOTIFICATION_PCSC_UPDATING_DATAGROUP: 786432,
+    RFID_NOTIFICATION_AUXILIARY_DATA_VALIDATION: 851968,
+    RFID_NOTIFICATION_RI_SECTOR_ID: 917504,
+    RFID_NOTIFICATION_BIOMETRICS_EMPTY_PLACEHOLDER: 983040,
 }
 
 export const eRFID_Password_Type = {
@@ -4111,6 +4667,7 @@ export const eVisualFieldType = {
     FT_ISSUER_IDENTIFICATION_NUMBER: 641,
     FT_VACCINATION_CERTIFICATE_IDENTIFIER: 644,
     FT_FIRST_NAME: 645,
+    FT_DATE_OF_ARRIVAL: 646,
 
     getTranslation(value: number) {
         switch (value) {
@@ -4335,17 +4892,17 @@ export const eVisualFieldType = {
             case 109:
                 return "Commercial vehicle code"
             case 110:
-                return "AKA Date of birth"
+                return "AKA: Date of birth"
             case 111:
-                return "AKA Social Insurance Number"
+                return "AKA: Social Insurance Number"
             case 112:
-                return "AKA Surname"
+                return "AKA: Surname"
             case 113:
-                return "AKA Given name"
+                return "AKA: Given name"
             case 114:
-                return "AKA Name suffix"
+                return "AKA: Name suffix"
             case 115:
-                return "AKA Name prefix"
+                return "AKA: Name prefix"
             case 116:
                 return "Mailing address - street"
             case 117:
@@ -4455,7 +5012,7 @@ export const eVisualFieldType = {
             case 169:
                 return "Dossier number"
             case 170:
-                return "AKA Full name"
+                return "AKA: Surname and given names"
             case 171:
                 return "Territorial validity"
             case 172:
@@ -4935,7 +5492,7 @@ export const eVisualFieldType = {
             case 460:
                 return "In tanks"
             case 461:
-                return "Except in tanks"
+                return "Other than tanks"
             case 462:
                 return "Fast Track service"
             case 463:
@@ -5304,6 +5861,8 @@ export const eVisualFieldType = {
                 return "Unique vaccination certificate identifier"
             case 645:
                 return "First name"
+            case 646:
+                return "null"
             default:
                 return value.toString()
         }
@@ -5904,6 +6463,8 @@ export const Enum = {
    eCheckResult,
    eGraphicFieldType,
    eImageQualityCheckType,
+   eLDS_ParsingErrorCodes,
+   eLDS_ParsingNotificationCodes,
    eProcessGLCommands,
    eRequestCommand,
    eRFID_AccessControl_ProcedureType,
@@ -5911,7 +6472,8 @@ export const Enum = {
    eRFID_BaudRate,
    eRFID_CertificateType,
    eRFID_DataFile_Type,
-   eRFID_NotificationAndErrorCodes,
+   eRFID_ErrorCodes,
+   eRFID_NotificationCodes,
    eRFID_Password_Type,
    eRFID_SDK_ProfilerType,
    eRFID_TerminalType,
