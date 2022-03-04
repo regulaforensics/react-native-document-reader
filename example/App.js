@@ -203,230 +203,184 @@ export default class App extends Component {
             this.displayResults(results)
     }
 
-    render() {
-        return ( <
-            View style = { styles.container } > {
-                (this.state.isReadingRfid && Platform.OS === 'android') && < View style = { styles.container } >
-                <
-                Text style = {
-                    { paddingBottom: 30, fontSize: 23, color: this.state.rfidUIHeaderColor } } > { this.state.rfidUIHeader } < /Text> <
-                Text style = {
-                    { paddingBottom: 50, fontSize: 20 } } > { this.state.rfidDescription } < /Text> <
-                Progress.Bar width = { 200 }
-                useNativeDriver = { true }
-                color = "#4285F4"
-                progress = { this.state.rfidProgress }
-                /> <
-                TouchableOpacity style = { styles.cancelButton }
-                onPress = {
-                    () => { this.hideRfidUI() } } >
-                <
-                Text style = {
-                    { fontSize: 20 } } > X < /Text> <
-                /TouchableOpacity> <
-                /View>
-            } {
-                !this.state.isReadingRfid && < View style = { styles.container } >
-                    <
-                    Text style = {
-                        {
-                            top: 1,
-                            left: 1,
-                            padding: 30,
-                            fontSize: 20,
-                        }
-                    } > { this.state.fullName } <
-                    /Text> <
-                    View style = {
-                        { flexDirection: "row", padding: 5 } } >
-                    <
-                    View style = {
-                        { flexDirection: "column", alignItems: "center" } } >
-                    <
-                    Text style = {
-                        {
-                            top: 1,
-                            right: 1,
-                            padding: 5,
-                        }
-                    } >
-                    Portrait <
-                    /Text> <
-                    Image
-                style = {
-                    {
-                        height: 150,
-                        width: 150,
-                    }
+  render() {
+    return (
+      <View style={styles.container}>
+        {(this.state.isReadingRfid && Platform.OS === 'android') && <View style={styles.container}>
+          <Text style={{ paddingBottom: 30, fontSize: 23, color: this.state.rfidUIHeaderColor }}>{this.state.rfidUIHeader}</Text>
+          <Text style={{ paddingBottom: 50, fontSize: 20 }}>{this.state.rfidDescription}</Text>
+          <Progress.Bar width={200} useNativeDriver={true} color="#4285F4" progress={this.state.rfidProgress} />
+          <TouchableOpacity style={styles.cancelButton} onPress={() => { this.hideRfidUI() }}>
+            <Text style={{ fontSize: 20 }}>X</Text>
+          </TouchableOpacity>
+        </View>
+        }
+        {!this.state.isReadingRfid && <View style={styles.container}>
+          <Text style={{
+            top: 1,
+            left: 1,
+            padding: 30,
+            fontSize: 20,
+          }}>
+            {this.state.fullName}
+          </Text>
+          <View style={{ flexDirection: "row", padding: 5 }}>
+            <View style={{ flexDirection: "column", alignItems: "center" }}>
+              <Text style={{
+                top: 1,
+                right: 1,
+                padding: 5,
+              }}>
+                Portrait
+              </Text>
+              <Image
+                style={{
+                  height: 150,
+                  width: 150,
+                }}
+                source={this.state.portrait}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={{ flexDirection: "column", alignItems: "center", padding: 5 }}>
+              <Text style={{
+                top: 1,
+                right: 1,
+                padding: 5,
+              }}>
+                Document image
+              </Text>
+              <Image
+                style={{
+                  height: 150,
+                  width: 200,
+                }}
+                source={this.state.docFront}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
+
+          <ScrollView style={{ padding: 5, alignSelf: 'center' }} showsVerticalScrollIndicator={false}>
+            {this.state.radio}
+          </ScrollView>
+
+          <View style={{ flexDirection: 'row', padding: 5 }}>
+            <CheckBox
+              isChecked={this.state.doRfid}
+              onClick={() => {
+                if (this.state.canRfid) {
+                  this.setState({ doRfid: !this.state.doRfid })
                 }
-                source = { this.state.portrait }
-                resizeMode = "contain" /
-                    >
-                    <
-                    /View> <
-                    View style = {
-                        { flexDirection: "column", alignItems: "center", padding: 5 } } >
-                    <
-                    Text style = {
-                        {
-                            top: 1,
-                            right: 1,
-                            padding: 5,
-                        }
-                    } >
-                    Document image <
-                    /Text> <
-                    Image
-                style = {
-                    {
-                        height: 150,
-                        width: 200,
-                    }
-                }
-                source = { this.state.docFront }
-                resizeMode = "contain" /
-                    >
-                    <
-                    /View> <
-                    /View>
+              }}
+              disabled={!this.state.canRfid}
+            />
+            <Text style={{ padding: 5 }}>
+              {'Process rfid reading' + this.state.canRfidTitle}
+            </Text>
+          </View>
 
-                <
-                ScrollView style = {
-                    { padding: 5, alignSelf: 'center' } }
-                showsVerticalScrollIndicator = { false } > { this.state.radio } <
-                    /ScrollView>
+          <View style={{ flexDirection: 'row' }}>
+            <Button color="#4285F4"
+              onPress={() => {
+                this.clearResults()
+                DocumentReader.setConfig({
+                  functionality: {
+                    videoCaptureMotionControl: true,
+                    showCaptureButton: true
+                  },
+                  customization: {
+                    showResultStatusMessages: true,
+                    showStatusMessages: true
+                  },
+                  processParams: {
+                    scenario: this.state.selectedScenario,
+                    doRfid: this.state.doRfid,
+                  },
+                }, e => { }, error => console.log(error))
 
-                <
-                View style = {
-                        { flexDirection: 'row', padding: 5 } } >
-                    <
-                    CheckBox
-                isChecked = { this.state.doRfid }
-                onClick = {
-                    () => {
-                        if (this.state.canRfid) {
-                            this.setState({ doRfid: !this.state.doRfid })
-                        }
-                    }
-                }
-                disabled = {!this.state.canRfid }
-                /> <
-                Text style = {
-                        { padding: 5 } } > { 'Process rfid reading' + this.state.canRfidTitle } <
-                    /Text> <
-                    /View>
+                DocumentReader.showScanner(s => { }, e => console.log(e))
+              }}
+              title="Scan document"
+            />
+            <Text style={{ padding: 5 }}></Text>
+            <Button color="#4285F4"
+              onPress={() => {
+                launchImageLibrary({
+                  mediaType: 'photo',
+                  includeBase64: true,
+                  selectionLimit: 10
+                }, r => {
+                  if (r.errorCode != null) {
+                    console.log("error code: " + r.errorCode)
+                    console.log("error message: " + r.errorMessage)
+                    this.setState({ fullName: r.errorMessage })
+                    return
+                  }
+                  if (r.didCancel) return
+                  this.clearResults()
+                  this.setState({ fullName: "COPYING IMAGE..." })
+                  var response = r.assets
+                  DocumentReader.setConfig({
+                    functionality: {
+                      videoCaptureMotionControl: true,
+                      showCaptureButton: true
+                    },
+                    customization: {
+                      showResultStatusMessages: true,
+                      showStatusMessages: true
+                    },
+                    processParams: {
+                      scenario: this.state.selectedScenario,
+                      doRfid: this.state.doRfid,
+                    },
+                  }, e => { }, error => console.log(error))
 
-                <
-                View style = {
-                        { flexDirection: 'row' } } >
-                    <
-                    Button color = "#4285F4"
-                onPress = {
-                    () => {
-                        this.clearResults()
-                        DocumentReader.setConfig({
-                            functionality: {
-                                videoCaptureMotionControl: true,
-                                showCaptureButton: true
-                            },
-                            customization: {
-                                showResultStatusMessages: true,
-                                showStatusMessages: true
-                            },
-                            processParams: {
-                                scenario: this.state.selectedScenario,
-                                doRfid: this.state.doRfid,
-                            },
-                        }, e => {}, error => console.log(error))
+                  var images = []
 
-                        DocumentReader.showScanner(s => {}, e => console.log(e))
-                    }
-                }
-                title = "Scan document" /
-                    >
-                    <
-                    Text style = {
-                        { padding: 5 } } > < /Text> <
-                    Button color = "#4285F4"
-                onPress = {
-                    () => {
-                        launchImageLibrary({
-                            mediaType: 'photo',
-                            includeBase64: true,
-                            selectionLimit: 10
-                        }, r => {
-                            if (r.errorCode != null) {
-                                console.log("error code: " + r.errorCode)
-                                console.log("error message: " + r.errorMessage)
-                                this.setState({ fullName: r.errorMessage })
-                                return
-                            }
-                            if (r.didCancel) return
-                            this.clearResults()
-                            this.setState({ fullName: "COPYING IMAGE..." })
-                            var response = r.assets
-                            DocumentReader.setConfig({
-                                functionality: {
-                                    videoCaptureMotionControl: true,
-                                    showCaptureButton: true
-                                },
-                                customization: {
-                                    showResultStatusMessages: true,
-                                    showStatusMessages: true
-                                },
-                                processParams: {
-                                    scenario: this.state.selectedScenario,
-                                    doRfid: this.state.doRfid,
-                                },
-                            }, e => {}, error => console.log(error))
-
-                            var images = []
-
-                            for (var i = 0; i < response.length; i++) {
-                                images.push(response[i].base64)
-                            }
-                            this.setState({ fullName: "PROCESSING..." })
-                            DocumentReader.recognizeImages(images, s => {}, e => console.log(e))
-                        })
-                    }
-                }
-                title = "     Scan image     " /
-                    >
-                    <
-                    /View> <
-                    /View>
-            } <
-            /View>
-        )
-    }
+                  for (var i = 0; i < response.length; i++) {
+                    images.push(response[i].base64)
+                  }
+                  this.setState({ fullName: "PROCESSING..." })
+                  DocumentReader.recognizeImages(images, s => { }, e => console.log(e))
+                })
+              }}
+              title="     Scan image     "
+            />
+          </View>
+        </View>
+        }
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        width: '100%',
-        height: '100%',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-        marginBottom: 12,
-    },
-    radio: {
-        alignItems: 'flex-start'
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
-    cancelButton: {
-        position: 'absolute',
-        bottom: 0,
-        right: 20
-    }
+  container: {
+    width: '100%',
+    height: '100%',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+    marginBottom: 12,
+  },
+  radio: {
+    alignItems: 'flex-start'
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+  cancelButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 20
+  }
 })
