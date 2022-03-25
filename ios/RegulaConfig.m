@@ -537,6 +537,12 @@
         customization.toolbarSize = [[options valueForKey:@"toolbarSize"] floatValue];
     if([options valueForKey:@"statusBackgroundColor"] != nil)
         customization.statusBackgroundColor = [self getUIColorObjectFromHexString:[options valueForKey:@"statusBackgroundColor"] alpha:1];
+    if([options valueForKey:@"hologramAnimationImageContentMode"] != nil)
+        customization.hologramAnimationImageContentMode = [self UIViewContentModeWithNSInteger:[[options valueForKey:@"hologramAnimationImageContentMode"] integerValue]];
+    if([options valueForKey:@"hologramAnimationPositionMultiplier"] != nil)
+        customization.hologramAnimationPositionMultiplier = [[options valueForKey:@"hologramAnimationPositionMultiplier"] floatValue];
+    if([options valueForKey:@"hologramAnimationImage"] != nil)
+        customization.hologramAnimationImage = [self imageFromBase64:[options valueForKey:@"hologramAnimationImage"]];
 }
 
 +(void)setFunctionality:(NSDictionary*)options :(RGLFunctionality*)functionality {
@@ -740,6 +746,9 @@
     result[@"cameraFramePortraitAspectRatio"] = [NSNumber numberWithFloat:customization.cameraFramePortraitAspectRatio];
     result[@"cameraFrameLandscapeAspectRatio"] = [NSNumber numberWithFloat:customization.cameraFrameLandscapeAspectRatio];
     result[@"toolbarSize"] = [NSNumber numberWithFloat:customization.toolbarSize];
+    result[@"hologramAnimationImageContentMode"] = [NSNumber numberWithInteger:[self NSIntegerWithUIViewContentMode:customization.hologramAnimationImageContentMode]];
+    result[@"hologramAnimationPositionMultiplier"] = [NSNumber numberWithFloat:customization.hologramAnimationPositionMultiplier];
+    result[@"hologramAnimationImage"] = [UIImageJPEGRepresentation(customization.hologramAnimationImage, 1.0) base64EncodedStringWithOptions:0];
     if(customization.customLabelStatus != nil)
         result[@"customLabelStatus"] = customization.customLabelStatus.string;
     if(customization.activityIndicatorColor != nil)
