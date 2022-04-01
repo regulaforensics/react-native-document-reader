@@ -299,6 +299,12 @@
         image.colornessCheck = [dict valueForKey:@"colornessCheck"];
     if([dict valueForKey:@"moireCheck"] != nil)
         image.moireCheck = [dict valueForKey:@"moireCheck"];
+    if([dict valueForKey:@"expectedPass"] != nil){
+        NSMutableArray<RGLImageQualityCheckType> *expectedPass = [NSMutableArray new];
+        for(NSString* str in [dict valueForKey:@"expectedPass"])
+            [expectedPass addObject:str];
+        image.expectedPass = expectedPass;
+    }
 
     return image;
 }
@@ -313,6 +319,7 @@
     result[@"glaresCheck"] = input.glaresCheck;
     result[@"colornessCheck"] = input.colornessCheck;
     result[@"moireCheck"] = input.moireCheck;
+    result[@"expectedPass"] = input.expectedPass;
 
     return result;
 }

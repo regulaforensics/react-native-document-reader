@@ -25,6 +25,15 @@
     return [[RGLPKDCertificate alloc] initWithBinaryData:binaryData resourceType:type privateKey:privateKey];
 }
 
++(RGLTCCParams*)RGLTCCParamsFromJson:(NSDictionary*)input {
+    NSString* serviceTAURLString = [input valueForKey:@"serviceUrlTA"];
+    NSString* servicePAURLString = [input valueForKey:@"serviceUrlPA"];
+    NSString* pfxCertURLString = [input valueForKey:@"pfxCertUrl"];
+    NSString* pfxPassPhrase = [input valueForKey:@"pfxPassPhrase"];
+
+    return [[RGLTCCParams alloc] initWithServiceTAURLString:serviceTAURLString servicePAURLString:servicePAURLString pfxCertURLString:pfxCertURLString pfxPassPhrase:pfxPassPhrase];
+}
+
 +(NSMutableDictionary*)generateCGPoint:(CGPoint)input {
     NSMutableDictionary *result = [NSMutableDictionary new];
 
@@ -390,7 +399,7 @@
     NSMutableDictionary *result = [NSMutableDictionary new];
     if(input == nil) return result;
 
-    result[@"type"] = @(input.type);
+    result[@"type"] = input.type;
     result[@"result"] = @(input.result);
     result[@"featureType"] = @(input.featureType);
     result[@"boundRects"] = [self generateNSArrayCGRect:input.boundRects];
