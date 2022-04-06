@@ -352,6 +352,8 @@ class JSONConstructor {
                 result.setPfxCertUrl(input.getString("pfxCertUrl"));
             if (input.has("pfxPassPhrase"))
                 result.setPfxPassPhrase(input.getString("pfxPassPhrase"));
+            if (input.has("pfxCert"))
+                result.setPfxCert(Base64.decode(input.getString("pfxCert"), Base64.DEFAULT));
         } catch (JSONException e) {
             e.printStackTrace();
         }

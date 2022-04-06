@@ -6557,7 +6557,6 @@ export default class DocumentReader {
     static provideTASignature(certificates: byte[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static parseCoreResults(json: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setTCCParams(params: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static initializeReaderWithDatabasePath(license: string, path: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static initializeReaderWithDatabase(license: string, db: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImageFrame(image: string, params: ImageInputParam, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImageWithOpts(image: string, options: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void

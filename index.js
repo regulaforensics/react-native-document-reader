@@ -6085,7 +6085,6 @@ DocumentReader.provideTACertificates = (certificates, successCallback, errorCall
 DocumentReader.provideTASignature = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTASignature", [certificates], successCallback, errorCallback)
 DocumentReader.parseCoreResults = (json, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "parseCoreResults", [json], successCallback, errorCallback)
 DocumentReader.setTCCParams = (params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTCCParams", [params], successCallback, errorCallback)
-DocumentReader.initializeReaderWithDatabasePath = (license, path, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabasePath", [license, path], successCallback, errorCallback)
 DocumentReader.initializeReaderWithDatabase = (license, db, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabase", [license, db], successCallback, errorCallback)
 DocumentReader.recognizeImageFrame = (image, params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageFrame", [image, params], successCallback, errorCallback)
 DocumentReader.recognizeImageWithOpts = (image, options, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithOpts", [image, options], successCallback, errorCallback)

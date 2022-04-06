@@ -30,8 +30,9 @@
     NSString* servicePAURLString = [input valueForKey:@"serviceUrlPA"];
     NSString* pfxCertURLString = [input valueForKey:@"pfxCertUrl"];
     NSString* pfxPassPhrase = [input valueForKey:@"pfxPassPhrase"];
+    NSData* pfxCertData = [input objectForKey:@"pfxCert"] != nil ? [[NSData alloc] initWithBase64EncodedString:[input objectForKey:@"pfxCert"] options:0] : nil;
 
-    return [[RGLTCCParams alloc] initWithServiceTAURLString:serviceTAURLString servicePAURLString:servicePAURLString pfxCertURLString:pfxCertURLString pfxPassPhrase:pfxPassPhrase];
+    return [[RGLTCCParams alloc] initWithServiceTAURLString:serviceTAURLString servicePAURLString:servicePAURLString pfxCertURLString:pfxCertURLString pfxCertData: pfxCertData pfxPassPhrase:pfxPassPhrase];
 }
 
 +(NSMutableDictionary*)generateCGPoint:(CGPoint)input {
