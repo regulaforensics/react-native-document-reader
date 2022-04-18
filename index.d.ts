@@ -2157,6 +2157,7 @@ export const eImageQualityCheckType = {
     IQC_BOUNDS: 5,
     IQC_SCREEN_CAPTURE: 6,
     IQC_PORTRAIT: 7,
+    IQC_HANDWRITTEN: 8,
 }
 
 export const eLDS_ParsingErrorCodes = {
@@ -6555,7 +6556,7 @@ export default class DocumentReader {
     static provideTACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTASignature(certificates: byte[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static parseCoreResults(json: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static initializeReaderWithDatabasePath(license: string, path: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setTCCParams(params: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static initializeReaderWithDatabase(license: string, db: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImageFrame(image: string, params: ImageInputParam, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImageWithOpts(image: string, options: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void

@@ -1684,6 +1684,7 @@ export const eImageQualityCheckType = {
     IQC_BOUNDS: 5,
     IQC_SCREEN_CAPTURE: 6,
     IQC_PORTRAIT: 7,
+    IQC_HANDWRITTEN: 8,
 }
 
 export const eLDS_ParsingErrorCodes = {
@@ -6083,7 +6084,7 @@ DocumentReader.providePACertificates = (certificates, successCallback, errorCall
 DocumentReader.provideTACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTASignature = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTASignature", [certificates], successCallback, errorCallback)
 DocumentReader.parseCoreResults = (json, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "parseCoreResults", [json], successCallback, errorCallback)
-DocumentReader.initializeReaderWithDatabasePath = (license, path, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabasePath", [license, path], successCallback, errorCallback)
+DocumentReader.setTCCParams = (params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTCCParams", [params], successCallback, errorCallback)
 DocumentReader.initializeReaderWithDatabase = (license, db, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabase", [license, db], successCallback, errorCallback)
 DocumentReader.recognizeImageFrame = (image, params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageFrame", [image, params], successCallback, errorCallback)
 DocumentReader.recognizeImageWithOpts = (image, options, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithOpts", [image, options], successCallback, errorCallback)

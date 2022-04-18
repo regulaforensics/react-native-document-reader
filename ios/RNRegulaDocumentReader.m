@@ -236,8 +236,8 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         [self provideTASignature :[args objectAtIndex:0] :successCallback :errorCallback];
     else if([action isEqualToString:@"parseCoreResults"])
         [self parseCoreResults :[args objectAtIndex:0] :successCallback :errorCallback];
-    else if([action isEqualToString:@"initializeReaderWithDatabasePath"])
-        [self initializeReaderWithDatabasePath :[args objectAtIndex:0] :[args objectAtIndex:1] :successCallback :errorCallback];
+    else if([action isEqualToString:@"setTCCParams"])
+        [self setTCCParams :[args objectAtIndex:0] :successCallback :errorCallback];
     else if([action isEqualToString:@"initializeReaderWithDatabase"])
         [self initializeReaderWithDatabase :[args objectAtIndex:0] :[args objectAtIndex:1] :successCallback :errorCallback];
     else if([action isEqualToString:@"recognizeImageFrame"])
@@ -314,10 +314,6 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
     dispatch_async(dispatch_get_main_queue(), ^{
         [RGLDocReader.shared startRFIDReaderFromPresenter:[[[UIApplication sharedApplication] keyWindow] rootViewController] completion:[self getCompletion]];
     });
-}
-
-- (void) initializeReaderWithDatabasePath:(NSString*)licenseString :(NSString*)databasePath :(Callback)successCallback :(Callback)errorCallback{
-    [RGLDocReader.shared initializeReaderWithConfig:[RGLConfig configWithLicenseData:[[NSData alloc] initWithBase64EncodedString:licenseString options:0] licenseUpdateCheck:true databasePath:databasePath delayedNNLoadEnabled:false] completion:[self getInitCompletion :successCallback :errorCallback]];
 }
 
 - (void) prepareDatabase:(NSString*)dbID :(Callback)successCallback :(Callback)errorCallback{
@@ -502,6 +498,10 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
     [self result:RGLDocReader.shared.documentReaderStatus :successCallback];
 }
 
+- (void) setTCCParams:(NSDictionary*)params :(Callback)successCallback :(Callback)errorCallback{
+    [RGLDocReader.shared setTCCParams:[RGLWJSONConstructor RGLTCCParamsFromJson:params] completion:[self getTCCParamsCompletion:successCallback :errorCallback]];
+}
+
 - (void) getRfidSessionStatus:(Callback)successCallback :(Callback)errorCallback{
     [self result:RGLDocReader.shared.rfidSessionStatus :successCallback];
 }
@@ -625,6 +625,15 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
             [self result:@"database prepared" :successCallback];
         else
             [self result:[NSString stringWithFormat:@"%@/%@", @"database preparation failed: ", error.description] :errorCallback];
+    };
+}
+
+-(void (^_Nullable)(BOOL success, NSError * _Nullable error))getTCCParamsCompletion:(Callback)successCallback :(Callback)errorCallback{
+    return  ^(BOOL success, NSError * _Nullable error) {
+        if (success)
+            [self result:@"success" :successCallback];
+        else
+            [self result:[NSString stringWithFormat:@"%@/%@", @"failed: ", error.description] :errorCallback];
     };
 }
 

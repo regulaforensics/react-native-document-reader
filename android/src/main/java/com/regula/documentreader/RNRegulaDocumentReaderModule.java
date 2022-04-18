@@ -28,6 +28,7 @@ import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletio
 import com.regula.documentreader.api.completions.IRfidPKDCertificateCompletion;
 import com.regula.documentreader.api.completions.IRfidReaderRequest;
 import com.regula.documentreader.api.completions.IRfidTASignatureCompletion;
+import com.regula.documentreader.api.completions.ITccParamsCompletion;
 import com.regula.documentreader.api.enums.DocReaderAction;
 import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.internal.core.CoreScenarioUtil;
@@ -351,8 +352,8 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "parseCoreResults":
                     parseCoreResults(callback, args(0));
                     break;
-                case "initializeReaderWithDatabasePath":
-                    initializeReaderWithDatabasePath(callback, args(0), args(1));
+                case "setTCCParams":
+                    setTCCParams(callback, args(0));
                     break;
                 case "initializeReaderWithDatabase":
                     initializeReaderWithDatabase(callback, args(0), args(1));
@@ -462,6 +463,10 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void getDatabaseDocumentsNumber(Callback callback) {
         callback.success(Instance().version.database.documentsNumber);
+    }
+
+    private void setTCCParams(Callback callback, final JSONObject params) {
+        Instance().setTccParams(JSONConstructor.TCCParamsFromJSON(params), getTCCParamsCompletion(callback));
     }
 
     private void deinitializeReader(Callback callback) {
@@ -726,11 +731,6 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     @SuppressWarnings("unused")
-    private void initializeReaderWithDatabasePath(Callback callback, Object license, String path) {
-        callback.error("initializeReaderWithDatabasePath() is an ios-only method");
-    }
-
-    @SuppressWarnings("unused")
     private void setRfidSessionStatus(Callback callback, String s) {
         callback.error("setRfidSessionStatus() is an ios-only method");
     }
@@ -774,6 +774,15 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 callback.success("init completed");
             } else
                 callback.error("Init failed:" + error);
+        };
+    }
+
+    private ITccParamsCompletion getTCCParamsCompletion(Callback callback) {
+        return (success, error) -> {
+            if (success)
+                callback.success("success");
+            else
+                callback.error("failed: " + error.getMessage());
         };
     }
 
