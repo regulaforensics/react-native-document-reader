@@ -1,7 +1,7 @@
 {
-  "name": "@regulaforensics/react-native-document-reader-api-beta",
-  "version": "0.0.138",
-  "description": "React Native module for reading and validation of identification documents (API framework)",
+  "name": "@regulaforensics/react-native-document-reader-core-fullrfid",
+  "version": "0.0.4",
+  "description": "React Native module for reading and validation of identification documents (Core framework)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

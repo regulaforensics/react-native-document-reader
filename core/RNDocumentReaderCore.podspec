@@ -3,7 +3,7 @@ require 'json'
 package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 
 Pod::Spec.new do |s|
-  s.name         = "RNDocumentReaderApi"
+  s.name         = "RNDocumentReaderCore"
   s.version      = package['version']
   s.summary      = package['description']
   s.license      = package['license']
@@ -12,8 +12,9 @@ Pod::Spec.new do |s|
   s.homepage     = 'https://regulaforensics.com'
 
   s.source       = { :http => 'file:' + __dir__ }
+
   s.ios.deployment_target = '11.0'
-  s.source_files  = "ios/*.{h,m}"
-  s.dependency 'DocumentReader', '6.3.2494'
+  s.dependency 'DocumentReaderFullRFIDBeta', '6.3.6145'
+
   s.dependency 'React'
 end
