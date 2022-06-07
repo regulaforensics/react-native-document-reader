@@ -985,6 +985,26 @@ export class DocumentReaderUvFiberElement {
     }
 }
 
+export class ImageInputData {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new ImageInputData()
+
+        result.pageIndex = jsonObject["pageIndex"]
+        result.light = jsonObject["light"]
+        result.type = jsonObject["type"]
+        result.width = jsonObject["width"]
+        result.height = jsonObject["height"]
+        result.bitmap = jsonObject["bitmap"]
+        result.imgBytes = []
+        if (jsonObject["imgBytes"] != null)
+            for (const i in jsonObject["imgBytes"])
+                result.imgBytes.push(jsonObject["imgBytes"][i])
+
+        return result
+    }
+}
+
 export class DocumentReaderResults {
     getTextFieldValueByType({ fieldType, lcid = 0, source = -1, original = false }) {
         if (this.textResult == null) return null
@@ -1221,13 +1241,13 @@ export const diDocType = {
     dtIdentityCard: 12,
     dtDiplomaticPassport: 13,
     dtServicePassport: 14,
-    dtSeamansIdentityDocument: 15,
-    dtIdentityCardforResidence: 16,
-    dtTraveldocument: 17,
+    dtSeamanIdentityDocument: 15,
+    dtIdentityCardForResidence: 16,
+    dtTravelDocument: 17,
     dtOther: 99,
     dtVisaID2: 29,
     dtVisaID3: 30,
-    dtRegistrationCertificate: 31,
+    dtRegistrationCertificate: 206,
     dtNationalIdentityCard: 20,
     dtSocialIdentityCard: 21,
     dtAliensIdentityCard: 22,
@@ -1244,10 +1264,10 @@ export const diDocType = {
     dtChauffeurLicenseUnder18: 36,
     dtChauffeurLicenseUnder21: 37,
     dtCommercialDrivingLicense: 38,
-    dtCommercialDrivingLicenseIndtuctionalPermit: 39,
+    dtCommercialDrivingLicenseInstructionalPermit: 39,
     dtCommercialDrivingLicenseUnder18: 40,
     dtCommercialDrivingLicenseUnder21: 41,
-    dtCommercialIndtuctionPermit: 42,
+    dtCommercialInstructionPermit: 42,
     dtCommercialNewPermit: 43,
     dtConcealedCarryLicense: 44,
     dtConcealedFirearmPermit: 45,
@@ -1255,9 +1275,9 @@ export const diDocType = {
     dtDepartmentOfVeteransAffairsIdentityCard: 47,
     dtDiplomaticDrivingLicense: 48,
     dtDrivingLicense: 49,
-    dtDrivingLicenseIndtuctionalPermit: 50,
-    dtDrivingLicenseIndtuctionalPermitUnder18: 51,
-    dtDrivingLicenseIndtuctionalPermitUnder21: 52,
+    dtDrivingLicenseInstructionalPermit: 50,
+    dtDrivingLicenseInstructionalPermitUnder18: 51,
+    dtDrivingLicenseInstructionalPermitUnder21: 52,
     dtDrivingLicenseLearnersPermit: 53,
     dtDrivingLicenseLearnersPermitUnder18: 54,
     dtDrivingLicenseLearnersPermitUnder21: 55,
@@ -1265,8 +1285,8 @@ export const diDocType = {
     dtDrivingLicenseNoviceUnder18: 57,
     dtDrivingLicenseNoviceUnder21: 58,
     dtDrivingLicenseRegisteredOffender: 59,
-    dtDrivingLicenseRedtictedUnder18: 60,
-    dtDrivingLicenseRedtictedUnder21: 61,
+    dtDrivingLicenseRestrictedUnder18: 60,
+    dtDrivingLicenseRestrictedUnder21: 61,
     dtDrivingLicenseTemporaryVisitor: 62,
     dtDrivingLicenseTemporaryVisitorUnder18: 63,
     dtDrivingLicenseTemporaryVisitorUnder21: 64,
@@ -1291,8 +1311,8 @@ export const diDocType = {
     dtGenevaConventionsIdentityCard: 83,
     dtGraduatedDrivingLicenseUnder18: 84,
     dtGraduatedDrivingLicenseUnder21: 85,
-    dtGraduatedIndtuctionPermitUnder18: 86,
-    dtGraduatedIndtuctionPermitUnder21: 87,
+    dtGraduatedInstructionPermitUnder18: 86,
+    dtGraduatedInstructionPermitUnder21: 87,
     dtGraduatedLicenseUnder18: 88,
     dtGraduatedLicenseUnder21: 89,
     dtHandgunCarryPermit: 90,
@@ -1306,16 +1326,16 @@ export const diDocType = {
     dtIdentityCardUnder21: 98,
     dtIgnitionInterlockPermit: 100,
     dtImmigrantVisa: 101,
-    dtIndtuctionPermit: 102,
-    dtIndtuctionPermitUnder18: 103,
-    dtIndtuctionPermitUnder21: 104,
+    dtInstructionPermit: 102,
+    dtInstructionPermitUnder18: 103,
+    dtInstructionPermitUnder21: 104,
     dtInterimDrivingLicense: 105,
     dtInterimIdentityCard: 106,
     dtIntermediateDrivingLicense: 107,
     dtIntermediateDrivingLicenseUnder18: 108,
     dtIntermediateDrivingLicenseUnder21: 109,
     dtJuniorDrivingLicense: 110,
-    dtLearnerIndtuctionalPermit: 111,
+    dtLearnerInstructionalPermit: 111,
     dtLearnerLicense: 112,
     dtLearnerLicenseUnder18: 113,
     dtLearnerLicenseUnder21: 114,
@@ -1352,9 +1372,9 @@ export const diDocType = {
     dtRacingAndGamingComissionCard: 145,
     dtRefugeeTravelDocument: 146,
     dtRenewalPermit: 147,
-    dtRedtictedCommercialDrivingLicense: 148,
-    dtRedtictedDrivingLicense: 149,
-    dtRedtictedPermit: 150,
+    dtRestrictedCommercialDrivingLicense: 148,
+    dtRestrictedDrivingLicense: 149,
+    dtRestrictedPermit: 150,
     dtSeasonalPermit: 151,
     dtSeasonalResidentIdentityCard: 152,
     dtSeniorCitizenIdentityCard: 153,
@@ -1364,9 +1384,9 @@ export const diDocType = {
     dtTemporaryDrivingLicenseUnder18: 157,
     dtTemporaryDrivingLicenseUnder21: 158,
     dtTemporaryIdentityCard: 159,
-    dtTemporaryIndtuctionPermitIdentityCard: 160,
-    dtTemporaryIndtuctionPermitIdentityCardUnder18: 161,
-    dtTemporaryIndtuctionPermitIdentityCardUnder21: 162,
+    dtTemporaryInstructionPermitIdentityCard: 160,
+    dtTemporaryInstructionPermitIdentityCardUnder18: 161,
+    dtTemporaryInstructionPermitIdentityCardUnder21: 162,
     dtTemporaryVisitorDrivingLicense: 163,
     dtTemporaryVisitorDrivingLicenseUnder18: 164,
     dtTemporaryVisitorDrivingLicenseUnder21: 165,
@@ -1389,15 +1409,15 @@ export const diDocType = {
     dtCertificateOfCitizenship: 182,
     dtAddressCard: 183,
     dtAirportImmigrationCard: 184,
-    dtAlienRegidtationCard: 185,
+    dtAlienRegistrationCard: 185,
     dtAPEHCard: 186,
-    dtCoupontoDrivingLicense: 187,
+    dtCouponToDrivingLicense: 187,
     dtCrewMemberCertificate: 188,
     dtDocumentForReturn: 189,
     dtECard: 190,
     dtEmploymentCard: 191,
     dtHKSARImmigrationForm: 192,
-    dtImmigrantcard: 193,
+    dtImmigrantCard: 193,
     dtLabourCard: 194,
     dtLaissezPasser: 195,
     dtLawyerIdentityCertificate: 196,
@@ -1409,7 +1429,7 @@ export const diDocType = {
     dtPassportOfficial: 202,
     dtPassportProvisional: 203,
     dtPassportSpecial: 204,
-    dtPermissiontotheLocalBorderTraffic: 205,
+    dtPermissionToTheLocalBorderTraffic: 205,
     dtSEDESOLCard: 207,
     dtSocialCard: 208,
     dtTBCard: 209,
@@ -1442,6 +1462,10 @@ export const diDocType = {
     dtInterimInstructionalPermit: 236,
     dtCertificateOfCompetency: 237,
     dtCertificateOfProficiency: 238,
+    dtTradeLicense: 239,
+    dtPassportPage: 240,
+    dtInvoice: 241,
+    dtPassengerLocatorForm: 242,
 }
 
 export const DocFormat = {
@@ -1460,7 +1484,10 @@ export const DocReaderAction = {
     ERROR: 3,
     NOTIFICATION: 5,
     PROCESS_WHITE_UV_IMAGES: 6,
+    PROCESS_WHITE_FLASHLIGHT: 7,
     MORE_PAGES_AVAILABLE: 8,
+    PROCESS_IR_FRAME: 9,
+    TIMEOUT: 10,
 }
 
 export const DocReaderFrame = {
@@ -3366,7 +3393,7 @@ export const eRFID_ErrorCodes = {
             case -2046820094:
                 return "LAYER6: ISO7816_B_03 \"Mutual authentication failure\""
             case -2046820093:
-                return "null"
+                return "LAYER6: ISO7816_B_03 \"Mutual authentication failure data\""
             case -2046819840:
                 return "LAYER6: SM failure – MAC missing"
             case -2046819839:
@@ -3502,13 +3529,20 @@ export const eRPRM_Lights = {
     NONE: 0,
     RPRM_LIGHT_UV: 128,
     RPRM_LIGHT_WHITE_FULL: 6,
+    RPRM_LIGHT_IR: 16777216,
+    RPRM_Light_IR_TOP: 8,
+    RPRM_Light_IR_SIDE: 16,
+    RPRM_Light_IR_Full: 24,
+    RPRM_LIGHT_OVD: 67108864,
 
     getTranslation: function (value) {
         switch (value) {
-            case this.RPRM_LIGHT_UV:
-                return "UV"
-            case this.RPRM_LIGHT_WHITE_FULL:
+            case 6:
                 return "Visible light"
+            case 24:
+                return "IR"
+            case 128:
+                return "UV"
             default:
                 return value
         }
@@ -4196,6 +4230,10 @@ export const eVisualFieldType = {
     FT_VACCINATION_CERTIFICATE_IDENTIFIER: 644,
     FT_FIRST_NAME: 645,
     FT_DATE_OF_ARRIVAL: 646,
+    FT_SECOND_NAME: 647,
+    FT_THIRD_NAME: 648,
+    FT_FOURTH_NAME: 649,
+    FT_LAST_NAME: 650,
 
     getTranslation: function (value) {
         switch (value) {
@@ -5390,7 +5428,15 @@ export const eVisualFieldType = {
             case 645:
                 return "First name"
             case 646:
-                return "null"
+                return "Date of arrival"
+            case 647:
+                return "Second name"
+            case 648:
+                return "Third name"
+            case 649:
+                return "Fourth name"
+            case 650:
+                return "Last name"
             default:
                 return value
         }
@@ -6051,6 +6097,7 @@ DocumentReader.startNewPage = (successCallback, errorCallback) => RNRegulaDocume
 DocumentReader.startNewSession = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewSession", [], successCallback, errorCallback)
 DocumentReader.startRFIDReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startRFIDReader", [], successCallback, errorCallback)
 DocumentReader.stopRFIDReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopRFIDReader", [], successCallback, errorCallback)
+DocumentReader.stopRFIDReaderWithErrorMessage = (message, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopRFIDReaderWithErrorMessage", [message], successCallback, errorCallback)
 DocumentReader.stopScanner = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopScanner", [], successCallback, errorCallback)
 DocumentReader.deinitializeReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "deinitializeReader", [], successCallback, errorCallback)
 DocumentReader.isAuthenticatorAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isAuthenticatorAvailableForUse", [], successCallback, errorCallback)
@@ -6086,11 +6133,10 @@ DocumentReader.provideTASignature = (certificates, successCallback, errorCallbac
 DocumentReader.parseCoreResults = (json, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "parseCoreResults", [json], successCallback, errorCallback)
 DocumentReader.setTCCParams = (params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTCCParams", [params], successCallback, errorCallback)
 DocumentReader.initializeReaderWithDatabase = (license, db, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabase", [license, db], successCallback, errorCallback)
-DocumentReader.recognizeImageFrame = (image, params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageFrame", [image, params], successCallback, errorCallback)
 DocumentReader.recognizeImageWithOpts = (image, options, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithOpts", [image, options], successCallback, errorCallback)
 DocumentReader.recognizeVideoFrame = (byteString, params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeVideoFrame", [byteString, params], successCallback, errorCallback)
 DocumentReader.showScannerWithCameraIDAndOpts = (cameraID, options, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "showScannerWithCameraIDAndOpts", [cameraID, options], successCallback, errorCallback)
-DocumentReader.recognizeImageWithImageInputParams = (image, params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithImageInputParams", [image, params], successCallback, errorCallback)
 DocumentReader.recognizeImageWithCameraMode = (image, mode, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithCameraMode", [image, mode], successCallback, errorCallback)
+DocumentReader.recognizeImagesWithImageInputs = (images, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImagesWithImageInputs", [images], successCallback, errorCallback)
 
 export default DocumentReader

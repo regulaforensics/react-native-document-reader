@@ -33,6 +33,7 @@ import com.regula.documentreader.api.enums.DocReaderAction;
 import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.internal.core.CoreScenarioUtil;
 import com.regula.documentreader.api.params.DocReaderConfig;
+import com.regula.documentreader.api.params.ImageInputData;
 import com.regula.documentreader.api.params.ImageInputParam;
 import com.regula.documentreader.api.params.rfid.PKDCertificate;
 import com.regula.documentreader.api.params.rfid.authorization.PAResourcesIssuer;
@@ -253,6 +254,9 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "stopRFIDReader":
                     stopRFIDReader(callback);
                     break;
+                case "stopRFIDReaderWithErrorMessage":
+                    stopRFIDReaderWithErrorMessage(callback, args(0));
+                    break;
                 case "stopScanner":
                     stopScanner(callback);
                     break;
@@ -358,9 +362,6 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "initializeReaderWithDatabase":
                     initializeReaderWithDatabase(callback, args(0), args(1));
                     break;
-                case "recognizeImageFrame":
-                    recognizeImageFrame(callback, args(0), args(1));
-                    break;
                 case "recognizeImageWithOpts":
                     recognizeImageWithOpts(callback, args(0), args(1));
                     break;
@@ -370,11 +371,11 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "showScannerWithCameraIDAndOpts":
                     showScannerWithCameraIDAndOpts(callback, args(0), args(1));
                     break;
-                case "recognizeImageWithImageInputParams":
-                    recognizeImageWithImageInputParams(callback, args(0), args(1));
-                    break;
                 case "recognizeImageWithCameraMode":
                     recognizeImageWithCameraMode(callback, args(0), args(1));
+                    break;
+                case "recognizeImagesWithImageInputs":
+                    recognizeImagesWithImageInputs(callback, args(0));
                     break;
             }
         } catch (Exception ignored) {
@@ -548,10 +549,6 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         callback.success();
     }
 
-    private void recognizeImageWithImageInputParams(@SuppressWarnings("unused") Callback callback, String base64Image, final JSONObject params) throws JSONException {
-        Instance().recognizeImage(Helpers.bitmapFromBase64(base64Image), new ImageInputParam(params.getInt("width"), params.getInt("height"), params.getInt("type")), getCompletion());
-    }
-
     private void recognizeImageWithOpts(Callback callback, String base64Image, final JSONObject opts) throws JSONException {
         RegulaConfig.setConfig(Instance(), opts, getContext());
         recognizeImage(callback, base64Image);
@@ -567,6 +564,14 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         Bitmap[] images = new Bitmap[base64Images.length()];
         for (int i = 0; i < images.length; i++)
             images[i] = Helpers.bitmapFromBase64(base64Images.getString(i));
+        Instance().recognizeImages(images, getCompletion());
+    }
+
+    private void recognizeImagesWithImageInputs(@SuppressWarnings("unused") Callback callback, JSONArray base64Images) throws JSONException {
+        stopBackgroundRFID();
+        ImageInputData[] images = new ImageInputData[base64Images.length()];
+        for (int i = 0; i < images.length; i++)
+            images[i] = JSONConstructor.ImageInputDataFromJSON(base64Images.getJSONObject(i));
         Instance().recognizeImages(images, getCompletion());
     }
 
@@ -601,10 +606,6 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     private void clearPKDCertificates(Callback callback) {
         Instance().clearPKDCertificates();
         callback.success();
-    }
-
-    private void recognizeImageFrame(@SuppressWarnings("unused") Callback callback, String base64Image, final JSONObject opts) throws JSONException {
-        Instance().recognizeImageFrame(Helpers.bitmapFromBase64(base64Image), new ImageInputParam(opts.getInt("width"), opts.getInt("height"), opts.getInt("type")), getCompletion());
     }
 
     private void recognizeVideoFrame(@SuppressWarnings("unused") Callback callback, String byteString, final JSONObject opts) throws JSONException {
@@ -723,6 +724,10 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void getCameraSessionIsPaused(Callback callback) {
         callback.error("getCameraSessionIsPaused() is an ios-only method");
+    }
+
+    private void stopRFIDReaderWithErrorMessage(Callback callback, String message) {
+        callback.error("stopRFIDReaderWithErrorMessage() is an ios-only method");
     }
 
     @SuppressWarnings("unused")

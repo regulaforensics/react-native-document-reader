@@ -35,6 +35,20 @@
     return [[RGLTCCParams alloc] initWithServiceTAURLString:serviceTAURLString servicePAURLString:servicePAURLString pfxCertURLString:pfxCertURLString pfxCertData: pfxCertData pfxPassPhrase:pfxPassPhrase];
 }
 
++(RGLImageInput*)RGLImageInputFromJson:(NSDictionary*)input {
+    NSInteger pageIndex = 0;
+    if([input valueForKey:@"pageIndex"] != nil)
+        pageIndex = [[input valueForKey:@"pageIndex"] integerValue];
+    NSInteger light = 6;
+    if([input valueForKey:@"light"] != nil)
+        pageIndex = [[input valueForKey:@"light"] integerValue];
+    if([input valueForKey:@"bitmap"] != nil){
+        UIImage* image = [UIImage imageWithData:[[NSData alloc]initWithBase64EncodedString:[input valueForKey:@"bitmap"] options:NSDataBase64DecodingIgnoreUnknownCharacters]];
+        return [[RGLImageInput alloc] initWithImage:image light:light pageIndex:pageIndex];
+    }
+    return nil;
+}
+
 +(NSMutableDictionary*)generateCGPoint:(CGPoint)input {
     NSMutableDictionary *result = [NSMutableDictionary new];
 
@@ -107,6 +121,9 @@
         case RGLDocReaderActionError:
             result = 3;
             break;
+        case RGLDocReaderActionProcessTimeout:
+            result = 10;
+            break;
         default:
             break;
     }
@@ -118,7 +135,7 @@
     NSInteger result = 0;
     switch (input) {
         case RGLRFIDCompleteActionComplete:
-            result = 10;
+            result = 999;
             break;
         case RGLRFIDCompleteActionError:
             result = 3;
@@ -134,6 +151,29 @@
     }
 
     return result;
+}
+
++(NSNumber*)generateRGLImageQualityCheckType:(RGLImageQualityCheckType)value {
+    if(value == RGLImageQualityCheckTypeImageGlares)
+        return @0;
+    else if(value == RGLImageQualityCheckTypeImageFocus)
+        return @1;
+    else if(value == RGLImageQualityCheckTypeImageResolution)
+        return @2;
+    else if(value == RGLImageQualityCheckTypeImageColorness)
+        return @3;
+    else if(value == RGLImageQualityCheckTypeImagePerspective)
+        return @4;
+    else if(value == RGLImageQualityCheckTypeImageBounds)
+        return @5;
+    else if(value == RGLImageQualityCheckTypeScreenCapture)
+        return @6;
+    else if(value == RGLImageQualityCheckTypePortrait)
+        return @7;
+    else if(value == RGLImageQualityCheckTypeHandwritten)
+        return @8;
+    else
+        return @0;
 }
 
 +(NSInteger)generateRFIDNotificationAction:(RGLRFIDNotificationAction)input {
@@ -155,6 +195,9 @@
         case 3:
             result[@"results"] = [self generateRGLDocumentReaderResults:results];
             break;
+        case 10:
+            result[@"results"] = [self generateRGLDocumentReaderResults:results];
+            break;
         case 5:
             result[@"results"] = [self generateResultsWithNotification:[self generateRGLRFIDNotify:notify]];
             break;
@@ -164,7 +207,7 @@
         case 8:
             result[@"results"] = [self generateRGLDocumentReaderResults:results];
             break;
-        case 10:
+        case 999:
             result[@"results"] = [self generateResultsWithRFID :results :1];
             action = 1;
             break;
@@ -400,7 +443,7 @@
     NSMutableDictionary *result = [NSMutableDictionary new];
     if(input == nil) return result;
 
-    result[@"type"] = input.type;
+    result[@"type"] = [self generateRGLImageQualityCheckType:input.type];
     result[@"result"] = @(input.result);
     result[@"featureType"] = @(input.featureType);
     result[@"boundRects"] = [self generateNSArrayCGRect:input.boundRects];
