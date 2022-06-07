@@ -1,6 +1,6 @@
 {
   "name": "@regulaforensics/react-native-document-reader-core-fullrfid",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "React Native module for reading and validation of identification documents (Core framework)",
   "main": "index.js",
   "scripts": {

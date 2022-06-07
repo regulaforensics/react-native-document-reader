@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.source       = { :http => 'file:' + __dir__ }
 
   s.ios.deployment_target = '11.0'
-  s.dependency 'DocumentReaderFullRFIDBeta', '6.3.6145'
+  s.dependency 'DocumentReaderFullRFIDBeta', '6.2.6393'
 
   s.dependency 'React'
 end
