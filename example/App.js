@@ -128,7 +128,9 @@ export default class App extends Component {
                     this.hideRfidUI()
                     this.displayResults(completion.results)
                 }
-        else
+            else
+                this.handleResults(completion.results)
+        if (completion.action === Enum.DocReaderAction.TIMEOUT)
             this.handleResults(completion.results)
     }
 
@@ -179,24 +181,6 @@ export default class App extends Component {
 
     handleResults(results) {
         if (this.state.doRfid && results != null && results.chipPage != 0) {
-            accessKey = null
-            accessKey = results.getTextFieldValueByType(Enum.eVisualFieldType.FT_MRZ_STRINGS)
-            if (accessKey != null && accessKey != "") {
-                accessKey = accessKey.replace(/^/g, '').replace(/\n/g, '')
-                DocumentReader.setRfidScenario({
-                    mrz: accessKey,
-                    pacePasswordType: Enum.eRFID_Password_Type.PPT_MRZ,
-                }, e => {}, error => console.log(error))
-            } else {
-                accessKey = null
-                accessKey = results.getTextFieldValueByType(159)
-                if (accessKey != null && accessKey != "") {
-                    DocumentReader.setRfidScenario({
-                        password: accessKey,
-                        pacePasswordType: Enum.eRFID_Password_Type.PPT_CAN,
-                    }, e => {}, error => console.log(error))
-                }
-            }
             // this.customRFID()
             this.usualRFID()
         } else
