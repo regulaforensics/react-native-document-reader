@@ -5894,6 +5894,15 @@ export const LCID = {
     }
 }
 
+export const MRZFormat = {
+    FORMAT_1X30: "1x30",
+    FORMAT_3X30: "3x30",
+    FORMAT_2X36: "2x36",
+    FORMAT_2X44: "2x44",
+    FORMAT_1X6: "1x6",
+    FORMAT_2X30: "2x30",
+}
+
 export const PKDResourceType = {
     CERTIFICATE_PA: 0,
     CERTIFICATE_TA: 1,
@@ -6062,6 +6071,7 @@ export const Enum = {
    FrameShapeType,
    IRfidNotificationCompletion,
    LCID,
+   MRZFormat,
    PKDResourceType,
    ProcessingFinishedStatus,
    RFIDDelegate,
@@ -6123,16 +6133,16 @@ DocumentReader.showScannerWithCameraID = (cameraID, successCallback, errorCallba
 DocumentReader.runAutoUpdate = (databaseType, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "runAutoUpdate", [databaseType], successCallback, errorCallback)
 DocumentReader.setConfig = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setConfig", [config], successCallback, errorCallback)
 DocumentReader.setRfidScenario = (scenario, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidScenario", [scenario], successCallback, errorCallback)
-DocumentReader.initializeReader = (license, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReader", [license], successCallback, errorCallback)
+DocumentReader.initializeReader = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReader", [config], successCallback, errorCallback)
 DocumentReader.prepareDatabase = (databaseType, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "prepareDatabase", [databaseType], successCallback, errorCallback)
 DocumentReader.recognizeImage = (image, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImage", [image], successCallback, errorCallback)
+DocumentReader.recognizeData = (data, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeData", [data], successCallback, errorCallback)
 DocumentReader.setRfidSessionStatus = (status, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidSessionStatus", [status], successCallback, errorCallback)
 DocumentReader.providePACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "providePACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTACertificates", [certificates], successCallback, errorCallback)
-DocumentReader.provideTASignature = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTASignature", [certificates], successCallback, errorCallback)
+DocumentReader.provideTASignature = (signature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTASignature", [signature], successCallback, errorCallback)
 DocumentReader.parseCoreResults = (json, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "parseCoreResults", [json], successCallback, errorCallback)
 DocumentReader.setTCCParams = (params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTCCParams", [params], successCallback, errorCallback)
-DocumentReader.initializeReaderWithDatabase = (license, db, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithDatabase", [license, db], successCallback, errorCallback)
 DocumentReader.recognizeImageWithOpts = (image, options, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithOpts", [image, options], successCallback, errorCallback)
 DocumentReader.recognizeVideoFrame = (byteString, params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeVideoFrame", [byteString, params], successCallback, errorCallback)
 DocumentReader.showScannerWithCameraIDAndOpts = (cameraID, options, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "showScannerWithCameraIDAndOpts", [cameraID, options], successCallback, errorCallback)

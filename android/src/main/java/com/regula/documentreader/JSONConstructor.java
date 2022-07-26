@@ -15,6 +15,7 @@ import com.regula.documentreader.api.enums.eGraphicFieldType;
 import com.regula.documentreader.api.enums.eRPRM_Lights;
 import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.internal.core.CoreDetailedScenario;
+import com.regula.documentreader.api.params.DocReaderConfig;
 import com.regula.documentreader.api.params.FaceMetaData;
 import com.regula.documentreader.api.params.ImageInputData;
 import com.regula.documentreader.api.params.rfid.TccParams;
@@ -355,6 +356,28 @@ class JSONConstructor {
                 result.setPfxPassPhrase(input.getString("pfxPassPhrase"));
             if (input.has("pfxCert"))
                 result.setPfxCert(Base64.decode(input.getString("pfxCert"), Base64.DEFAULT));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    static DocReaderConfig DocReaderConfigFromJSON(JSONObject input) {
+        DocReaderConfig result = new DocReaderConfig(null);
+        byte[] license;
+        try {
+            if (input.has("license")) {
+                license = Base64.decode(input.getString("license"), Base64.DEFAULT);
+                result = new DocReaderConfig(license);
+            } else return result;
+            if (input.has("customDb"))
+                result = new DocReaderConfig(license, Base64.decode(input.getString("customDb"), Base64.DEFAULT));
+            if (input.has("licenseUpdate"))
+                result.setLicenseUpdate(input.getBoolean("licenseUpdate"));
+            if (input.has("delayedNNLoad"))
+                result.setDelayedNNLoad(input.getBoolean("delayedNNLoad"));
+            if (input.has("blackList"))
+                result.setBlackList(input.getJSONObject("blackList"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

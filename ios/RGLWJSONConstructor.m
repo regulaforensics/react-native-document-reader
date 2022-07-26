@@ -35,6 +35,28 @@
     return [[RGLTCCParams alloc] initWithServiceTAURLString:serviceTAURLString servicePAURLString:servicePAURLString pfxCertURLString:pfxCertURLString pfxCertData: pfxCertData pfxPassPhrase:pfxPassPhrase];
 }
 
++(RGLConfig*)RGLConfigFromJson:(NSDictionary*)input {
+    NSData* license;
+    if([input valueForKey:@"license"] != nil)
+        license = [[NSData alloc] initWithBase64EncodedString:[input valueForKey:@"license"] options:0];
+    else return nil;
+
+    RGLConfig *config = [[RGLConfig alloc] initWithLicenseData:license];
+
+    if([input valueForKey:@"databasePath"] != nil){
+        config.databasePath = [[input valueForKey:@"databasePath"] stringValue];
+    }
+    if([input valueForKey:@"licenseUpdate"] != nil){
+        config.licenseUpdateCheck = [[input valueForKey:@"licenseUpdate"] boolValue];
+    }
+    if([input valueForKey:@"delayedNNLoad"] != nil){
+        config.delayedNNLoadEnabled = [[input valueForKey:@"delayedNNLoad"] boolValue];
+    }
+
+    return config;
+}
+
+
 +(RGLImageInput*)RGLImageInputFromJson:(NSDictionary*)input {
     NSInteger pageIndex = 0;
     if([input valueForKey:@"pageIndex"] != nil)

@@ -6377,6 +6377,15 @@ export const LCID = {
     }
 }
 
+export const MRZFormat = {
+    FORMAT_1X30: "1x30",
+    FORMAT_3X30: "3x30",
+    FORMAT_2X36: "2x36",
+    FORMAT_2X44: "2x44",
+    FORMAT_1X6: "1x6",
+    FORMAT_2X30: "2x30",
+}
+
 export const PKDResourceType = {
     CERTIFICATE_PA: 0,
     CERTIFICATE_TA: 1,
@@ -6545,6 +6554,7 @@ export const Enum = {
    FrameShapeType,
    IRfidNotificationCompletion,
    LCID,
+   MRZFormat,
    PKDResourceType,
    ProcessingFinishedStatus,
    RFIDDelegate,
@@ -6605,16 +6615,16 @@ export default class DocumentReader {
     static runAutoUpdate(databaseType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setConfig(config: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setRfidScenario(scenario: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static initializeReader(license: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static initializeReader(config: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static prepareDatabase(databaseType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImage(image: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static recognizeData(data: byte[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setRfidSessionStatus(status: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static providePACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static provideTASignature(certificates: byte[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static provideTASignature(signature: byte[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static parseCoreResults(json: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setTCCParams(params: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static initializeReaderWithDatabase(license: string, db: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImageWithOpts(image: string, options: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeVideoFrame(byteString: string, params: ImageInputParam, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static showScannerWithCameraIDAndOpts(cameraID: number, options: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void

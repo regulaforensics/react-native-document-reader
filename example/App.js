@@ -51,7 +51,10 @@ export default class App extends Component {
             console.log(respond)
             readFile(licPath, 'base64').then((res) => {
                 this.setState({ fullName: "Initializing..." })
-                DocumentReader.initializeReader(res, (respond) => {
+                DocumentReader.initializeReader({
+                  license: res,
+                  delayedNNLoad: true
+              }, (respond) => {
                     console.log(respond)
                     DocumentReader.isRFIDAvailableForUse((canRfid) => {
                         if (canRfid) {
@@ -175,7 +178,6 @@ export default class App extends Component {
     }
 
     usualRFID() {
-        this.setState({ doRfid: false })
         DocumentReader.startRFIDReader(e => {}, e => {})
     }
 
