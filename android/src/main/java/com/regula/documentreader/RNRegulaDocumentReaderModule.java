@@ -34,12 +34,12 @@ import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.internal.core.CoreScenarioUtil;
 import com.regula.documentreader.api.params.DocReaderConfig;
 import com.regula.documentreader.api.params.ImageInputData;
-import com.regula.documentreader.api.params.ImageInputParam;
+import com.regula.documentreader.api.internal.params.ImageInputParam;
 import com.regula.documentreader.api.params.rfid.PKDCertificate;
 import com.regula.documentreader.api.params.rfid.authorization.PAResourcesIssuer;
 import com.regula.documentreader.api.params.rfid.authorization.TAChallenge;
 import com.regula.documentreader.api.results.DocumentReaderResults;
-import com.regula.documentreader.api.parser.DocReaderResultsJsonParser;
+import com.regula.documentreader.api.internal.parser.DocReaderResultsJsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;

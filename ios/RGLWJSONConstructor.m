@@ -316,11 +316,9 @@
                 [array addObject:[self generateRGLImageQualityGroup:item]];
         result[@"imageQuality"] = array;
     }
-    result[@"overallResult"] = @(input.overallResult);
     result[@"authenticityResult"] = [self generateRGLDocumentReaderAuthenticityResult:input.authenticityResults];
     result[@"rfidSessionData"] = [self generateRGLRFIDSessionData:input.rfidSessionData];
     result[@"chipPage"] = @(input.chipPage);
-    result[@"resolutionType"] = @(input.resolutionType);
     result[@"barcodeResult"] = [self generateRGLDocumentReaderBarcodeResult:input.barcodeResult];
     result[@"processingFinishedStatus"] = @(input.processingFinishedStatus);
     result[@"morePagesAvailable"] = @(input.morePagesAvailable);
@@ -636,7 +634,6 @@
     result[@"status"] = @(input.status);
     result[@"extLeSupport"] = @(input.extLeSupport);
     result[@"processTime"] = @(input.processTime);
-    result[@"sessionDataStatus"] = [self generateRGLRFIDSessionDataStatus:input.sessionDataStatus];
 
     return result;
 }
