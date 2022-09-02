@@ -16,6 +16,8 @@ var certDir = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/certificates") : 
 var readDir = Platform.OS === 'ios' ? RNFS.readDir : RNFS.readDirAssets
 var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets
 
+var isReadingRfid = false;
+
 async function addCertificates() {
   var certificates = []
   var items = await readDir(certDir, 'base64')
@@ -105,7 +107,6 @@ export default class App extends Component {
       fullName: "Please wait...",
       doRfid: false,
       isReadingRfidCustomUi: false,
-      isReadingRfid: false,
       canRfid: false,
       canRfidTitle: '(unavailable)',
       scenarios: [],

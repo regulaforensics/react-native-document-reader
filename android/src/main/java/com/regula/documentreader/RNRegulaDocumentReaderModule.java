@@ -378,7 +378,8 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                     recognizeImagesWithImageInputs(callback, args(0));
                     break;
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

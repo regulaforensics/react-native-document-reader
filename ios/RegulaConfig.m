@@ -622,7 +622,7 @@
     if([options valueForKey:@"cameraPosition"] != nil)
         functionality.cameraPosition = [self AVCaptureDevicePositionWithNSInteger:[[options valueForKey:@"cameraPosition"] integerValue]];
     if([options valueForKey:@"btDeviceName"] != nil)
-        functionality.btDeviceName = [[options valueForKey:@"btDeviceName"] stringValue];
+        functionality.btDeviceName = [options valueForKey:@"btDeviceName"];
     if([options valueForKey:@"useAuthenticator"] != nil)
         functionality.useAuthenticator = [[options valueForKey:@"useAuthenticator"] boolValue];
     if([options valueForKey:@"showCaptureButtonDelayFromDetect"] != nil)
