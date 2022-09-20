@@ -6156,6 +6156,9 @@ export const Enum = {
 const DocumentReader = {}
 
 DocumentReader.initializeReaderAutomatically = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderAutomatically", [], successCallback, errorCallback)
+DocumentReader.isBlePermissionsGranted = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isBlePermissionsGranted", [], successCallback, errorCallback)
+DocumentReader.startBluetoothService = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startBluetoothService", [], successCallback, errorCallback)
+DocumentReader.initializeReaderDevice7310Config = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderDevice7310Config", [], successCallback, errorCallback)
 DocumentReader.getAPIVersion = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAPIVersion", [], successCallback, errorCallback)
 DocumentReader.getAvailableScenarios = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAvailableScenarios", [], successCallback, errorCallback)
 DocumentReader.isRFIDAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isRFIDAvailableForUse", [], successCallback, errorCallback)
