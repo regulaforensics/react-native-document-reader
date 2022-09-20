@@ -5,6 +5,9 @@ NSString* rfidNotificationCompletionEvent = @"rfidNotificationCompletionEvent";
 NSString* paCertificateCompletionEvent = @"paCertificateCompletionEvent";
 NSString* taCertificateCompletionEvent = @"taCertificateCompletionEvent";
 NSString* taSignatureCompletionEvent = @"taSignatureCompletionEvent";
+NSString* bleOnServiceConnectedEvent = @"bleOnServiceConnectedEvent";
+NSString* bleOnServiceDisconnectedEvent = @"bleOnServiceDisconnectedEvent";
+NSString* bleOnDeviceReadyEvent = @"bleOnDeviceReadyEvent";
 RGLRFIDCertificatesCallback paCertificateCompletion;
 RGLRFIDCertificatesCallback taCertificateCompletion;
 RFIDDelegateNoPA* rfidDelegateNoPA;
@@ -47,7 +50,10 @@ RCT_EXPORT_MODULE();
              rfidNotificationCompletionEvent,
              paCertificateCompletionEvent,
              taCertificateCompletionEvent,
-             taSignatureCompletionEvent];
+             taSignatureCompletionEvent,
+             bleOnServiceConnectedEvent,
+             bleOnServiceDisconnectedEvent,
+             bleOnDeviceReadyEvent];
 }
 
 static NSNumber* _databasePercentageDownloaded;
@@ -272,11 +278,11 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
     [self result:@"isBlePermissionsGranted() is an android-only method" :errorCallback];
 }
 
-- (void) startBluetoothService:(BOOL)logs :(Callback)successCallback :(Callback)errorCallback{
+- (void) startBluetoothService:(Callback)successCallback :(Callback)errorCallback{
     [self result:@"startBluetoothService() is an android-only method" :errorCallback];
 }
 
-- (void) initializeReaderDevice7310Config:(BOOL)logs :(Callback)successCallback :(Callback)errorCallback{
+- (void) initializeReaderDevice7310Config:(Callback)successCallback :(Callback)errorCallback{
     [self result:@"initializeReaderDevice7310Config() is an android-only method" :errorCallback];
 }
 
