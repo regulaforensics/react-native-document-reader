@@ -14,7 +14,6 @@ import android.provider.Settings
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat.checkSelfPermission
-import com.facebook.react.bridge.ReactContext
 import com.regula.documentreader.api.ble.BLEWrapper
 import com.regula.documentreader.api.ble.BleWrapperCallback
 import com.regula.documentreader.api.ble.RegulaBleService
@@ -26,10 +25,6 @@ class BluetoothUtil {
     companion object {
         private const val REQUEST_ENABLE_LOCATION = 196
         private const val REQUEST_ENABLE_BT = 197
-
-        private const val bleOnServiceConnectedEvent = "bleOnServiceConnectedEvent"
-        private const val bleOnServiceDisconnectedEvent = "bleOnServiceDisconnectedEvent"
-        private const val bleOnDeviceReadyEvent = "bleOnDeviceReadyEvent"
 
         @SuppressLint("StaticFieldLeak")
         var bleManager: BLEWrapper? = null
@@ -63,7 +58,7 @@ class BluetoothUtil {
             return true
         }
 
-        fun deniedBluetoothPermissions(activity: Activity): Array<String>? {
+        private fun deniedBluetoothPermissions(activity: Activity): Array<String>? {
             val result = mutableListOf<String>()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 result.addAll(deniedBluetoothPermission(activity, BLUETOOTH_SCAN))
@@ -73,13 +68,21 @@ class BluetoothUtil {
             return result.let { if (it.size > 0) it.toTypedArray() else null }
         }
 
-        fun deniedBluetoothPermission(activity: Activity, permission: String): Array<String> {
+        private fun deniedBluetoothPermission(
+                activity: Activity,
+                permission: String
+        ): Array<String> {
             if (checkSelfPermission(activity, permission) != PERMISSION_GRANTED)
                 return arrayOf(permission)
             return arrayOf()
         }
 
-        fun startBluetoothService(activity: Activity, reactContext: ReactContext) {
+        fun startBluetoothService(
+                activity: Activity,
+                onConnected: (Boolean) -> Unit,
+                onDisconnected: () -> Unit,
+                onReady: () -> Unit,
+        ) {
             val bleIntent = Intent(activity, RegulaBleService::class.java)
             activity.startService(bleIntent)
 
@@ -87,32 +90,18 @@ class BluetoothUtil {
                 override fun onServiceConnected(name: ComponentName, service: IBinder) {
                     bleManager = (service as RegulaBleService.LocalBinder).service.bleManager
                     val isBleManagerConnected = bleManager?.isConnected == true
-                    RNRegulaDocumentReaderModule.send(
-                            reactContext,
-                            bleOnServiceConnectedEvent,
-                            isBleManagerConnected.toString()
-                    )
+                    onConnected(isBleManagerConnected)
                     if (!isBleManagerConnected) {
                         bleManager?.addCallback(object : BleWrapperCallback() {
                             override fun onDeviceReady() {
                                 bleManager!!.removeCallback(this)
-                                RNRegulaDocumentReaderModule.send(
-                                        reactContext,
-                                        bleOnDeviceReadyEvent,
-                                        ""
-                                )
+                                onReady()
                             }
                         })
                     }
                 }
 
-                override fun onServiceDisconnected(name: ComponentName) {
-                    RNRegulaDocumentReaderModule.send(
-                            reactContext,
-                            bleOnServiceDisconnectedEvent,
-                            ""
-                    )
-                }
+                override fun onServiceDisconnected(name: ComponentName) = onDisconnected()
             }, 0)
         }
     }

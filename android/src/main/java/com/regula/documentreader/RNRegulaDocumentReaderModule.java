@@ -62,9 +62,15 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     private final static String completionEvent = "completionEvent";
     private final static String videoEncoderCompletionEvent = "videoEncoderCompletionEvent";
     private final static String rfidNotificationCompletionEvent = "rfidNotificationCompletionEvent";
+
     private final static String paCertificateCompletionEvent = "paCertificateCompletionEvent";
     private final static String taCertificateCompletionEvent = "taCertificateCompletionEvent";
     private final static String taSignatureCompletionEvent = "taSignatureCompletionEvent";
+
+    private final static String bleOnServiceConnectedEvent = "bleOnServiceConnectedEvent";
+    private final static String bleOnServiceDisconnectedEvent = "bleOnServiceDisconnectedEvent";
+    private final static String bleOnDeviceReadyEvent = "bleOnDeviceReadyEvent";
+
     private static int databaseDownloadProgress = 0;
     JSONArray data;
     private final ReactContext reactContext;
@@ -159,6 +165,17 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         send(reactContext, taSignatureCompletionEvent, JSONConstructor.generateTAChallenge(challenge).toString());
     }
 
+    private void sendBleOnServiceConnectedEvent(boolean isBleManagerConnected) {
+        send(reactContext, bleOnServiceConnectedEvent, isBleManagerConnected +"");
+    }
+
+    private void sendBleOnServiceDisconnectedEvent() {
+        send(reactContext, bleOnServiceDisconnectedEvent, "");
+    }
+
+    private void sendBleOnDeviceReadyEvent() {
+        send(reactContext, bleOnDeviceReadyEvent, "");
+    }
 
     private interface Callback {
         void success(Object o);
@@ -437,7 +454,21 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     private void startBluetoothService(Callback callback) {
-        BluetoothUtil.Companion.startBluetoothService(getActivity(), reactContext);
+        BluetoothUtil.Companion.startBluetoothService(
+                getActivity(),
+                isBleManagerConnected -> {
+                    sendBleOnServiceConnectedEvent(isBleManagerConnected);
+                    return null;
+                },
+                () -> {
+                    sendBleOnServiceDisconnectedEvent();
+                    return null;
+                },
+                () -> {
+                    sendBleOnDeviceReadyEvent();
+                    return null;
+                }
+        );
         callback.success();
     }
 
