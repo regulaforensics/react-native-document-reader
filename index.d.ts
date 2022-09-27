@@ -6680,9 +6680,6 @@ export const Enum = {
 
 export default class DocumentReader {
     static initializeReaderAutomatically(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static isBlePermissionsGranted(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static startBluetoothService(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static initializeReaderDevice7310Config(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAPIVersion(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAvailableScenarios(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static isRFIDAvailableForUse(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
