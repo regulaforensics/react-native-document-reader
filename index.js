@@ -718,46 +718,7 @@ export class DocumentReaderException {
         const result = new DocumentReaderException()
 
         result.errorCode = jsonObject["errorCode"]
-        result.localizedMessage = jsonObject["localizedMessage"]
         result.message = jsonObject["message"]
-        result.string = jsonObject["string"]
-        result.stackTrace = []
-        if (jsonObject["stackTrace"] != null)
-            for (const i in jsonObject["stackTrace"])
-                result.stackTrace.push(StackTraceElement.fromJson(jsonObject["stackTrace"][i]))
-
-        return result
-    }
-}
-
-export class Throwable {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new Throwable()
-
-        result.localizedMessage = jsonObject["localizedMessage"]
-        result.message = jsonObject["message"]
-        result.string = jsonObject["string"]
-        result.stackTrace = []
-        if (jsonObject["stackTrace"] != null)
-            for (const i in jsonObject["stackTrace"])
-                result.stackTrace.push(StackTraceElement.fromJson(jsonObject["stackTrace"][i]))
-
-        return result
-    }
-}
-
-export class StackTraceElement {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new StackTraceElement()
-
-        result.lineNumber = jsonObject["lineNumber"]
-        result.isNativeMethod = jsonObject["isNativeMethod"]
-        result.className = jsonObject["className"]
-        result.fileName = jsonObject["fileName"]
-        result.methodName = jsonObject["methodName"]
-        result.string = jsonObject["string"]
 
         return result
     }
@@ -925,43 +886,6 @@ export class BytesData {
         result.length = jsonObject["length"]
         result.status = jsonObject["status"]
         result.type = jsonObject["type"]
-
-        return result
-    }
-}
-
-export class DocumentReaderUvFiberElement {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new DocumentReaderUvFiberElement()
-
-        result.rectArray = []
-        if (jsonObject["rectArray"] != null)
-            for (const i in jsonObject["rectArray"])
-                result.rectArray.push(DocReaderFieldRect.fromJson(jsonObject["rectArray"][i]))
-        result.rectCount = jsonObject["rectCount"]
-        result.expectedCount = jsonObject["expectedCount"]
-        result.width = []
-        if (jsonObject["width"] != null)
-            for (const i in jsonObject["width"])
-                result.width.push(jsonObject["width"][i])
-        result.length = []
-        if (jsonObject["length"] != null)
-            for (const i in jsonObject["length"])
-                result.length.push(jsonObject["length"][i])
-        result.area = []
-        if (jsonObject["area"] != null)
-            for (const i in jsonObject["area"])
-                result.area.push(jsonObject["area"][i])
-        result.colorValues = []
-        if (jsonObject["colorValues"] != null)
-            for (const i in jsonObject["colorValues"])
-                result.colorValues.push(jsonObject["colorValues"][i])
-        result.status = jsonObject["status"]
-        result.elementType = jsonObject["elementType"]
-        result.elementDiagnose = jsonObject["elementDiagnose"]
-        result.elementTypeName = jsonObject["elementTypeName"]
-        result.elementDiagnoseName = jsonObject["elementDiagnoseName"]
 
         return result
     }
@@ -6156,6 +6080,9 @@ export const Enum = {
 const DocumentReader = {}
 
 DocumentReader.initializeReaderAutomatically = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderAutomatically", [], successCallback, errorCallback)
+DocumentReader.isBlePermissionsGranted = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isBlePermissionsGranted", [], successCallback, errorCallback)
+DocumentReader.startBluetoothService = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startBluetoothService", [], successCallback, errorCallback)
+DocumentReader.initializeReaderDevice7310Config = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderDevice7310Config", [], successCallback, errorCallback)
 DocumentReader.getAPIVersion = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAPIVersion", [], successCallback, errorCallback)
 DocumentReader.getAvailableScenarios = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAvailableScenarios", [], successCallback, errorCallback)
 DocumentReader.isRFIDAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isRFIDAvailableForUse", [], successCallback, errorCallback)

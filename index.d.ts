@@ -1057,76 +1057,14 @@ export class RfidNotificationCompletion {
 
 export class DocumentReaderException {
     errorCode?: number
-    localizedMessage?: string
     message?: string
-    string?: string
-    stackTrace?: StackTraceElement[]
 
     static fromJson(jsonObject?: any): DocumentReaderException | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
         const result = new DocumentReaderException
 
         result.errorCode = jsonObject["errorCode"]
-        result.localizedMessage = jsonObject["localizedMessage"]
         result.message = jsonObject["message"]
-        result.string = jsonObject["string"]
-        result.stackTrace = []
-        if (jsonObject["stackTrace"] != null) {
-            for (const i in jsonObject["stackTrace"]) {
-                const item = StackTraceElement.fromJson(jsonObject["stackTrace"][i])
-                if (item != undefined)
-                    result.stackTrace.push(item)
-            }
-        }
-
-        return result
-    }
-}
-
-export class Throwable {
-    localizedMessage?: string
-    message?: string
-    string?: string
-    stackTrace?: StackTraceElement[]
-
-    static fromJson(jsonObject?: any): Throwable | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new Throwable
-
-        result.localizedMessage = jsonObject["localizedMessage"]
-        result.message = jsonObject["message"]
-        result.string = jsonObject["string"]
-        result.stackTrace = []
-        if (jsonObject["stackTrace"] != null) {
-            for (const i in jsonObject["stackTrace"]) {
-                const item = StackTraceElement.fromJson(jsonObject["stackTrace"][i])
-                if (item != undefined)
-                    result.stackTrace.push(item)
-            }
-        }
-
-        return result
-    }
-}
-
-export class StackTraceElement {
-    lineNumber?: number
-    isNativeMethod?: boolean
-    className?: string
-    fileName?: string
-    methodName?: string
-    string?: string
-
-    static fromJson(jsonObject?: any): StackTraceElement | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new StackTraceElement
-
-        result.lineNumber = jsonObject["lineNumber"]
-        result.isNativeMethod = jsonObject["isNativeMethod"]
-        result.className = jsonObject["className"]
-        result.fileName = jsonObject["fileName"]
-        result.methodName = jsonObject["methodName"]
-        result.string = jsonObject["string"]
 
         return result
     }
@@ -1370,68 +1308,6 @@ export class BytesData {
         result.length = jsonObject["length"]
         result.status = jsonObject["status"]
         result.type = jsonObject["type"]
-
-        return result
-    }
-}
-
-export class DocumentReaderUvFiberElement {
-    rectArray?: DocReaderFieldRect[]
-    rectCount?: number
-    expectedCount?: number
-    width?: number[]
-    length?: number[]
-    area?: number[]
-    colorValues?: number[]
-    status?: number
-    elementType?: number
-    elementDiagnose?: number
-    elementTypeName?: string
-    elementDiagnoseName?: string
-
-    static fromJson(jsonObject?: any): DocumentReaderUvFiberElement | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new DocumentReaderUvFiberElement
-
-        result.rectArray = []
-        if (jsonObject["rectArray"] != null) {
-            for (const i in jsonObject["rectArray"]) {
-                const item = DocReaderFieldRect.fromJson(jsonObject["rectArray"][i])
-                if (item != undefined)
-                    result.rectArray.push(item)
-            }
-        }
-        result.rectCount = jsonObject["rectCount"]
-        result.expectedCount = jsonObject["expectedCount"]
-        result.width = []
-        if (jsonObject["width"] != null) {
-            for (const i in jsonObject["width"]) {
-                result.width.push(jsonObject["width"][i])
-            }
-        }
-        result.length = []
-        if (jsonObject["length"] != null) {
-            for (const i in jsonObject["length"]) {
-                result.length.push(jsonObject["length"][i])
-            }
-        }
-        result.area = []
-        if (jsonObject["area"] != null) {
-            for (const i in jsonObject["area"]) {
-                result.area.push(jsonObject["area"][i])
-            }
-        }
-        result.colorValues = []
-        if (jsonObject["colorValues"] != null) {
-            for (const i in jsonObject["colorValues"]) {
-                result.colorValues.push(jsonObject["colorValues"][i])
-            }
-        }
-        result.status = jsonObject["status"]
-        result.elementType = jsonObject["elementType"]
-        result.elementDiagnose = jsonObject["elementDiagnose"]
-        result.elementTypeName = jsonObject["elementTypeName"]
-        result.elementDiagnoseName = jsonObject["elementDiagnoseName"]
 
         return result
     }
@@ -6680,6 +6556,9 @@ export const Enum = {
 
 export default class DocumentReader {
     static initializeReaderAutomatically(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static isBlePermissionsGranted(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startBluetoothService(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static initializeReaderDevice7310Config(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAPIVersion(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAvailableScenarios(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static isRFIDAvailableForUse(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void

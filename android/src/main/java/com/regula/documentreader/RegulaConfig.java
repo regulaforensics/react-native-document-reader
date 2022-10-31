@@ -684,6 +684,7 @@ class RegulaConfig {
                 setProcessParams(params, input.getJSONObject("processParams"));
                 builder.setProcessParams(params);
             }
+            return builder.build();
         } catch (JSONException e) {
             e.printStackTrace();
         }
