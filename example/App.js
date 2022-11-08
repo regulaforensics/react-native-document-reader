@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Button, Text, Image, ScrollView, NativeEventEmitter, Platform, TouchableOpacity } from 'react-native'
-import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader } from '@regulaforensics/react-native-document-reader-beta'
+import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader } from '@regulaforensics/react-native-document-reader-api-beta'
 import * as RNFS from 'react-native-fs'
 import RadioGroup from 'react-native-radio-buttons-group'
 import { launchImageLibrary } from 'react-native-image-picker';
