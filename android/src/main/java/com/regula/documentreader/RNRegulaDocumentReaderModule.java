@@ -22,6 +22,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.regula.documentreader.api.completions.ICheckDatabaseUpdate;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion;
@@ -32,7 +33,7 @@ import com.regula.documentreader.api.completions.ITccParamsCompletion;
 import com.regula.documentreader.api.enums.DocReaderAction;
 import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.internal.core.CoreScenarioUtil;
-import com.regula.documentreader.api.params.Device7310Config;
+import com.regula.documentreader.api.params.BleDeviceConfig;
 import com.regula.documentreader.api.params.DocReaderConfig;
 import com.regula.documentreader.api.params.ImageInputData;
 import com.regula.documentreader.api.internal.params.ImageInputParam;
@@ -56,7 +57,7 @@ import static com.regula.documentreader.api.DocumentReader.Instance;
 
 import androidx.annotation.NonNull;
 
-@SuppressWarnings({"ConstantConditions", "RedundantSuppression"})
+@SuppressWarnings({"ConstantConditions", "RedundantSuppression", "MissingPermission"})
 public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
     private final static String prepareDatabaseProgressChangeEvent = "prepareDatabaseProgressChangeEvent";
     private final static String completionEvent = "completionEvent";
@@ -218,8 +219,11 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "startBluetoothService":
                     startBluetoothService(callback);
                     break;
-                case "initializeReaderDevice7310Config":
-                    initializeReaderDevice7310Config(callback);
+                case "initializeReaderBleDeviceConfig":
+                    initializeReaderBleDeviceConfig(callback);
+                    break;
+                case "getTag":
+                    getTag(callback);
                     break;
                 case "getAPIVersion":
                     getAPIVersion(callback);
@@ -340,6 +344,12 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                     break;
                 case "setCameraSessionIsPaused":
                     setCameraSessionIsPaused(callback, args(0));
+                    break;
+                case "setTag":
+                    setTag(callback, args(0));
+                    break;
+                case "checkDatabaseUpdate":
+                    checkDatabaseUpdate(callback, args(0));
                     break;
                 case "getScenario":
                     getScenario(callback, args(0));
@@ -472,10 +482,10 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         callback.success();
     }
 
-    private void initializeReaderDevice7310Config(Callback callback) {
+    private void initializeReaderBleDeviceConfig(Callback callback) {
         if (BluetoothUtil.Companion.getBleManager() == null) callback.error("bleManager is null");
         if (!Instance().isReady())
-            Instance().initializeReader(getContext(), new Device7310Config(BluetoothUtil.Companion.getBleManager()), getInitCompletion(callback));
+            Instance().initializeReader(getContext(), new BleDeviceConfig(BluetoothUtil.Companion.getBleManager()), getInitCompletion(callback));
         else
             callback.success("already initialized");
     }
@@ -596,6 +606,20 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         callback.success();
     }
 
+    private void getTag(Callback callback) {
+        callback.success(Instance().tag);
+    }
+
+    private void setTag(Callback callback, String tag) {
+        Instance().tag = tag;
+        callback.success();
+    }
+
+    private void checkDatabaseUpdate(Callback callback, String databaseId) {
+        Instance().checkDatabaseUpdate(getContext(), databaseId, getCheckDatabaseUpdateCompletion(callback));
+        callback.success();
+    }
+
     private void startNewPage(Callback callback) {
         Instance().startNewPage();
         callback.success();
@@ -637,7 +661,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     private void cancelDBUpdate(Callback callback) {
-        callback.success(Instance().cancelDBUpdate());
+        callback.success(Instance().cancelDBUpdate(getContext()));
     }
 
     private void resetConfiguration(Callback callback) {
@@ -837,6 +861,10 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             } else
                 callback.error("Init failed:" + error);
         };
+    }
+
+    private ICheckDatabaseUpdate getCheckDatabaseUpdateCompletion(Callback callback) {
+        return (database) -> callback.success(JSONConstructor.generateDocReaderDocumentsDatabase(database));
     }
 
     private ITccParamsCompletion getTCCParamsCompletion(Callback callback) {
