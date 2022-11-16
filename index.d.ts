@@ -185,6 +185,8 @@ export class DocumentReaderValue {
     originalValue?: string
     boundRect?: Rect
     comparison?: Record<number, number>
+    originalSymbols?: DocumentReaderSymbol[]
+    rfidOrigin?: DocumentReaderRfidOrigin
 
     static fromJson(jsonObject?: any): DocumentReaderValue | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -203,6 +205,15 @@ export class DocumentReaderValue {
                 result.comparison[i as unknown as number] = jsonObject["comparison"][i]
             }
         }
+        result.originalSymbols = []
+        if (jsonObject["originalSymbols"] != null) {
+            for (const i in jsonObject["originalSymbols"]) {
+                const item = DocumentReaderSymbol.fromJson(jsonObject["originalSymbols"][i])
+                if (item != undefined)
+                    result.originalSymbols.push(item)
+            }
+        }
+        result.rfidOrigin = DocumentReaderRfidOrigin.fromJson(jsonObject["rfidOrigin"])
 
         return result
     }
@@ -214,8 +225,11 @@ export class DocumentReaderTextField {
     status?: number
     lcidName?: string
     fieldName?: string
-    value?: DocumentReaderValue
+    value?: string
+    getValue?: DocumentReaderValue
     values?: DocumentReaderValue[]
+    comparisonList?: DocumentReaderComparison[]
+    validityList?: DocumentReaderValidity[]
 
     static fromJson(jsonObject?: any): DocumentReaderTextField | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -226,13 +240,30 @@ export class DocumentReaderTextField {
         result.status = jsonObject["status"]
         result.lcidName = jsonObject["lcidName"]
         result.fieldName = jsonObject["fieldName"]
-        result.value = DocumentReaderValue.fromJson(jsonObject["value"])
+        result.value = jsonObject["value"]
+        result.getValue = DocumentReaderValue.fromJson(jsonObject["getValue"])
         result.values = []
         if (jsonObject["values"] != null) {
             for (const i in jsonObject["values"]) {
                 const item = DocumentReaderValue.fromJson(jsonObject["values"][i])
                 if (item != undefined)
                     result.values.push(item)
+            }
+        }
+        result.comparisonList = []
+        if (jsonObject["comparisonList"] != null) {
+            for (const i in jsonObject["comparisonList"]) {
+                const item = DocumentReaderComparison.fromJson(jsonObject["comparisonList"][i])
+                if (item != undefined)
+                    result.comparisonList.push(item)
+            }
+        }
+        result.validityList = []
+        if (jsonObject["validityList"] != null) {
+            for (const i in jsonObject["validityList"]) {
+                const item = DocumentReaderValidity.fromJson(jsonObject["validityList"][i])
+                if (item != undefined)
+                    result.validityList.push(item)
             }
         }
 
@@ -242,6 +273,9 @@ export class DocumentReaderTextField {
 
 export class DocumentReaderTextResult {
     status?: number
+    comparisonStatus?: number
+    validityStatus?: number
+    availableSourceList?: DocumentReaderTextSource[]
     fields?: DocumentReaderTextField[]
 
     static fromJson(jsonObject?: any): DocumentReaderTextResult | undefined {
@@ -249,6 +283,16 @@ export class DocumentReaderTextResult {
         const result = new DocumentReaderTextResult
 
         result.status = jsonObject["status"]
+        result.comparisonStatus = jsonObject["comparisonStatus"]
+        result.validityStatus = jsonObject["validityStatus"]
+        result.availableSourceList = []
+        if (jsonObject["availableSourceList"] != null) {
+            for (const i in jsonObject["availableSourceList"]) {
+                const item = DocumentReaderTextSource.fromJson(jsonObject["availableSourceList"][i])
+                if (item != undefined)
+                    result.availableSourceList.push(item)
+            }
+        }
         result.fields = []
         if (jsonObject["fields"] != null) {
             for (const i in jsonObject["fields"]) {
@@ -1057,76 +1101,14 @@ export class RfidNotificationCompletion {
 
 export class DocumentReaderException {
     errorCode?: number
-    localizedMessage?: string
     message?: string
-    string?: string
-    stackTrace?: StackTraceElement[]
 
     static fromJson(jsonObject?: any): DocumentReaderException | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
         const result = new DocumentReaderException
 
         result.errorCode = jsonObject["errorCode"]
-        result.localizedMessage = jsonObject["localizedMessage"]
         result.message = jsonObject["message"]
-        result.string = jsonObject["string"]
-        result.stackTrace = []
-        if (jsonObject["stackTrace"] != null) {
-            for (const i in jsonObject["stackTrace"]) {
-                const item = StackTraceElement.fromJson(jsonObject["stackTrace"][i])
-                if (item != undefined)
-                    result.stackTrace.push(item)
-            }
-        }
-
-        return result
-    }
-}
-
-export class Throwable {
-    localizedMessage?: string
-    message?: string
-    string?: string
-    stackTrace?: StackTraceElement[]
-
-    static fromJson(jsonObject?: any): Throwable | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new Throwable
-
-        result.localizedMessage = jsonObject["localizedMessage"]
-        result.message = jsonObject["message"]
-        result.string = jsonObject["string"]
-        result.stackTrace = []
-        if (jsonObject["stackTrace"] != null) {
-            for (const i in jsonObject["stackTrace"]) {
-                const item = StackTraceElement.fromJson(jsonObject["stackTrace"][i])
-                if (item != undefined)
-                    result.stackTrace.push(item)
-            }
-        }
-
-        return result
-    }
-}
-
-export class StackTraceElement {
-    lineNumber?: number
-    isNativeMethod?: boolean
-    className?: string
-    fileName?: string
-    methodName?: string
-    string?: string
-
-    static fromJson(jsonObject?: any): StackTraceElement | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new StackTraceElement
-
-        result.lineNumber = jsonObject["lineNumber"]
-        result.isNativeMethod = jsonObject["isNativeMethod"]
-        result.className = jsonObject["className"]
-        result.fileName = jsonObject["fileName"]
-        result.methodName = jsonObject["methodName"]
-        result.string = jsonObject["string"]
 
         return result
     }
@@ -1375,68 +1357,6 @@ export class BytesData {
     }
 }
 
-export class DocumentReaderUvFiberElement {
-    rectArray?: DocReaderFieldRect[]
-    rectCount?: number
-    expectedCount?: number
-    width?: number[]
-    length?: number[]
-    area?: number[]
-    colorValues?: number[]
-    status?: number
-    elementType?: number
-    elementDiagnose?: number
-    elementTypeName?: string
-    elementDiagnoseName?: string
-
-    static fromJson(jsonObject?: any): DocumentReaderUvFiberElement | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new DocumentReaderUvFiberElement
-
-        result.rectArray = []
-        if (jsonObject["rectArray"] != null) {
-            for (const i in jsonObject["rectArray"]) {
-                const item = DocReaderFieldRect.fromJson(jsonObject["rectArray"][i])
-                if (item != undefined)
-                    result.rectArray.push(item)
-            }
-        }
-        result.rectCount = jsonObject["rectCount"]
-        result.expectedCount = jsonObject["expectedCount"]
-        result.width = []
-        if (jsonObject["width"] != null) {
-            for (const i in jsonObject["width"]) {
-                result.width.push(jsonObject["width"][i])
-            }
-        }
-        result.length = []
-        if (jsonObject["length"] != null) {
-            for (const i in jsonObject["length"]) {
-                result.length.push(jsonObject["length"][i])
-            }
-        }
-        result.area = []
-        if (jsonObject["area"] != null) {
-            for (const i in jsonObject["area"]) {
-                result.area.push(jsonObject["area"][i])
-            }
-        }
-        result.colorValues = []
-        if (jsonObject["colorValues"] != null) {
-            for (const i in jsonObject["colorValues"]) {
-                result.colorValues.push(jsonObject["colorValues"][i])
-            }
-        }
-        result.status = jsonObject["status"]
-        result.elementType = jsonObject["elementType"]
-        result.elementDiagnose = jsonObject["elementDiagnose"]
-        result.elementTypeName = jsonObject["elementTypeName"]
-        result.elementDiagnoseName = jsonObject["elementDiagnoseName"]
-
-        return result
-    }
-}
-
 export class ImageInputData {
     pageIndex?: number
     light?: number
@@ -1462,6 +1382,114 @@ export class ImageInputData {
                 result.imgBytes.push(jsonObject["imgBytes"][i])
             }
         }
+
+        return result
+    }
+}
+
+export class DocReaderDocumentsDatabase {
+    databaseID?: string
+    version?: string
+    date?: string
+    databaseDescription?: string
+    countriesNumber?: number
+    documentsNumber?: number
+
+    static fromJson(jsonObject?: any): DocReaderDocumentsDatabase | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new DocReaderDocumentsDatabase
+
+        result.databaseID = jsonObject["databaseID"]
+        result.version = jsonObject["version"]
+        result.date = jsonObject["date"]
+        result.databaseDescription = jsonObject["databaseDescription"]
+        result.countriesNumber = jsonObject["countriesNumber"]
+        result.documentsNumber = jsonObject["documentsNumber"]
+
+        return result
+    }
+}
+
+export class DocumentReaderComparison {
+    sourceTypeLeft?: number
+    sourceTypeRight?: number
+    status?: number
+
+    static fromJson(jsonObject?: any): DocumentReaderComparison | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new DocumentReaderComparison
+
+        result.sourceTypeLeft = jsonObject["sourceTypeLeft"]
+        result.sourceTypeRight = jsonObject["sourceTypeRight"]
+        result.status = jsonObject["status"]
+
+        return result
+    }
+}
+
+export class DocumentReaderRfidOrigin {
+    dg?: number
+    dgTag?: number
+    entryView?: number
+    tagEntry?: number
+
+    static fromJson(jsonObject?: any): DocumentReaderRfidOrigin | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new DocumentReaderRfidOrigin
+
+        result.dg = jsonObject["dg"]
+        result.dgTag = jsonObject["dgTag"]
+        result.entryView = jsonObject["entryView"]
+        result.tagEntry = jsonObject["tagEntry"]
+
+        return result
+    }
+}
+
+export class DocumentReaderTextSource {
+    sourceType?: number
+    source?: string
+    validityStatus?: number
+
+    static fromJson(jsonObject?: any): DocumentReaderTextSource | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new DocumentReaderTextSource
+
+        result.sourceType = jsonObject["sourceType"]
+        result.source = jsonObject["source"]
+        result.validityStatus = jsonObject["validityStatus"]
+
+        return result
+    }
+}
+
+export class DocumentReaderSymbol {
+    code?: number
+    rect?: Rect
+    probability?: number
+
+    static fromJson(jsonObject?: any): DocumentReaderSymbol | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new DocumentReaderSymbol
+
+        result.code = jsonObject["code"]
+        result.rect = Rect.fromJson(jsonObject["rect"])
+        result.probability = jsonObject["probability"]
+
+        return result
+    }
+}
+
+export class DocumentReaderValidity {
+    sourceType?: number
+    status?: number
+
+    static fromJson(jsonObject?: any): DocumentReaderValidity | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new DocumentReaderValidity
+
+        result.sourceType = jsonObject["sourceType"]
+        result.status = jsonObject["status"]
 
         return result
     }
@@ -1727,6 +1755,7 @@ export const eRPRM_Authenticity = {
     BARCODE_FORMAT_CHECK: 65536,
     KINEGRAM: 131072,
     HOLOGRAMS_DETECTION: 524288,
+    MRZ: 8388608,
 }
 
 export const eRFID_ErrorCodes = {
@@ -2796,6 +2825,7 @@ export const eCheckDiagnose = {
     FALSE_IPI_PARAMETERS: 65,
     FIELD_POS_CORRECTOR_HIGHLIGHT_IR: 80,
     FIELD_POS_CORRECTOR_GLARES_IN_PHOTO_AREA: 81,
+    FIELD_POS_CORRECTOR_PHOTO_REPLACED: 82,
     OVI_IR_INVISIBLE: 90,
     OVI_INSUFFICIENT_AREA: 91,
     OVI_COLOR_INVARIABLE: 92,
@@ -2848,7 +2878,9 @@ export const eCheckDiagnose = {
     FINISHED_BY_TIMEOUT: 186,
     HOLO_PHOTO_DOCUMENT_OUTSIDE_FRAME: 187,
     LIVENESS_DEPTH_CHECK_FAILED: 190,
-    LAST_DIAGNOSE_VALUE: 200,
+    MRZ_QUALITY_WRONG_MRZ_DPI: 200,
+    MRZ_QUALITY_WRONG_BACKGROUND: 201,
+    LAST_DIAGNOSE_VALUE: 210,
 }
 
 export const RFIDDelegate = {
@@ -6680,6 +6712,10 @@ export const Enum = {
 
 export default class DocumentReader {
     static initializeReaderAutomatically(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static isBlePermissionsGranted(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startBluetoothService(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static initializeReaderBleDeviceConfig(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getTag(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAPIVersion(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAvailableScenarios(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static isRFIDAvailableForUse(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
@@ -6720,6 +6756,8 @@ export default class DocumentReader {
     static setEnableCoreLogs(logs: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static addPKDCertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setCameraSessionIsPaused(paused: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setTag(tag: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static checkDatabaseUpdate(databaseId: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getScenario(scenario: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImages(images: string[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static showScannerWithCameraID(cameraID: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void

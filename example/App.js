@@ -170,6 +170,7 @@ export default class App extends Component {
   }
 
   displayResults(results) {
+    if(results == null) return
     this.setState({ fullName: results.getTextFieldValueByType({ fieldType: Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES }) })
     if (results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE }) != null)
       this.setState({ docFront: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE }) } })
@@ -210,6 +211,7 @@ export default class App extends Component {
         </View>
         }
         {!this.state.isReadingRfidCustomUi && <View style={styles.container}>
+        <Text/><Text/>
           <Text style={{
             top: 1,
             left: 1,

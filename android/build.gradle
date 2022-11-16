@@ -1,46 +1,21 @@
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
-    }
-}
-
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.0"
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
-    lintOptions {
-        abortOnError false
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-}
-
-repositories {
-    mavenCentral()
 }
 
 rootProject.allprojects {
     repositories {
         maven {
             url "https://maven.regulaforensics.com/RegulaDocumentReader"
-        }
-        maven {
-            url "https://maven.regulaforensics.com/RegulaDocumentReader/Beta"
         }
     }
 }
@@ -49,7 +24,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
     //noinspection GradleDependency
-    implementation('com.regula.documentreader:api:6.5.7488') {
+    implementation('com.regula.documentreader:api:6.6.8072') {
         transitive = true
     }
 }
