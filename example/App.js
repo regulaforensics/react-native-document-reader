@@ -171,11 +171,20 @@ export default class App extends Component {
 
   displayResults(results) {
     if(results == null) return
-    this.setState({ fullName: results.getTextFieldValueByType({ fieldType: Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES }) })
-    if (results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE }) != null)
-      this.setState({ docFront: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE }) } })
-    if (results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_PORTRAIT }) != null)
-      this.setState({ portrait: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_PORTRAIT }) } })
+
+    results.getTextFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES, (value) => {
+      this.setState({ fullName: value })
+    }, error => console.log(error))
+
+    results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE, (value) => {
+      if(value != null)
+        this.setState({ docFront: { uri: "data:image/png;base64," + value } })
+    }, error => console.log(error))
+
+    results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT, (value) => {
+      if(value != null)
+        this.setState({ portrait: { uri: "data:image/png;base64," + value } })
+    }, error => console.log(error))
   }
 
   customRFID() {

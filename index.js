@@ -1013,7 +1013,16 @@ export class DocumentReaderValidity {
 }
 
 export class DocumentReaderResults {
-    getTextFieldValueByType({ fieldType, lcid = 0, source = -1, original = false }) {
+    constructor() {
+        // temporary fix, otherwise rawResult can't be accessed in getTextFieldValueByType
+        // soon all classes will be rewritten to use constructors
+        this.rawResult = ""
+    }
+
+    /**
+     * @deprecated Use getTextFieldValueBy...()
+     */
+     getTextFieldValueByTypeOld({ fieldType, lcid = 0, source = -1, original = false }) {
         if (this.textResult == null) return null
         const field = this.findByTypeAndLcid(fieldType, lcid)
         if (field == null) return null
@@ -1022,13 +1031,19 @@ export class DocumentReaderResults {
         return original ? value.originalValue : value.value
     }
 
+    /**
+     * @deprecated
+     */
     getTextFieldStatusByType(fieldType, lcid = 0) {
         if (this.textResult == null) return 0
         const field = this.findByTypeAndLcid(fieldType, lcid)
         return field != null ? field.status : 0
     }
 
-    getGraphicFieldImageByType({ fieldType, source = -1, pageIndex = -1, light = -1 }) {
+    /**
+     * @deprecated Use getGraphicFieldImageBy...()
+     */
+    getGraphicFieldImageByTypeOld({ fieldType, source = -1, pageIndex = -1, light = -1 }) {
         if (this.graphicResult == null) return null
         const foundFields = []
 
@@ -1051,6 +1066,9 @@ export class DocumentReaderResults {
             return foundFields[0].value
     }
 
+    /**
+     * @deprecated
+     */
     getQualityResult(imageQualityCheckType, securityFeature = -1, pageIndex = 0) {
         let resultSum = 2
         if (this.imageQuality == null) return resultSum
@@ -1080,6 +1098,9 @@ export class DocumentReaderResults {
         return resultSum
     }
 
+    /**
+     * @deprecated
+     */
     findByTypeAndLcid(type, lcid) {
         let field
         const foundFields = []
@@ -1103,6 +1124,9 @@ export class DocumentReaderResults {
         return foundField
     }
 
+    /**
+     * @deprecated
+     */
     findBySource(field, sourceType) {
         let value
         if (sourceType === -1) {
@@ -1122,7 +1146,10 @@ export class DocumentReaderResults {
         return null
     }
 
-    getContainers(resultTypes) {
+    /**
+     * @deprecated Use getContainers()
+     */
+    getContainersOld(resultTypes) {
         try {
             const json = JSON.parse(this.rawResult)
             const containerList = json.List
@@ -1148,12 +1175,83 @@ export class DocumentReaderResults {
         }
     }
 
-    getEncryptedContainers() {
-        return this.getContainers([
+    /**
+     * @deprecated Use getEncryptedContainers()
+     */
+    getEncryptedContainersOld() {
+        return this.getContainersOld([
             eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_RFID_SESSION,
             eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_ENCRYPTED_RCL,
             eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_LICENSE
         ])
+    }
+    
+    getTextFieldValueByType(fieldType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getTextFieldValueByType", [this.rawResult, fieldType], successCallback, errorCallback)
+    }
+
+    getTextFieldValueByTypeLcid(fieldType, lcid, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getTextFieldValueByTypeLcid", [this.rawResult, fieldType, lcid], successCallback, errorCallback)
+    }
+
+    getTextFieldValueByTypeSource(fieldType, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getTextFieldValueByTypeSource", [this.rawResult, fieldType, source], successCallback, errorCallback)
+    }
+
+    getTextFieldValueByTypeLcidSource(fieldType, lcid, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getTextFieldValueByTypeLcidSource", [this.rawResult, fieldType, lcid, source], successCallback, errorCallback)
+    }
+
+    getTextFieldValueByTypeSourceOriginal(fieldType, source, original, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getTextFieldValueByTypeSourceOriginal", [this.rawResult, fieldType, source, original], successCallback, errorCallback)
+    }
+
+    getTextFieldValueByTypeLcidSourceOriginal(fieldType, lcid, source, original, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getTextFieldValueByTypeLcidSourceOriginal", [this.rawResult, fieldType, lcid, source, original], successCallback, errorCallback)
+    }
+
+    getTextFieldByType(fieldType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getTextFieldByType", [this.rawResult, fieldType], successCallback, errorCallback)
+    }
+
+    getTextFieldByTypeLcid(fieldType, lcid, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getTextFieldByTypeLcid", [this.rawResult, fieldType, lcid], successCallback, errorCallback)
+    }
+
+    getGraphicFieldByTypeSource(fieldType, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getGraphicFieldByTypeSource", [this.rawResult, fieldType, source], successCallback, errorCallback)
+    }
+
+    getGraphicFieldByTypeSourcePageIndex(fieldType, source, pageIndex, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getGraphicFieldByTypeSourcePageIndex", [this.rawResult, fieldType, source, pageIndex], successCallback, errorCallback)
+    }
+
+    getGraphicFieldByTypeSourcePageIndexLight(fieldType, source, pageIndex, light, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getGraphicFieldByTypeSourcePageIndex", [this.rawResult, fieldType, source, pageIndex, light], successCallback, errorCallback)
+    }
+
+    getGraphicFieldImageByType(fieldType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getGraphicFieldImageByType", [this.rawResult, fieldType], successCallback, errorCallback)
+    }
+
+    getGraphicFieldImageByTypeSource(fieldType, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getGraphicFieldImageByTypeSource", [this.rawResult, fieldType, source], successCallback, errorCallback)
+    }
+
+    getGraphicFieldImageByTypeSourcePageIndex(fieldType, source, pageIndex, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getGraphicFieldImageByTypeSourcePageIndex", [this.rawResult, fieldType, source, pageIndex], successCallback, errorCallback)
+    }
+
+    getGraphicFieldImageByTypeSourcePageIndexLight(fieldType, source, pageIndex, light, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getGraphicFieldImageByTypeSourcePageIndexLight", [this.rawResult, fieldType, source, pageIndex, light], successCallback, errorCallback)
+    }
+
+    getContainers(resultType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getContainers", [this.rawResult, resultType], successCallback, errorCallback)
+    }
+
+    getEncryptedContainers(successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "getEncryptedContainers", [this.rawResult], successCallback, errorCallback)
     }
 
     static fromJson(jsonObject) {

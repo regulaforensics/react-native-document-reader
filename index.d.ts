@@ -1518,7 +1518,10 @@ export class DocumentReaderResults {
     status?: DocumentReaderResultsStatus
     vdsncData?: VDSNCData
 
-    getTextFieldValueByType({ fieldType, lcid = 0, source = -1, original = false }: { fieldType: number, lcid?: number, source?: number, original?: boolean }): string | undefined {
+    /**
+     * @deprecated Use getTextFieldValueBy...()
+     */
+     getTextFieldValueByTypeOld({ fieldType, lcid = 0, source = -1, original = false }: { fieldType: number, lcid?: number, source?: number, original?: boolean }): string | undefined {
         if (this.textResult == undefined) return undefined
         const field = this.findByTypeAndLcid(fieldType, lcid)
         if (field == undefined) return undefined
@@ -1527,6 +1530,9 @@ export class DocumentReaderResults {
         return original ? value.originalValue : value.value
     }
 
+    /**
+     * @deprecated
+     */
     getTextFieldStatusByType(fieldType: number, lcid?: number): number {
         if (this.textResult == undefined) return 0
         const field = this.findByTypeAndLcid(fieldType, lcid)
@@ -1535,7 +1541,10 @@ export class DocumentReaderResults {
         return 0
     }
 
-    getGraphicFieldImageByType({ fieldType, source = -1, light = -1, pageIndex = -1 }: { fieldType: number, source?: number, light?: number, pageIndex?: number }): string | undefined {
+    /**
+     * @deprecated Use getGraphicFieldImageBy...()
+     */
+    getGraphicFieldImageByTypeOld({ fieldType, source = -1, light = -1, pageIndex = -1 }: { fieldType: number, source?: number, light?: number, pageIndex?: number }): string | undefined {
         if (this.graphicResult == undefined || this.graphicResult.fields == undefined) return undefined
         const foundFields: DocumentReaderGraphicField[] = []
 
@@ -1558,6 +1567,9 @@ export class DocumentReaderResults {
         return foundFields.length > 0 ? foundFields[0].value : undefined
     }
 
+    /**
+     * @deprecated
+     */
     getQualityResult({ imageQualityCheckType, securityFeature = -1, pageIndex = 0 }: { imageQualityCheckType: number, securityFeature?: number, pageIndex?: number }): number {
         let resultSum = 2
         if (this.imageQuality == undefined)
@@ -1588,6 +1600,9 @@ export class DocumentReaderResults {
         return resultSum
     }
 
+    /**
+     * @deprecated
+     */
     findByTypeAndLcid(type: number, lcid?: number): DocumentReaderTextField | undefined {
         if (this.textResult == undefined || this.textResult.fields == undefined) return undefined
         let field
@@ -1612,6 +1627,9 @@ export class DocumentReaderResults {
         return foundField
     }
 
+    /**
+     * @deprecated
+     */
     findBySource(field: DocumentReaderTextField, sourceType: number): DocumentReaderValue | undefined {
         let value
         if (sourceType === -1) {
@@ -1632,7 +1650,10 @@ export class DocumentReaderResults {
         return undefined
     }
 
-    getContainers(resultTypes: number[]): string | undefined {
+    /**
+     * @deprecated Use getContainers()
+     */
+    getContainersOld(resultTypes: number[]): string | undefined {
         try {
             if(this.rawResult == undefined) return undefined
             const json = JSON.parse(this.rawResult)
@@ -1658,13 +1679,34 @@ export class DocumentReaderResults {
         }
     }
 
-    getEncryptedContainers(): string | undefined {
-        return this.getContainers([
+    /**
+     * @deprecated Use getEncryptedContainers()
+     */
+    getEncryptedContainersOld(): string | undefined {
+        return this.getContainersOld([
             eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_RFID_SESSION,
             eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_ENCRYPTED_RCL,
             eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_LICENSE
         ])
     }
+
+    getTextFieldValueByType(fieldType: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getTextFieldValueByTypeLcid(fieldType: number, lcid: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getTextFieldValueByTypeSource(fieldType: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getTextFieldValueByTypeLcidSource(fieldType: number, lcid: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getTextFieldValueByTypeSourceOriginal(fieldType: number, source: number, original: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getTextFieldValueByTypeLcidSourceOriginal(fieldType: number, lcid: number, source: number, original: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getTextFieldByType(fieldType: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getTextFieldByTypeLcid(fieldType: number, lcid: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getGraphicFieldByTypeSource(fieldType: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getGraphicFieldByTypeSourcePageIndex(fieldType: number, source: number, pageIndex: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getGraphicFieldByTypeSourcePageIndexLight(fieldType: number, source: number, pageIndex: number, light: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getGraphicFieldImageByType(fieldType: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getGraphicFieldImageByTypeSource(fieldType: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getGraphicFieldImageByTypeSourcePageIndex(fieldType: number, source: number, pageIndex: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getGraphicFieldImageByTypeSourcePageIndexLight(fieldType: number, source: number, pageIndex: number, light: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getContainers(resultType: number[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    getEncryptedContainers(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
 
     static fromJson(jsonObject?: any): DocumentReaderResults | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
