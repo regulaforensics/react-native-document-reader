@@ -172,17 +172,17 @@ export default class App extends Component {
   displayResults(results) {
     if(results == null) return
 
-    results.getTextFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES, (value) => {
+    results.textFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES, (value) => {
       this.setState({ fullName: value })
     }, error => console.log(error))
 
-    results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE, (value) => {
-      if(value != null)
+    results.graphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE, (value) => {
+      if(value != null && value != "")
         this.setState({ docFront: { uri: "data:image/png;base64," + value } })
     }, error => console.log(error))
 
-    results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT, (value) => {
-      if(value != null)
+    results.graphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT, (value) => {
+      if(value != null && value != "")
         this.setState({ portrait: { uri: "data:image/png;base64," + value } })
     }, error => console.log(error))
   }
