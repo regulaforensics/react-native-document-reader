@@ -1518,153 +1518,6 @@ export class DocumentReaderResults {
     status?: DocumentReaderResultsStatus
     vdsncData?: VDSNCData
 
-    getTextFieldValueByType({ fieldType, lcid = 0, source = -1, original = false }: { fieldType: number, lcid?: number, source?: number, original?: boolean }): string | undefined {
-        if (this.textResult == undefined) return undefined
-        const field = this.findByTypeAndLcid(fieldType, lcid)
-        if (field == undefined) return undefined
-        const value = this.findBySource(field, source)
-        if (value == undefined) return undefined
-        return original ? value.originalValue : value.value
-    }
-
-    getTextFieldStatusByType(fieldType: number, lcid?: number): number {
-        if (this.textResult == undefined) return 0
-        const field = this.findByTypeAndLcid(fieldType, lcid)
-        if(field != undefined && field.status != null && field.status != undefined)
-            return field.status
-        return 0
-    }
-
-    getGraphicFieldImageByType({ fieldType, source = -1, light = -1, pageIndex = -1 }: { fieldType: number, source?: number, light?: number, pageIndex?: number }): string | undefined {
-        if (this.graphicResult == undefined || this.graphicResult.fields == undefined) return undefined
-        const foundFields: DocumentReaderGraphicField[] = []
-
-        for (const field of this.graphicResult.fields)
-            if (field.fieldType === fieldType)
-                foundFields.push(field)
-        if (source !== -1)
-            for (let i = 0; i < foundFields.length; i++)
-                if (foundFields[i].sourceType !== source)
-                    foundFields.splice(i, 1)
-        if (light !== -1)
-            for (let i = 0; i < foundFields.length; i++)
-                if (foundFields[i].lightType !== light)
-                    foundFields.splice(i, 1)
-        if (pageIndex !== -1)
-            for (let i = 0; i < foundFields.length; i++)
-                if (foundFields[i].pageIndex !== pageIndex)
-                    foundFields.splice(i, 1)
-
-        return foundFields.length > 0 ? foundFields[0].value : undefined
-    }
-
-    getQualityResult({ imageQualityCheckType, securityFeature = -1, pageIndex = 0 }: { imageQualityCheckType: number, securityFeature?: number, pageIndex?: number }): number {
-        let resultSum = 2
-        if (this.imageQuality == undefined)
-            return resultSum
-
-        let imageQualityGroup
-
-        for (const iq of this.imageQuality)
-            if (iq != null && iq != undefined && iq.pageIndex == pageIndex)
-                imageQualityGroup = iq
-        if (imageQualityGroup == null || imageQualityGroup == undefined)
-            return resultSum
-
-        for (const field of imageQualityGroup.imageQualityList)
-            if (field.type === imageQualityCheckType)
-                if (securityFeature === -1) {
-                    if (field.result === 0) {
-                        resultSum = 0
-                        break
-                    }
-                    if (field.result === 1)
-                        resultSum = field.result
-                } else if (field.featureType === securityFeature) {
-                    resultSum = field.result
-                    break
-                }
-
-        return resultSum
-    }
-
-    findByTypeAndLcid(type: number, lcid?: number): DocumentReaderTextField | undefined {
-        if (this.textResult == undefined || this.textResult.fields == undefined) return undefined
-        let field
-        const foundFields: DocumentReaderTextField[] = []
-
-        for (field of this.textResult.fields)
-            if (field.fieldType === type)
-                foundFields.push(field)
-        if (foundFields.length <= 0)
-            return undefined
-
-        let foundField = undefined
-
-        for (field of foundFields)
-            if (lcid === 0) {
-                foundField = field
-                if (field.lcid === lcid)
-                    break
-            } else if (field.lcid === lcid)
-                return field
-
-        return foundField
-    }
-
-    findBySource(field: DocumentReaderTextField, sourceType: number): DocumentReaderValue | undefined {
-        let value
-        if (sourceType === -1) {
-            const mrzVal = this.findBySource(field, 3)
-            if (mrzVal != null && mrzVal != undefined)
-                return mrzVal
-            value = this.findBySource(field, 18)
-            if (value != null && value != undefined)
-                return value
-            const visualVal = this.findBySource(field, 17)
-            return visualVal
-        }
-        if(field.values == undefined) return undefined
-        for (const item of field.values)
-            if (item.sourceType === sourceType)
-                return item
-
-        return undefined
-    }
-
-    getContainers(resultTypes: number[]): string | undefined {
-        try {
-            if(this.rawResult == undefined) return undefined
-            const json = JSON.parse(this.rawResult)
-            const containerList = json.List
-            const resultArray: any[] = []
-            for (const container of containerList){
-                if (container == null || container.length == 0)
-                    continue
-                for (const resultType of resultTypes)
-                    if(resultType == container.result_type){
-                        resultArray.push(container)
-                        break
-                    }
-            }
-            if (resultArray.length == 0) return undefined
-            const newContainerList = {}
-            newContainerList["List"] = resultArray
-            const newJson = {}
-            newJson["ContainerList"] = newContainerList
-            newJson["TransactionInfo"] = json.TransactionInfo
-        } catch (error) {
-            return undefined
-        }
-    }
-
-    getEncryptedContainers(): string | undefined {
-        return this.getContainers([
-            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_RFID_SESSION,
-            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_ENCRYPTED_RCL,
-            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_LICENSE
-        ])
-    }
 
     static fromJson(jsonObject?: any): DocumentReaderResults | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -1729,6 +1582,196 @@ export class DocumentReaderResults {
 
         return result
     }
+
+    /**
+     * @deprecated Use textFieldValueBy...()
+     */
+     getTextFieldValueByType({ fieldType, lcid = 0, source = -1, original = false }: { fieldType: number, lcid?: number, source?: number, original?: boolean }): string | undefined {
+        if (this.textResult == undefined) return undefined
+        const field = this.findByTypeAndLcid(fieldType, lcid)
+        if (field == undefined) return undefined
+        const value = this.findBySource(field, source)
+        if (value == undefined) return undefined
+        return original ? value.originalValue : value.value
+    }
+
+    /**
+     * @deprecated
+     */
+    getTextFieldStatusByType(fieldType: number, lcid?: number): number {
+        if (this.textResult == undefined) return 0
+        const field = this.findByTypeAndLcid(fieldType, lcid)
+        if(field != undefined && field.status != null && field.status != undefined)
+            return field.status
+        return 0
+    }
+
+    /**
+     * @deprecated Use graphicFieldImageBy...()
+     */
+    getGraphicFieldImageByType({ fieldType, source = -1, light = -1, pageIndex = -1 }: { fieldType: number, source?: number, light?: number, pageIndex?: number }): string | undefined {
+        if (this.graphicResult == undefined || this.graphicResult.fields == undefined) return undefined
+        const foundFields: DocumentReaderGraphicField[] = []
+
+        for (const field of this.graphicResult.fields)
+            if (field.fieldType === fieldType)
+                foundFields.push(field)
+        if (source !== -1)
+            for (let i = 0; i < foundFields.length; i++)
+                if (foundFields[i].sourceType !== source)
+                    foundFields.splice(i, 1)
+        if (light !== -1)
+            for (let i = 0; i < foundFields.length; i++)
+                if (foundFields[i].lightType !== light)
+                    foundFields.splice(i, 1)
+        if (pageIndex !== -1)
+            for (let i = 0; i < foundFields.length; i++)
+                if (foundFields[i].pageIndex !== pageIndex)
+                    foundFields.splice(i, 1)
+
+        return foundFields.length > 0 ? foundFields[0].value : undefined
+    }
+
+    /**
+     * @deprecated
+     */
+    getQualityResult({ imageQualityCheckType, securityFeature = -1, pageIndex = 0 }: { imageQualityCheckType: number, securityFeature?: number, pageIndex?: number }): number {
+        let resultSum = 2
+        if (this.imageQuality == undefined)
+            return resultSum
+
+        let imageQualityGroup
+
+        for (const iq of this.imageQuality)
+            if (iq != null && iq != undefined && iq.pageIndex == pageIndex)
+                imageQualityGroup = iq
+        if (imageQualityGroup == null || imageQualityGroup == undefined)
+            return resultSum
+
+        for (const field of imageQualityGroup.imageQualityList)
+            if (field.type === imageQualityCheckType)
+                if (securityFeature === -1) {
+                    if (field.result === 0) {
+                        resultSum = 0
+                        break
+                    }
+                    if (field.result === 1)
+                        resultSum = field.result
+                } else if (field.featureType === securityFeature) {
+                    resultSum = field.result
+                    break
+                }
+
+        return resultSum
+    }
+
+    /**
+     * @deprecated
+     */
+    findByTypeAndLcid(type: number, lcid?: number): DocumentReaderTextField | undefined {
+        if (this.textResult == undefined || this.textResult.fields == undefined) return undefined
+        let field
+        const foundFields: DocumentReaderTextField[] = []
+
+        for (field of this.textResult.fields)
+            if (field.fieldType === type)
+                foundFields.push(field)
+        if (foundFields.length <= 0)
+            return undefined
+
+        let foundField = undefined
+
+        for (field of foundFields)
+            if (lcid === 0) {
+                foundField = field
+                if (field.lcid === lcid)
+                    break
+            } else if (field.lcid === lcid)
+                return field
+
+        return foundField
+    }
+
+    /**
+     * @deprecated
+     */
+    findBySource(field: DocumentReaderTextField, sourceType: number): DocumentReaderValue | undefined {
+        let value
+        if (sourceType === -1) {
+            const mrzVal = this.findBySource(field, 3)
+            if (mrzVal != null && mrzVal != undefined)
+                return mrzVal
+            value = this.findBySource(field, 18)
+            if (value != null && value != undefined)
+                return value
+            const visualVal = this.findBySource(field, 17)
+            return visualVal
+        }
+        if(field.values == undefined) return undefined
+        for (const item of field.values)
+            if (item.sourceType === sourceType)
+                return item
+
+        return undefined
+    }
+
+    /**
+     * @deprecated Use containers()
+     */
+    getContainers(resultTypes: number[]): string | undefined {
+        try {
+            if(this.rawResult == undefined) return undefined
+            const json = JSON.parse(this.rawResult)
+            const containerList = json.List
+            const resultArray: any[] = []
+            for (const container of containerList){
+                if (container == null || container.length == 0)
+                    continue
+                for (const resultType of resultTypes)
+                    if(resultType == container.result_type){
+                        resultArray.push(container)
+                        break
+                    }
+            }
+            if (resultArray.length == 0) return undefined
+            const newContainerList = {}
+            newContainerList["List"] = resultArray
+            const newJson = {}
+            newJson["ContainerList"] = newContainerList
+            newJson["TransactionInfo"] = json.TransactionInfo
+        } catch (error) {
+            return undefined
+        }
+    }
+
+    /**
+     * @deprecated Use encryptedContainers()
+     */
+    getEncryptedContainers(): string | undefined {
+        return this.getContainers([
+            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_RFID_SESSION,
+            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_ENCRYPTED_RCL,
+            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_LICENSE
+        ])
+    }
+
+    textFieldValueByType(fieldType: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    textFieldValueByTypeLcid(fieldType: number, lcid: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    textFieldValueByTypeSource(fieldType: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    textFieldValueByTypeLcidSource(fieldType: number, lcid: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    textFieldValueByTypeSourceOriginal(fieldType: number, source: number, original: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    textFieldValueByTypeLcidSourceOriginal(fieldType: number, lcid: number, source: number, original: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    textFieldByType(fieldType: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    textFieldByTypeLcid(fieldType: number, lcid: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    graphicFieldByTypeSource(fieldType: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    graphicFieldByTypeSourcePageIndex(fieldType: number, source: number, pageIndex: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    graphicFieldByTypeSourcePageIndexLight(fieldType: number, source: number, pageIndex: number, light: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    graphicFieldImageByType(fieldType: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    graphicFieldImageByTypeSource(fieldType: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    graphicFieldImageByTypeSourcePageIndex(fieldType: number, source: number, pageIndex: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    graphicFieldImageByTypeSourcePageIndexLight(fieldType: number, source: number, pageIndex: number, light: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    containers(resultType: number[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
+    encryptedContainers(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
 }
 
 export const FontStyle = {
