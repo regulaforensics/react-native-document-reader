@@ -329,7 +329,10 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
 }
 
 - (void) resetConfiguration:(Callback)successCallback :(Callback)errorCallback{
-    [self result:@"resetConfiguration() is an android-only method" :errorCallback];
+    RGLDocReader.shared.functionality = [RGLFunctionality new];
+    RGLDocReader.shared.processParams = [RGLProcessParams new];
+    RGLDocReader.shared.customization = [RGLCustomization new];
+    successCallback(@"");
 }
 
 - (void) setEnableCoreLogs:(BOOL)logs :(Callback)successCallback :(Callback)errorCallback{
