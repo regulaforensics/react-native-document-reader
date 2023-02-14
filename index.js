@@ -176,6 +176,8 @@ export class DocumentReaderTextField {
         if (jsonObject["validityList"] != null)
             for (const i in jsonObject["validityList"])
                 result.validityList.push(DocumentReaderValidity.fromJson(jsonObject["validityList"][i]))
+        result.comparisonStatus = jsonObject["comparisonStatus"]
+        result.validityStatus = jsonObject["validityStatus"]
 
         return result
     }
@@ -300,8 +302,10 @@ export class DocumentReaderNotification {
         const result = new DocumentReaderNotification()
 
         result.code = jsonObject["code"]
-        result.attachment = jsonObject["attachment"]
         result.value = jsonObject["value"]
+        result.notificationCode = jsonObject["notificationCode"]
+        result.dataFileType = jsonObject["dataFileType"]
+        result.progress = jsonObject["progress"]
 
         return result
     }
@@ -1013,154 +1017,87 @@ export class DocumentReaderValidity {
 }
 
 export class DocumentReaderResults {
-    getTextFieldValueByType({ fieldType, lcid = 0, source = -1, original = false }) {
-        if (this.textResult == null) return null
-        const field = this.findByTypeAndLcid(fieldType, lcid)
-        if (field == null) return null
-        const value = this.findBySource(field, source)
-        if (value == null) return null
-        return original ? value.originalValue : value.value
+    constructor() {
+        // temporary fix, otherwise rawResult can't be accessed in textFieldValueByType
+        // soon all classes will be rewritten to use constructors
+        this.rawResult = ""
+    }
+    
+    textFieldValueByType(fieldType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByType", [this.rawResult, fieldType], successCallback, errorCallback)
     }
 
-    getTextFieldStatusByType(fieldType, lcid = 0) {
-        if (this.textResult == null) return 0
-        const field = this.findByTypeAndLcid(fieldType, lcid)
-        return field != null ? field.status : 0
+    textFieldValueByTypeLcid(fieldType, lcid, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByTypeLcid", [this.rawResult, fieldType, lcid], successCallback, errorCallback)
     }
 
-    getGraphicFieldImageByType({ fieldType, source = -1, pageIndex = -1, light = -1 }) {
-        if (this.graphicResult == null) return null
-        const foundFields = []
-
-        for (const field of this.graphicResult.fields)
-            if (field.fieldType === fieldType)
-                foundFields.push(field)
-        if (source !== -1)
-            for (const index in foundFields)
-                if (foundFields[index].sourceType !== source)
-                    foundFields.splice(index, 1)
-        if (light !== -1)
-            for (const index in foundFields)
-                if (foundFields[index].lightType !== light)
-                    foundFields.splice(index, 1)
-        if (pageIndex !== -1)
-            for (const index in foundFields)
-                if (foundFields[index].pageIndex !== pageIndex)
-                    foundFields.splice(index, 1)
-        if (foundFields.length > 0)
-            return foundFields[0].value
+    textFieldValueByTypeSource(fieldType, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByTypeSource", [this.rawResult, fieldType, source], successCallback, errorCallback)
     }
 
-    getQualityResult(imageQualityCheckType, securityFeature = -1, pageIndex = 0) {
-        let resultSum = 2
-        if (this.imageQuality == null) return resultSum
-
-        let imageQualityGroup
-
-        for (const iq of this.imageQuality)
-            if (iq != null && iq.pageIndex === pageIndex)
-                imageQualityGroup = iq
-        if (imageQualityGroup == null)
-            return resultSum
-
-        for (const field of imageQualityGroup.imageQualityList)
-            if (field.type === imageQualityCheckType)
-                if (securityFeature === -1) {
-                    if (field.result === 0) {
-                        resultSum = 0
-                        break
-                    }
-                    if (field.result === 1)
-                        resultSum = field.result
-                } else if (field.featureType === securityFeature) {
-                    resultSum = field.result
-                    break
-                }
-
-        return resultSum
+    textFieldValueByTypeLcidSource(fieldType, lcid, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByTypeLcidSource", [this.rawResult, fieldType, lcid, source], successCallback, errorCallback)
     }
 
-    findByTypeAndLcid(type, lcid) {
-        let field
-        const foundFields = []
-
-        for (field of this.textResult.fields)
-            if (field.fieldType === type)
-                foundFields.push(field)
-        if (foundFields.length <= 0)
-            return null
-
-        let foundField = null
-
-        for (field of foundFields)
-            if (lcid === 0) {
-                foundField = field
-                if (field.lcid === lcid)
-                    break
-            } else if (field.lcid === lcid)
-                return field
-
-        return foundField
+    textFieldValueByTypeSourceOriginal(fieldType, source, original, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByTypeSourceOriginal", [this.rawResult, fieldType, source, original], successCallback, errorCallback)
     }
 
-    findBySource(field, sourceType) {
-        let value
-        if (sourceType === -1) {
-            const mrzVal = this.findBySource(field, 3)
-            if (mrzVal != null)
-                return mrzVal
-            value = this.findBySource(field, 18)
-            if (value != null)
-                return value
-            const visualVal = this.findBySource(field, 17)
-            return visualVal != null ? visualVal : null
-        }
-        for (const item of field.values)
-            if (item.sourceType === sourceType)
-                return item
-
-        return null
+    textFieldValueByTypeLcidSourceOriginal(fieldType, lcid, source, original, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByTypeLcidSourceOriginal", [this.rawResult, fieldType, lcid, source, original], successCallback, errorCallback)
     }
 
-    getContainers(resultTypes) {
-        try {
-            const json = JSON.parse(this.rawResult)
-            const containerList = json.List
-            const resultArray = []
-            for (const container of containerList){
-                if (container == null || container.length == 0)
-                    continue
-                for (const resultType of resultTypes)
-                    if(resultType == container.result_type){
-                        resultArray.push(container)
-                        break
-                    }
-            }
-            if (resultArray.length == 0)
-                return null
-            const newContainerList = {}
-            newContainerList.List = resultArray
-            const newJson = {}
-            newJson.ContainerList = newContainerList
-            newJson.TransactionInfo = json.TransactionInfo
-        } catch (error) {
-            return null
-        }
+    textFieldByType(fieldType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldByType", [this.rawResult, fieldType], successCallback, errorCallback)
     }
 
-    getEncryptedContainers() {
-        return this.getContainers([
-            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_RFID_SESSION,
-            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_ENCRYPTED_RCL,
-            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_LICENSE
-        ])
+    textFieldByTypeLcid(fieldType, lcid, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldByTypeLcid", [this.rawResult, fieldType, lcid], successCallback, errorCallback)
+    }
+
+    graphicFieldByTypeSource(fieldType, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldByTypeSource", [this.rawResult, fieldType, source], successCallback, errorCallback)
+    }
+
+    graphicFieldByTypeSourcePageIndex(fieldType, source, pageIndex, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldByTypeSourcePageIndex", [this.rawResult, fieldType, source, pageIndex], successCallback, errorCallback)
+    }
+
+    graphicFieldByTypeSourcePageIndexLight(fieldType, source, pageIndex, light, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldByTypeSourcePageIndex", [this.rawResult, fieldType, source, pageIndex, light], successCallback, errorCallback)
+    }
+
+    graphicFieldImageByType(fieldType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldImageByType", [this.rawResult, fieldType], successCallback, errorCallback)
+    }
+
+    graphicFieldImageByTypeSource(fieldType, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldImageByTypeSource", [this.rawResult, fieldType, source], successCallback, errorCallback)
+    }
+
+    graphicFieldImageByTypeSourcePageIndex(fieldType, source, pageIndex, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldImageByTypeSourcePageIndex", [this.rawResult, fieldType, source, pageIndex], successCallback, errorCallback)
+    }
+
+    graphicFieldImageByTypeSourcePageIndexLight(fieldType, source, pageIndex, light, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldImageByTypeSourcePageIndexLight", [this.rawResult, fieldType, source, pageIndex, light], successCallback, errorCallback)
+    }
+
+    containers(resultType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "containers", [this.rawResult, resultType], successCallback, errorCallback)
+    }
+
+    encryptedContainers(successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "encryptedContainers", [this.rawResult], successCallback, errorCallback)
     }
 
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
         const result = new DocumentReaderResults()
 
+        result.videoCaptureSessionId = jsonObject["videoCaptureSessionId"]
         result.chipPage = jsonObject["chipPage"]
+        result.irElapsedTime = jsonObject["irElapsedTime"]
         result.processingFinishedStatus = jsonObject["processingFinishedStatus"]
         result.elapsedTime = jsonObject["elapsedTime"]
         result.elapsedTimeRFID = jsonObject["elapsedTimeRFID"]
@@ -1190,6 +1127,7 @@ export class DocumentReaderResults {
         result.rfidSessionData = RFIDSessionData.fromJson(jsonObject["rfidSessionData"])
         result.authenticityResult = DocumentReaderAuthenticityResult.fromJson(jsonObject["authenticityResult"])
         result.barcodeResult = DocumentReaderBarcodeResult.fromJson(jsonObject["barcodeResult"])
+        result.ppmIn = jsonObject["ppmIn"]
         result.documentType = []
         if (jsonObject["documentType"] != null)
             for (const i in jsonObject["documentType"])
@@ -1198,6 +1136,173 @@ export class DocumentReaderResults {
         result.vdsncData = VDSNCData.fromJson(jsonObject["vdsncData"])
 
         return result
+    }
+
+    /**
+     * @deprecated Use textFieldValueBy...()
+     */
+     getTextFieldValueByType({ fieldType, lcid = 0, source = -1, original = false }) {
+        if (this.textResult == null) return null
+        const field = this.findByTypeAndLcid(fieldType, lcid)
+        if (field == null) return null
+        const value = this.findBySource(field, source)
+        if (value == null) return null
+        return original ? value.originalValue : value.value
+    }
+
+    /**
+     * @deprecated
+     */
+    getTextFieldStatusByType(fieldType, lcid = 0) {
+        if (this.textResult == null) return 0
+        const field = this.findByTypeAndLcid(fieldType, lcid)
+        return field != null ? field.status : 0
+    }
+
+    /**
+     * @deprecated Use graphicFieldImageBy...()
+     */
+    getGraphicFieldImageByType({ fieldType, source = -1, pageIndex = -1, light = -1 }) {
+        if (this.graphicResult == null) return null
+        const foundFields = []
+
+        for (const field of this.graphicResult.fields)
+            if (field.fieldType === fieldType)
+                foundFields.push(field)
+        if (source !== -1)
+            for (const index in foundFields)
+                if (foundFields[index].sourceType !== source)
+                    foundFields.splice(index, 1)
+        if (light !== -1)
+            for (const index in foundFields)
+                if (foundFields[index].lightType !== light)
+                    foundFields.splice(index, 1)
+        if (pageIndex !== -1)
+            for (const index in foundFields)
+                if (foundFields[index].pageIndex !== pageIndex)
+                    foundFields.splice(index, 1)
+        if (foundFields.length > 0)
+            return foundFields[0].value
+    }
+
+    /**
+     * @deprecated
+     */
+    getQualityResult(imageQualityCheckType, securityFeature = -1, pageIndex = 0) {
+        let resultSum = 2
+        if (this.imageQuality == null) return resultSum
+
+        let imageQualityGroup
+
+        for (const iq of this.imageQuality)
+            if (iq != null && iq.pageIndex === pageIndex)
+                imageQualityGroup = iq
+        if (imageQualityGroup == null)
+            return resultSum
+
+        for (const field of imageQualityGroup.imageQualityList)
+            if (field.type === imageQualityCheckType)
+                if (securityFeature === -1) {
+                    if (field.result === 0) {
+                        resultSum = 0
+                        break
+                    }
+                    if (field.result === 1)
+                        resultSum = field.result
+                } else if (field.featureType === securityFeature) {
+                    resultSum = field.result
+                    break
+                }
+
+        return resultSum
+    }
+
+    /**
+     * @deprecated
+     */
+    findByTypeAndLcid(type, lcid) {
+        let field
+        const foundFields = []
+
+        for (field of this.textResult.fields)
+            if (field.fieldType === type)
+                foundFields.push(field)
+        if (foundFields.length <= 0)
+            return null
+
+        let foundField = null
+
+        for (field of foundFields)
+            if (lcid === 0) {
+                foundField = field
+                if (field.lcid === lcid)
+                    break
+            } else if (field.lcid === lcid)
+                return field
+
+        return foundField
+    }
+
+    /**
+     * @deprecated
+     */
+    findBySource(field, sourceType) {
+        let value
+        if (sourceType === -1) {
+            const mrzVal = this.findBySource(field, 3)
+            if (mrzVal != null)
+                return mrzVal
+            value = this.findBySource(field, 18)
+            if (value != null)
+                return value
+            const visualVal = this.findBySource(field, 17)
+            return visualVal != null ? visualVal : null
+        }
+        for (const item of field.values)
+            if (item.sourceType === sourceType)
+                return item
+
+        return null
+    }
+
+    /**
+     * @deprecated Use containers()
+     */
+    getContainers(resultTypes) {
+        try {
+            const json = JSON.parse(this.rawResult)
+            const containerList = json.List
+            const resultArray = []
+            for (const container of containerList){
+                if (container == null || container.length == 0)
+                    continue
+                for (const resultType of resultTypes)
+                    if(resultType == container.result_type){
+                        resultArray.push(container)
+                        break
+                    }
+            }
+            if (resultArray.length == 0)
+                return null
+            const newContainerList = {}
+            newContainerList.List = resultArray
+            const newJson = {}
+            newJson.ContainerList = newContainerList
+            newJson.TransactionInfo = json.TransactionInfo
+        } catch (error) {
+            return null
+        }
+    }
+
+    /**
+     * @deprecated Use encryptedContainers()
+     */
+    getEncryptedContainers() {
+        return this.getContainers([
+            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_RFID_SESSION,
+            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_ENCRYPTED_RCL,
+            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_LICENSE
+        ])
     }
 }
 
@@ -2020,6 +2125,7 @@ export const eRPRM_ResultType = {
     RPRM_RESULT_TYPE_INTERNAL_RFID_SESSION: 48,
     RPRM_RESULT_TYPE_INTERNAL_ENCRYPTED_RCL: 49,
     RPRM_RESULT_TYPE_INTERNAL_LICENSE: 50,
+    RPRM_RESULT_TYPE_TEXT: 36,
     RPRM_RESULT_TYPE_IMAGES: 37,
     RPRM_RESULT_TYPE_HOLO_PARAMS: 47,
     RPRM_RESULT_TYPE_DOCUMENT_POSITION: 85,
@@ -2060,17 +2166,17 @@ export const eRPRM_FieldVerificationResult = {
 }
 
 export const DocReaderAction = {
-    COMPLETE: 1,
-    PROCESS: 0,
-    CANCEL: 2,
-    ERROR: 3,
-    NOTIFICATION: 5,
-    PROCESS_WHITE_UV_IMAGES: 6,
-    PROCESS_WHITE_FLASHLIGHT: 7,
-    MORE_PAGES_AVAILABLE: 8,
-    PROCESS_IR_FRAME: 9,
-    TIMEOUT: 10,
-    PROCESSING_ON_SERVICE: 11,
+    COMPLETE: 0,
+    PROCESS: 1,
+    MORE_PAGES_AVAILABLE: 2,
+    CANCEL: 3,
+    ERROR: 4,
+    PROCESS_WHITE_FLASHLIGHT: 5,
+    TIMEOUT: 6,
+    PROCESSING_ON_SERVICE: 7,
+    NOTIFICATION: 101,
+    PROCESS_WHITE_UV_IMAGES: 102,
+    PROCESS_IR_FRAME: 103,
 }
 
 export const eProcessGLCommands = {
@@ -2359,6 +2465,13 @@ export const RFIDDelegate = {
     NULL: 0,
     NO_PA: 1,
     FULL: 2,
+}
+
+export const TextProcessing = {
+    ocNoChange: 0,
+    ocUppercase: 1,
+    ocLowercase: 2,
+    ocCapital: 3,
 }
 
 export const ProcessingFinishedStatus = {
@@ -3060,6 +3173,31 @@ export const eImageQualityCheckType = {
     IQC_SCREEN_CAPTURE: 6,
     IQC_PORTRAIT: 7,
     IQC_HANDWRITTEN: 8,
+
+    getTranslation: function (value) {
+        switch (value) {
+            case this.IQC_IMAGE_GLARES:
+                return "Glares"
+            case this.IQC_IMAGE_FOCUS:
+                return "Focus"
+            case this.IQC_IMAGE_RESOLUTION:
+                return "Resolution"
+            case this.IQC_IMAGE_COLORNESS:
+                return "Color"
+            case this.IQC_PERSPECTIVE:
+                return "Perspective angle"
+            case this.IQC_BOUNDS:
+                return "Bounds"
+            case this.IQC_SCREEN_CAPTURE:
+                return "Moire pattern"
+            case this.IQC_PORTRAIT:
+                return "Portrait"
+            case this.IQC_HANDWRITTEN:
+                return "Handwritten"
+            default:
+                return value
+        }
+    }
 }
 
 export const MRZFormat = {
@@ -3468,6 +3606,10 @@ export const eGraphicFieldType = {
     }
 }
 
+export const RegDeviceConfigType = {
+    DEVICE_7310: 1,
+}
+
 export const CameraMode = {
     AUTO: 0,
     CAMERA1: 1,
@@ -3614,7 +3756,7 @@ export const eRFID_DataFile_Type = {
             case this.DFT_PASSPORT_DG5:
                 return "Portrait(s) (DG5)"
             case this.DFT_ID_DG5:
-                return "Surname/given name at birth" + " (DG5)"
+                return "Family name" + " (DG5)"
             case this.DFT_DL_DG5:
                 return "Signature / usual mark image (DG5)"
             case this.DFT_PASSPORT_DG6:
@@ -4346,6 +4488,12 @@ export const eVisualFieldType = {
     FT_THIRD_NAME: 648,
     FT_FOURTH_NAME: 649,
     FT_LAST_NAME: 650,
+    FT_DLCLASSCODE_RM_FROM: 651,
+    FT_DLCLASSCODE_RM_NOTES: 652,
+    FT_DLCLASSCODE_RM_TO: 653,
+    FT_DLCLASSCODE_PW_FROM: 654,
+    FT_DLCLASSCODE_PW_NOTES: 655,
+    FT_DLCLASSCODE_PW_TO: 656,
 
     getTranslation: function (value) {
         switch (value) {
@@ -4602,7 +4750,7 @@ export const eVisualFieldType = {
             case this.FT_JURISDICTION_RESTRICTION_CODE:
                 return "Jurisdiction restriction code"
             case this.FT_FAMILY_NAME:
-                return "Surname/given name at birth"
+                return "Family name"
             case this.FT_GIVEN_NAMES_RUS:
                 return "Given name (National)"
             case this.FT_VISA_ID_RUS:
@@ -5549,6 +5697,18 @@ export const eVisualFieldType = {
                 return "Fourth name"
             case this.FT_LAST_NAME:
                 return "Last name"
+            case this.FT_DLCLASSCODE_PW_FROM:
+                return "DL class code PW valid from"
+            case this.FT_DLCLASSCODE_PW_NOTES:
+                return "DL class code PW notes"
+            case this.FT_DLCLASSCODE_PW_TO:
+                return "DL class code PW valid to"
+            case this.FT_DLCLASSCODE_RM_FROM:
+                return "DL class code RM valid from"
+            case this.FT_DLCLASSCODE_RM_NOTES:
+                return "DL class code RM notes"
+            case this.FT_DLCLASSCODE_RM_TO:
+                return "DL class code RM valid to"
             default:
                 return value
         }
@@ -6151,6 +6311,7 @@ export const Enum = {
    eSignManagementAction,
    eCheckDiagnose,
    RFIDDelegate,
+   TextProcessing,
    ProcessingFinishedStatus,
    DocFormat,
    eLDS_ParsingNotificationCodes,
@@ -6165,6 +6326,7 @@ export const Enum = {
    eRequestCommand,
    ImageFormat,
    eGraphicFieldType,
+   RegDeviceConfigType,
    CameraMode,
    CaptureMode,
    eCheckResult,

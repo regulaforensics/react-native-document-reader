@@ -1,6 +1,5 @@
 const path = require('path');
 const folders = [
-  "../",
   path.resolve(path.join(__dirname, './node_modules'))
 ];
 module.exports = {

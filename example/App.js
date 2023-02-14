@@ -159,7 +159,7 @@ export default class App extends Component {
 
   updateRfidUI(results) {
     if (results.code === Enum.eRFID_NotificationCodes.RFID_NOTIFICATION_PCSC_READING_DATAGROUP)
-      this.setState({ rfidDescription: Enum.eRFID_DataFile_Type.getTranslation(results.number) })
+      this.setState({ rfidDescription: Enum.eRFID_DataFile_Type.getTranslation(results.dataFileType) })
     this.setState({ rfidUIHeader: "Reading RFID", rfidUIHeaderColor: "black", rfidProgress: results.value / 100 })
     if (Platform.OS === 'ios')
       DocumentReader.setRfidSessionStatus(this.state.rfidDescription + "\n" + results.value + "%", e => { }, e => { })
@@ -171,11 +171,20 @@ export default class App extends Component {
 
   displayResults(results) {
     if(results == null) return
-    this.setState({ fullName: results.getTextFieldValueByType({ fieldType: Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES }) })
-    if (results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE }) != null)
-      this.setState({ docFront: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE }) } })
-    if (results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_PORTRAIT }) != null)
-      this.setState({ portrait: { uri: "data:image/png;base64," + results.getGraphicFieldImageByType({ fieldType: Enum.eGraphicFieldType.GF_PORTRAIT }) } })
+
+    results.textFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES, (value) => {
+      this.setState({ fullName: value })
+    }, error => console.log(error))
+
+    results.graphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE, (value) => {
+      if(value != null && value != "")
+        this.setState({ docFront: { uri: "data:image/png;base64," + value } })
+    }, error => console.log(error))
+
+    results.graphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT, (value) => {
+      if(value != null && value != "")
+        this.setState({ portrait: { uri: "data:image/png;base64," + value } })
+    }, error => console.log(error))
   }
 
   customRFID() {
