@@ -138,8 +138,6 @@ export default class App extends Component {
         this.handleResults(completion.results)
     if (completion.action === Enum.DocReaderAction.TIMEOUT)
       this.handleResults(completion.results)
-    if (completion.action === Enum.DocReaderAction.CANCEL || completion.action === Enum.DocReaderAction.ERROR)
-      isReadingRfid = false
   }
 
   showRfidUI() {
