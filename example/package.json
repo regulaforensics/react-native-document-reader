@@ -10,7 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@regulaforensics/react-native-document-reader-api-beta": "0.0.174",
+    "@regulaforensics/react-native-document-reader-api-beta": "0.0.175",
     "@regulaforensics/react-native-document-reader-core-fullrfid": "6.7.0",
     "react": "17.0.2",
     "react-native": "^0.67.0",

@@ -107,6 +107,7 @@ export default class App extends Component {
       fullName: "Please wait...",
       doRfid: false,
       isReadingRfidCustomUi: false,
+      rfidProgress: -1,
       canRfid: false,
       canRfidTitle: '(unavailable)',
       scenarios: [],
@@ -158,7 +159,9 @@ export default class App extends Component {
   updateRfidUI(results) {
     if (results.code === Enum.eRFID_NotificationCodes.RFID_NOTIFICATION_PCSC_READING_DATAGROUP)
       this.setState({ rfidDescription: Enum.eRFID_DataFile_Type.getTranslation(results.dataFileType) })
-    this.setState({ rfidUIHeader: "Reading RFID", rfidUIHeaderColor: "black", rfidProgress: results.value / 100 })
+    this.setState({ rfidUIHeader: "Reading RFID", rfidUIHeaderColor: "black" })
+    if (results.value != null)
+      this.setState({ rfidProgress: results.value / 100 })
     if (Platform.OS === 'ios')
       DocumentReader.setRfidSessionStatus(this.state.rfidDescription + "\n" + results.value + "%", e => { }, e => { })
   }
@@ -168,19 +171,19 @@ export default class App extends Component {
   }
 
   displayResults(results) {
-    if(results == null) return
+    if (results == null) return
 
     results.textFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES, (value) => {
       this.setState({ fullName: value })
     }, error => console.log(error))
 
     results.graphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE, (value) => {
-      if(value != null && value != "")
+      if (value != null && value != "")
         this.setState({ docFront: { uri: "data:image/png;base64," + value } })
     }, error => console.log(error))
 
     results.graphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT, (value) => {
-      if(value != null && value != "")
+      if (value != null && value != "")
         this.setState({ portrait: { uri: "data:image/png;base64," + value } })
     }, error => console.log(error))
   }
@@ -208,7 +211,7 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {(this.state.isReadingRfidCustomUi && Platform.OS === 'android') && <View style={styles.container}>
+        {(this.state.isReadingRfidCustomUi) && <View style={styles.container}>
           <Text style={{ paddingBottom: 30, fontSize: 23, color: this.state.rfidUIHeaderColor }}>{this.state.rfidUIHeader}</Text>
           <Text style={{ paddingBottom: 50, fontSize: 20 }}>{this.state.rfidDescription}</Text>
           <Progress.Bar width={200} useNativeDriver={true} color="#4285F4" progress={this.state.rfidProgress} />
@@ -218,7 +221,7 @@ export default class App extends Component {
         </View>
         }
         {!this.state.isReadingRfidCustomUi && <View style={styles.container}>
-        <Text/><Text/>
+          <Text /><Text />
           <Text style={{
             top: 1,
             left: 1,
