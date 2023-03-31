@@ -13,26 +13,26 @@ RGLRFIDCertificatesCallback taCertificateCompletion;
 RFIDDelegateNoPA* rfidDelegateNoPA;
 typedef void (^RGLRFIDSignatureCallback)(NSData *signature);
 RGLRFIDSignatureCallback taSignatureCompletion;
-RNRegulaDocumentReader* plugin;
+RNRegulaDocumentReader* documentReaderPlugin;
 
 @implementation RFIDDelegateNoPA
 
 - (void)onRequestTACertificatesWithKey:(NSString *)keyCAR callback:(RGLRFIDCertificatesCallback)callback {
     taCertificateCompletion = callback;
-    [plugin sendEventWithName:taCertificateCompletionEvent body:@{@"msg": keyCAR}];
+    [documentReaderPlugin sendEventWithName:taCertificateCompletionEvent body:@{@"msg": keyCAR}];
 }
 
 - (void)onRequestTASignatureWithChallenge:(RGLTAChallenge *)challenge callback:(void(^)(NSData *signature))callback {
     taSignatureCompletion = callback;
-    [plugin sendEventWithName:taSignatureCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRGLTAChallenge:challenge]]}];
+    [documentReaderPlugin sendEventWithName:taSignatureCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRGLTAChallenge:challenge]]}];
 }
 
 - (void)didChipConnected {
-    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletion:1]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
+    [documentReaderPlugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletion:1]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
 }
 
 - (void)didReceivedError:(RGLRFIDErrorCodes)errorCode {
-    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletionWithError:2:errorCode]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
+    [documentReaderPlugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletionWithError:2:errorCode]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
 }
 
 @end
@@ -120,15 +120,15 @@ typedef void (^Callback)(NSString* response);
 }
 
 - (void)didChipConnected {
-    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletion:1]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
+    [documentReaderPlugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletion:1]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
 }
 
 - (void)didReceivedError:(RGLRFIDErrorCodes)errorCode {
-    [plugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletionWithError:2:errorCode]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
+    [documentReaderPlugin sendEventWithName:rfidNotificationCompletionEvent body:@{@"msg": [RGLWJSONConstructor dictToString:[RGLWJSONConstructor generateRfidNotificationCompletionWithError:2:errorCode]]}]; // int RFID_EVENT_CHIP_DETECTED = 1;
 }
 
 RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(RCTResponseSenderBlock)sCallback:(RCTResponseSenderBlock)eCallback) {
-    plugin = self;
+    documentReaderPlugin = self;
     Callback successCallback = ^(NSString* response){
         sCallback(@[response]);
     };

@@ -493,11 +493,8 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 new String[]{"android.nfc.tech.IsoDep"}
         };
         Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        int flags = 0;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            flags = PendingIntent.FLAG_IMMUTABLE;
-        PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, flags);
+        int flag = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0;
+        PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, flag);
         NfcAdapter.getDefaultAdapter(getActivity()).enableForegroundDispatch(activity, pendingIntent, filters, techList);
     }
 
