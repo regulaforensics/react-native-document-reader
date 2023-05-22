@@ -49,6 +49,7 @@ export default class App extends Component {
     eventManager.addListener('completionEvent', e => this.handleCompletion(DocumentReaderCompletion.fromJson(JSON.parse(e["msg"]))))
     eventManager.addListener('rfidNotificationCompletionEvent', e => console.log("rfidNotificationCompletionEvent: " + e["msg"]))
     eventManager.addListener('paCertificateCompletionEvent', e => console.log("paCertificateCompletionEvent: " + e["msg"]))
+    eventManager.addListener('onCustomButtonTappedEvent', e => console.log("onCustomButtonTappedEvent: " + e["msg"]))
     DocumentReader.prepareDatabase("Full", (respond) => {
       console.log(respond)
       readFile(licPath, 'base64').then((res) => {
