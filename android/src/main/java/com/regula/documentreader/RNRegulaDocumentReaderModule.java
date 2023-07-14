@@ -101,6 +101,17 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         return "RNRegulaDocumentReader";
     }
 
+    @ReactMethod
+    @SuppressWarnings("unused")
+    public void addListener(String eventName) {
+    }
+
+    @ReactMethod
+    @SuppressWarnings("unused")
+    public void removeListeners(Integer count) {
+    }
+
+
     private Context getContext() {
         return reactContext.getCurrentActivity();
     }

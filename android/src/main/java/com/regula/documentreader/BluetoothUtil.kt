@@ -81,7 +81,7 @@ class BluetoothUtil {
                 activity: Activity,
                 onConnected: (Boolean) -> Unit,
                 onDisconnected: () -> Unit,
-                onReady: () -> Unit,
+                onReady: () -> Unit
         ) {
             val bleIntent = Intent(activity, RegulaBleService::class.java)
             activity.startService(bleIntent)
