@@ -26,7 +26,7 @@ import java.util.Map;
 
 class Helpers {
     static Bitmap bitmapFromBase64(String base64) {
-        byte[] decodedString = Base64.decode(base64, Base64.NO_WRAP);
+        byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
         Bitmap result = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         int sizeMultiplier = result.getByteCount() / 5000000;
         if (result.getByteCount() > 5000000)
@@ -72,7 +72,7 @@ class Helpers {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
 
-        return Base64.encodeToString(byteArray, Base64.NO_WRAP);
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
     static Matrix matrixFromFloatArray(float[] floats) {

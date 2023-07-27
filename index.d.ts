@@ -6905,7 +6905,7 @@ export default class DocumentReader {
     static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static readRFID(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getRfidSessionStatus(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setRfidDelegate(delegate: int, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setRfidDelegate(delegate: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setEnableCoreLogs(logs: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static addPKDCertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setCameraSessionIsPaused(paused: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
@@ -6915,21 +6915,21 @@ export default class DocumentReader {
     static recognizeImages(images: string[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static showScannerWithCameraID(cameraID: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static runAutoUpdate(databaseType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setConfig(config: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setRfidScenario(scenario: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static initializeReader(config: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setConfig(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setRfidScenario(scenario: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static initializeReader(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static prepareDatabase(databaseType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImage(image: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static recognizeData(data: byte[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static recognizeData(data: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setRfidSessionStatus(status: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static providePACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static provideTASignature(signature: byte[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static provideTASignature(signature: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static parseCoreResults(json: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setTCCParams(params: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static recognizeImageWithOpts(image: string, options: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static recognizeVideoFrame(byteString: string, params: ImageInputParam, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static showScannerWithCameraIDAndOpts(cameraID: number, options: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setTCCParams(params: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static recognizeImageWithOpts(image: string, options: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static recognizeVideoFrame(byteString: string, params: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static showScannerWithCameraIDAndOpts(cameraID: number, options: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImageWithCameraMode(image: string, mode: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImagesWithImageInputs(images: ImageInputData[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setOnCustomButtonTappedListener(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void

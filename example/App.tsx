@@ -1,57 +1,50 @@
-import React, { Component } from 'react'
-import { StyleSheet, View, Button, Text, Image, ScrollView, NativeEventEmitter, Platform, TouchableOpacity } from 'react-native'
-import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader } from '@regulaforensics/react-native-document-reader-api-beta'
+import React from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, NativeEventEmitter, Platform, TouchableOpacity, Image, Button } from 'react-native';
+import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader, DocumentReaderResults, DocumentReaderNotification } from '@regulaforensics/react-native-document-reader-api'
 import * as RNFS from 'react-native-fs'
 import RadioGroup from 'react-native-radio-buttons-group'
+import { CheckBox } from '@rneui/themed';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { launchImageLibrary } from 'react-native-image-picker';
 import * as Progress from 'react-native-progress'
-import CheckBox from 'react-native-check-box'
-import { LogBox } from 'react-native';
-
-LogBox.ignoreLogs(['new NativeEventEmitter']);
-const eventManager = new NativeEventEmitter(RNRegulaDocumentReader)
-
-var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license"
-var certDir = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/certificates") : "certificates"
-var readDir = Platform.OS === 'ios' ? RNFS.readDir : RNFS.readDirAssets
-var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets
 
 var isReadingRfid = false;
 
-async function addCertificates() {
-  var certificates = []
-  var items = await readDir(certDir, 'base64')
-
-  for (var i in items) {
-    var item = items[i]
-    if (item.isFile()) {
-      var findExt = item.name.split('.')
-      var pkdResourceType = 0
-      if (findExt.length > 0)
-        pkdResourceType = Enum.PKDResourceType.getType(findExt[findExt.length - 1].toLowerCase())
-
-      var file = await readFile(item.path, 'base64')
-      certificates.push({
-        'binaryData': file,
-        'resourceType': pkdResourceType
-      })
-    }
-  }
-  DocumentReader.addPKDCertificates(certificates, s => {
-    console.log("certificates added")
-  }, e => console.log(e))
+interface IProps {
 }
 
-export default class App extends Component {
-  constructor(props) {
+interface IState {
+  fullName: string | undefined
+  doRfid: boolean
+  isReadingRfidCustomUi: boolean
+  rfidUIHeader: string
+  rfidUIHeaderColor: string
+  rfidDescription: string
+  rfidProgress: number
+  canRfid: boolean
+  canRfidTitle: string
+  radioButtons: any
+  selectedScenario: string
+  portrait: any
+  docFront: any
+}
+
+export default class App extends React.Component<IProps, IState> {
+  constructor(props: {} | Readonly<{}>) {
     super(props)
+    Icon.loadFont();
+
+    var eventManager = new NativeEventEmitter(RNRegulaDocumentReader)
     eventManager.addListener('prepareDatabaseProgressChangeEvent', e => this.setState({ fullName: "Downloading database: " + e["msg"] + "%" }))
-    eventManager.addListener('completionEvent', e => this.handleCompletion(DocumentReaderCompletion.fromJson(JSON.parse(e["msg"]))))
+    eventManager.addListener('completionEvent', (e) => this.handleCompletion(DocumentReaderCompletion.fromJson(JSON.parse(e["msg"]))!))
     eventManager.addListener('rfidNotificationCompletionEvent', e => console.log("rfidNotificationCompletionEvent: " + e["msg"]))
     eventManager.addListener('paCertificateCompletionEvent', e => console.log("paCertificateCompletionEvent: " + e["msg"]))
     eventManager.addListener('onCustomButtonTappedEvent', e => console.log("onCustomButtonTappedEvent: " + e["msg"]))
+
     DocumentReader.prepareDatabase("Full", (respond) => {
       console.log(respond)
+      var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license"
+      var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets
       readFile(licPath, 'base64').then((res) => {
         this.setState({ fullName: "Initializing..." })
         DocumentReader.initializeReader({
@@ -66,36 +59,22 @@ export default class App extends Component {
             }
           }, error => console.log(error))
           DocumentReader.getAvailableScenarios((jstring) => {
-            var scenariosTemp = JSON.parse(jstring)
-            var scenariosL = []
-            for (var i in scenariosTemp) {
-              scenariosL.push({
-                label: DocumentReaderScenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
-                id: i
+            var scenarios = JSON.parse(jstring)
+            var items = []
+            for (var i in scenarios) {
+              var scenario = DocumentReaderScenario.fromJson(typeof scenarios[i] === "string" ? JSON.parse(scenarios[i]) : scenarios[i])!.name
+              items.push({
+                label: scenario,
+                id: scenario
               })
             }
-            this.setState({ scenarios: scenariosL })
-            this.setState({ selectedScenario: this.state.scenarios[0]['label'] })
-            this.setState({ radio: null })
-            this.setState({
-              radio: < RadioGroup containerStyle={styles.radio}
-                radioButtons={this.state.scenarios}
-                onPress={
-                  (data) => {
-                    var selectedItem
-                    for (var index in data)
-                      if (data[index]['selected'])
-                        selectedItem = data[index]['label']
-                    this.setState({ selectedScenario: selectedItem })
-                  }
-                }
-              />
-            })
+            this.setState({ radioButtons: items })
+            this.setState({ selectedScenario: this.state.radioButtons[0]['id'] })
+
             DocumentReader.getDocumentReaderIsReady((isReady) => {
               if (isReady) {
                 this.setState({ fullName: "Ready" })
-                DocumentReader.setRfidDelegate(Enum.RFIDDelegate.NO_PA, (r) => { }, error => console.log(error))
-                // addCertificates()
+                DocumentReader.setRfidDelegate(Enum.RFIDDelegate.NO_PA, (_r) => { }, error => console.log(error))
               } else
                 this.setState({ fullName: "Failed" })
             }, error => console.log(error))
@@ -108,38 +87,37 @@ export default class App extends Component {
       fullName: "Please wait...",
       doRfid: false,
       isReadingRfidCustomUi: false,
+      rfidUIHeader: "",
+      rfidUIHeaderColor: "black",
+      rfidDescription: "",
       rfidProgress: -1,
       canRfid: false,
-      canRfidTitle: '(unavailable)',
-      scenarios: [],
+      canRfidTitle: "(unavailable)",
+      radioButtons: [{ label: 'Loading', id: "0" }],
       selectedScenario: "",
       portrait: require('./images/portrait.png'),
-      docFront: require('./images/id.png'),
-      radio: < RadioGroup containerStyle={styles.radio}
-        radioButtons={
-          [{ label: 'Loading', id: 0 }]}
-        onPress={null}
-      />
+      docFront: require('./images/id.png')
     }
   }
 
-  handleCompletion(completion) {
+  handleCompletion(completion: DocumentReaderCompletion) {
+    console.log("DocReaderAction: " + completion.action)
     if (this.state.isReadingRfidCustomUi && (completion.action === Enum.DocReaderAction.CANCEL || completion.action === Enum.DocReaderAction.ERROR))
       this.hideRfidUI()
     if (this.state.isReadingRfidCustomUi && completion.action === Enum.DocReaderAction.NOTIFICATION)
-      this.updateRfidUI(completion.results.documentReaderNotification)
+      this.updateRfidUI(completion.results!.documentReaderNotification!)
     if (completion.action === Enum.DocReaderAction.COMPLETE)
       if (this.state.isReadingRfidCustomUi)
-        if (completion.results.rfidResult !== 1)
+        if (completion.results!.rfidResult !== 1)
           this.restartRfidUI()
         else {
           this.hideRfidUI()
-          this.displayResults(completion.results)
+          this.displayResults(completion.results!)
         }
       else
-        this.handleResults(completion.results)
+        this.handleResults(completion.results!)
     if (completion.action === Enum.DocReaderAction.TIMEOUT)
-      this.handleResults(completion.results)
+      this.handleResults(completion.results!)
   }
 
   showRfidUI() {
@@ -157,21 +135,21 @@ export default class App extends Component {
     this.setState({ rfidUIHeaderColor: "red", rfidUIHeader: "Failed!", rfidDescription: "Place your phone on top of the NFC tag", rfidProgress: -1 })
   }
 
-  updateRfidUI(results) {
-    if (results.code === Enum.eRFID_NotificationCodes.RFID_NOTIFICATION_PCSC_READING_DATAGROUP)
-      this.setState({ rfidDescription: Enum.eRFID_DataFile_Type.getTranslation(results.dataFileType) })
+  updateRfidUI(notification: DocumentReaderNotification) {
+    if (notification.code === Enum.eRFID_NotificationCodes.RFID_NOTIFICATION_PCSC_READING_DATAGROUP)
+      this.setState({ rfidDescription: Enum.eRFID_DataFile_Type.getTranslation(notification.dataFileType!) })
     this.setState({ rfidUIHeader: "Reading RFID", rfidUIHeaderColor: "black" })
-    if (results.value != null)
-      this.setState({ rfidProgress: results.value / 100 })
+    if (notification.value != null)
+      this.setState({ rfidProgress: notification.value / 100 })
     if (Platform.OS === 'ios')
-      DocumentReader.setRfidSessionStatus(this.state.rfidDescription + "\n" + results.value + "%", e => { }, e => { })
+      DocumentReader.setRfidSessionStatus(this.state.rfidDescription + "\n" + notification.value + "%", e => { }, e => { })
   }
 
   clearResults() {
     this.setState({ fullName: "Ready", docFront: require('./images/id.png'), portrait: require('./images/portrait.png') })
   }
 
-  displayResults(results) {
+  displayResults(results: DocumentReaderResults) {
     if (results == null) return
 
     results.textFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES, (value) => {
@@ -191,15 +169,15 @@ export default class App extends Component {
 
   customRFID() {
     this.showRfidUI()
-    DocumentReader.readRFID(e => { }, e => { })
+    DocumentReader.readRFID(_e => { }, _e => { })
   }
 
   usualRFID() {
     isReadingRfid = true
-    DocumentReader.startRFIDReader(e => { }, e => { })
+    DocumentReader.startRFIDReader(_e => { }, _e => { })
   }
 
-  handleResults(results) {
+  handleResults(results: DocumentReaderResults) {
     if (this.state.doRfid && !isReadingRfid && results != null && results.chipPage != 0) {
       // this.customRFID()
       this.usualRFID()
@@ -211,13 +189,13 @@ export default class App extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         {(this.state.isReadingRfidCustomUi) && <View style={styles.container}>
           <Text style={{ paddingBottom: 30, fontSize: 23, color: this.state.rfidUIHeaderColor }}>{this.state.rfidUIHeader}</Text>
-          <Text style={{ paddingBottom: 50, fontSize: 20 }}>{this.state.rfidDescription}</Text>
+          <Text style={{ paddingBottom: 50, fontSize: 20, color: "black" }}>{this.state.rfidDescription}</Text>
           <Progress.Bar width={200} useNativeDriver={true} color="#4285F4" progress={this.state.rfidProgress} />
           <TouchableOpacity style={styles.cancelButton} onPress={() => { this.hideRfidUI() }}>
-            <Text style={{ fontSize: 20 }}>X</Text>
+            <Text style={{ fontSize: 20, color: "black" }}>X</Text>
           </TouchableOpacity>
         </View>
         }
@@ -228,6 +206,7 @@ export default class App extends Component {
             left: 1,
             padding: 30,
             fontSize: 20,
+            color: "black"
           }}>
             {this.state.fullName}
           </Text>
@@ -237,6 +216,7 @@ export default class App extends Component {
                 top: 1,
                 right: 1,
                 padding: 5,
+                color: "black"
               }}>
                 Portrait
               </Text>
@@ -254,6 +234,7 @@ export default class App extends Component {
                 top: 1,
                 right: 1,
                 padding: 5,
+                color: "black"
               }}>
                 Document image
               </Text>
@@ -269,28 +250,27 @@ export default class App extends Component {
           </View>
 
           <ScrollView style={{ padding: 5, alignSelf: 'center' }} showsVerticalScrollIndicator={false}>
-            {this.state.radio}
+            <RadioGroup containerStyle={styles.radio}
+              radioButtons={this.state.radioButtons}
+              onPress={
+                (selectedID) => {
+                  this.setState({ selectedScenario: selectedID })
+                }
+              }
+              selectedId={this.state.selectedScenario}
+            />
           </ScrollView>
 
           <View style={{ flexDirection: 'row', padding: 5 }}>
             <CheckBox
-              isChecked={this.state.doRfid}
-              onClick={() => {
-                if (this.state.canRfid) {
-                  this.setState({ doRfid: !this.state.doRfid })
-                }
-              }}
-              disabled={!this.state.canRfid}
-            />
-            <Text
-              style={{ padding: 5 }}
+              containerStyle={{ backgroundColor: '#F5FCFF' }}
+              checked={this.state.doRfid}
+              title={'Process rfid reading' + this.state.canRfidTitle}
               onPress={() => {
                 if (this.state.canRfid) {
                   this.setState({ doRfid: !this.state.doRfid })
                 }
-              }}>
-              {'Process rfid reading' + this.state.canRfidTitle}
-            </Text>
+              }} />
           </View>
 
           <View style={{ flexDirection: 'row' }}>
@@ -312,7 +292,7 @@ export default class App extends Component {
                   },
                 }, e => { }, error => console.log(error))
 
-                DocumentReader.showScanner(s => { }, e => console.log(e))
+                DocumentReader.showScanner(_s => { }, e => console.log(e))
               }}
               title="Scan document"
             />
@@ -351,11 +331,11 @@ export default class App extends Component {
 
                   var images = []
 
-                  for (var i = 0; i < response.length; i++) {
-                    images.push(response[i].base64)
+                  for (var i = 0; i < response!.length; i++) {
+                    images.push(response![i].base64!)
                   }
                   this.setState({ fullName: "PROCESSING..." })
-                  DocumentReader.recognizeImages(images, s => { }, e => console.log(e))
+                  DocumentReader.recognizeImages(images, _s => { }, e => console.log(e))
                 })
               }}
               title="     Scan image     "
@@ -363,7 +343,7 @@ export default class App extends Component {
           </View>
         </View>
         }
-      </View>
+      </SafeAreaView>
     )
   }
 }
@@ -380,16 +360,6 @@ const styles = StyleSheet.create({
   },
   radio: {
     alignItems: 'flex-start'
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
   cancelButton: {
     position: 'absolute',
