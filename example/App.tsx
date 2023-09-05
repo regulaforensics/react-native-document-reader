@@ -1,14 +1,14 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, NativeEventEmitter, Platform, TouchableOpacity, Image, Button } from 'react-native';
-import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader, DocumentReaderResults, DocumentReaderNotification } from '@regulaforensics/react-native-document-reader-api'
+import React from 'react'
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, NativeEventEmitter, Platform, TouchableOpacity, Image, Button } from 'react-native'
+import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader, DocumentReaderResults, DocumentReaderNotification, ScannerConfig, RecognizeConfig } from '@regulaforensics/react-native-document-reader-api'
 import * as RNFS from 'react-native-fs'
 import RadioGroup from 'react-native-radio-buttons-group'
-import { CheckBox } from '@rneui/themed';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { CheckBox } from '@rneui/themed'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { launchImageLibrary } from 'react-native-image-picker'
 import * as Progress from 'react-native-progress'
 
-var isReadingRfid = false;
+var isReadingRfid = false
 
 interface IProps {
 }
@@ -32,7 +32,7 @@ interface IState {
 export default class App extends React.Component<IProps, IState> {
   constructor(props: {} | Readonly<{}>) {
     super(props)
-    Icon.loadFont();
+    Icon.loadFont()
 
     var eventManager = new NativeEventEmitter(RNRegulaDocumentReader)
     eventManager.addListener('prepareDatabaseProgressChangeEvent', e => this.setState({ fullName: "Downloading database: " + e["msg"] + "%" }))
@@ -70,11 +70,25 @@ export default class App extends React.Component<IProps, IState> {
             }
             this.setState({ radioButtons: items })
             this.setState({ selectedScenario: this.state.radioButtons[0]['id'] })
+            DocumentReader.setConfig({
+              functionality: {
+                videoCaptureMotionControl: true,
+                showCaptureButton: true
+              },
+              customization: {
+                showResultStatusMessages: true,
+                showStatusMessages: true
+              },
+              processParams: {
+                scenario: this.state.selectedScenario,
+                doRfid: this.state.doRfid,
+              },
+            }, _ => { }, error => console.log(error))
 
             DocumentReader.getDocumentReaderIsReady((isReady) => {
               if (isReady) {
                 this.setState({ fullName: "Ready" })
-                DocumentReader.setRfidDelegate(Enum.RFIDDelegate.NO_PA, (_r) => { }, error => console.log(error))
+                DocumentReader.setRfidDelegate(Enum.RFIDDelegate.NO_PA, _ => { }, error => console.log(error))
               } else
                 this.setState({ fullName: "Failed" })
             }, error => console.log(error))
@@ -136,45 +150,83 @@ export default class App extends React.Component<IProps, IState> {
   }
 
   updateRfidUI(notification: DocumentReaderNotification) {
-    if (notification.code === Enum.eRFID_NotificationCodes.RFID_NOTIFICATION_PCSC_READING_DATAGROUP)
-      this.setState({ rfidDescription: Enum.eRFID_DataFile_Type.getTranslation(notification.dataFileType!) })
+    if (notification.notificationCode === Enum.eRFID_NotificationCodes.RFID_NOTIFICATION_PCSC_READING_DATAGROUP)
+      this.setState({ rfidDescription: "ERFIDDataFileType: " + notification.dataFileType })
     this.setState({ rfidUIHeader: "Reading RFID", rfidUIHeaderColor: "black" })
-    if (notification.value != null)
-      this.setState({ rfidProgress: notification.value / 100 })
+    if (notification.progress != null)
+      this.setState({ rfidProgress: notification.progress / 100 })
     if (Platform.OS === 'ios')
-      DocumentReader.setRfidSessionStatus(this.state.rfidDescription + "\n" + notification.value + "%", e => { }, e => { })
+      DocumentReader.setRfidSessionStatus(this.state.rfidDescription + "\n" + notification.progress + "%", e => { }, e => { })
   }
 
   clearResults() {
     this.setState({ fullName: "Ready", docFront: require('./images/id.png'), portrait: require('./images/portrait.png') })
   }
 
+  scan() {
+    this.clearResults()
+    var config = new ScannerConfig()
+    config.scenario = this.state.selectedScenario
+    DocumentReader.scan(config, _ => { }, e => console.log(e))
+  }
+
+  recognize() {
+    launchImageLibrary({
+      mediaType: 'photo',
+      includeBase64: true,
+      selectionLimit: 10
+    }, r => {
+      if (r.errorCode != null) {
+        console.log("error code: " + r.errorCode)
+        console.log("error message: " + r.errorMessage)
+        this.setState({ fullName: r.errorMessage })
+        return
+      }
+      if (r.didCancel) return
+      this.clearResults()
+      this.setState({ fullName: "COPYING IMAGE..." })
+      var response = r.assets
+
+      var images = []
+
+      for (var i = 0; i < response!.length; i++) {
+        images.push(response![i].base64!)
+      }
+      this.setState({ fullName: "PROCESSING..." })
+
+      var config = new RecognizeConfig()
+      config.scenario = this.state.selectedScenario
+      config.images = images
+      DocumentReader.recognize(config, _ => { }, e => console.log(e))
+    })
+  }
+
   displayResults(results: DocumentReaderResults) {
     if (results == null) return
 
-    results.textFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES, (value) => {
+    results.textFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES, (value: string | undefined) => {
       this.setState({ fullName: value })
-    }, error => console.log(error))
+    }, (error: string) => console.log(error))
 
-    results.graphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE, (value) => {
+    results.graphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE, (value: string | undefined) => {
       if (value != null && value != "")
         this.setState({ docFront: { uri: "data:image/png;base64," + value } })
-    }, error => console.log(error))
+    }, (error: string) => console.log(error))
 
-    results.graphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT, (value) => {
+    results.graphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT, (value: string | undefined) => {
       if (value != null && value != "")
         this.setState({ portrait: { uri: "data:image/png;base64," + value } })
-    }, error => console.log(error))
+    }, (error: string) => console.log(error))
   }
 
   customRFID() {
     this.showRfidUI()
-    DocumentReader.readRFID(_e => { }, _e => { })
+    DocumentReader.readRFID(_ => { }, _ => { })
   }
 
   usualRFID() {
     isReadingRfid = true
-    DocumentReader.startRFIDReader(_e => { }, _e => { })
+    DocumentReader.startRFIDReader(_ => { }, _ => { })
   }
 
   handleResults(results: DocumentReaderResults) {
@@ -274,72 +326,9 @@ export default class App extends React.Component<IProps, IState> {
           </View>
 
           <View style={{ flexDirection: 'row' }}>
-            <Button color="#4285F4"
-              onPress={() => {
-                this.clearResults()
-                DocumentReader.setConfig({
-                  functionality: {
-                    videoCaptureMotionControl: true,
-                    showCaptureButton: true
-                  },
-                  customization: {
-                    showResultStatusMessages: true,
-                    showStatusMessages: true
-                  },
-                  processParams: {
-                    scenario: this.state.selectedScenario,
-                    doRfid: this.state.doRfid,
-                  },
-                }, e => { }, error => console.log(error))
-
-                DocumentReader.showScanner(_s => { }, e => console.log(e))
-              }}
-              title="Scan document"
-            />
+            <Button color="#4285F4" title="Scan document" onPress={() => this.scan()} />
             <Text style={{ padding: 5 }}></Text>
-            <Button color="#4285F4"
-              onPress={() => {
-                launchImageLibrary({
-                  mediaType: 'photo',
-                  includeBase64: true,
-                  selectionLimit: 10
-                }, r => {
-                  if (r.errorCode != null) {
-                    console.log("error code: " + r.errorCode)
-                    console.log("error message: " + r.errorMessage)
-                    this.setState({ fullName: r.errorMessage })
-                    return
-                  }
-                  if (r.didCancel) return
-                  this.clearResults()
-                  this.setState({ fullName: "COPYING IMAGE..." })
-                  var response = r.assets
-                  DocumentReader.setConfig({
-                    functionality: {
-                      videoCaptureMotionControl: true,
-                      showCaptureButton: true
-                    },
-                    customization: {
-                      showResultStatusMessages: true,
-                      showStatusMessages: true
-                    },
-                    processParams: {
-                      scenario: this.state.selectedScenario,
-                      doRfid: this.state.doRfid,
-                    },
-                  }, e => { }, error => console.log(error))
-
-                  var images = []
-
-                  for (var i = 0; i < response!.length; i++) {
-                    images.push(response![i].base64!)
-                  }
-                  this.setState({ fullName: "PROCESSING..." })
-                  DocumentReader.recognizeImages(images, _s => { }, e => console.log(e))
-                })
-              }}
-              title="     Scan image     "
-            />
+            <Button color="#4285F4" title="     Scan image     " onPress={() => this.recognize()} />
           </View>
         </View>
         }

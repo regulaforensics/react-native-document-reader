@@ -1,7 +1,12 @@
 package com.regula.documentreader;
 
+import static com.regula.documentreader.api.DocumentReader.Instance;
+import static com.regula.documentreader.Helpers.*;
+import static com.regula.documentreader.JSONConstructor.*;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.LocaleManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +17,11 @@ import android.graphics.Bitmap;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.IsoDep;
 import android.os.Build;
-import android.os.Bundle;
+import android.os.LocaleList;
 import android.util.Base64;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -29,55 +37,56 @@ import com.regula.documentreader.api.completions.ICheckDatabaseUpdate;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion;
-import com.regula.documentreader.api.completions.IRfidPKDCertificateCompletion;
-import com.regula.documentreader.api.completions.IRfidReaderRequest;
-import com.regula.documentreader.api.completions.IRfidTASignatureCompletion;
-import com.regula.documentreader.api.completions.ITccParamsCompletion;
+import com.regula.documentreader.api.completions.rfid.IRfidPKDCertificateCompletion;
+import com.regula.documentreader.api.completions.rfid.IRfidReaderCompletion;
+import com.regula.documentreader.api.completions.rfid.IRfidReaderRequest;
+import com.regula.documentreader.api.completions.rfid.IRfidTASignatureCompletion;
+import com.regula.documentreader.api.completions.rfid.ITccParamsCompletion;
 import com.regula.documentreader.api.enums.DocReaderAction;
+import com.regula.documentreader.api.errors.DocReaderRfidException;
 import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.internal.core.CoreScenarioUtil;
+import com.regula.documentreader.api.internal.params.ImageInputParam;
+import com.regula.documentreader.api.internal.parser.DocReaderResultsJsonParser;
 import com.regula.documentreader.api.params.BleDeviceConfig;
 import com.regula.documentreader.api.params.DocReaderConfig;
 import com.regula.documentreader.api.params.ImageInputData;
-import com.regula.documentreader.api.internal.params.ImageInputParam;
 import com.regula.documentreader.api.params.rfid.PKDCertificate;
 import com.regula.documentreader.api.params.rfid.authorization.PAResourcesIssuer;
 import com.regula.documentreader.api.params.rfid.authorization.TAChallenge;
 import com.regula.documentreader.api.results.DocumentReaderGraphicField;
+import com.regula.documentreader.api.results.DocumentReaderNotification;
 import com.regula.documentreader.api.results.DocumentReaderResults;
 import com.regula.documentreader.api.results.DocumentReaderTextField;
-import com.regula.documentreader.api.internal.parser.DocReaderResultsJsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static com.regula.documentreader.api.DocumentReader.Instance;
-
-import androidx.annotation.NonNull;
-
-@SuppressWarnings({"ConstantConditions", "RedundantSuppression", "MissingPermission"})
+@SuppressWarnings({"ConstantConditions", "RedundantSuppression", "MissingPermission", "deprecation"})
 public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
-    private final static String prepareDatabaseProgressChangeEvent = "prepareDatabaseProgressChangeEvent";
-    private final static String completionEvent = "completionEvent";
-    private final static String videoEncoderCompletionEvent = "videoEncoderCompletionEvent";
-    private final static String rfidNotificationCompletionEvent = "rfidNotificationCompletionEvent";
+    private final static String eventDatabaseProgress = "prepareDatabaseProgressChangeEvent";
+    private final static String eventCompletion = "completionEvent";
 
-    private final static String paCertificateCompletionEvent = "paCertificateCompletionEvent";
-    private final static String taCertificateCompletionEvent = "taCertificateCompletionEvent";
-    private final static String taSignatureCompletionEvent = "taSignatureCompletionEvent";
+    private final static String rfidOnProgressEvent = "rfidNotificationCompletionEvent";
+    private final static String rfidOnChipDetectedEvent = "rfidOnChipDetectedEvent";
+    private final static String rfidOnRetryReadChipEvent = "rfidOnRetryReadChipEvent";
+
+    private final static String eventPACertificateCompletion = "paCertificateCompletionEvent";
+    private final static String eventTACertificateCompletion = "taCertificateCompletionEvent";
+    private final static String eventTASignatureCompletion = "taSignatureCompletionEvent";
 
     private final static String bleOnServiceConnectedEvent = "bleOnServiceConnectedEvent";
     private final static String bleOnServiceDisconnectedEvent = "bleOnServiceDisconnectedEvent";
     private final static String bleOnDeviceReadyEvent = "bleOnDeviceReadyEvent";
 
+    private final static String eventVideoEncoderCompletion = "videoEncoderCompletionEvent";
     private final static String onCustomButtonTappedEvent = "onCustomButtonTappedEvent";
 
     private static int databaseDownloadProgress = 0;
@@ -127,7 +136,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     @Override
     public void onNewIntent(Intent intent) {
         if (intent.getAction() != null && intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED) && backgroundRFIDEnabled)
-            Instance().readRFID(IsoDep.get(intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)), getCompletion());
+            Instance().readRFID(IsoDep.get(intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)), getRfidReaderCompletion());
     }
 
     @Override
@@ -161,54 +170,15 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         return (T) data.get(index);
     }
 
-    static void send(ReactContext reactContext, String event, String data) {
+    private void sendEvent(String event, Object data) {
         WritableMap map = Arguments.createMap();
-        map.putString("msg", data);
+        String result;
+        if (data instanceof JSONObject || data instanceof JSONArray)
+            result = data.toString();
+        else
+            result = (String) data;
+        map.putString("msg", result);
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(event, map);
-    }
-
-    private void sendProgress(int progress) {
-        send(reactContext, prepareDatabaseProgressChangeEvent, progress + "");
-    }
-
-    private void sendCompletion(int action, DocumentReaderResults results, DocumentReaderException error) {
-        send(reactContext, completionEvent, JSONConstructor.generateCompletion(action, results, error, getContext()).toString());
-    }
-
-    private void sendVideoEncoderCompletion(String sessionId, File file) {
-        send(reactContext, videoEncoderCompletionEvent, JSONConstructor.generateVideoEncoderCompletion(sessionId, file).toString());
-    }
-
-    private void sendIRfidNotificationCompletion(int notification, Bundle value) {
-        send(reactContext, rfidNotificationCompletionEvent, JSONConstructor.generateRfidNotificationCompletion(notification, value).toString());
-    }
-
-    private void sendPACertificateCompletion(byte[] serialNumber, PAResourcesIssuer issuer) {
-        send(reactContext, paCertificateCompletionEvent, JSONConstructor.generatePACertificateCompletion(serialNumber, issuer).toString());
-    }
-
-    private void sendTACertificateCompletion(String keyCAR) {
-        send(reactContext, taCertificateCompletionEvent, keyCAR);
-    }
-
-    private void sendTASignatureCompletion(TAChallenge challenge) {
-        send(reactContext, taSignatureCompletionEvent, JSONConstructor.generateTAChallenge(challenge).toString());
-    }
-
-    private void sendBleOnServiceConnectedEvent(boolean isBleManagerConnected) {
-        send(reactContext, bleOnServiceConnectedEvent, isBleManagerConnected +"");
-    }
-
-    private void sendBleOnServiceDisconnectedEvent() {
-        send(reactContext, bleOnServiceDisconnectedEvent, "");
-    }
-
-    private void sendBleOnDeviceReadyEvent() {
-        send(reactContext, bleOnDeviceReadyEvent, "");
-    }
-
-    private void sendOnCustomButtonTappedEvent(int tag) {
-        send(reactContext, onCustomButtonTappedEvent, tag + "");
     }
 
     private interface Callback {
@@ -384,8 +354,11 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "checkDatabaseUpdate":
                     checkDatabaseUpdate(callback, args(0));
                     break;
-                case "getScenario":
-                    getScenario(callback, args(0));
+                case "scan":
+                    scan(callback, args(0));
+                    break;
+                case "recognize":
+                    recognize(callback, args(0));
                     break;
                 case "recognizeImages":
                     recognizeImages(callback, args(0));
@@ -446,9 +419,6 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                     break;
                 case "recognizeImagesWithImageInputs":
                     recognizeImagesWithImageInputs(callback, args(0));
-                    break;
-                case "setOnCustomButtonTappedListener":
-                    setOnCustomButtonTappedListener(callback);
                     break;
                 case "setLanguage":
                     setLanguage(callback, args(0));
@@ -556,15 +526,15 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         BluetoothUtil.Companion.startBluetoothService(
                 getActivity(),
                 isBleManagerConnected -> {
-                    sendBleOnServiceConnectedEvent(isBleManagerConnected);
+                    sendEvent(bleOnServiceConnectedEvent, isBleManagerConnected);
                     return null;
                 },
                 () -> {
-                    sendBleOnServiceDisconnectedEvent();
+                    sendEvent(bleOnServiceDisconnectedEvent, "");
                     return null;
                 },
                 () -> {
-                    sendBleOnDeviceReadyEvent();
+                    sendEvent(bleOnDeviceReadyEvent, "");
                     return null;
                 }
         );
@@ -581,12 +551,12 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     private void getAvailableScenarios(Callback callback) throws JSONException {
-        callback.success(JSONConstructor.generateList(Instance().availableScenarios, JSONConstructor::generateDocumentReaderScenario).toString());
+        callback.success(generateList(Instance().availableScenarios, JSONConstructor::generateDocumentReaderScenario).toString());
     }
 
     private void parseCoreResults(Callback callback, String json) {
         DocumentReaderResults results = (DocumentReaderResults) DocReaderResultsJsonParser.parseCoreResults(json).get("docReaderResults");
-        callback.success(JSONConstructor.generateDocumentReaderResults(results, getContext()).toString());
+        callback.success(generateDocumentReaderResults(results, getContext()).toString());
     }
 
     private void getAPIVersion(Callback callback) {
@@ -626,7 +596,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     private void setTCCParams(Callback callback, final JSONObject params) {
-        Instance().setTccParams(JSONConstructor.TCCParamsFromJSON(params), getTCCParamsCompletion(callback));
+        Instance().setTccParams(TCCParamsFromJSON(params), getTCCParamsCompletion(callback));
     }
 
     private void deinitializeReader(Callback callback) {
@@ -647,11 +617,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     private void selectedScenario(Callback callback) {
-        callback.success(JSONConstructor.generateCoreDetailedScenario(CoreScenarioUtil.getScenario(Instance().processParams().getScenario())).toString());
-    }
-
-    private void getScenario(Callback callback, String scenario) {
-        callback.success(JSONConstructor.generateCoreDetailedScenario(CoreScenarioUtil.getScenario(scenario)).toString());
+        callback.success(generateDocumentReaderScenario(CoreScenarioUtil.getScenario(Instance().processParams().getScenario())).toString());
     }
 
     private void getLicenseExpiryDate(Callback callback) {
@@ -665,7 +631,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         if (Instance().license().getCountryFilter() == null)
             callback.error("null");
         else
-            callback.success(JSONConstructor.generateList(Instance().license().getCountryFilter()).toString());
+            callback.success(generateList(Instance().license().getCountryFilter()).toString());
     }
 
     private void licenseIsRfidAvailable(Callback callback) {
@@ -686,7 +652,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void initializeReader(Callback callback, JSONObject config) {
         if (!Instance().isReady())
-            Instance().initializeReader(getContext(), JSONConstructor.DocReaderConfigFromJSON(config), getInitCompletion(callback));
+            Instance().initializeReader(getContext(), DocReaderConfigFromJSON(config), getInitCompletion(callback));
         else
             callback.success("already initialized");
     }
@@ -715,6 +681,16 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         callback.success();
     }
 
+    private void scan(@SuppressWarnings("unused") Callback callback, JSONObject config) {
+        stopBackgroundRFID();
+        Instance().showScanner(getContext(), ScannerConfigFromJSON(config), getCompletion());
+    }
+
+    private void recognize(@SuppressWarnings("unused") Callback callback, JSONObject config) {
+        stopBackgroundRFID();
+        Instance().recognize(getContext(), RecognizeConfigFromJSON(config), getCompletion());
+    }
+
     private void recognizeImageWithOpts(Callback callback, String base64Image, final JSONObject opts) throws JSONException {
         RegulaConfig.setConfig(Instance(), opts, getContext());
         recognizeImage(callback, base64Image);
@@ -734,7 +710,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         stopBackgroundRFID();
         Bitmap[] images = new Bitmap[base64Images.length()];
         for (int i = 0; i < images.length; i++)
-            images[i] = Helpers.bitmapFromBase64(base64Images.getString(i));
+            images[i] = bitmapFromBase64(base64Images.getString(i));
         Instance().recognizeImages(images, getCompletion());
     }
 
@@ -742,7 +718,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         stopBackgroundRFID();
         ImageInputData[] images = new ImageInputData[base64Images.length()];
         for (int i = 0; i < images.length; i++)
-            images[i] = JSONConstructor.ImageInputDataFromJSON(base64Images.getJSONObject(i));
+            images[i] = ImageInputDataFromJSON(base64Images.getJSONObject(i));
         Instance().recognizeImages(images, getCompletion());
     }
 
@@ -806,12 +782,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void startRFIDReader(@SuppressWarnings("unused") Callback callback) {
         stopBackgroundRFID();
-        IRfidReaderRequest delegate = null;
-        if (rfidDelegate == RFIDDelegate.NO_PA)
-            delegate = getIRfidReaderRequestNoPA();
-        if (rfidDelegate == RFIDDelegate.FULL)
-            delegate = getIRfidReaderRequest();
-        Instance().startRFIDReader(getContext(), getCompletion(), delegate, this::sendIRfidNotificationCompletion);
+        Instance().startRFIDReader(getContext(), getRfidReaderCompletion(), getRfidReaderRequest());
     }
 
     private void stopRFIDReader(Callback callback) {
@@ -847,18 +818,18 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         startForegroundDispatch(getActivity());
     }
 
-    private void setOnCustomButtonTappedListener(Callback callback) {
-        Instance().setOnClickListener(view -> sendOnCustomButtonTappedEvent((int) view.getTag()));
-        callback.success();
-    }
-
     private void setLanguage(Callback callback, String language) {
-        Locale locale = new Locale(language);
-        Locale.setDefault(locale);
-        Resources resources = getContext().getResources();
-        Configuration config = resources.getConfiguration();
-        config.setLocale(locale);
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            LocaleManager localeManager = (LocaleManager) getContext().getSystemService(Context.LOCALE_SERVICE);
+            localeManager.setApplicationLocales(new LocaleList(Locale.forLanguageTag(language)));
+        } else {
+            Locale locale = new Locale(language);
+            Locale.setDefault(locale);
+            Resources resources = getContext().getResources();
+            Configuration config = resources.getConfiguration();
+            config.setLocale(locale);
+            resources.updateConfiguration(config, resources.getDisplayMetrics());
+        }
         callback.success();
     }
 
@@ -940,7 +911,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         if (result == null)
             callback.success(null);
         else
-            callback.success(JSONConstructor.generateDocumentReaderTextField(result, getContext()).toString());
+            callback.success(generateDocumentReaderTextField(result, getContext()).toString());
     }
 
     private void textFieldByTypeLcid(Callback callback, String raw, int fieldType, int lcid) {
@@ -949,7 +920,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         if (result == null)
             callback.success(null);
         else
-            callback.success(JSONConstructor.generateDocumentReaderTextField(result, getContext()).toString());
+            callback.success(generateDocumentReaderTextField(result, getContext()).toString());
     }
 
     private void graphicFieldByTypeSource(Callback callback, String raw, int fieldType, int source) {
@@ -958,7 +929,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         if (result == null)
             callback.success(null);
         else
-            callback.success(JSONConstructor.generateDocumentReaderGraphicField(result, getContext()).toString());
+            callback.success(generateDocumentReaderGraphicField(result, getContext()).toString());
     }
 
     private void graphicFieldByTypeSourcePageIndex(Callback callback, String raw, int fieldType, int source, int pageIndex) {
@@ -967,7 +938,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         if (result == null)
             callback.success(null);
         else
-            callback.success(JSONConstructor.generateDocumentReaderGraphicField(result, getContext()).toString());
+            callback.success(generateDocumentReaderGraphicField(result, getContext()).toString());
     }
 
     private void graphicFieldByTypeSourcePageIndexLight(Callback callback, String raw, int fieldType, int source, int pageIndex, int light) {
@@ -976,34 +947,34 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         if (result == null)
             callback.success(null);
         else
-            callback.success(JSONConstructor.generateDocumentReaderGraphicField(result, getContext()).toString());
+            callback.success(generateDocumentReaderGraphicField(result, getContext()).toString());
     }
 
     private void graphicFieldImageByType(Callback callback, String raw, int fieldType) {
         DocumentReaderResults results = DocumentReaderResults.fromRawResults(raw);
-        callback.success(Helpers.bitmapToBase64String(results.getGraphicFieldImageByType(fieldType)));
+        callback.success(bitmapToBase64String(results.getGraphicFieldImageByType(fieldType)));
     }
 
     private void graphicFieldImageByTypeSource(Callback callback, String raw, int fieldType, int source) {
         DocumentReaderResults results = DocumentReaderResults.fromRawResults(raw);
-        callback.success(Helpers.bitmapToBase64String(results.getGraphicFieldImageByType(fieldType, source)));
+        callback.success(bitmapToBase64String(results.getGraphicFieldImageByType(fieldType, source)));
     }
 
     private void graphicFieldImageByTypeSourcePageIndex(Callback callback, String raw, int fieldType, int source, int pageIndex) {
         DocumentReaderResults results = DocumentReaderResults.fromRawResults(raw);
-        callback.success(Helpers.bitmapToBase64String(results.getGraphicFieldImageByType(fieldType, source, pageIndex)));
+        callback.success(bitmapToBase64String(results.getGraphicFieldImageByType(fieldType, source, pageIndex)));
     }
 
     private void graphicFieldImageByTypeSourcePageIndexLight(Callback callback, String raw, int fieldType, int source, int pageIndex, int light) {
         DocumentReaderResults results = DocumentReaderResults.fromRawResults(raw);
-        callback.success(Helpers.bitmapToBase64String(results.getGraphicFieldImageByType(fieldType, source, pageIndex, light)));
+        callback.success(bitmapToBase64String(results.getGraphicFieldImageByType(fieldType, source, pageIndex, light)));
     }
 
     @SuppressLint("WrongConstant")
     private void containers(Callback callback, String raw, JSONArray resultType) {
         try {
             DocumentReaderResults results = DocumentReaderResults.fromRawResults(raw);
-            callback.success(results.getContainers(JSONConstructor.intArrayFromJSON(resultType)));
+            callback.success(results.getContainers(intArrayFromJSON(resultType)));
         } catch (JSONException e) {
             e.printStackTrace();
             callback.error(e.toString());
@@ -1043,9 +1014,35 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private IDocumentReaderCompletion getCompletion() {
         return (action, results, error) -> {
-            sendCompletion(action, results, error);
+            sendEvent(eventCompletion, generateCompletion(action, results, error, getContext()));
             if (action == DocReaderAction.ERROR || action == DocReaderAction.CANCEL || (action == DocReaderAction.COMPLETE && results != null && results.rfidResult == 1))
                 stopBackgroundRFID();
+        };
+    }
+
+    private IRfidReaderCompletion getRfidReaderCompletion() {
+        return new IRfidReaderCompletion() {
+            @Override
+            public void onCompleted(int action, @Nullable DocumentReaderResults results, @Nullable DocumentReaderException error) {
+                sendEvent(eventCompletion, generateCompletion(action, results, error, getContext()));
+                if (action == DocReaderAction.ERROR || action == DocReaderAction.CANCEL || (action == DocReaderAction.COMPLETE && results != null && results.rfidResult == 1))
+                    stopBackgroundRFID();
+            }
+
+            @Override
+            public void onChipDetected() {
+                sendEvent(rfidOnChipDetectedEvent, "");
+            }
+
+            @Override
+            public void onRetryReadChip(@NonNull DocReaderRfidException error) {
+                sendEvent(rfidOnRetryReadChipEvent, generateRegulaException(error));
+            }
+
+            @Override
+            public void onProgress(@Nullable DocumentReaderNotification notification) {
+                sendEvent(rfidOnProgressEvent, generateDocumentReaderNotification(notification));
+            }
         };
     }
 
@@ -1054,13 +1051,13 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             @Override
             public void onPrepareProgressChanged(int progress) {
                 if (progress != databaseDownloadProgress) {
-                    sendProgress(progress);
+                    sendEvent(eventDatabaseProgress, progress + "");
                     databaseDownloadProgress = progress;
                 }
             }
 
             @Override
-            public void onPrepareCompleted(boolean status, DocumentReaderException error) {
+            public void onPrepareCompleted(boolean status, @Nullable DocumentReaderException error) {
                 if (status)
                     callback.success("database prepared");
                 else
@@ -1072,7 +1069,8 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     private IDocumentReaderInitCompletion getInitCompletion(Callback callback) {
         return (success, error) -> {
             if (success) {
-                Instance().setVideoEncoderCompletion(this::sendVideoEncoderCompletion);
+                Instance().setVideoEncoderCompletion((sessionId, file) -> sendEvent(eventVideoEncoderCompletion, generateVideoEncoderCompletion(sessionId, file)));
+                Instance().setOnClickListener(view -> sendEvent(onCustomButtonTappedEvent, view.getTag()));
                 callback.success("init completed");
             } else
                 callback.error("Init failed:" + error);
@@ -1080,7 +1078,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
     }
 
     private ICheckDatabaseUpdate getCheckDatabaseUpdateCompletion(Callback callback) {
-        return (database) -> callback.success(JSONConstructor.generateDocReaderDocumentsDatabase(database));
+        return (database) -> callback.success(generateDocReaderDocumentsDatabase(database));
     }
 
     private ITccParamsCompletion getTCCParamsCompletion(Callback callback) {
@@ -1097,20 +1095,19 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             @Override
             public void onRequestPACertificates(byte[] serialNumber, PAResourcesIssuer issuer, @NonNull IRfidPKDCertificateCompletion completion) {
                 paCertificateCompletion = completion;
-                completion.onCertificatesReceived(new PKDCertificate[0]);
-                sendPACertificateCompletion(serialNumber, issuer);
+                sendEvent(eventPACertificateCompletion, generatePACertificateCompletion(serialNumber, issuer));
             }
 
             @Override
             public void onRequestTACertificates(String keyCAR, @NonNull IRfidPKDCertificateCompletion completion) {
                 taCertificateCompletion = completion;
-                sendTACertificateCompletion(keyCAR);
+                sendEvent(eventTACertificateCompletion, keyCAR);
             }
 
             @Override
             public void onRequestTASignature(TAChallenge challenge, @NonNull IRfidTASignatureCompletion completion) {
                 taSignatureCompletion = completion;
-                sendTASignatureCompletion(challenge);
+                sendEvent(eventTASignatureCompletion, generateTAChallenge(challenge));
             }
         };
     }
@@ -1126,15 +1123,24 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             @Override
             public void onRequestTACertificates(String keyCAR, @NonNull IRfidPKDCertificateCompletion completion) {
                 taCertificateCompletion = completion;
-                sendTACertificateCompletion(keyCAR);
+                sendEvent(eventTACertificateCompletion, keyCAR);
             }
 
             @Override
             public void onRequestTASignature(TAChallenge challenge, @NonNull IRfidTASignatureCompletion completion) {
                 taSignatureCompletion = completion;
-                sendTASignatureCompletion(challenge);
+                sendEvent(eventTASignatureCompletion, generateTAChallenge(challenge));
             }
         };
+    }
+
+    private IRfidReaderRequest getRfidReaderRequest() {
+        IRfidReaderRequest delegate = null;
+        if (rfidDelegate == RFIDDelegate.NO_PA)
+            delegate = getIRfidReaderRequestNoPA();
+        if (rfidDelegate == RFIDDelegate.FULL)
+            delegate = getIRfidReaderRequest();
+        return delegate;
     }
 
     private static int rfidDelegate = RFIDDelegate.NULL;
