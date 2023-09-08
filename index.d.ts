@@ -5,6 +5,16 @@ export class DocumentReaderScenario {
     name?: string
     caption?: string
     description?: string
+    multiPageOff?: boolean
+    frameKWHLandscape?: number
+    frameKWHPortrait?: number
+    frameKWHDoublePageSpreadPortrait?: number
+    frameKWHDoublePageSpreadLandscape?: number
+    frameOrientation?: number
+    uvTorch?: boolean
+    faceExt?: boolean
+    seriesProcessMode?: boolean
+    manualCrop?: boolean
 
     static fromJson(jsonObject?: any): DocumentReaderScenario | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -13,79 +23,16 @@ export class DocumentReaderScenario {
         result.name = jsonObject["name"]
         result.caption = jsonObject["caption"]
         result.description = jsonObject["description"]
-
-        return result
-    }
-}
-
-export class CoreDetailedScenario {
-    uvTorch?: boolean
-    frameOrientation?: number
-    faceExt?: boolean
-    multiPageOff?: number
-    seriesProcessMode?: boolean
-    frameKWHLandscape?: number
-    frameKWHPortrait?: number
-    frameKWHDoublePageSpreadPortrait?: number
-    frameKWHDoublePageSpreadLandscape?: number
-    name?: string
-    caption?: string
-    description?: string
-    manualCrop?: boolean
-
-    static fromJson(jsonObject?: any): CoreDetailedScenario | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new CoreDetailedScenario
-
-        result.uvTorch = jsonObject["uvTorch"]
-        result.frameOrientation = jsonObject["frameOrientation"]
-        result.faceExt = jsonObject["faceExt"]
         result.multiPageOff = jsonObject["multiPageOff"]
-        result.seriesProcessMode = jsonObject["seriesProcessMode"]
         result.frameKWHLandscape = jsonObject["frameKWHLandscape"]
         result.frameKWHPortrait = jsonObject["frameKWHPortrait"]
         result.frameKWHDoublePageSpreadPortrait = jsonObject["frameKWHDoublePageSpreadPortrait"]
         result.frameKWHDoublePageSpreadLandscape = jsonObject["frameKWHDoublePageSpreadLandscape"]
-        result.name = jsonObject["name"]
-        result.caption = jsonObject["caption"]
-        result.description = jsonObject["description"]
+        result.frameOrientation = jsonObject["frameOrientation"]
+        result.uvTorch = jsonObject["uvTorch"]
+        result.faceExt = jsonObject["faceExt"]
+        result.seriesProcessMode = jsonObject["seriesProcessMode"]
         result.manualCrop = jsonObject["manualCrop"]
-
-        return result
-    }
-}
-
-export class FaceMetaData {
-    ID?: number
-    rollAngle?: number
-    bounds?: Bounds
-
-    static fromJson(jsonObject?: any): FaceMetaData | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new FaceMetaData
-
-        result.ID = jsonObject["ID"]
-        result.rollAngle = jsonObject["rollAngle"]
-        result.bounds = Bounds.fromJson(jsonObject["bounds"])
-
-        return result
-    }
-}
-
-export class Bounds {
-    x?: number
-    y?: number
-    width?: number
-    height?: number
-
-    static fromJson(jsonObject?: any): Bounds | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new Bounds
-
-        result.x = jsonObject["x"]
-        result.y = jsonObject["y"]
-        result.width = jsonObject["width"]
-        result.height = jsonObject["height"]
 
         return result
     }
@@ -132,7 +79,7 @@ export class DocReaderFieldRect {
 export class DocumentReaderGraphicField {
     sourceType?: number
     fieldType?: number
-    lightType?: number
+    light?: number
     pageIndex?: number
     originalPageIndex?: number
     fieldName?: string
@@ -146,7 +93,7 @@ export class DocumentReaderGraphicField {
 
         result.sourceType = jsonObject["sourceType"]
         result.fieldType = jsonObject["fieldType"]
-        result.lightType = jsonObject["lightType"]
+        result.light = jsonObject["light"]
         result.pageIndex = jsonObject["pageIndex"]
         result.originalPageIndex = jsonObject["originalPageIndex"]
         result.fieldName = jsonObject["fieldName"]
@@ -454,8 +401,6 @@ export class DocumentReaderDocumentType {
 }
 
 export class DocumentReaderNotification {
-    code?: number
-    value?: number
     notificationCode?: number
     dataFileType?: number
     progress?: number
@@ -464,8 +409,6 @@ export class DocumentReaderNotification {
         if (jsonObject == null || jsonObject == undefined) return undefined
         const result = new DocumentReaderNotification
 
-        result.code = jsonObject["code"]
-        result.value = jsonObject["value"]
         result.notificationCode = jsonObject["notificationCode"]
         result.dataFileType = jsonObject["dataFileType"]
         result.progress = jsonObject["progress"]
@@ -905,6 +848,8 @@ export class RFIDSessionData {
     accessControls?: AccessControlProcedureType[]
     applications?: Application[]
     securityObjects?: SecurityObject[]
+    dataGroups?: number[]
+    dataFields?: DataField[]
 
     static fromJson(jsonObject?: any): RFIDSessionData | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -940,6 +885,35 @@ export class RFIDSessionData {
                     result.securityObjects.push(item)
             }
         }
+        result.dataGroups = []
+        if (jsonObject["dataGroups"] != null) {
+            for (const i in jsonObject["dataGroups"]) {
+                result.dataGroups.push(jsonObject["dataGroups"][i])
+            }
+        }
+        result.dataFields = []
+        if (jsonObject["dataFields"] != null) {
+            for (const i in jsonObject["dataFields"]) {
+                const item = DataField.fromJson(jsonObject["dataFields"][i])
+                if (item != undefined)
+                    result.dataFields.push(item)
+            }
+        }
+
+        return result
+    }
+}
+
+export class DataField {
+    data?: string
+    fieldType?: number
+
+    static fromJson(jsonObject?: any): DataField | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new DataField
+
+        result.data = jsonObject["data"]
+        result.fieldType = jsonObject["fieldType"]
 
         return result
     }
@@ -1082,7 +1056,7 @@ export class DocumentReaderAuthenticityElement {
 export class DocumentReaderCompletion {
     action?: number
     results?: DocumentReaderResults
-    error?: DocumentReaderException
+    error?: RegulaException
 
     static fromJson(jsonObject?: any): DocumentReaderCompletion | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -1090,7 +1064,7 @@ export class DocumentReaderCompletion {
 
         result.action = jsonObject["action"]
         result.results = DocumentReaderResults.fromJson(jsonObject["results"])
-        result.error = DocumentReaderException.fromJson(jsonObject["error"])
+        result.error = RegulaException.fromJson(jsonObject["error"])
 
         return result
     }
@@ -1111,13 +1085,13 @@ export class RfidNotificationCompletion {
     }
 }
 
-export class DocumentReaderException {
+export class RegulaException {
     errorCode?: number
     message?: string
 
-    static fromJson(jsonObject?: any): DocumentReaderException | undefined {
+    static fromJson(jsonObject?: any): RegulaException | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new DocumentReaderException
+        const result = new RegulaException
 
         result.errorCode = jsonObject["errorCode"]
         result.message = jsonObject["message"]
@@ -1410,6 +1384,7 @@ export class DocReaderDocumentsDatabase {
     databaseDescription?: string
     countriesNumber?: number
     documentsNumber?: number
+    size?: number
 
     static fromJson(jsonObject?: any): DocReaderDocumentsDatabase | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -1421,6 +1396,7 @@ export class DocReaderDocumentsDatabase {
         result.databaseDescription = jsonObject["databaseDescription"]
         result.countriesNumber = jsonObject["countriesNumber"]
         result.documentsNumber = jsonObject["documentsNumber"]
+        result.size = jsonObject["size"]
 
         return result
     }
@@ -1511,6 +1487,203 @@ export class DocumentReaderValidity {
     }
 }
 
+export class FaceApiParams {
+    url?: string
+    mode?: string
+    searchParams?: Search
+    threshold?: number
+    serviceTimeout?: number
+    proxy?: string
+    proxyPassword?: string
+    proxyType?: number
+
+    static fromJson(jsonObject?: any): FaceApiParams | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new FaceApiParams
+
+        result.url = jsonObject["url"]
+        result.mode = jsonObject["mode"]
+        result.searchParams = Search.fromJson(jsonObject["searchParams"])
+        result.threshold = jsonObject["threshold"]
+        result.serviceTimeout = jsonObject["serviceTimeout"]
+        result.proxy = jsonObject["proxy"]
+        result.proxyPassword = jsonObject["proxyPassword"]
+        result.proxyType = jsonObject["proxyType"]
+
+        return result
+    }
+}
+
+export class Search {
+    limit?: number
+    threshold?: number
+    groupIds?: number[]
+
+    static fromJson(jsonObject?: any): Search | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new Search
+
+        result.limit = jsonObject["limit"]
+        result.threshold = jsonObject["threshold"]
+        result.groupIds = []
+        if (jsonObject["groupIds"] != null) {
+            for (const i in jsonObject["groupIds"]) {
+                result.groupIds.push(jsonObject["groupIds"][i])
+            }
+        }
+
+        return result
+    }
+}
+
+export class ImageQA {
+    dpiThreshold?: number
+    angleThreshold?: number
+    focusCheck?: boolean
+    glaresCheck?: boolean
+    colornessCheck?: boolean
+    moireCheck?: boolean
+    expectedPass?: number[]
+    glaresCheckParams?: GlaresCheckParams
+    documentPositionIndent?: number
+
+    static fromJson(jsonObject?: any): ImageQA | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new ImageQA
+
+        result.dpiThreshold = jsonObject["dpiThreshold"]
+        result.angleThreshold = jsonObject["angleThreshold"]
+        result.focusCheck = jsonObject["focusCheck"]
+        result.glaresCheck = jsonObject["glaresCheck"]
+        result.colornessCheck = jsonObject["colornessCheck"]
+        result.moireCheck = jsonObject["moireCheck"]
+        result.expectedPass = []
+        if (jsonObject["expectedPass"] != null) {
+            for (const i in jsonObject["expectedPass"]) {
+                result.expectedPass.push(jsonObject["expectedPass"][i])
+            }
+        }
+        result.glaresCheckParams = GlaresCheckParams.fromJson(jsonObject["glaresCheckParams"])
+        result.documentPositionIndent = jsonObject["documentPositionIndent"]
+
+        return result
+    }
+}
+
+export class GlaresCheckParams {
+    imgMarginPart?: number
+    maxGlaringPart?: number
+
+    static fromJson(jsonObject?: any): GlaresCheckParams | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new GlaresCheckParams
+
+        result.imgMarginPart = jsonObject["imgMarginPart"]
+        result.maxGlaringPart = jsonObject["maxGlaringPart"]
+
+        return result
+    }
+}
+
+export class RFIDParams {
+    paIgnoreNotificationCodes?: number[]
+
+    static fromJson(jsonObject?: any): RFIDParams | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new RFIDParams
+
+        result.paIgnoreNotificationCodes = []
+        if (jsonObject["paIgnoreNotificationCodes"] != null) {
+            for (const i in jsonObject["paIgnoreNotificationCodes"]) {
+                result.paIgnoreNotificationCodes.push(jsonObject["paIgnoreNotificationCodes"][i])
+            }
+        }
+
+        return result
+    }
+}
+
+export class OnlineProcessingConfig {
+    mode?: number
+    url?: string
+    processParam?: any
+    imageFormat?: number
+    imageCompressionQuality?: number
+
+    static fromJson(jsonObject?: any): OnlineProcessingConfig | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new OnlineProcessingConfig
+
+        result.mode = jsonObject["mode"]
+        result.url = jsonObject["url"]
+        result.processParam = jsonObject["processParam"]
+        result.imageFormat = jsonObject["imageFormat"]
+        result.imageCompressionQuality = jsonObject["imageCompressionQuality"]
+
+        return result
+    }
+}
+
+export class ScannerConfig {
+    scenario?: string
+    livePortrait?: string
+    extPortrait?: string
+    onlineProcessingConfig?: OnlineProcessingConfig
+    cameraId?: number
+
+    static fromJson(jsonObject?: any): ScannerConfig | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new ScannerConfig
+
+        result.scenario = jsonObject["scenario"]
+        result.livePortrait = jsonObject["livePortrait"]
+        result.extPortrait = jsonObject["extPortrait"]
+        result.onlineProcessingConfig = OnlineProcessingConfig.fromJson(jsonObject["onlineProcessingConfig"])
+        result.cameraId = jsonObject["cameraId"]
+
+        return result
+    }
+}
+
+export class RecognizeConfig {
+    scenario?: string
+    livePortrait?: string
+    extPortrait?: string
+    onlineProcessingConfig?: OnlineProcessingConfig
+    image?: string
+    oneShotIdentification?: boolean
+    images?: string[]
+    imageInputData?: ImageInputData[]
+
+    static fromJson(jsonObject?: any): RecognizeConfig | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new RecognizeConfig
+
+        result.scenario = jsonObject["scenario"]
+        result.livePortrait = jsonObject["livePortrait"]
+        result.extPortrait = jsonObject["extPortrait"]
+        result.onlineProcessingConfig = OnlineProcessingConfig.fromJson(jsonObject["onlineProcessingConfig"])
+        result.image = jsonObject["image"]
+        result.oneShotIdentification = jsonObject["oneShotIdentification"]
+        result.images = []
+        if (jsonObject["images"] != null) {
+            for (const i in jsonObject["images"]) {
+                result.images.push(jsonObject["images"][i])
+            }
+        }
+        result.imageInputData = []
+        if (jsonObject["imageInputData"] != null) {
+            for (const i in jsonObject["imageInputData"]) {
+                const item = ImageInputData.fromJson(jsonObject["imageInputData"][i])
+                if (item != undefined)
+                    result.imageInputData.push(item)
+            }
+        }
+
+        return result
+    }
+}
+
 export class DocumentReaderResults {
     videoCaptureSessionId?: string
     chipPage?: number
@@ -1537,6 +1710,73 @@ export class DocumentReaderResults {
     status?: DocumentReaderResultsStatus
     vdsncData?: VDSNCData
 
+    textFieldValueByType(fieldType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByType", [this.rawResult, fieldType], successCallback, errorCallback)
+    }
+
+    textFieldValueByTypeLcid(fieldType, lcid, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByTypeLcid", [this.rawResult, fieldType, lcid], successCallback, errorCallback)
+    }
+
+    textFieldValueByTypeSource(fieldType, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByTypeSource", [this.rawResult, fieldType, source], successCallback, errorCallback)
+    }
+
+    textFieldValueByTypeLcidSource(fieldType, lcid, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByTypeLcidSource", [this.rawResult, fieldType, lcid, source], successCallback, errorCallback)
+    }
+
+    textFieldValueByTypeSourceOriginal(fieldType, source, original, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByTypeSourceOriginal", [this.rawResult, fieldType, source, original], successCallback, errorCallback)
+    }
+
+    textFieldValueByTypeLcidSourceOriginal(fieldType, lcid, source, original, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByTypeLcidSourceOriginal", [this.rawResult, fieldType, lcid, source, original], successCallback, errorCallback)
+    }
+
+    textFieldByType(fieldType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldByType", [this.rawResult, fieldType], successCallback, errorCallback)
+    }
+
+    textFieldByTypeLcid(fieldType, lcid, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "textFieldByTypeLcid", [this.rawResult, fieldType, lcid], successCallback, errorCallback)
+    }
+
+    graphicFieldByTypeSource(fieldType, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldByTypeSource", [this.rawResult, fieldType, source], successCallback, errorCallback)
+    }
+
+    graphicFieldByTypeSourcePageIndex(fieldType, source, pageIndex, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldByTypeSourcePageIndex", [this.rawResult, fieldType, source, pageIndex], successCallback, errorCallback)
+    }
+
+    graphicFieldByTypeSourcePageIndexLight(fieldType, source, pageIndex, light, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldByTypeSourcePageIndex", [this.rawResult, fieldType, source, pageIndex, light], successCallback, errorCallback)
+    }
+
+    graphicFieldImageByType(fieldType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldImageByType", [this.rawResult, fieldType], successCallback, errorCallback)
+    }
+
+    graphicFieldImageByTypeSource(fieldType, source, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldImageByTypeSource", [this.rawResult, fieldType, source], successCallback, errorCallback)
+    }
+
+    graphicFieldImageByTypeSourcePageIndex(fieldType, source, pageIndex, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldImageByTypeSourcePageIndex", [this.rawResult, fieldType, source, pageIndex], successCallback, errorCallback)
+    }
+
+    graphicFieldImageByTypeSourcePageIndexLight(fieldType, source, pageIndex, light, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "graphicFieldImageByTypeSourcePageIndexLight", [this.rawResult, fieldType, source, pageIndex, light], successCallback, errorCallback)
+    }
+
+    containers(resultType, successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "containers", [this.rawResult, resultType], successCallback, errorCallback)
+    }
+
+    encryptedContainers(successCallback, errorCallback) {
+        RNRegulaDocumentReader.exec("DocumentReader", "encryptedContainers", [this.rawResult], successCallback, errorCallback)
+    }
 
     static fromJson(jsonObject?: any): DocumentReaderResults | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -1604,196 +1844,6 @@ export class DocumentReaderResults {
 
         return result
     }
-
-    /**
-     * @deprecated Use textFieldValueBy...()
-     */
-     getTextFieldValueByType({ fieldType, lcid = 0, source = -1, original = false }: { fieldType: number, lcid?: number, source?: number, original?: boolean }): string | undefined {
-        if (this.textResult == undefined) return undefined
-        const field = this.findByTypeAndLcid(fieldType, lcid)
-        if (field == undefined) return undefined
-        const value = this.findBySource(field, source)
-        if (value == undefined) return undefined
-        return original ? value.originalValue : value.value
-    }
-
-    /**
-     * @deprecated
-     */
-    getTextFieldStatusByType(fieldType: number, lcid?: number): number {
-        if (this.textResult == undefined) return 0
-        const field = this.findByTypeAndLcid(fieldType, lcid)
-        if(field != undefined && field.status != null && field.status != undefined)
-            return field.status
-        return 0
-    }
-
-    /**
-     * @deprecated Use graphicFieldImageBy...()
-     */
-    getGraphicFieldImageByType({ fieldType, source = -1, light = -1, pageIndex = -1 }: { fieldType: number, source?: number, light?: number, pageIndex?: number }): string | undefined {
-        if (this.graphicResult == undefined || this.graphicResult.fields == undefined) return undefined
-        const foundFields: DocumentReaderGraphicField[] = []
-
-        for (const field of this.graphicResult.fields)
-            if (field.fieldType === fieldType)
-                foundFields.push(field)
-        if (source !== -1)
-            for (let i = 0; i < foundFields.length; i++)
-                if (foundFields[i].sourceType !== source)
-                    foundFields.splice(i, 1)
-        if (light !== -1)
-            for (let i = 0; i < foundFields.length; i++)
-                if (foundFields[i].lightType !== light)
-                    foundFields.splice(i, 1)
-        if (pageIndex !== -1)
-            for (let i = 0; i < foundFields.length; i++)
-                if (foundFields[i].pageIndex !== pageIndex)
-                    foundFields.splice(i, 1)
-
-        return foundFields.length > 0 ? foundFields[0].value : undefined
-    }
-
-    /**
-     * @deprecated
-     */
-    getQualityResult({ imageQualityCheckType, securityFeature = -1, pageIndex = 0 }: { imageQualityCheckType: number, securityFeature?: number, pageIndex?: number }): number {
-        let resultSum = 2
-        if (this.imageQuality == undefined)
-            return resultSum
-
-        let imageQualityGroup
-
-        for (const iq of this.imageQuality)
-            if (iq != null && iq != undefined && iq.pageIndex == pageIndex)
-                imageQualityGroup = iq
-        if (imageQualityGroup == null || imageQualityGroup == undefined)
-            return resultSum
-
-        for (const field of imageQualityGroup.imageQualityList)
-            if (field.type === imageQualityCheckType)
-                if (securityFeature === -1) {
-                    if (field.result === 0) {
-                        resultSum = 0
-                        break
-                    }
-                    if (field.result === 1)
-                        resultSum = field.result
-                } else if (field.featureType === securityFeature) {
-                    resultSum = field.result
-                    break
-                }
-
-        return resultSum
-    }
-
-    /**
-     * @deprecated
-     */
-    findByTypeAndLcid(type: number, lcid?: number): DocumentReaderTextField | undefined {
-        if (this.textResult == undefined || this.textResult.fields == undefined) return undefined
-        let field
-        const foundFields: DocumentReaderTextField[] = []
-
-        for (field of this.textResult.fields)
-            if (field.fieldType === type)
-                foundFields.push(field)
-        if (foundFields.length <= 0)
-            return undefined
-
-        let foundField = undefined
-
-        for (field of foundFields)
-            if (lcid === 0) {
-                foundField = field
-                if (field.lcid === lcid)
-                    break
-            } else if (field.lcid === lcid)
-                return field
-
-        return foundField
-    }
-
-    /**
-     * @deprecated
-     */
-    findBySource(field: DocumentReaderTextField, sourceType: number): DocumentReaderValue | undefined {
-        let value
-        if (sourceType === -1) {
-            const mrzVal = this.findBySource(field, 3)
-            if (mrzVal != null && mrzVal != undefined)
-                return mrzVal
-            value = this.findBySource(field, 18)
-            if (value != null && value != undefined)
-                return value
-            const visualVal = this.findBySource(field, 17)
-            return visualVal
-        }
-        if(field.values == undefined) return undefined
-        for (const item of field.values)
-            if (item.sourceType === sourceType)
-                return item
-
-        return undefined
-    }
-
-    /**
-     * @deprecated Use containers()
-     */
-    getContainers(resultTypes: number[]): string | undefined {
-        try {
-            if(this.rawResult == undefined) return undefined
-            const json = JSON.parse(this.rawResult)
-            const containerList = json.List
-            const resultArray: any[] = []
-            for (const container of containerList){
-                if (container == null || container.length == 0)
-                    continue
-                for (const resultType of resultTypes)
-                    if(resultType == container.result_type){
-                        resultArray.push(container)
-                        break
-                    }
-            }
-            if (resultArray.length == 0) return undefined
-            const newContainerList = {}
-            newContainerList["List"] = resultArray
-            const newJson = {}
-            newJson["ContainerList"] = newContainerList
-            newJson["TransactionInfo"] = json.TransactionInfo
-        } catch (error) {
-            return undefined
-        }
-    }
-
-    /**
-     * @deprecated Use encryptedContainers()
-     */
-    getEncryptedContainers(): string | undefined {
-        return this.getContainers([
-            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_RFID_SESSION,
-            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_ENCRYPTED_RCL,
-            eRPRM_ResultType.RPRM_RESULT_TYPE_INTERNAL_LICENSE
-        ])
-    }
-
-    textFieldValueByType(fieldType: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    textFieldValueByTypeLcid(fieldType: number, lcid: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    textFieldValueByTypeSource(fieldType: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    textFieldValueByTypeLcidSource(fieldType: number, lcid: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    textFieldValueByTypeSourceOriginal(fieldType: number, source: number, original: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    textFieldValueByTypeLcidSourceOriginal(fieldType: number, lcid: number, source: number, original: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    textFieldByType(fieldType: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    textFieldByTypeLcid(fieldType: number, lcid: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    graphicFieldByTypeSource(fieldType: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    graphicFieldByTypeSourcePageIndex(fieldType: number, source: number, pageIndex: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    graphicFieldByTypeSourcePageIndexLight(fieldType: number, source: number, pageIndex: number, light: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    graphicFieldImageByType(fieldType: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    graphicFieldImageByTypeSource(fieldType: number, source: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    graphicFieldImageByTypeSourcePageIndex(fieldType: number, source: number, pageIndex: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    graphicFieldImageByTypeSourcePageIndexLight(fieldType: number, source: number, pageIndex: number, light: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    containers(resultType: number[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
-    encryptedContainers(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void;
 }
 
 export const FontStyle = {
@@ -1822,10 +1872,9 @@ export const eRPRM_Authenticity = {
     HOLOGRAMS_DETECTION: 524288,
     MRZ: 8388608,
     STATUS_ONLY: 0x80000000,
-    OVI: 0x00000400,
-    LIVENESS: 0x00200000,
-    OCR: 0x00400000,
-    UV: 1 | 4 | 16,
+    OVI: 1024,
+    LIVENESS: 2097152,
+    OCR: 4194304,
 }
 
 export const eRFID_ErrorCodes = {
@@ -1943,241 +1992,6 @@ export const eRFID_ErrorCodes = {
     RFID_ERROR_LAYER34_SAM_ERROR: 0x840D0000,
     RFID_ERROR_LAYER34_SAM_COLLISION: 0x840E0000,
     RFID_ERROR_LAYER34_SAM_ACKNOWLEDGE: 0x840F0000,
-
-    getTranslation(value: number) {
-        switch (value) {
-            case this.RFID_ERROR_NO_ERROR:
-                return "RFID: No error"
-            case this.RFID_ERROR_ALREADY_DONE:
-                return "RFID: The requested operation is already performed"
-            case this.RFID_ERROR_FAILED:
-                return "RFID: Failed"
-            case this.RFID_ERROR_NO_CHIP_DETECTED:
-                return "RFID: No chip is detected"
-            case this.RFID_ERROR_NOT_AVAILABLE:
-                return "RFID: Unavailable"
-            case this.RFID_ERROR_INVALID_PARAMETER:
-                return "RFID: Invalid parameter in ExecuteCommand() call found"
-            case this.RFID_ERROR_NOT_INITIALIZED:
-                return "RFID: Device is uninitialized"
-            case this.RFID_ERROR_NOT_ENOUGH_MEMORY:
-                return "RFID: Out of memory"
-            case this.RFID_ERROR_INVALID_DIRECTORY:
-                return "RFID: Invalid directory"
-            case this.RFID_ERROR_UNKNOWN_COMMAND:
-                return "RFID: Unknown command"
-            case this.RFID_ERROR_FILE_IO_ERROR:
-                return "RFID File: IO Error"
-            case this.RFID_ERROR_BUSY:
-                return "RFID: RFID is busy"
-            case this.RFID_ERROR_OLD_FIRMWARE:
-                return "RFID: The firmware needs to be updated to a newer version"
-            case this.RFID_ERROR_PCSC_FAILED:
-                return "PCSC: Failed"
-            case this.RFID_ERROR_PCSC_READER_NOT_AVAILABLE:
-                return "PCSC: The reader is unavailable"
-            case this.RFID_ERROR_PCSC_CANT_CONNECT_CARD:
-                return "PCSC: The card cannot be connected"
-            case this.RFID_ERROR_PCSC_CARD_IS_NOT_CONNECTED:
-                return "PCSC: The card is not connected"
-            case this.RFID_ERROR_PCSC_OPERATION_CANCELLED:
-                return "PCSC: Operation is cancelled"
-            case this.RFID_ERROR_PCSC_CARD_IS_BUSY:
-                return "PCSC: The card is busy"
-            case this.RFID_ERROR_PCSC_FAILED_SCARD:
-                return "PCSC: Failed Smart Card"
-            case this.RFID_ERROR_PCSC_EXT_LE_FAILED:
-                return "PCSC: ExtLe Failed"
-            case this.RFID_ERROR_LAYER6_SECURITY_MANAGER:
-                return "LAYER6: Secure Messaging was not activated"
-            case this.RFID_ERROR_LAYER6_APP_SELECTION_FAILURE:
-                return "LAYER6: ISO7816_A_03 \"Application selection failure\""
-            case this.RFID_ERROR_LAYER6_MUTUAL_AUTH_MAC_FAIL:
-                return "LAYER6: ISO7816_B_01 \"Mutual authentication MAC failure\""
-            case this.RFID_ERROR_LAYER6_MUTUAL_AUTH_ENC_FAIL:
-                return "LAYER6: ISO7816_B_02 \"Mutual authentication encryption failure\""
-            case this.RFID_ERROR_LAYER6_MUTUAL_AUTH_FAILURE:
-                return "LAYER6: ISO7816_B_03 \"Mutual authentication failure\""
-            case this.RFID_ERROR_LAYER6_MUTUAL_AUTH_FAILURE_DATA:
-                return "LAYER6: ISO7816_B_03 \"Mutual authentication failure data\""
-            case this.RFID_ERROR_LAYER6_SM_DO_8E_MISSING:
-                return "LAYER6: SM failure – MAC missing"
-            case this.RFID_ERROR_LAYER6_SM_DO_87_MISSING:
-                return "LAYER6: SM failure – cryptogram missing"
-            case this.RFID_ERROR_LAYER6_SM_DO_99_MISSING:
-                return "LAYER6: SM failure – secured status bytes missing"
-            case this.RFID_ERROR_LAYER6_SM_MAC_INCORRECT:
-                return "LAYER6: SM failure – incorrect MAC"
-            case this.RFID_ERROR_LAYER6_SM_DO_87_INCORRECT:
-                return "LAYER6: SM failure – incorrect cryptogram"
-            case this.RFID_ERROR_LAYER6_NON_TLV_RESPONSE_DATA:
-                return "LAYER6: Not TLV response data"
-            case this.RFID_ERROR_LAYER6_WRONG_RND_ICC_LENGTH:
-                return "LAYER6: Wrong data length (APDU_INS_GET_CHALLENGE)"
-            case this.RFID_ERROR_LAYER6_INT_AUTH_FAILURE:
-                return "LAYER6: APDU_INS_INTERNAL_AUTHENTICATE failure"
-            case this.RFID_ERROR_LAYER6_MSE_SET_KAT_FAILURE:
-                return "LAYER6: MSE:Set KAT failure"
-            case this.RFID_ERROR_LAYER6_MSE_SET_DST_FAILURE:
-                return "LAYER6: MSE:Set DST failure"
-            case this.RFID_ERROR_LAYER6_PSO_CERTIFICATE_FAILURE:
-                return "LAYER6: PSO CERTIFICATE failure"
-            case this.RFID_ERROR_LAYER6_MSE_SET_AT_FAILURE:
-                return "LAYER6: MSE:Set AT failure"
-            case this.RFID_ERROR_LAYER6_GET_CHALLENGE_FAILURE:
-                return "LAYER6: GET CHALLENGE failure"
-            case this.RFID_ERROR_LAYER6_EXT_AUTH_FAILURE:
-                return "LAYER6: APDU_INS_EXTERNAL_AUTHENTICATE (external authentication) failure"
-            case this.RFID_ERROR_LAYER6_GENERAL_AUTH_FAILURE:
-                return "LAYER6: General Authenticity Failure"
-            case this.RFID_ERROR_LAYER6_FILE_NOT_FOUND:
-                return "LAYER6: File selection failure / file not found"
-            case this.RFID_ERROR_LAYER6_FILE_EOF1:
-                return "LAYER6: Reading beyond EOF / Unexpected EOF"
-            case this.RFID_ERROR_LAYER6_FILE_EOF2:
-                return "LAYER6: Reading beyond EOF / Unexpected EOF"
-            case this.RFID_ERROR_LAYER6_INCORRECT_PARAMS:
-                return "LAYER6: Incorrect params"
-            case this.RFID_ERROR_LAYER6_NO_REFERENCE_DATA:
-                return "LAYER6: No reference data"
-            case this.RFID_ERROR_LAYER6_PWD_SUSPEND:
-                return "LAYER6: PWD suspended"
-            case this.RFID_ERROR_LAYER6_PWD_BLOCKED:
-                return "LAYER6: PWD blocked"
-            case this.RFID_ERROR_LAYER6_PWD_DEACTIVATED:
-                return "LAYER6: PWD deactivated"
-            case this.RFID_ERROR_LAYER6_PWD_BLOCKED2:
-                return "LAYER6: PWD blocked 2"
-            case this.RFID_ERROR_LAYER6_PWD_DEACTIVATED2:
-                return "LAYER6: PWD deactivated 2"
-            case this.RFID_ERROR_LAYER6_PWD_SUSPEND2:
-                return "LAYER6: PWD suspended 2"
-            case this.RFID_ERROR_LAYER6_PWD_FAILED:
-                return "LAYER6: PWD failed"
-            case this.RFID_ERROR_NOT_PERFORMED:
-                return "RFID: Not performed"
-            case this.RFID_ERROR_SESSION_IS_CLOSED:
-                return "RFID: Session is closed"
-            case this.RFID_ERROR_SESSION_TERMINAL_UNSUPPORTED_OPERATION:
-                return "RFID: Unsupported terminal operation"
-            case this.RFID_ERROR_SESSION_TERMINAL_TYPE_UNKNOWN:
-                return "RFID: Terminal type unknown"
-            case this.RFID_ERROR_SESSION_TERMINAL_TYPE_BAD_CERTIFICATE:
-                return "RFID: Terminal type bad certificate"
-            case this.RFID_ERROR_SESSION_TERMINAL_TYPE_NOT_SET:
-                return "RFID: Terminal type not set"
-            case this.RFID_ERROR_SESSION_PROCEDURE_TYPE_UNKNOWN:
-                return "RFID: Unknown procedure type"
-            case this.RFID_ERROR_Session_Procedure_Type_Unsupported:
-                return "RFID: Unsupported procedure type"
-            case this.RFID_ERROR_SESSION_PROCEDURE_TYPE_NOT_SET:
-                return "RFID: Procedure type not set"
-            case this.RFID_ERROR_SESSION_ACCESS_KEY_UNKNOWN_TYPE:
-                return "RFID: Access key unknown type"
-            case this.RFID_ERROR_SESSION_ACCESS_KEY_UNSUPPORTED_SM_TYPE:
-                return "RFID: Access key unsupported SM type"
-            case this.RFID_ERROR_SESSION_ACCESS_KEY_INCORRECT_SM_TYPE:
-                return "RFID: Access key incorrect SM type"
-            case this.RFID_ERROR_SESSION_ACCESS_KEY_RESTRICTED:
-                return "RFID: Access key restricted"
-            case this.RFID_ERROR_SESSION_ACCESS_KEY_INCORRECT_DATA:
-                return "RFID: Access key incorrect data"
-            case this.RFID_ERROR_SESSION_ACCESS_KEY_NOT_SET:
-                return "RFID: Access key not set"
-            case this.RFID_ERROR_SESSION_PWD_MANAGEMENT_NOT_AUTHORIZED:
-                return "RFID: PWD management not authorized"
-            case this.RFID_ERROR_SESSION_ACCESS_CONTROL_UNKNOWN_TYPE:
-                return "RFID: Access control unknown type"
-            case this.RFID_ERROR_SESSION_ACCESS_CONTROL_REQUIRES_SM:
-                return "RFID: Access control unknown type"
-            case this.RFID_ERROR_SESSION_ACCESS_CONTROL_REQUIRES_PACE:
-                return "RFID: PACE required"
-            case this.RFID_ERROR_SESSION_ACCESS_CONTROL_REQUIRES_CA_KEYS:
-                return "RFID: CA keys required"
-            case this.RFID_ERROR_SESSION_ACCESS_CONTROL_REQUIRES_TA:
-                return "RFID: TA required"
-            case this.RFID_ERROR_SESSION_ACCESS_CONTROL_REQUIRES_CA:
-                return "RFID: CA required"
-            case this.RFID_ERROR_SESSION_ACCESS_CONTROL_INCORRECT_OPTION_CA:
-                return "RFID: Incorrect option CA"
-            case this.RFID_ERROR_SESSION_ACCESS_CONTROL_CA_FAILED:
-                return "RFID: CA failed"
-            case this.RFID_ERROR_SESSION_ACCESS_CONTROL_TA_FAILED:
-                return "RFID: TA failed"
-            case this.RFID_ERROR_SESSION_ACCESS_CONTROL_AA_FAILED:
-                return "RFID: AA failed"
-            case this.RFID_ERROR_SESSION_ACCESS_CONTROL_RI_FAILED:
-                return "RFID: RI failed"
-            case this.RFID_ERROR_SESSION_PA_SIGNATURE_CHECK_FAILED:
-                return "RFID: SO signature check failed"
-            case this.RFID_ERROR_SESSION_PA_HASH_CHECK_FAILED:
-                return "RFID: Hash check failed"
-            case this.RFID_ERROR_SESSION_INVALID_AUX_DATA_DATE_OF_EXPIRY:
-                return "RFID: Invalid aux data - date of expiry"
-            case this.RFID_ERROR_SESSION_INVALID_AUX_DATA_DATE_OF_BIRTH:
-                return "RFID: Invalid aux data - date of birth"
-            case this.RFID_ERROR_SESSION_INVALID_AUX_DATA_COMMUNITY_ID:
-                return "RFID: Invalid aux data - community ID"
-            case this.RFID_ERROR_SESSION_E_SIGN_REQUIRES_APP_SELECTION:
-                return "RFID: eSign requires app selection"
-            case this.RFID_ERROR_SESSION_E_SIGN_PIN_NOT_SET:
-                return "RFID: eSign PIN not set"
-            case this.RFID_ERROR_SESSION_E_SIGN_PIN_NOT_VERIFIED:
-                return "RFID: eSign PIN not verified"
-            case this.RFID_ERROR_SESSION_INCORRECT_DATA:
-                return "RFID: Incorrect data"
-            case this.RFID_ERROR_SESSION_FILE_NOT_ENOUGH_DATA:
-                return "RFID file: Insufficient data"
-            case this.RFID_ERROR_SESSION_FILE_INCORRECT_DATA:
-                return "RFID file: Incorrect data"
-            case this.RFID_ERROR_SESSION_FILE_UNEXPECTED_DATA:
-                return "RFID file: Unexpected data"
-            case this.RFID_ERROR_SESSION_FILE_CONTENTS_UNEXPECTED_DATA:
-                return "RFID file: Contains unexpected data"
-            case this.RFID_ERROR_SESSION_FILE_WRONG_TAG:
-                return "RFID file: Wrong tag"
-            case this.RFID_ERROR_SESSION_FILE_CANT_USE_DATA:
-                return "RFID file: Cannot use data"
-            case this.RFID_ERROR_SESSION_FILE_CANT_READ_DATA:
-                return "RFID file: Cannot read data"
-            case this.RFID_ERROR_SESSION_FILE_ACCESS_DENIED:
-                return "RFID file: Access denied"
-            case this.RFID_ERROR_LAYER34_NO_ERROR:
-                return "RFID: Layer 34 - No error"
-            case this.RFID_ERROR_LAYER34_TIME_OUT:
-                return "RFID: Layer 34 - Timeout"
-            case this.RFID_ERROR_LAYER34_COLLISION:
-                return "RFID: Layer 34 - Collision"
-            case this.RFID_ERROR_LAYER34_CRC:
-                return "RFID: Layer 34 - CRC"
-            case this.RFID_ERROR_LAYER34_DATA_INTEGRITY:
-                return "RFID: Layer 34 - Data integrity"
-            case this.RFID_ERROR_LAYER34_DATA_LENGTH:
-                return "RFID: Layer 34 - Data length"
-            case this.RFID_ERROR_Layer34_RFU:
-                return "RFID: Layer 34 - RFU"
-            case this.RFID_ERROR_LAYER34_COLLISION_TOO_MANY:
-                return "RFID: Layer 34 - Too many collision"
-            case this.RFID_ERROR_LAYER34_PROTOCOL_B:
-                return "RFID: Layer 34 - Protocol B"
-            case this.RFID_ERROR_LAYER34_DATA_CONTENTS:
-                return "RFID: Layer 34 - Data contents"
-            case this.RFID_ERROR_LAYER34_PROTOCOL:
-                return "RFID: Layer 34 - Protocol"
-            case this.RFID_ERROR_LAYER34_GLOBAL_TIME_OUT:
-                return "RFID: Layer 34 - Globa timeout"
-            case this.RFID_ERROR_LAYER34_MIFARE_AUTH:
-                return "RFID: Layer 34 - MIFARE auth"
-            case this.RFID_ERROR_LAYER34_SAM_ERROR:
-                return "RFID: Layer 34 - SAM error"
-            case this.RFID_ERROR_LAYER34_SAM_COLLISION:
-                return "RFID: Layer 34 - SAM collision"
-            case this.RFID_ERROR_LAYER34_SAM_ACKNOWLEDGE:
-                return "RFID: Layer 34 - SAM acknowledge"
-            default:
-                return value.toString()
-        }
-    }
 }
 
 export const eLDS_ParsingErrorCodes = {
@@ -2307,267 +2121,6 @@ export const eLDS_ParsingErrorCodes = {
     ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_SIG_ALGORITHM: 0x81000308,
     ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_CERTIFICATE: 0x81000309,
     ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_SIG_VALUE: 0x8100030A,
-
-    getTranslation(value: number) {
-        switch (value) {
-            case this.ERR_LDS_OK:
-                return "OK"
-            case this.ERR_LDS_ASN_INCORRECT_DATA:
-                return "Error - ASN: Incorrect data"
-            case this.RR_LDS_ASN_NOT_ENOUGH_DATA:
-                return "Error - ASN: Not enough data"
-            case this.ERR_LDS_ASN_CONTENTS_UNEXPECTED_DATA:
-                return "Error - ASN: Contents unexpected data"
-            case this.ERR_LDS_ASN_SIGNED_DATA_INCORRECT_DATA:
-                return "Error - ASN Signed data: Incorrect data"
-            case this.ERR_LDS_ASN_SIGNED_DATA_ENCAP_CONTENTS_INCORRECT_DATA:
-                return "Error - ASN Signed data: Encap contents incorrect data"
-            case this.ERR_LDS_ASN_SIGNED_DATA_VERSION_INCORRECT_DATA:
-                return "Error - ASN Signed data: Version incorrect data"
-            case this.ERR_LDS_ASN_SIGNED_DATA_DIGEST_ALGORITHMS_INCORRECT_DATA:
-                return "Error - ASN Signed data: Digest algorithms incorrect data"
-            case this.ERR_LDS_ASN_LDS_OBJECT_INCORRECT_DATA:
-                return "Error - ASN LDS object: Incorrect data"
-            case this.ERR_LDS_ASN_LDS_OBJECT_VERSION_INCORRECT_DATA:
-                return "Error - ASN LDS object: Version incorrect data"
-            case this.ERR_LDS_ASN_LDS_OBJECT_DIGEST_ALGORITHM_INCORRECT_DATA:
-                return "Error - ASN LDS object: Digest algorithm incorrect data"
-            case this.ERR_LDS_ASN_LDS_OBJECT_DG_HASHES_INCORRECT_DATA:
-                return "Error - ASN LDS object: DG hashes incorrect data"
-            case this.ERR_LDS_ASN_LDS_OBJECT_VERSION_INFO_INCORRECT_DATA:
-                return "Error - ASN LDS object: Version info incorrect data"
-            case this.ERR_LDS_ASN_CERTIFICATE_INCORRECT_DATA:
-                return "Error - ASN Certificate: Incorrect data"
-            case this.ERR_LDS_ASN_CERTIFICATE_VERSION_INCORRECT_DATA:
-                return "Error - ASN Certificate: Version incorrect data"
-            case this.ERR_LDS_ASN_CERTIFICATE_SN_INCORRECT_DATA:
-                return "Error - ASN Certificate: SN incorrect data"
-            case this.ERR_LDS_ASN_CERTIFICATE_SIGNATURE_INCORRECT_DATA:
-                return "Error - ASN Certificate: Signature incorrect data"
-            case this.ERR_LDS_ASN_CERTIFICATE_ISSUER_INCORRECT_DATA:
-                return "Error - ASN Certificate: Issuer incorrect data"
-            case this.ERR_LDS_ASN_CERTIFICATE_VALIDITY_INCORRECT_DATA:
-                return "Error - ASN Certificate: Validity incorrect data"
-            case this.ERR_LDS_ASN_CERTIFICATE_SUBJECT_INCORRECT_DATA:
-                return "Error - ASN Certificate: Subject incorrect data"
-            case this.ERR_LDS_ASN_CERTIFICATE_SUBJECT_PK_INCORRECT_DATA:
-                return "Error - ASN Certificate: Subject PK incorrect data"
-            case this.ERR_LDS_ASN_CERTIFICATE_EXTENSIONS_INCORRECT_DATA:
-                return "Error - ASN Certificate: Extensions incorrect data"
-            case this.ERR_LDS_ASN_SIGNER_INFO_INCORRECT_DATA:
-                return "Error - ASN Signer info: Incorrect data"
-            case this.ERR_LDS_ASN_SIGNER_INFO_VERSION_INCORRECT_DATA:
-                return "Error - ASN Signer info: Version incorrect data"
-            case this.ERR_LDS_ASN_SIGNER_INFO_SID_INCORRECT_DATA:
-                return "Error - ASN Signer info: SID incorrect data"
-            case this.ERR_LDS_ASN_SIGNER_INFO_DIGEST_ALG_INCORRECT_DATA:
-                return "Error - ASN Signer info: Digest algorithms incorrect data"
-            case this.ERR_LDS_ASN_SIGNER_INFO_SIGNED_ATTRS_INCORRECT_DATA:
-                return "Error - ASN Signer info: Signed attributes incorrect data"
-            case this.ERR_LDS_ASN_SIGNER_INFO_SIGN_ALG_INCORRECT_DATA:
-                return "Error - ASN Signer info: Sign algorithms incorrect data"
-            case this.ERR_LDS_ASN_SIGNER_INFO_SIGNATURE_INCORRECT_DATA:
-                return "Error - ASN Signer info: Signature incorrect data"
-            case this.ERR_LDS_ASN_SIGNER_INFO_UNSIGNED_ATTRS_INCORRECT_DATA:
-                return "Error - ASN Signer info: Unsigned attributes incorrect data"
-            case this.ERR_LDS_ICAO_LDS_OBJECT_UNSUPPORTED_DIGEST_ALGORITHM:
-                return "Error - ICAO LDS object: Unsupported digest algorithm"
-            case -this.ERR_LDS_ICAO_SIGNED_DATA_SIGNER_INFOS_EMPTY:
-                return "Error - ICAO Signed data: Signer info empty"
-            case this.ERR_LDS_ICAO_SIGNER_INFO_UNSUPPORTED_DIGEST_ALGORITHM:
-                return "Error - ICAO Signer info: Unsupported digest algorithm"
-            case this.ERR_LDS_ICAO_SIGNER_INFO_UNSUPPORTED_SIGNATURE_ALGORITHM:
-                return "Error - ICAO Signer info: Unsupported signature algorithm"
-            case this.ERR_LDS_ICAO_SIGNER_INFO_MESSAGE_DIGEST_ERROR:
-                return "Error - ICAO Signer info: Message digest error"
-            case this.ERR_LDS_ICAO_SIGNER_INFO_SIGNED_ATTRS_MISSED:
-                return "Error - ICAO Signer info: Signed attributes missed"
-            case this.ERR_LDS_AUTH_SIGNER_INFO_CANT_FIND_CERTIFICATE:
-                return "Error - Auth: Signer info cannot find certificate"
-            case this.ERR_LDS_AUTH_ERROR:
-                return "Error - Auth: Error"
-            case this.ERR_LDS_AUTH_UNSUPPORTED_SIGNATURE_ALGORITHM:
-                return "Error - Auth: Unsupported signature algorithm"
-            case this.ERR_LDS_AUTH_UNSUPPORTED_PUBLIC_KEY_ALGORITHM:
-                return "Error - Auth: Unsupported public key algorithm"
-            case this.ERR_LDS_AUTH_MESSED_ALGORITHMS:
-                return "Error - Auth: Messed algorithms"
-            case this.ERR_LDS_AUTH_PUBLIC_KEY_DATA_INVALID:
-                return "Error - Auth: Public key data invalid"
-            case this.ERR_LDS_AUTH_ALGORITHM_PARAMETERS_DATA_INVALID:
-                return "Error - Auth: Algorithm parameters data invalid"
-            case this.ERR_LDS_AUTH_SIGNATURE_DATA_INVALID:
-                return "Error - Auth: Signature data invalid"
-            case this.ERR_LDS_AUTH_UNSUPPORTED_DIGEST_ALGORITHM:
-                return "Error - Auth: Unsupported digest algorithm"
-            case this.ERR_LDS_AUTH_SIGNATURE_DATA_INCORRECT:
-                return "Error - Auth: Signature data incorrect"
-            case this.ERR_LDS_AUTH_ALGORITHM_PARAMETERS_NOT_DEFINED:
-                return "Error - Auth: Algorithm parameters not defined"
-            case this.ERR_LDS_AUTH_SIGNATURE_CHECK_FAILED:
-                return "Error - Auth: Signature check failed"
-            case this.ERR_LDS_DG_WRONG_TAH:
-                return "Error - DG: Wrong Tag"
-            case this.ERR_LDS_PACE_INFO_NOT_AVAILABLE:
-                return "Error - PACE: Info Not Available"
-            case this.ERR_LDS_PACE_SYMMETRIC_CYPHER_CANT_INITIALIZE:
-                return "Error - PACE: Symmetric Cypher Cannot Initialize"
-            case this.ERR_LDS_PACE_KEY_AGREEMENT_CANT_INITIALIZE:
-                return "Error - PACE: Key Agreement Cannot Initialize"
-            case this.ERR_LDS_PACE_EPHEMERAL_KEYS_CANT_CREATE:
-                return "Error - PACE: Ephemeral Keys Cannot Create"
-            case this.ERR_LDS_PACE_MAPPING_CANT_DECODE_NONCE:
-                return "Error - PACE: Mapping Cannot Decode Nonce"
-            case this.ERR_LDS_PACE_SHARED_SECRET_CANT_CREATE:
-                return "Error - PACE: Shared Secret Cannot Create"
-            case this.ERR_LDS_PACE_DOMAIN_PARAMS_UNSUPPORTED_FORMAT:
-                return "Error - PACE: Domain Params Unsupported Format"
-            case this.ERR_LDS_PACE_EPHEMERAL_KEYS_INCORRECT:
-                return "Error - PACE: Ephemeral Keys Incorrect"
-            case this.ERR_LDS_PACE_MAPPING_EPHEMERAL_KEYS_INCORRECT:
-                return "Error - PACE: Mapping Ephemeral Keys Incorrect"
-            case this.ERR_LDS_PACE_MAPPING_CANT_PERFORM:
-                return "Error - PACE: Mapping Cannot Perform"
-            case this.ERR_LDS_PACE_NON_MATCHING_AUTH_TOKENS:
-                return "Error - PACE: Non-Matching Auth Tokens"
-            case this.ERR_LDS_CA_CANT_FIND_PUBLIC_KEY:
-                return "Error - CA: Cannot Find Public Key"
-            case this.ERR_LDS_CA_CANT_FIND_INFO:
-                return "Error - CA: Cannot Find Info"
-            case this.ERR_LDS_CA_INCORRECT_VERSION:
-                return "Error - CA: Incorrect Version"
-            case this.ERR_LDS_CA_CANT_FIND_DOMAIN_PARAMETERS:
-                return "Error - CA: Cannot Find Domain Parameters"
-            case this.ERR_LDS_CA_KEY_AGREEMENT_CANT_INITIALIZE:
-                return "Error - CA: Key Agreement Cannot Initialize"
-            case this.ERR_LDS_CA_PUBLIC_KEY_UNSUPPORTED_ALGORITHM:
-                return "Error - CA: Public Key Unsupported Algorithm"
-            case this.ERR_LDS_CA_EPHEMERAL_KEYS_CANT_CREATE:
-                return "Error - CA: Ephemeral Keys Cannot Create"
-            case this.ERR_LDS_CA_SHARED_SECRET_CANT_CREATE:
-                return "Error - CA: Shared Secret Cannot Create"
-            case this.ERR_LDS_CA_NON_MATCHING_AUTH_TOKENS:
-                return "Error - CA: Non-Matching Auth Tokens"
-            case this.ERR_LDS_TA_INCORRECT_VERSION:
-                return "Error - TA: Incorrect Version"
-            case this.ERR_LDS_TA_CANT_BUILD_CERTIFICATE_CHAIN:
-                return "Error - TA: Cannot Build Certificate Chain"
-            case this.ERR_LDS_TA_CANT_FIND_IS_PRIVATE_KEY:
-                return "Error - TA: Cannot Find IS Private Key"
-            case this.ERR_LDS_TA_PUBLIC_KEY_UNSUPPORTED_ALGORITHM:
-                return "Error - TA: Public Key Unsupported Algorithm"
-            case this.ERR_LDS_TA_SIGNATURE_BUILDING_ERROR:
-                return "Error - TA: Signature Building Error"
-            case this.ERR_LDS_TA_INVALID_KEY_ALGORITHM_PARAMETERS:
-                return "Error - TA: Invalid Key Algorithm Parameters"
-            case this.ERR_LDS_AA_PUBLIC_KEY_UNSUPPORTED_ALGORITHM:
-                return "Error - AA: Public Key Unsupported Algorithm"
-            case this.ERR_LDS_AA_PUBLIC_KEY_INCORRECT_DATA:
-                return "Error - AA: Public Key Incorrect Data"
-            case this.ERR_LDS_AA_PUBLIC_KEY_INCORRECT_PARAMETERS:
-                return "Error - AA: Public Key Incorrect Parameters"
-            case this.ERR_LDS_AA_PUBLIC_KEY_UNDEFINED_PARAMETERS:
-                return "Error - AA: Public Key Undefined Parameters"
-            case this.ERR_LDS_AA_SIGNATURE_INCORRECT_DATA:
-                return "Error - AA: Signature Incorrect Data"
-            case this.ERR_LDS_AA_UNSUPPORTED_RECOVERY_SCHEME:
-                return "Error - AA: Unsupported recovery scheme"
-            case this.ERR_LDS_AA_INCORRECT_TRAILER:
-                return "Error - AA: Incorrect Trailer"
-            case this.ERR_LDS_AA_UNSUPPORTED_DIGEST_ALGORITHM:
-                return "Error - AA: Unsupported Digest Algorithm"
-            case this.ERR_LDS_RI_SECTOR_KEY_CANT_FIND:
-                return "Error - RI: Sector Key Cannot Find"
-            case this.ERR_LDS_RI_SECTOR_KEY_INCORRECT_DATA:
-                return "Error - RI: Sector Key Incorrect Data"
-            case this.ERR_LDS_RI_SECTOR_KEY_INCOMPLETE_DATA:
-                return "Error - RI: Sector Key Incomplete Data"
-            case this.ERR_LDS_CV_CERTIFICATE_MISSING_MANDATORY_DATA_PK:
-                return "Error - CV Certificate: Missing mandatory data PK"
-            case this.ERR_LDS_CV_CERTIFICATE_PUBLIC_KEY_UNSUPPORTED:
-                return "Error - CV Certificate: Public key unsupported"
-            case this.ERR_LDS_CV_CERTIFICATE_CHAT_UNSUPPORTED_TERMINAL_TYPE:
-                return "Error - CV Certificate: CHAT unsupported terminal type"
-            case this.ERR_LDS_CV_CERTIFICATE_PRIVATE_KEY_UNSUPPORTED:
-                return "Error - CV Certificate: Private key unsupported"
-            case this.ERR_LDS_CV_CERTIFICATE_PRIVATE_KEY_INVALID_PARAMS:
-                return "Error - CV Certificate: Private key invalid params"
-            case this.ERR_LDS_CV_CERTIFICATE_INCORRECT_DATA:
-                return "Error - CV Certificate: Incorrect data"
-            case this.ERR_LDS_CV_CERTIFICATE_CPI_INCORRECT_DATA:
-                return "Error - CV Certificate: CPI incorrect data"
-            case this.ERR_LDS_CV_CERTIFICATE_CAR_INCORRECT_DATA:
-                return "Error - CV Certificate: CAR incorrect data"
-            case this.ERR_LDS_CV_CERTIFICATE_PUBLIC_KEY_INCORRECT_DATA:
-                return "Error - CV Certificate: Public key incorrect data"
-            case this.ERR_LDS_CV_CERTIFICATE_CHR_INCORRECT_DATA:
-                return "Error - CV Certificate: CHR incorrect data"
-            case this.ERR_LDS_CV_CERTIFICATE_CHAT_INCORRECT_DATA:
-                return "Error - CV Certificate: CHAT incorrect data"
-            case this.ERR_LDS_CV_CERTIFICATE_VALID_FROM_INCORRECT_DATA:
-                return "Error - CV Certificate: Valid from incorrect data"
-            case this.ERR_LDS_CV_CERTIFICATE_VALID_TO_INCORRECT_DATA:
-                return "Error - CV Certificate: Valid to incorrect data"
-            case this.ERR_LDS_CV_CERTIFICATE_EXTENSIONS_INCORRECT_DATA:
-                return "Error - CV Certificate: Extensions incorrect data"
-            case this.ERR_LDS_CV_CERTIFICATE_PRIVATE_KEY_INCORRECT_DATA:
-                return "Error - CV Certificate: Private key incorrect data"
-            case this.ERR_LDS_CV_CERTIFICATE_PRIVATE_KEY_MISSING:
-                return "Error - CV Certificate: Private key missing"
-            case this.ERR_LDS_BAP_SYMMETRIC_CYPHER_CANT_INITIALIZE:
-                return "Error - BAP: Symmetric Cypher Cannot Initialize"
-            case this.ERR_LDS_DG_CONTENTS_UNEXPECTED_DATA:
-                return "Error - DG: Contents unexpected data"
-            case this.ERR_LDS_ICAO_SIGNED_DATA_SIGNER_INFOS_EMPTY:
-                return "Error - ICAO Signed data: Signer info empty"
-            case this.ERR_LDS_PACE_CAM_DATA_CANT_VERIFY:
-                return "Error - PACE: CAM data cannot verify"
-            case this.ERR_LDS_PACE_CAM_DATA_INCORRECT:
-                return "Error - PACE: CAM data incorrect"
-            case this.ERR_LDS_PACE_CAM_DATA_NON_MATCHING:
-                return "Error - PACE: CAM data non-matching"
-            case this.ERR_LDS_PACE_IM_RANDOM_MAPPING_FAILED:
-                return "Error - PACE: Random mapping failed"
-            case this.ERR_LDS_PACE_IM_SCHEME_INCORRECT:
-                return "Error - PACE: IM scheme incorrect"
-            case this.ERR_LDS_VDS_ISSUING_COUNTRY_INCORRECT_DATA:
-                return "Error - VDS: Issuing country incorrect data"
-            case this.ERR_LDS_VDS_ISSUING_COUNTRY_SIZE:
-                return "Error - VDS: Issuing country size"
-            case this.ERR_LDS_VDS_NC_INCORRECT_DATA:
-                return "Error - VDS: Incorrect data"
-            case this.ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_CERTIFICATE:
-                return "Error - VDS: Missing or incorrect certificate"
-            case this.ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_DATA:
-                return "Error - VDS: Missing or incorrect data"
-            case this.ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_HEADER:
-                return "Error - VDS: Missing or incorrect header"
-            case this.ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_ISSUING_COUNTRY:
-                return "Error - VDS: Missing or incorrect issuing country"
-            case this.ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_MESSAGE:
-                return "Error - VDS: Missing or incorrect message"
-            case this.ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_SIGNATURE:
-                return "Error - VDS: Missing or incorrect signature"
-            case this.ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_SIG_ALGORITHM:
-                return "Error - VDS: Missing or incorrect signature algorithm"
-            case this.ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_SIG_VALUE:
-                return "Error - VDS: Missing or incorrect signature value"
-            case this.ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_TYPE:
-                return "Error - VDS: Missing or incorrect type"
-            case this.ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_VERSION:
-                return "Error - VDS: Missing or incorrect version"
-            case this.ERR_LDS_VDS_SIGNATURE_INCORRECT_DATA:
-                return "Error - VDS: Signature incorrect data"
-            case this.ERR_LDS_VDS_SIGNER_CERTIFICATE_DATA:
-                return "Error - VDS: Signature certificate data"
-            case this.ERR_LDS_VDS_SIGNER_CERTIFICATE_SIZE:
-                return "Error - VDS: Signature certificate size"
-            case this.ERR_LDS_VDS_UNSUPPORTED_VERSION:
-                return "Error - VDS: Unsupported version"
-            default:
-                return value.toString()
-        }
-    }
 }
 
 export const eRFID_CertificateType = {
@@ -2630,7 +2183,10 @@ export const eRPRM_ResultType = {
     RFID_RESULT_TYPE_RFID_ORIGINAL_GRAPHICS: 105,
     RPRM_RESULT_TYPE_BARCODE_POSITION: 62,
     RPRM_RESULT_TYPE_MRZ_POSITION: 61,
+    RPRM_RESULT_TYPE_LIVE_PORTRAIT: 32,
     RPRM_RESULT_TYPE_STATUS: 33,
+    RPRM_RESULT_TYPE_PORTRAIT_COMPARISON: 34,
+    RPRM_RESULT_TYPE_EXT_PORTRAIT: 35,
 }
 
 export const CameraTypes = {
@@ -2726,6 +2282,41 @@ export const eRFID_AuthenticationProcedureType = {
     aptStandard: 1,
     aptAdvanced: 2,
     aptGeneral: 3,
+}
+
+export const DocumentReaderErrorCodes = {
+    INITIALIZATION_CORE_ABSENT: 0,
+    INITIALIZATION_FAILED: 1,
+    INCORRECT_SCENARIO: 2,
+    NO_RESULT: 3,
+    REMOVE_DATABASE: 4,
+    FETCHING_DATABASE: 5,
+    DB_ID_NOT_FOUND: 6,
+    DB_DESCRIPTION_NOT_FOUND: 7,
+    SAVE_DB: 8,
+    DOWNLOAD_DB_INCORRECT_CHECKSUM: 9,
+    DB_DOWNLOAD: 10,
+    LICENSE_ABSENT_OR_CORRUPTED: 13,
+    LICENSE_INVALID_DATE: 14,
+    LICENSE_INVALID_VERSION: 15,
+    LICENSE_INVALID_DEVICE_ID: 16,
+    LICENSE_INVALID_SYSTEM_OR_APP_ID: 17,
+    LICENSE_NO_CAPABILITIES: 18,
+    LICENSE_NO_AUTHENTICITY: 19,
+    RECORD_PROCESS_INVALID_OUTPUT_URL: 20,
+    LICENSE_ONLINE_ERROR: 21,
+    LICENSE_NO_DATABASE: 22,
+    LICENSE_DATABASE_INCORRECT: 23,
+    INVALID_TCC_PARAMS: 24,
+    RFID_IN_PROGRESS: 25,
+    NATIVE_JAVA_EXCEPTION: 1000,
+    BACKEND_ONLINE_PROCESSING: 303,
+    WRONG_INPUT: 400,
+    STATE_EXCEPTION: 500,
+    BLE_EXCEPTION: 600,
+    FEATURE_BLUETOOTH_LE_NOT_SUPPORTED: 601,
+    APP_BACKGROUND: 700,
+    ONLINE_PROCESSING_WRONG_INPUT: 800,
 }
 
 export const ScenarioIdentifier = {
@@ -2931,6 +2522,7 @@ export const eCheckDiagnose = {
     BARCODE_DATA_FORMAT_ERROR: 141,
     BARCODE_SIZE_PARAMS_ERROR: 142,
     NOT_ALL_BARCODES_READ: 143,
+    GLARES_IN_BARCODE_AREA: 144,
     PORTRAIT_COMPARISON_PORTRAITS_DIFFER: 150,
     PORTRAIT_COMPARISON_NO_SERVICE_REPLY: 151,
     PORTRAIT_COMPARISON_SERVICE_ERROR: 152,
@@ -2960,8 +2552,9 @@ export const eCheckDiagnose = {
     OCR_QUALITY_INVALID_FONT: 221,
     OCR_QUALITY_INVALID_BACKGROUND: 222,
     LAS_INK_INVALID_LINES_FREQUENCY: 230,
-    LAST_DIAGNOSE_VALUE: 250,
     DOC_LIVENESS_ELECTRONIC_DEVICE_DETECTED: 240,
+    DOC_LIVENESS_INVALID_BARCODE_BACKGROUND: 241,
+    LAST_DIAGNOSE_VALUE: 250,
 }
 
 export const RFIDDelegate = {
@@ -3221,449 +2814,6 @@ export const eLDS_ParsingNotificationCodes = {
     NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_CANT_FIND_CSCA: 0x92000117,
     NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_REVOKED: 0x92000118,
     NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_SIGNATURE_INVALID: 0x92000119,
-
-    getTranslation(value: number) {
-        switch (value) {
-            case this.NTF_LDS_ASN_CERTIFICATE_INCORRECT_VERSION:
-                return "Notification - ASN certificate: Incorrect version"
-            case this.NTF_LDS_ASN_CERTIFICATE_NON_MATCHING_SIGNATURE_ALGORITHM:
-                return "Notification - ASN certificate: Non-matching signature algorithm"
-            case this.NTF_LDS_ASN_CERTIFICATE_INCORRECT_TIME_CODING:
-                return "Notification - ASN certificate: Incorrect time coding"
-            case this.NTF_LDS_ASN_CERTIFICATE_INCORRECT_USE_OF_GENERALIZED_TIME:
-                return "Notification - ASN certificate: Incorrect use of generalized time"
-            case this.NTF_LDS_ASN_CERTIFICATE_EMPTY_ISSUER:
-                return "Notification - ASN certificate: Empty issuer"
-            case this.NTF_LDS_ASN_CERTIFICATE_EMPTY_SUBJECT:
-                return "Notification - ASN certificate: Empty subject"
-            case this.NTF_LDS_ASN_CERTIFICATE_UNSUPPORTED_CRITICAL_EXTENSION:
-                return "Notification - ASN certificate: Unsupported critical extension"
-            case this.NTF_LDS_ASN_CERTIFICATE_FORCED_DEFAULT_CSCA_ROLE:
-                return "Notification - ASN certificate: Forced default CSCA role"
-            case this.NTF_LDS_ASN_CERTIFICATE_FORCED_DEFAULT_DS_ROLE:
-                return "Notification - ASN certificate: Forced Default DS role"
-            case this.NTF_LDS_ASN_CERTIFICATE_INCORRECT_ISSUER_SUBJECT_DS:
-                return "Notification - ASN certificate: Incorrect issuer subject DS"
-            case this.NTF_LDS_ASN_CERTIFICATE_DUPLICATING_EXTENSIONS:
-                return "Notification - ASN certificate: Duplicating extensions"
-            case this.NTF_LDS_ICAO_CERTIFICATE_VERSION_MISSED:
-                return "Notification - ICAO certificate: Version missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_VERSION_INCORRECT:
-                return "Notification - ICAO certificate: Version incorrect"
-            case this.NTF_LDS_ICAO_CERTIFICATE_ISSUER_COUNTRY_MISSED:
-                return "Notification - ICAO certificate: Issuer country missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_ISSUER_COMMON_NAME_MISSED:
-                return "Notification - ICAO certificate: Issuer common name missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_ISSUER_COUNTRY_NON_COMPLIANT:
-                return "Notification - ICAO certificate: Issuer country non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COUNTRY_MISSED:
-                return "Notification - ICAO certificate: Subject country missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COMMON_NAME_MISSED:
-                return "Notification - ICAO certificate: Subject common name missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COUNTRY_NON_COMPLIANT:
-                return "Notification - ICAO certificate: Subject country non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_USING_NON_COMPLIANT_DATA:
-                return "Notification - ICAO certificate: Using non-compliant data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_UNSUPPORTED_SIGNATURE_ALGORITHM:
-                return "Notification - ICAO certificate: Unsupported signature algorithm"
-            case this.NTF_LDS_ICAO_CERTIFICATE_UNSUPPORTED_PUBLIC_KEY_ALGORITHM:
-                return "Notification - ICAO certificate: Unsupported public key algorithm"
-            case this.NTF_LDS_ICAO_CERTIFICATE_MISSED_EXTENSIONS:
-                return "Notification - ICAO certificate: Missed extensions"
-            case this.NTF_LDS_ICAO_CERTIFICATE_VALIDITY:
-                return "Notification - ICAO certificate: Validity"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_USING_NON_COMPLIANT_DATA:
-                return "Notification - ICAO certificate extension: Using non-compliant data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_KEY_USAGE_MISSED:
-                return "Notification - ICAO certificate extension: Key usage missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_KEY_USAGE_NOT_CRITICAL:
-                return "Notification - ICAO certificate extension: Key usage not critical"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_KEY_USAGE_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension: Key usage incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_MISSED:
-                return "Notification - ICAO certificate extension: Basic constraints missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_INCORRECT_USAGE1:
-                return "Notification - ICAO certificate extension: Basic constraints incorrect usage 1"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_INCORRECT_USAGE2:
-                return "Notification - ICAO certificate extension: Basic constraints incorrect usage 2"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_NOT_CRITICAL:
-                return "Notification - ICAO certificate extension: Basic constraints not critical"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension: Basic constraints incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_PATH_LEN_C_MISSED:
-                return "Notification - ICAO certificate extension: Basic constraints path LenC missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_BASIC_C_PATH_LEN_C_INCORRECT:
-                return "Notification - ICAO certificate extension: Basic constraints path LenC incorrect"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_EXT_KEY_USAGE_NOT_CRITICAL:
-                return "Notification - ICAO certificate extension: Ext key usage not critical"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_EXT_KEY_USAGE_INCORRECT_USAGE:
-                return "Notification - ICAO certificate extension: Ext key usage incorrect usage"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_EXT_KEY_USAGE_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension: Ext key usage incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_AUTH_KEY_ID_MISSED:
-                return "Notification - ICAO certificate extension Auth key: ID missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_AUTH_KEY_ID_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension Auth key: Incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_AUTH_KEY_ID_KEY_ID_MISSED:
-                return "Notification - ICAO certificate extension Auth key: Key ID missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_KEY_ID_MISSED:
-                return "Notification - ICAO certificate extension: Subject key ID missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_KEY_ID_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension: Subject key ID incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_PRIVATE_KEY_UP_MISSED:
-                return "Notification - ICAO certificate extension: Private key UP missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_PRIVATE_KEY_UP_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension: Private key UP incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_PRIVATE_KEY_UP_EMPTY:
-                return "Notification - ICAO certificate extension: Private key UP empty"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_MISSED:
-                return "Notification - ICAO certificate extension: Subject alt name missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension: Subject alt name incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_EMPTY:
-                return "Notification - ICAO certificate extension: Subject alt name empty"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_NON_COMPLIANT:
-                return "Notification - ICAO certificate extension: Subject alt name non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_CRITICAL:
-                return "Notification - ICAO certificate extension: Subject alt name critical"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_DN_EMPTY:
-                return "Notification - ICAO certificate extension: Subject alt name DN empty"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_DN_INCORRECT:
-                return "Notification - ICAO certificate extension: Subject alt name DN incorrect"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_SUBJECT_ALT_NAME_DN_NON_COMPLIANT:
-                return "Notification - ICAO certificate extension: Subject alt name DN non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_MISSED:
-                return "Notification - ICAO certificate extension: Issuer alt name missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension: Issuer alt name incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_EMPTY:
-                return "Notification - ICAO certificate extension: Issuer alt name empty"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_NON_COMPLIANT:
-                return "Notification - ICAO certificate extension: Issuer alt name non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_DN_EMPTY:
-                return "Notification - ICAO certificate extension: Issuer alt name DN empty"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_DN_INCORRECT:
-                return "Notification - ICAO certificate extension: Issuer alt name DN incorrect"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_DN_NON_COMPLIANT:
-                return "Notification - ICAO certificate extension: Issuer alt name DN non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_MISSED:
-                return "Notification - ICAO certificate extension Doc type list: Missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension Doc type list: Incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_VERSION:
-                return "Notification - ICAO certificate extension Doc type list: Version"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_DOC_TYPES:
-                return "Notification - ICAO certificate extension Doc type list: Doc types"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_DOC_TYPES_EMPTY:
-                return "Notification - ICAO certificate extension Doc type list: Doc types empty"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_CERT_POLICIES_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension: Dert policies incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_CERT_POLICIES_EMPTY:
-                return "Notification - ICAO certificate extension: Cert policies empty"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_CERT_POLICIES_POLICY_ID_MISSED:
-                return "Notification - ICAO certificate extension: Cert policies policy ID missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_CRL_DIST_POINT_MISSED:
-                return "Notification - ICAO certificate extension: CRL dist point missed"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_CRL_DIST_POINT_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension: CRL dist point incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_CRL_DIST_POINT_EMPTY:
-                return "Notification - ICAO certificate extension: CRL dist point empty"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_CRL_DIST_POINT_POINT_MISSED:
-                return "Notification - ICAO certificate extension: CRL dist point point missed"
-            case this.NTF_LDS_ICAO_COM_LDS_VERSION_INCORRECT:
-                return "Notification - ICAO COM: LDS version incorrect"
-            case this.NTF_LDS_ICAO_COM_LDS_VERSION_MISSING:
-                return "Notification - ICAO COM: LDS version missing"
-            case this.NTF_LDS_ICAO_COM_UNICODE_VERSION_INCORRECT:
-                return "Notification - ICAO COM: Unicode version incorrect"
-            case this.NTF_LDS_ICAO_COM_UNICODE_VERSION_MISSING:
-                return "Notification - ICAO COM: Unicode version missing"
-            case this.NTF_LDS_ICAO_COM_DGPM_INCORRECT:
-                return "Notification - ICAO COM: DGPM incorrect"
-            case this.NTF_LDS_ICAO_COM_DGPM_MISSING:
-                return "Notification - ICAO COM: DGPM missing"
-            case this.NTF_LDS_ICAO_COM_DGPM_UNEXPECTED:
-                return "Notification - ICAO COM: DGPM unexpected"
-            case this.NTF_LDS_ICAO_APPLICATION_LDS_VERSION_UNSUPPORTED:
-                return "Notification - ICAO application: LDS version unsupported"
-            case this.NTF_LDS_ICAO_APPLICATION_UNICODE_VERSION_UNSUPPORTED:
-                return "Notification - ICAO application: Unicode version unsupported"
-            case this.NTF_LDS_ICAO_APPLICATION_LDS_VERSION_INCONSISTENT:
-                return "Notification - ICAO application: LDS version inconsistent"
-            case this.NTF_LDS_ICAO_APPLICATION_UNICODE_VERSION_INCONSISTENT:
-                return "Notification - ICAO application: Unicode version inconsistent"
-            case this.NTF_LDS_ASN_SIGNED_DATA_OID_INCORRECT:
-                return "Notification - ASN signed data: OID incorrect"
-            case this.NTF_LDS_ASN_SIGNED_DATA_VERSION_INCORRECT:
-                return "Notification - ASN signed data: Version incorrect"
-            case this.NTF_LDS_ICAO_SIGNED_DATA_VERSION_INCORRECT:
-                return "Notification - ICAO signed data: Version incorrect"
-            case this.NTF_LDS_ICAO_SIGNED_DATA_DIGEST_ALGORITHMS_EMPTY:
-                return "Notification - ICAO signed data: Digest algorithms empty"
-            case this.NTF_LDS_ICAO_SIGNED_DATA_DIGEST_ALGORITHMS_UNSUPPORTED:
-                return "Notification - ICAO signed data: Digest algorithms unsupported"
-            case this.NTF_LDS_ICAO_SIGNED_DATA_SIGNER_INFOS_MULTIPLE_ENTRIES:
-                return "Notification - ICAO signed data: Signer infos multiple entries"
-            case this.NTF_LDS_ICAO_SIGNED_DATA_CERTIFICATES_MISSED:
-                return "Notification - ICAO signed data: Certificates missed"
-            case this.NTF_LDS_ICAO_SIGNED_DATA_CERTIFICATES_EMPTY:
-                return "Notification - ICAO signed data: Certificates empty"
-            case this.NTF_LDS_ICAO_SIGNED_DATA_CRLS_INCORRECT_USAGE:
-                return "Notification - ICAO signed data: CRLs incorrect usage"
-            case this.NTF_LDS_ICAO_LDS_OBJECT_INCORRECT_CONTENT_OID:
-                return "Notification - ICAO LDS object: Incorrect content OID"
-            case this.NTF_LDS_ICAO_LDS_OBJECT_DG_NUMBER_INCORRECT:
-                return "Notification - ICAO LDS object: DG number incorrect"
-            case this.NTF_LDS_ICAO_LDS_OBJECT_DG_HASH_MISSING:
-                return "Notification - ICAO LDS object: DG hash missing"
-            case this.NTF_LDS_ICAO_LDS_OBJECT_DG_HASH_EXTRA:
-                return "Notification - ICAO LDS object: DG hash extra"
-            case this.NTF_LDS_ICAO_LDS_OBJECT_VERSION_INCORRECT:
-                return "Notification - ICAO LDS object: Version incorrect"
-            case this.NTF_LDS_ICAO_MASTER_LIST_VERSION_INCORRECT:
-                return "Notification - ICAO master list: Version incorrect"
-            case this.NTF_LDS_ASN_SIGNER_INFO_VERSION_INCORRECT:
-                return "Notification - ASN signer info: Version incorrect"
-            case this.NTF_LDS_ASN_SIGNER_INFO_SID_INCORRECT_CHOICE:
-                return "Notification - ASN signer info: SID incorrect choice"
-            case this.NTF_LDS_ASN_SIGNER_INFO_SID_DIGEST_ALGORITHM_NOT_LISTED:
-                return "Notification - ASN signer info: SID digest algorithm not listed"
-            case this.NTF_LDS_ASN_SIGNER_INFO_MESSAGE_DIGEST_ATTR_MISSING:
-                return "Notification - ASN signer info: Message digest attr missing"
-            case this.NTF_LDS_ASN_SIGNER_INFO_MESSAGE_DIGEST_ATTR_DATA:
-                return "Notification - ASN signer info: Message digest attr data"
-            case this.NTF_LDS_ASN_SIGNER_INFO_MESSAGE_DIGEST_ATTR_Value:
-                return "Notification - ASN signer info: Message digest attr value"
-            case this.NTF_LDS_ASN_SIGNER_INFO_CONTENT_TYPE_ATTR_MISSING:
-                return "Notification - ASN signer info: Content type attr missing"
-            case this.NTF_LDS_ASN_SIGNER_INFO_CONTENT_TYPE_ATTR_DATA:
-                return "Notification - ASN signer info: Content type attr data"
-            case this.NTF_LDS_ASN_SIGNER_INFO_CONTENT_TYPE_ATTR_VALUE:
-                return "Notification - ASN signer info: Content type attr value"
-            case this.NTF_LDS_ASN_SIGNER_INFO_SIGNING_TIME_ATTR_MISSING:
-                return "Notification - ASN signer info: Signing time attr missing"
-            case this.NTF_LDS_ASN_SIGNER_INFO_SIGNING_TIME_ATTR_DATA:
-                return "Notification - ASN signer info: Signing time attr data"
-            case this.NTF_LDS_ASN_SIGNER_INFO_SIGNING_TIME_ATTR_VALUE:
-                return "Notification - ASN signer info: Signing time attr value"
-            case this.NTF_LDS_AUTH_SIGNER_INFO_CERTIFICATE_VALIDITY:
-                return "Notification - Auth signer info: Certificate validity"
-            case this.NTF_LDS_AUTH_SIGNER_INFO_CERTIFICATE_ROOT_IS_NOT_TRUSTED:
-                return "Notification - Auth signer info: Certificate root is not trusted"
-            case this.NTF_LDS_AUTH_SIGNER_INFO_CERTIFICATE_CANT_FIND_CSCA:
-                return "Notification - Auth signer info: Certificate cannot find CSCA"
-            case this.NTF_LDS_AUTH_SIGNER_INFO_CERTIFICATE_REVOKED:
-                return "Notification - Auth signer info: Certificate revoked"
-            case this.NTF_LDS_AUTH_SIGNER_INFO_CERTIFICATE_SIGNATURE_INVALID:
-                return "Notification - Auth signer info: Certificate signature invalid"
-            case this.NTF_LDS_UNSUPPORTED_IMAGE_FORMAT:
-                return "Notification: Unsupported image format"
-            case this.NTF_LDS_MRZ_DOCUMENT_TYPE_UNKNOWN:
-                return "Notification - MRZ: Document type unknown"
-            case this.NTF_LDS_MRZ_ISSUING_STATE_SYNTAX_ERROR:
-                return "Notification - MRZ: Issuing state syntax error"
-            case this.NTF_LDS_MRZ_NAME_IS_VOID:
-                return "Notification - MRZ: Name is void"
-            case this.NTF_LDS_MRZ_NUMBER_INCORRECT_CHECKSUM:
-                return "Notification - MRZ: Number incorrect checksum"
-            case this.NTF_LDS_MRZ_NATIONALITY_SYNTAX_ERROR:
-                return "Notification - MRZ: Nationality syntax error"
-            case this.NTF_LDS_MRZ_DOB_SYNTAX_ERROR:
-                return "Notification - MRZ: DOB syntax error"
-            case this.NTF_LDS_MRZ_DOB_ERROR:
-                return "Notification - MRZ: DOB error"
-            case this.NTF_LDS_MRZ_DOB_INCORRECT_CHECKSUM:
-                return "Notification - MRZ: DOB incorrect checksum"
-            case this.NTF_LDS_MRZ_SEX_INCORRECT:
-                return "Notification - MRZ: Sex incorrect"
-            case this.NTF_LDS_MRZ_DOE_SYNTAX_ERROR:
-                return "Notification - MRZ: DOE syntax error"
-            case this.NTF_LDS_MRZ_DOE_ERROR:
-                return "Notification - MRZ: DOE error"
-            case this.NTF_LDS_MRZ_DOE_INCORRECT_CHECKSUM:
-                return "Notification - MRZ: DOE incorrect checksum"
-            case this.NTF_LDS_MRZ_OPTIONAL_DATA_INCORRECT_CHECKSUM:
-                return "Notification - MRZ: Optional data incorrect checksum"
-            case this.NTF_LDS_MRZ_INCORRECT_CHECKSUM:
-                return "Notification - MRZ: Incorrect checksum"
-            case this.NTF_LDS_MRZ_INCORRECT:
-                return "Notification - MRZ: Incorrect"
-            case this.NTF_LDS_BIOMETRICS_FORMAT_OWNER_MISSING:
-                return "Notification - Biometrics: Format owner missing"
-            case this.NTF_LDS_BIOMETRICS_FORMAT_OWNER_INCORRECT:
-                return "Notification - Biometrics: Format owner incorrect"
-            case this.NTF_LDS_BIOMETRICS_FORMAT_TYPE_MISSING:
-                return "Notification - Biometrics: Format type missing"
-            case this.NTF_LDS_BIOMETRICS_FORMAT_TYPE_INCORRECT:
-                return "Notification - Biometrics: Format type incorrect"
-            case this.NTF_LDS_BIOMETRICS_TYPE_INCORRECT:
-                return "Notification - Biometrics: Type incorrect"
-            case this.NTF_LDS_BIOMETRICS_SUB_TYPE_MISSING:
-                return "Notification - Biometrics: Subtype missing"
-            case this.NTF_LDS_BIOMETRICS_SUB_TYPE_INCORRECT:
-                return "Notification - Biometrics: Subtype incorrect"
-            case this.NTF_LDS_BIOMETRICS_BDB_IMAGE_MISSING:
-                return "Notification - Biometrics: BDB image missing"
-            case this.NTF_LDS_BIOMETRICS_BDB_FORMAT_ID_INCORRECT:
-                return "Notification - Biometrics: BDB format ID incorrect"
-            case this.NTF_LDS_BIOMETRICS_BDB_VERSION_INCORRECT:
-                return "Notification - Biometrics: BDB version incorrect"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_LENGTH_INCORRECT:
-                return "Notification - Biometrics: BDB data length incorrect"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_GENDER:
-                return "Notification - Biometrics: BDB Data Gender"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_EYE_COLOR:
-                return "Notification - Biometrics: BDB Data Eye Color"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_HAIR_COLOR:
-                return "Notification - Biometrics: BDB Data Hair Color"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_YAW:
-                return "Notification - Biometrics: BDB Data Pose Angle Yaw"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_PITCH:
-                return "Notification - Biometrics: BDB Data Pose Angle Pitch"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_ROLL:
-                return "Notification - Biometrics: BDB Data Pose Angle Roll"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_U_YAW:
-                return "Notification - Biometrics: BDB Data Pose Angle U Yaw"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_U_PITCH:
-                return "Notification - Biometrics: BDB Data Pose Angle U Pitch"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_POSE_ANGLE_U_ROLL:
-                return "Notification - Biometrics: BDB Data Pose Angle U Roll"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_FACE_IMAGE_TYPE:
-                return "Notification - Biometrics: BDB Data Face Image Type"
-            case this.NTF_LDS_BIOMETRICS_BDB_DATA_IMAGE_DATA_TYPE:
-                return "Notification - Biometrics: BDB Data Image Data Type"
-            case this.NTF_LDS_SI_PACE_INFO_UNSUPPORTED_STD_PARAMETERS:
-                return "Notification - SI: PACE Info Unsupported Std Parameters"
-            case this.NTF_LDS_SI_PACE_INFO_DEPRECATED_VERSION:
-                return "Notification - SI: PACE Info Deprecated Version"
-            case this.NTF_LDS_SI_PACE_DOMAIN_PARAMS_USING_STD_REF:
-                return "Notification - SI: PACE Domain Params Using Std Ref"
-            case this.NTF_LDS_SI_PACE_DOMAIN_PARAMS_UNSUPPORTED_ALGORITHM:
-                return "Notification - SI: PACE Domain Params Unsupported Algorithm"
-            case this.NTF_LDS_SI_CA_INFO_INCORRECT_VERSION:
-                return "Notification - SI: CA Info Incorrect Version"
-            case this.NTF_LDS_SI_CA_PUBLIC_KEY_UNSUPPORTED_ALGORITHM:
-                return "Notification - SI: CA PublicKey Unsupported Algorithm"
-            case this.NTF_LDS_SI_CA_DOMAIN_PARAMS_UNSUPPORTED_ALGORITHM:
-                return "Notification - SI: CA Domain Params Unsupported Algorithm"
-            case this.NTF_LDS_SI_TA_INFO_INCORRECT_VERSION:
-                return "Notification - SI: TA Info Incorrect Version"
-            case this.NTF_LDS_SI_TA_INFO_FILE_ID_FOR_VERSION2:
-                return "Notification - SI: TA Info File ID For Version 2"
-            case this.NTF_LDS_SI_EID_SECURITY_UNSUPPORTED_DIGEST_ALGORITHM:
-                return "Notification - SI: eID Security Unsupported Digest Algorithm"
-            case this.NTF_LDS_SI_RI_INFO_INCORRECT_VERSION:
-                return "Notification - SI: RI info incorrect version"
-            case this.NTF_LDS_SI_RI_DOMAIN_PARAMS_UNSUPPORTED_ALGORITHM:
-                return "Notification - SI: RI domain params unsupported algorithm"
-            case this.NTF_LDS_SI_AA_INFO_INCORRECT_VERSION:
-                return "Notification - SI: AA info incorrect version"
-            case this.NTF_LDS_SI_AA_INFO_UNSUPPORTED_ALGORITHM:
-                return "Notification - SI: AA info unsupported algorithm"
-            case this.NTF_LDS_SI_AA_INFO_INCONSISTENT_ALGORITHM_REFERENCE:
-                return "Notification - SI: AA info inconsistent algorithm reference"
-            case this.NTF_LDS_SI_STORAGE_PACE_INFO_NOT_AVAILABLE:
-                return "Notification - SI: PACE Info Not Available"
-            case this.NTF_LDS_SI_STORAGE_PACE_INFO_NO_STD_PARAMETERS:
-                return "Notification - SI: PACE Info No Std Parameters"
-            case this.NTF_LDS_SI_STORAGE_PACE_INFO_NO_MATCHING_DOMAIN_PARAMS:
-                return "Notification - SI: PACE Info No Matching Domain Params"
-            case this.NTF_LDS_SI_STORAGE_CA_INFO_NOT_AVAILABLE:
-                return "Notification - SI: CA Info Not Available"
-            case this.NTF_LDS_SI_STORAGE_CA_DOMAIN_PARAMS_NO_REQUIRED_OPTION:
-                return "Notification - SI: CA Domain Params No Required Option"
-            case this.NTF_LDS_SI_STORAGE_CA_DOMAIN_PARAMS_NOT_AVAILABLE:
-                return "Notification - SI: CA Domain Params Not Available"
-            case this.NTF_LDS_SI_STORAGE_CA_ANONYMOUS_INFOS:
-                return "Notification - SI: CA Anonymous Infos"
-            case this.NTF_LDS_SI_STORAGE_CA_INFO_NO_MATCHING_DOMAIN_PARAMS:
-                return "Notification - SI: CA Info No Matching Domain Params"
-            case this.NTF_LDS_SI_STORAGE_CA_INFO_NO_MATCHING_PUBLIC_KEY:
-                return "Notification - SI: CA Info No Matching Public Key"
-            case this.NTF_LDS_SI_STORAGE_CA_INCORRECT_INFOS_QUANTITY:
-                return "Notification - SI: CA Incorrect Infos Quantity"
-            case this.NTF_LDS_SI_STORAGE_TA_INFO_NOT_AVAILABLE:
-                return "Notification - SI: TA Info Not Available"
-            case this.NTF_LDS_SI_STORAGE_CARD_INFO_LOCATOR_MULTIPLE_ENTRIES:
-                return "Notification - SI: Card Info Locator Multiple Entries"
-            case this.NTF_LDS_SI_STORAGE_EID_SECURITY_INFO_MULTIPLE_ENTRIES:
-                return "Notification - SI: eID Security Info Multiple Entries"
-            case this.NTF_LDS_SI_STORAGE_PRIVILEGED_TI_MULTIPLE_ENTRIES:
-                return "Notification - SI: Privileged TI Multiple Entries"
-            case this.NTF_LDS_SI_STORAGE_PRIVILEGED_TI_INCORRECT_USAGE:
-                return "Notification - SI: Privileged TI Incorrect Usage"
-            case this.NTF_LDS_SI_STORAGE_RI_DOMAIN_PARAMS_MULTIPLE_ENTRIES:
-                return "Notification - SI: RI domain params multiple entries"
-            case this.NTF_LDS_SI_STORAGE_PACE_INFOS_NON_CONSISTANT:
-                return "Notification - SI: Storage PACE Info Non Consistant"
-            case this.NTF_LDS_CV_CERTIFICATE_PROFILE_INCORRECT_VERSION:
-                return "Notification - CV Certificate: Profile incorrect version"
-            case this.NTF_LDS_CV_CERTIFICATE_VALIDITY:
-                return "Notification - CV Certificate: Validity"
-            case this.NTF_LDS_CV_CERTIFICATE_NON_CV_CA_DOMAIN_PARAMETERS:
-                return "Notification - CV Certificate: Non CVCA domain parameters"
-            case this.NTF_LDS_CV_CERTIFICATE_PRIVATE_KEY_INCORRECT_VERSION:
-                return "Notification - CV Certificate: Private key incorrect version"
-            case this.NTF_LDS_TA_PACE_STATIC_BINDING_USED:
-                return "Notification - TA: PACE static binding used"
-            case this.NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_VALIDITY:
-                return "Notification - Auth ML signer info: Certificate validity"
-            case this.NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_ROOT_IS_NOT_TRUSTED:
-                return "Notification - Auth ML signer info: Certificate root is not trusted"
-            case this.NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_CANT_FIND_CSCA:
-                return "Notification - Auth ML signer info: Certificate cannot find CSCA"
-            case this.NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_REVOKED:
-                return "Notification - Auth ML signer info: Certificate revoked"
-            case this.NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_SIGNATURE_INVALID:
-                return "Notification - Auth ML signer info: Certificate signature invalid"
-            case this.NTF_LDS_ASN_SIGNED_DATA_CONTENT_OID_INCORRECT:
-                return "Notification - ASN signed data: Content OID incorrect"
-            case this.NTF_LDS_ASN_SIGNER_INFO_LIST_CONTENT_DESCRIPTION_ATTR_DATA:
-                return "Notification - ASN signer info: List content description attr data"
-            case this.NTF_LDS_ASN_SIGNER_INFO_LIST_CONTENT_DESCRIPTION_ATTR_MISSING:
-                return "Notification - ASN signer info: List content description attr missing"
-            case this.NTF_LDS_BSI_BLACK_LIST_VERSION_INCORRECT:
-                return "Notification - BSI: Black list version incorrect"
-            case this.NTF_LDS_BSI_DEFECT_LIST_VERSION_INCORRECT:
-                return "Notification - BSI: Defect  list version incorrect"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_CSCA_ALT_NAMES_NON_MATCHING:
-                return "Notification - ICAO certificate extension: CSCA alt names non-matching"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_CRITICAL:
-                return "Notification - ICAO certificate extension Doc type list: Critical"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_DOC_TYPE_LIST_NON_COMPLIANT:
-                return "Notification - ICAO certificate extension Doc type list: non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_ISSUER_ALT_NAME_CRITICAL:
-                return "Notification - ICAO certificate extension: Issuer alt name critical"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_NAME_CHANGE_CRITICAL:
-                return "Notification - ICAO certificate extension: Name change critical"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_NAME_CHANGE_INCORRECT_DATA:
-                return "Notification - ICAO certificate extension: Name change incorrect data"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_NAME_CHANGE_NON_COMPLIANT:
-                return "Notification - ICAO certificate extension: Name change non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_EXT_OPTIONAL_CRITICAL:
-                return "Notification - ICAO certificate extension: Optional critical"
-            case this.NTF_LDS_ICAO_CERTIFICATE_ISSUER_ATTRIBUTE_NON_COMPLIANT:
-                return "Notification - ICAO certificate: Issuer attribute non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_ISSUER_SN_NON_COMPLIANT:
-                return "Notification - ICAO certificate: Issuer SN non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_ISSUER_SUBJECT_COUNTRY_NON_MATCHING:
-                return "Notification - ICAO certificate: Issuer subject country non-matching"
-            case this.NTF_LDS_ICAO_CERTIFICATE_SN_NON_COMPLIANT:
-                return "Notification - ICAO certificate: SN non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_SUBJECT_ATTRIBUTE_NON_COMPLIANT:
-                return "Notification - ICAO certificate: Subject attribute non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COMMON_NAME_NON_COMPLIANT:
-                return "Notification - ICAO certificate: Subject common name non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_SUBJECT_NON_COMPLIANT:
-                return "Notification - ICAO certificate: Subject non-compliant"
-            case this.NTF_LDS_ICAO_CERTIFICATE_SUBJECT_SN_NON_COMPLIANT:
-                return "Notification - ICAO certificate: Subject SN non-compliant"
-            case this.NTF_LDS_ICAO_DEVIATION_LIST_VERSION_INCORRECT:
-                return "Notification - ICAO Deviation list: Version incorrect"
-            default:
-                return value.toString()
-        }
-    }
 }
 
 export const eImageQualityCheckType = {
@@ -3676,31 +2826,6 @@ export const eImageQualityCheckType = {
     IQC_SCREEN_CAPTURE: 6,
     IQC_PORTRAIT: 7,
     IQC_HANDWRITTEN: 8,
-
-    getTranslation(value: number) {
-        switch (value) {
-            case this.IQC_IMAGE_GLARES:
-                return "Glares"
-            case this.IQC_IMAGE_FOCUS:
-                return "Focus"
-            case this.IQC_IMAGE_RESOLUTION:
-                return "Resolution"
-            case this.IQC_IMAGE_COLORNESS:
-                return "Color"
-            case this.IQC_PERSPECTIVE:
-                return "Perspective angle"
-            case this.IQC_BOUNDS:
-                return "Bounds"
-            case this.IQC_SCREEN_CAPTURE:
-                return "Moire pattern"
-            case this.IQC_PORTRAIT:
-                return "Portrait"
-            case this.IQC_HANDWRITTEN:
-                return "Handwritten"
-            default:
-                return value.toString()
-        }
-    }
 }
 
 export const MRZFormat = {
@@ -3732,10 +2857,11 @@ export const BarcodeType = {
     DATAMATRIX: 16,
     ALL_1D: 17,
     CODE11: 18,
+    JABCODE: 19,
 }
 
 export const eRPRM_SecurityFeatureType = {
-    SECURITY_FEATURE_TYPE_NONE: -1,
+    NONE: -1,
     SECURITY_FEATURE_TYPE_BLANK: 0,
     SECURITY_FEATURE_TYPE_FILL: 1,
     SECURITY_FEATURE_TYPE_PHOTO: 2,
@@ -3780,6 +2906,7 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_BARCODE_SIZE_CHECK: 42,
     SECURITY_FEATURE_TYPE_LAS_INK: 43,
     SECURITY_FEATURE_TYPE_LIVENESS_MLI: 44,
+    SECURITY_FEATURE_TYPE_LIVENESS_BARCODE_BACKGROUND: 45,
 }
 
 export const OnlineMode = {
@@ -4071,57 +3198,6 @@ export const eGraphicFieldType = {
     GF_FINGER_RIGHT_MIDDLE: 307,
     GF_FINGER_RIGHT_RING: 308,
     GF_FINGER_RIGHT_LITTLE: 309,
-
-    getTranslation(value: number) {
-        switch (value) {
-            case this.GF_PORTRAIT:
-                return "Portrait"
-            case this.GF_FINGERPR:
-                return "Fingerprint"
-            case this.GF_EYE:
-                return "Iris"
-            case this.GF_SIGNATURE:
-                return "Signature"
-            case this.GF_BAR_CODE:
-                return "Barcode"
-            case this.GF_PROOF_OF_CITIZENSHIP:
-                return "Proof of citizenship"
-            case this.GF_DOCUMENT_IMAGE:
-                return "Document image"
-            case this.GF_COLOR_DYNAMIC:
-                return "Color dynamics"
-            case this.GF_GHOST_PORTRAIT:
-                return "Ghost portrait"
-            case this.GF_STAMP:
-                return "Stamp"
-            case this.GF_PORTRAIT_OF_CHILD:
-                return "Portrait of child"
-            case this.GF_OTHER:
-                return "Other"
-            case this.GF_FINGER_LEFT_THUMB:
-                return "Left thumb"
-            case this.GF_FINGER_LEFT_INDEX:
-                return "Left index finger"
-            case this.GF_FINGER_LEFT_MIDDLE:
-                return "Left middle finger"
-            case this.GF_FINGER_LEFT_RING:
-                return "Left ring finger"
-            case this.GF_FINGER_LEFT_LITTLE:
-                return "Left little finger"
-            case this.GF_FINGER_RIGHT_THUMB:
-                return "Right thumb"
-            case this.GF_FINGER_RIGHT_INDEX:
-                return "Right index finger"
-            case this.GF_FINGER_RIGHT_MIDDLE:
-                return "Right middle finger"
-            case this.GF_FINGER_RIGHT_RING:
-                return "Right ring finger"
-            case this.GF_FINGER_RIGHT_LITTLE:
-                return "Right little finger"
-            default:
-                return value.toString()
-        }
-    }
 }
 
 export const RegDeviceConfigType = {
@@ -4240,169 +3316,6 @@ export const eRFID_DataFile_Type = {
     DFT_VDS: 900,
     DFT_VDSNC: 901,
     DFT_USERDEFINED: 1000,
-
-    getTranslation(value: number) {
-        switch (value) {
-            case this.DFT_MIFARE_DATA:
-                return "MIFARE data"
-            case this.DFT_DL_COM:
-                return "EF.COM"
-            case this.DFT_PASSPORT_DG1:
-                return "Machine Readable Zone (DG1)"
-            case this.DFT_ID_DG1:
-                return "Document type" + " (DG1)"
-            case this.DFT_DL_DG1:
-                return "Text data elements (DG1)"
-            case this.DFT_PASSPORT_DG2:
-                return "Biometry - Facial data (DG2)"
-            case this.DFT_ID_DG2:
-                return "Issuing state" + " (DG2)"
-            case this.DFT_DL_DG2:
-                return "License holder information (DG2)"
-            case this.DFT_PASSPORT_DG3:
-                return "Biometry - Fingerprint(s) (DG3)"
-            case this.DFT_ID_DG3:
-                return "Date of expiry" + " (DG3)"
-            case this.DFT_DL_DG3:
-                return "Issuing authority details (DG3)"
-            case this.DFT_PASSPORT_DG4:
-                return "Biometry - Iris Data (DG4)"
-            case this.DFT_ID_DG4:
-                return "Given name" + " (DG4)"
-            case this.DFT_DL_DG4:
-                return "Portrait image (DG4)"
-            case this.DFT_PASSPORT_DG5:
-                return "Portrait(s) (DG5)"
-            case this.DFT_ID_DG5:
-                return "Family name" + " (DG5)"
-            case this.DFT_DL_DG5:
-                return "Signature / usual mark image (DG5)"
-            case this.DFT_PASSPORT_DG6:
-                return "not defined (DG6)"
-            case this.DFT_ID_DG6:
-                return "Pseudonym" + " (DG6)"
-            case this.DFT_DL_DG6:
-                return "Biometry - Facial data (DG6)"
-            case this.DFT_PASSPORT_DG7:
-                return "Signature / usual mark image (DG7)"
-            case this.DFT_ID_DG7:
-                return "Academic title" + " (DG7)"
-            case this.DFT_DL_DG7:
-                return "Biometry - Fingerprint(s) (DG7)"
-            case this.DFT_PASSPORT_DG8:
-                return "not defined (DG8)"
-            case this.DFT_ID_DG8:
-                return "Date of birth" + " (DG8)"
-            case this.DFT_DL_DG8:
-                return "Biometry - Iris Data (DG8)"
-            case this.DFT_PASSPORT_DG9:
-                return "not defined (DG9)"
-            case this.DFT_ID_DG9:
-                return "Place of birth" + " (DG9)"
-            case this.DFT_DL_DG9:
-                return "Biometry - Other (DG9)"
-            case this.DFT_PASSPORT_DG10:
-                return "not defined (DG10)"
-            case this.DFT_ID_DG10:
-                return "Nationality" + " (DG10)"
-            case this.DFT_DL_DG10:
-                return "not defined (DG10)"
-            case this.DFT_PASSPORT_DG11:
-                return "Additional personal detail(s) (DG11)"
-            case this.DFT_ID_DG11:
-                return "Sex" + " (DG11)"
-            case this.DFT_DL_DG11:
-                return "Optional domestic data (DG11)"
-            case this.DFT_PASSPORT_DG12:
-                return "Additional document details (DG12)"
-            case this.DFT_ID_DG12:
-                return "Optional details" + " (DG12)"
-            case this.DFT_DL_DG12:
-                return "Non-match alert (DG12)"
-            case this.DFT_PASSPORT_DG13:
-                return "Optional detail(s) (DG13)"
-            case this.DFT_ID_DG13:
-                return "Undefined" + " (DG13)"
-            case this.DFT_DL_DG13:
-                return "Active Authentication info (DG13)"
-            case this.DFT_PASSPORT_DG14:
-                return "EAC info (DG14)"
-            case this.DFT_ID_DG14:
-                return "Undefined" + " (DG14)"
-            case this.DFT_DL_DG14:
-                return "EAC info (DG14)"
-            case this.DFT_PASSPORT_DG15:
-                return "Active Authentication info (DG15)"
-            case this.DFT_ID_DG15:
-                return "Undefined" + " (DG15)"
-            case this.DFT_PASSPORT_DG16:
-                return "Person(s) to notify (DG16)"
-            case this.DFT_ID_DG16:
-                return "Undefined" + " (DG16)"
-            case this.DFT_PASSPORT_DG17:
-                return "DG17"
-            case this.DFT_ID_DG17:
-                return "Place of registration" + " (DG17)"
-            case this.DFT_PASSPORT_DG18:
-                return "DG18"
-            case this.DFT_ID_DG18:
-                return "Place of registration" + " (DG18)"
-            case this.DFT_PASSPORT_DG19:
-                return "DG19"
-            case this.DFT_ID_DG19:
-                return "Residence permit 1" + " (DG19)"
-            case this.DFT_PASSPORT_DG20:
-                return "DG20"
-            case this.DFT_ID_DG20:
-                return "Residence permit 2" + " (DG20)"
-            case this.DFT_ID_DG21:
-                return "Optional details" + " (DG21)"
-            case this.DFT_DL_SOD:
-                return "EF.SOD"
-            case this.DFT_PASSPORT_CVCA:
-                return "EF.CVCA"
-            case this.DFT_MIFARE_VALIDITY:
-                return "MIFARE validity"
-            case this.DFT_PACE_CARDACCESS:
-                return "EF.CardAccess"
-            case this.DFT_PACE_CARDSECURITY:
-                return "EF.CardSecurity"
-            case this.DFT_PACE_CHIPSECURITY:
-                return "EF.ChipSecurity"
-            case this.DFT_CERTIFICATE:
-                return "Certificate"
-            case this.DFT_APP_DIRECTORY:
-                return "App directory"
-            case this.DFT_ATR:
-                return "DFT_ATR"
-            case this.DFT_CHIP_PROPERTIES:
-                return "DFT_CHIP_PROPERTIES"
-            case this.DFT_DEFECTLIST:
-                return "DFT_DEFECTLIST"
-            case this.DFT_DEVIATIONLIST:
-                return "DFT_DEVIATIONLIST"
-            case this.DFT_DL_CE:
-                return "DFT_DL_CE"
-            case this.DFT_DL_CVCA:
-                return "DFT_DL_CVCA"
-            case this.DFT_ESIGN_PK:
-                return "DFT_ESIGN_PK"
-            case this.DFT_ESIGN_SIGNEDDATA:
-                return "DFT_ESIGN_SIGNEDDATA"
-            case this.DFT_LOGDATA:
-                return "DFT_LOGDATA"
-            case this.DFT_MASTERLIST:
-                return "DFT_MASTERLIST"
-            case this.DFT_SESSION:
-                return "DFT_SESSION"
-            case this.DFT_UNSPECIFIED:
-                return "DFT_UNSPECIFIED"
-            case this.DFT_USERDEFINED:
-                return "DFT_USERDEFINED"
-            default:
-                return value.toString()
-        }
-    }
 }
 
 export const eVisualFieldType = {
@@ -5012,1225 +3925,30 @@ export const eVisualFieldType = {
     FT_DLCLASSCODE_PW_FROM: 654,
     FT_DLCLASSCODE_PW_NOTES: 655,
     FT_DLCLASSCODE_PW_TO: 656,
-
-    getTranslation(value: number) {
-        switch (value) {
-            case this.FT_DOCUMENT_CLASS_CODE:
-                return "Document class code"
-            case this.FT_ISSUING_STATE_CODE:
-                return "Issuing state code"
-            case this.FT_DOCUMENT_NUMBER:
-                return "Document number"
-            case this.FT_DATE_OF_EXPIRY:
-                return "Date of expiry"
-            case this.FT_DATE_OF_ISSUE:
-                return "Date of issue"
-            case this.FT_DATE_OF_BIRTH:
-                return "Date of birth"
-            case this.FT_PLACE_OF_BIRTH:
-                return "Place of birth"
-            case this.FT_PERSONAL_NUMBER:
-                return "Personal number"
-            case this.FT_SURNAME:
-                return "Surname"
-            case this.FT_GIVEN_NAMES:
-                return "Given name"
-            case this.FT_MOTHERS_NAME:
-                return "Mother\'s name"
-            case this.FT_NATIONALITY:
-                return "Nationality"
-            case this.FT_SEX:
-                return "Sex"
-            case this.FT_HEIGHT:
-                return "Height"
-            case this.FT_WEIGHT:
-                return "Weight"
-            case this.FT_EYES_COLOR:
-                return "Eye color"
-            case this.FT_HAIR_COLOR:
-                return "Hair color"
-            case this.FT_ADDRESS:
-                return "Address"
-            case this.FT_DONOR:
-                return "Donor"
-            case this.FT_SOCIAL_SECURITY_NUMBER:
-                return "Social insurance number"
-            case this.FT_DL_CLASS:
-                return "DL category"
-            case this.FT_DL_ENDORSED:
-                return "DL endorsement code"
-            case this.FT_DL_RESTRICTION_CODE:
-                return "DL Restriction Code"
-            case this.FT_DL_UNDER_21_DATE:
-                return "Date of 21st birthday"
-            case this.FT_AUTHORITY:
-                return "Issuing authority"
-            case this.FT_SURNAME_AND_GIVEN_NAMES:
-                return "Surname and given names"
-            case this.FT_NATIONALITY_CODE:
-                return "Nationality code"
-            case this.FT_PASSPORT_NUMBER:
-                return "Passport number"
-            case this.FT_INVITATION_NUMBER:
-                return "Invitation number"
-            case this.FT_VISA_ID:
-                return "Visa ID"
-            case this.FT_VISA_CLASS:
-                return "Visa Class"
-            case this.FT_VISA_SUB_CLASS:
-                return "Visa subclass"
-            case this.FT_MRZ_STRING_1:
-                return "MRZ line 1"
-            case this.FT_MRZ_STRING_2:
-                return "MRZ line 2"
-            case this.FT_MRZ_STRING_3:
-                return "MRZ line 3"
-            case this.FT_MRZ_TYPE:
-                return "MRZ Type"
-            case this.FT_OPTIONAL_DATA:
-                return "Optional data"
-            case this.FT_DOCUMENT_CLASS_NAME:
-                return "Document class"
-            case this.FT_ISSUING_STATE_NAME:
-                return "Issuing state"
-            case this.FT_PLACE_OF_ISSUE:
-                return "Place of issue"
-            case this.FT_DOCUMENT_NUMBER_CHECKSUM:
-                return "Checksum for document number"
-            case this.FT_DATE_OF_BIRTH_CHECKSUM:
-                return "Checksum for date of birth"
-            case this.FT_DATE_OF_EXPIRY_CHECKSUM:
-                return "Checksum for date of expiry"
-            case this.FT_PERSONAL_NUMBER_CHECKSUM:
-                return "Checksum for personal number"
-            case this.FT_FINAL_CHECKSUM:
-                return "Final checksum"
-            case this.FT_PASSPORT_NUMBER_CHECKSUM:
-                return "Checksum for passport number"
-            case this.FT_INVITATION_NUMBER_CHECKSUM:
-                return "Checksum for invitation number"
-            case this.FT_VISA_ID_CHECKSUM:
-                return "Checksum for visa ID"
-            case this.FT_SURNAME_AND_GIVEN_NAMES_CHECKSUM:
-                return "Checksum for surname and given names"
-            case this.FT_VISA_VALID_UNTIL_CHECKSUM:
-                return "Checksum for visa expiry date"
-            case this.FT_OTHER:
-                return "Other"
-            case this.FT_MRZ_STRINGS:
-                return "MRZ lines"
-            case this.FT_NAME_SUFFIX:
-                return "Name suffix"
-            case this.FT_NAME_PREFIX:
-                return "Name prefix"
-            case this.FT_DATE_OF_ISSUE_CHECKSUM:
-                return "Checksum for date of issue"
-            case this.FT_DATE_OF_ISSUE_CHECK_DIGIT:
-                return "Check digit for date of issue"
-            case this.FT_DOCUMENT_SERIES:
-                return "Document series"
-            case this.FT_REG_CERT_REG_NUMBER:
-                return "Registration number"
-            case this.FT_REG_CERT_CAR_MODEL:
-                return "Vehicle model"
-            case this.FT_REG_CERT_CAR_COLOR:
-                return "Vehicle color"
-            case this.FT_REG_CERT_BODY_NUMBER:
-                return "Body number"
-            case this.FT_REG_CERT_CAR_TYPE:
-                return "Vehicle type"
-            case this.FT_REG_CERT_MAX_WEIGHT:
-                return "Max permissible weight"
-            case this.FT_REG_CERT_WEIGHT:
-                return "Unladen mass"
-            case this.FT_ADDRESS_AREA:
-                return "Area"
-            case this.FT_ADDRESS_STATE:
-                return "State"
-            case this.FT_ADDRESS_BUILDING:
-                return "Unit"
-            case this.FT_ADDRESS_HOUSE:
-                return "Building"
-            case this.FT_ADDRESS_FLAT:
-                return "Apartment"
-            case this.FT_PLACE_OF_REGISTRATION:
-                return "Place of registration"
-            case this.FT_DATE_OF_REGISTRATION:
-                return "Date of registration"
-            case this.FT_RESIDENT_FROM:
-                return "Resident from"
-            case this.FT_RESIDENT_UNTIL:
-                return "Resident until"
-            case this.FT_AUTHORITY_CODE:
-                return "Issuing authority code"
-            case this.FT_PLACE_OF_BIRTH_AREA:
-                return "Country/region of birth"
-            case this.FT_PLACE_OF_BIRTH_STATE_CODE:
-                return "Birth state code"
-            case this.FT_ADDRESS_STREET:
-                return "Street"
-            case this.FT_ADDRESS_CITY:
-                return "City"
-            case this.FT_ADDRESS_JURISDICTION_CODE:
-                return "Jurisdiction code"
-            case this.FT_ADDRESS_POSTAL_CODE:
-                return "Postal code"
-            case this.FT_DOCUMENT_NUMBER_CHECK_DIGIT:
-                return "Check digit for document number"
-            case this.FT_DATE_OF_BIRTH_CHECK_DIGIT:
-                return "Check digit for date of birth"
-            case this.FT_DATE_OF_EXPIRY_CHECK_DIGIT:
-                return "Check digit for date of expiry"
-            case this.FT_PERSONAL_NUMBER_CHECK_DIGIT:
-                return "Check digit for personal number"
-            case this.FT_FINAL_CHECK_DIGIT:
-                return "Final check digit"
-            case this.FT_PASSPORT_NUMBER_CHECK_DIGIT:
-                return "Check digit for passport number"
-            case this.FT_INVITATION_NUMBER_CHECK_DIGIT:
-                return "Check digit for invitation number"
-            case this.FT_VISA_ID_CHECK_DIGIT:
-                return "Check digit for visa ID"
-            case this.FT_SURNAME_AND_GIVEN_NAMES_CHECK_DIGIT:
-                return "Check digit for surname and given names"
-            case this.FT_VISA_VALID_UNTIL_CHECK_DIGIT:
-                return "Check digit for visa expiry date"
-            case this.FT_PERMIT_DL_CLASS:
-                return "Permit class"
-            case this.FT_PERMIT_DATE_OF_EXPIRY:
-                return "Permit expiry date"
-            case this.FT_PERMIT_IDENTIFIER:
-                return "Permit identifier"
-            case this.FT_PERMIT_DATE_OF_ISSUE:
-                return "Permit issue date"
-            case this.FT_PERMIT_RESTRICTION_CODE:
-                return "Permit restriction code"
-            case this.FT_PERMIT_ENDORSED:
-                return "Permit endorsement code"
-            case this.FT_ISSUE_TIMESTAMP:
-                return "Issue time"
-            case this.FT_NUMBER_OF_DUPLICATES:
-                return "Number of duplicates"
-            case this.FT_MEDICAL_INDICATOR_CODES:
-                return "Medical notes/codes"
-            case this.FT_NON_RESIDENT_INDICATOR:
-                return "Non-resident indicator"
-            case this.FT_VISA_TYPE:
-                return "Visa type"
-            case this.FT_VISA_VALID_FROM:
-                return "Visa valid from"
-            case this.FT_VISA_VALID_UNTIL:
-                return "Visa valid until"
-            case this.FT_DURATION_OF_STAY:
-                return "Duration of stay"
-            case this.FT_NUMBER_OF_ENTRIES:
-                return "Number of entries"
-            case this.FT_DAY:
-                return "Day"
-            case this.FT_MONTH:
-                return "Month"
-            case this.FT_YEAR:
-                return "Year"
-            case this.FT_UNIQUE_CUSTOMER_IDENTIFIER:
-                return "Unique customer identifier"
-            case this.FT_COMMERCIAL_VEHICLE_CODES:
-                return "Commercial vehicle code"
-            case this.FT_AKA_DATE_OF_BIRTH:
-                return "AKA: Date of birth"
-            case this.FT_AKA_SOCIAL_SECURITY_NUMBER:
-                return "AKA: Social Insurance Number"
-            case this.FT_AKA_SURNAME:
-                return "AKA: Surname"
-            case this.FT_AKA_GIVEN_NAMES:
-                return "AKA: Given name"
-            case this.FT_AKA_NAME_SUFFIX:
-                return "AKA: Name suffix"
-            case this.FT_AKA_NAME_PREFIX:
-                return "AKA: Name prefix"
-            case this.FT_MAILING_ADDRESS_STREET:
-                return "Mailing address - street"
-            case this.FT_MAILING_ADDRESS_CITY:
-                return "Mailing address - city"
-            case this.FT_MAILING_ADDRESS_JURISDICTION_CODE:
-                return "Mailing address - jurisdiction code"
-            case this.FT_MAILING_ADDRESS_POSTAL_CODE:
-                return "Mailing address - postal code"
-            case this.FT_AUDIT_INFORMATION:
-                return "Number for validation"
-            case this.FT_INVENTORY_NUMBER:
-                return "Inventory number"
-            case this.FT_RACE_ETHNICITY:
-                return "Race/ethnicity"
-            case this.FT_JURISDICTION_VEHICLE_CLASS:
-                return "Jurisdiction vehicle class"
-            case this.FT_JURISDICTION_ENDORSEMENT_CODE:
-                return "Jurisdiction endorsement code"
-            case this.FT_JURISDICTION_RESTRICTION_CODE:
-                return "Jurisdiction restriction code"
-            case this.FT_FAMILY_NAME:
-                return "Family name"
-            case this.FT_GIVEN_NAMES_RUS:
-                return "Given name (National)"
-            case this.FT_VISA_ID_RUS:
-                return "Visa ID (National)"
-            case this.FT_FATHERS_NAME:
-                return "Father\'s name"
-            case this.FT_FATHERS_NAME_RUS:
-                return "Father\'s name (National)"
-            case this.FT_SURNAME_AND_GIVEN_NAMES_RUS:
-                return "Surname and given names (National)"
-            case this.FT_PLACE_OF_BIRTH_RUS:
-                return "Place of birth (National)"
-            case this.FT_AUTHORITY_RUS:
-                return "Issuing authority (National)"
-            case this.FT_ISSUING_STATE_CODE_NUMERIC:
-                return "Numeric issuing state code"
-            case this.FT_NATIONALITY_CODE_NUMERIC:
-                return "Numeric nationality code"
-            case this.FT_ENGINE_POWER:
-                return "Engine power"
-            case this.FT_ENGINE_VOLUME:
-                return "Engine volume"
-            case this.FT_CHASSIS_NUMBER:
-                return "Chassis number"
-            case this.FT_ENGINE_NUMBER:
-                return "Engine number"
-            case this.FT_ENGINE_MODEL:
-                return "Engine model"
-            case this.FT_VEHICLE_CATEGORY:
-                return "Vehicle category"
-            case this.FT_IDENTITY_CARD_NUMBER:
-                return "Identity card number"
-            case this.FT_CONTROL_NO:
-                return "Control number"
-            case this.FT_PARRENTS_GIVEN_NAMES:
-                return "Parents\' given names"
-            case this.FT_SECOND_SURNAME:
-                return "Second surname"
-            case this.FT_MIDDLE_NAME:
-                return "Middle name"
-            case this.FT_REG_CERT_VIN:
-                return "Vehicle identification number"
-            case this.FT_REG_CERT_VIN_CHECK_DIGIT:
-                return "Check digit for VIN"
-            case this.FT_REG_CERT_VIN_CHECKSUM:
-                return "Checksum for VIN"
-            case this.FT_LINE_1_CHECK_DIGIT:
-                return "Check digit for line 1"
-            case this.FT_LINE_2_CHECK_DIGIT:
-                return "Check digit for line 2"
-            case this.FT_LINE_3_CHECK_DIGIT:
-                return "Check digit for line 3"
-            case this.FT_LINE_1_CHECKSUM:
-                return "Checksum for line 1"
-            case this.FT_LINE_2_CHECKSUM:
-                return "Checksum for line 2"
-            case this.FT_LINE_3_CHECKSUM:
-                return "Checksum for line 3"
-            case this.FT_REG_CERT_REG_NUMBER_CHECK_DIGIT:
-                return "Check digit for registration number"
-            case this.FT_REG_CERT_REG_NUMBER_CHECKSUM:
-                return "Checksum for registration number"
-            case this.FT_REG_CERT_VEHICLE_ITS_CODE:
-                return "Vehicle ITS code"
-            case this.FT_CARD_ACCESS_NUMBER:
-                return "Card access number"
-            case this.FT_MARITAL_STATUS:
-                return "Marital status"
-            case this.FT_COMPANY_NAME:
-                return "Company name"
-            case this.FT_SPECIAL_NOTES:
-                return "Special notes"
-            case this.FT_SURNAME_OF_SPOSE:
-                return "Spouse\'s surname"
-            case this.FT_TRACKING_NUMBER:
-                return "Tracking number"
-            case this.FT_BOOKLET_NUMBER:
-                return "Booklet number"
-            case this.FT_CHILDREN:
-                return "Children"
-            case this.FT_COPY:
-                return "Copy"
-            case this.FT_SERIAL_NUMBER:
-                return "Serial number"
-            case this.FT_DOSSIER_NUMBER:
-                return "Dossier number"
-            case this.FT_AKA_SURNAME_AND_GIVEN_NAMES:
-                return "AKA: Surname and given names"
-            case this.FT_TERRITORIAL_VALIDITY:
-                return "Territorial validity"
-            case this.FT_MRZ_STRINGS_WITH_CORRECT_CHECK_SUMS:
-                return "MRZ lines with correct checksums"
-            case this.FT_DL_CDL_RESTRICTION_CODE:
-                return "CDL Restriction Code"
-            case this.FT_DL_UNDER_18_DATE:
-                return "Date of 18th birthday"
-            case this.FT_DL_RECORD_CREATED:
-                return "Record created"
-            case this.FT_DL_DUPLICATE_DATE:
-                return "Date of duplicate issue"
-            case this.FT_DL_ISS_TYPE:
-                return "Card type"
-            case this.FT_MILITARY_BOOK_NUMBER:
-                return "Military ID number"
-            case this.FT_DESTINATION:
-                return "Destination"
-            case this.FT_BLOOD_GROUP:
-                return "Blood group"
-            case this.FT_SEQUENCE_NUMBER:
-                return "Sequence number"
-            case this.FT_REG_CERT_BODY_TYPE:
-                return "Body type"
-            case this.FT_REG_CERT_CAR_MARK:
-                return "Vehicle make"
-            case this.FT_TRANSACTION_NUMBER:
-                return "Transaction number"
-            case this.FT_AGE:
-                return "Age"
-            case this.FT_FOLIO_NUMBER:
-                return "Folio number"
-            case this.FT_VOTER_KEY:
-                return "Voter Key"
-            case this.FT_ADDRESS_MUNICIPALITY:
-                return "Municipality"
-            case this.FT_ADDRESS_LOCATION:
-                return "Location"
-            case this.FT_SECTION:
-                return "Section"
-            case this.FT_OCR_NUMBER:
-                return "OCR number"
-            case this.FT_FEDERAL_ELECTIONS:
-                return "Federal elections"
-            case this.FT_REFERENCE_NUMBER:
-                return "Unique number"
-            case this.FT_OPTIONAL_DATA_CHECKSUM:
-                return "Checksum for optional data"
-            case this.FT_OPTIONAL_DATA_CHECK_DIGIT:
-                return "Check digit for optional data"
-            case this.FT_VISA_NUMBER:
-                return "Visa Number"
-            case this.FT_VISA_NUMBER_CHECKSUM:
-                return "Checksum for visa number"
-            case this.FT_VISA_NUMBER_CHECK_DIGIT:
-                return "Check digit for visa number"
-            case this.FT_VOTER:
-                return "Voter"
-            case this.FT_PREVIOUS_TYPE:
-                return "Type/number of the previous document"
-            case this.FT_FIELD_FROM_MRZ:
-                return "Field from MRZ"
-            case this.FT_CURRENT_DATE:
-                return "Current date"
-            case this.FT_STATUS_DATE_OF_EXPIRY:
-                return "Status Expiry Date"
-            case this.FT_BANKNOTE_NUMBER:
-                return "Banknote number"
-            case this.FT_CSC_CODE:
-                return "CSC Code"
-            case this.FT_ARTISTIC_NAME:
-                return "Pseudonym"
-            case this.FT_ACADEMIC_TITLE:
-                return "Academic title"
-            case this.FT_ADDRESS_COUNTRY:
-                return "Country"
-            case this.FT_ADDRESS_ZIPCODE:
-                return "ZIP code"
-            case this.FT_E_ID_RESIDENCE_PERMIT_1:
-                return "Residence permit 1"
-            case this.FT_E_ID_RESIDENCE_PERMIT_2:
-                return "Residence permit 2"
-            case this.FT_E_ID_PLACE_OF_BIRTH_STREET:
-                return "Place of birth: Street"
-            case this.FT_E_ID_PLACE_OF_BIRTH_CITY:
-                return "Place of birth: City"
-            case this.FT_E_ID_PLACE_OF_BIRTH_STATE:
-                return "Place of birth: State"
-            case this.FT_E_ID_PLACE_OF_BIRTH_COUNTRY:
-                return "Place of birth: Country"
-            case this.FT_E_ID_PLACE_OF_BIRTH_ZIPCODE:
-                return "Place of birth: Postal code"
-            case this.FT_CDL_CLASS:
-                return "CDL Class"
-            case this.FT_DL_UNDER_19_DATE:
-                return "Date of 19th birthday"
-            case this.FT_WEIGHT_POUNDS:
-                return "Weight (pound)"
-            case this.FT_LIMITED_DURATION_DOCUMENT_INDICATOR:
-                return "Indicator of document limited duration"
-            case this.FT_ENDORSEMENT_EXPIRATION_DATE:
-                return "Endorsement expiration date"
-            case this.FT_REVISION_DATE:
-                return "Revision date"
-            case this.FT_COMPLIANCE_TYPE:
-                return "Compliance type"
-            case this.FT_FAMILY_NAME_TRUNCATION:
-                return "Truncated surname/given name at birth"
-            case this.FT_FIRST_NAME_TRUNCATION:
-                return "First name truncation"
-            case this.FT_MIDDLE_NAME_TRUNCATION:
-                return "Middle name truncation"
-            case this.FT_EXAM_DATE:
-                return "Exam date"
-            case this.FT_ORGANIZATION:
-                return "Organization"
-            case this.FT_DEPARTMENT:
-                return "Department"
-            case this.FT_PAY_GRADE:
-                return "Pay grade"
-            case this.FT_RANK:
-                return "Rank"
-            case this.FT_BENEFITS_NUMBER:
-                return "Benefits number"
-            case this.FT_SPONSOR_SERVICE:
-                return "Sponsor service"
-            case this.FT_SPONSOR_STATUS:
-                return "Sponsor status"
-            case this.FT_SPONSOR:
-                return "Sponsor"
-            case this.FT_RELATIONSHIP:
-                return "Relationship"
-            case this.FT_USCIS:
-                return "USCIS"
-            case this.FT_CATEGORY:
-                return "Category"
-            case this.FT_CONDITIONS:
-                return "Conditions"
-            case this.FT_IDENTIFIER:
-                return "Identifier"
-            case this.FT_CONFIGURATION:
-                return "Configuration"
-            case this.FT_DISCRETIONARY_DATA:
-                return "Discretionary data"
-            case this.FT_LINE_1_OPTIONAL_DATA:
-                return "Optional data from line 1"
-            case this.FT_LINE_2_OPTIONAL_DATA:
-                return "Optional data from line 2"
-            case this.FT_LINE_3_OPTIONAL_DATA:
-                return "Optional data from line 3"
-            case this.FT_EQV_CODE:
-                return "EQV code"
-            case this.FT_ALT_CODE:
-                return "ALT code"
-            case this.FT_BINARY_CODE:
-                return "Binary code"
-            case this.FT_PSEUDO_CODE:
-                return "Pseudocode"
-            case this.FT_FEE:
-                return "Fee"
-            case this.FT_STAMP_NUMBER:
-                return "Stamp number"
-            case this.FT_GNIB_NUMBER:
-                return "GNIB number"
-            case this.FT_DEPT_NUMBER:
-                return "Department number"
-            case this.FT_TELEX_CODE:
-                return "Telegraph code"
-            case this.FT_ALLERGIES:
-                return "Allergies"
-            case this.FT_SP_CODE:
-                return "Special code"
-            case this.FT_COURT_CODE:
-                return "Court code"
-            case this.FT_CTY:
-                return "County"
-            case this.FT_SPONSOR_SSN:
-                return "Sponsor SSN"
-            case this.FT_DO_D_NUMBER:
-                return "DoD number"
-            case this.FT_MC_NOVICE_DATE:
-                return "Expiry date of Motorcycle Novice status"
-            case this.FT_DUF_NUMBER:
-                return "DUF number"
-            case this.FT_AGY:
-                return "AGY"
-            case this.FT_PNR_CODE:
-                return "PNR code"
-            case this.FT_FROM_AIRPORT_CODE:
-                return "Code of the airport of departure"
-            case this.FT_TO_AIRPORT_CODE:
-                return "Code of the airport of arrival"
-            case this.FT_FLIGHT_NUMBER:
-                return "Flight number"
-            case this.FT_DATE_OF_FLIGHT:
-                return "Date of flight"
-            case this.FT_SEAT_NUMBER:
-                return "Seat number"
-            case this.FT_DATE_OF_ISSUE_BOARDING_PASS:
-                return "Date of boarding pass issue"
-            case this.FT_CCW_UNTIL:
-                return "CCW until"
-            case this.FT_REFERENCE_NUMBER_CHECKSUM:
-                return "Unique number checksum"
-            case this.FT_REFERENCE_NUMBER_CHECK_DIGIT:
-                return "Unique number check digit"
-            case this.FT_ROOM_NUMBER:
-                return "Room number"
-            case this.FT_RELIGION:
-                return "Religion"
-            case this.FT_REMAINDER_TERM:
-                return "Months to expire"
-            case this.FT_ELECTRONIC_TICKET_INDICATOR:
-                return "Electronic ticket indicator"
-            case this.FT_COMPARTMENT_CODE:
-                return "Compartment code"
-            case this.FT_CHECK_IN_SEQUENCE_NUMBER:
-                return "Check-in sequence number"
-            case this.FT_AIRLINE_DESIGNATOR_OF_BOARDING_PASS_ISSUER:
-                return "Airline designator of boarding pass issuer"
-            case this.FT_AIRLINE_NUMERIC_CODE:
-                return "Airline numeric code"
-            case this.FT_TICKET_NUMBER:
-                return "Ticket number"
-            case this.FT_FREQUENT_FLYER_AIRLINE_DESIGNATOR:
-                return "Frequent flyer airline designator"
-            case this.FT_FREQUENT_FLYER_NUMBER:
-                return "Frequent flyer number"
-            case this.FT_FREE_BAGGAGE_ALLOWANCE:
-                return "Free baggage allowance"
-            case this.FT_PDF_417_CODEC:
-                return "PDF417 codec"
-            case this.FT_IDENTITY_CARD_NUMBER_CHECKSUM:
-                return "Checksum for identity card number"
-            case this.FT_IDENTITY_CARD_NUMBER_CHECK_DIGIT:
-                return "Check digit for identity card number"
-            case this.FT_VETERAN:
-                return "Veteran"
-            case this.FT_DL_CLASS_CODE_A_1_FROM:
-                return "DL category A1 valid from"
-            case this.FT_DL_CLASS_CODE_A_1_TO:
-                return "DL category A1 valid to"
-            case this.FT_DL_CLASS_CODE_A_1_NOTES:
-                return "DL category A1 codes"
-            case this.FT_DL_CLASS_CODE_A_FROM:
-                return "DL category A valid from"
-            case this.FT_DL_CLASS_CODE_A_TO:
-                return "DL category A valid to"
-            case this.FT_DL_CLASS_CODE_A_NOTES:
-                return "DL category A codes"
-            case this.FT_DL_CLASS_CODE_B_FROM:
-                return "DL category B valid from"
-            case this.FT_DL_CLASS_CODE_B_TO:
-                return "DL category B valid to"
-            case this.FT_DL_CLASS_CODE_B_NOTES:
-                return "DL category B codes"
-            case this.FT_DL_CLASS_CODE_C_1_FROM:
-                return "DL category C1 valid from"
-            case this.FT_DL_CLASS_CODE_C_1_TO:
-                return "DL category C1 valid to"
-            case this.FT_DL_CLASS_CODE_C_1_NOTES:
-                return "DL category C1 codes"
-            case this.FT_DL_CLASS_CODE_C_FROM:
-                return "DL category C valid from"
-            case this.FT_DL_CLASS_CODE_C_TO:
-                return "DL category C valid to"
-            case this.FT_DL_CLASS_CODE_C_NOTES:
-                return "DL category C codes"
-            case this.FT_DL_CLASS_CODE_D_1_FROM:
-                return "DL category D1 valid from"
-            case this.FT_DL_CLASS_CODE_D_1_TO:
-                return "DL category D1 valid to"
-            case this.FT_DL_CLASS_CODE_D_1_NOTES:
-                return "DL category D1 codes"
-            case this.FT_DL_CLASS_CODE_D_FROM:
-                return "DL category D valid from"
-            case this.FT_DL_CLASS_CODE_D_TO:
-                return "DL category D valid to"
-            case this.FT_DL_CLASS_CODE_D_NOTES:
-                return "DL category D codes"
-            case this.FT_DL_CLASS_CODE_BE_FROM:
-                return "DL category BE valid from"
-            case this.FT_DL_CLASS_CODE_BE_TO:
-                return "DL category BE valid to"
-            case this.FT_DL_CLASS_CODE_BE_NOTES:
-                return "DL category BE codes"
-            case this.FT_DL_CLASS_CODE_C_1_E_FROM:
-                return "DL category C1E valid from"
-            case this.FT_DL_CLASS_CODE_C_1_E_TO:
-                return "DL category C1E valid to"
-            case this.FT_DL_CLASS_CODE_C_1_E_NOTES:
-                return "DL category C1E codes"
-            case this.FT_DL_CLASS_CODE_CE_FROM:
-                return "DL category CE valid from"
-            case this.FT_DL_CLASS_CODE_CE_TO:
-                return "DL category CE valid to"
-            case this.FT_DL_CLASS_CODE_CE_NOTES:
-                return "DL category CE codes"
-            case this.FT_DL_CLASS_CODE_D_1_E_FROM:
-                return "DL category D1E valid from"
-            case this.FT_DL_CLASS_CODE_D_1_E_TO:
-                return "DL category D1E valid to"
-            case this.FT_DL_CLASS_CODE_D_1_E_NOTES:
-                return "DL category D1E codes"
-            case this.FT_DL_CLASS_CODE_DE_FROM:
-                return "DL category DE valid from"
-            case this.FT_DL_CLASS_CODE_DE_TO:
-                return "DL category DE valid to"
-            case this.FT_DL_CLASS_CODE_DE_NOTES:
-                return "DL category DE codes"
-            case this.FT_DL_CLASS_CODE_M_FROM:
-                return "DL category M valid from"
-            case this.FT_DL_CLASS_CODE_M_TO:
-                return "DL category M valid to"
-            case this.FT_DL_CLASS_CODE_M_NOTES:
-                return "DL category M codes"
-            case this.FT_DL_CLASS_CODE_L_FROM:
-                return "DL category L valid from"
-            case this.FT_DL_CLASS_CODE_L_TO:
-                return "DL category L valid to"
-            case this.FT_DL_CLASS_CODE_L_NOTES:
-                return "DL category L codes"
-            case this.FT_DL_CLASS_CODE_T_FROM:
-                return "DL category T valid from"
-            case this.FT_DL_CLASS_CODE_T_TO:
-                return "DL category T valid to"
-            case this.FT_DL_CLASS_CODE_T_NOTES:
-                return "DL category T codes"
-            case this.FT_DL_CLASS_CODE_AM_FROM:
-                return "DL category AM valid from"
-            case this.FT_DL_CLASS_CODE_AM_TO:
-                return "DL category AM valid to"
-            case this.FT_DL_CLASS_CODE_AM_NOTES:
-                return "DL category AM codes"
-            case this.FT_DL_CLASS_CODE_A_2_FROM:
-                return "DL category A2 valid from"
-            case this.FT_DL_CLASS_CODE_A_2_TO:
-                return "DL category A2 valid to"
-            case this.FT_DL_CLASS_CODE_A_2_NOTES:
-                return "DL category A2 codes"
-            case this.FT_DL_CLASS_CODE_B_1_FROM:
-                return "DL category B1 valid from"
-            case this.FT_DL_CLASS_CODE_B_1_TO:
-                return "DL category B1 valid to"
-            case this.FT_DL_CLASS_CODE_B_1_NOTES:
-                return "DL category B1 codes"
-            case this.FT_SURNAME_AT_BIRTH:
-                return "Surname at birth"
-            case this.FT_CIVIL_STATUS:
-                return "Civil status"
-            case this.FT_NUMBER_OF_SEATS:
-                return "Number of seats"
-            case this.FT_NUMBER_OF_STANDING_PLACES:
-                return "Number of standing places"
-            case this.FT_MAX_SPEED:
-                return "Max speed"
-            case this.FT_FUEL_TYPE:
-                return "Fuel type"
-            case this.FT_EC_ENVIRONMENTAL_TYPE:
-                return "Vehicle environmental type"
-            case this.FT_POWER_WEIGHT_RATIO:
-                return "Power-to-weight ratio"
-            case this.FT_MAX_MASS_OF_TRAILER_BRAKED:
-                return "Max mass of trailer (braked)"
-            case this.FT_MAX_MASS_OF_TRAILER_UNBRAKED:
-                return "Max mass of trailer (unbraked)"
-            case this.FT_TRANSMISSION_TYPE:
-                return "Transmission type"
-            case this.FT_TRAILER_HITCH:
-                return "Trailer hitch"
-            case this.FT_ACCOMPANIED_BY:
-                return "Accompanied by"
-            case this.FT_POLICE_DISTRICT:
-                return "Police district"
-            case this.FT_FIRST_ISSUE_DATE:
-                return "First issue date"
-            case this.FT_PAYLOAD_CAPACITY:
-                return "Payload capacity"
-            case this.FT_NUMBER_OF_AXELS:
-                return "Number of axles"
-            case this.FT_PERMISSIBLE_AXLE_LOAD:
-                return "Permissible axle load"
-            case this.FT_PRECINCT:
-                return "Precinct"
-            case this.FT_INVITED_BY:
-                return "Invited by"
-            case this.FT_PURPOSE_OF_ENTRY:
-                return "Purpose of entry"
-            case this.FT_SKIN_COLOR:
-                return "Skin color"
-            case this.FT_COMPLEXION:
-                return "Complexion"
-            case this.FT_AIRPORT_FROM:
-                return "Airport of departure"
-            case this.FT_AIRPORT_TO:
-                return "Airport of arrival"
-            case this.FT_AIRLINE_NAME:
-                return "Airline name"
-            case this.FT_AIRLINE_NAME_FREQUENT_FLYER:
-                return "Airline loyalty program for frequent flyers"
-            case this.FT_LICENSE_NUMBER:
-                return "License number"
-            case this.FT_IN_TANKS:
-                return "In tanks"
-            case this.FT_EXEPT_IN_TANKS:
-                return "Other than tanks"
-            case this.FT_FAST_TRACK:
-                return "Fast Track service"
-            case this.FT_OWNER:
-                return "Owner"
-            case this.FT_MRZ_STRINGS_ICAO_RFID:
-                return "MRZ lines from ICAO RFID"
-            case this.FT_NUMBER_OF_CARD_ISSUANCE:
-                return "Number of card issuances"
-            case this.FT_NUMBER_OF_CARD_ISSUANCE_CHECKSUM:
-                return "Checksum for number of card issuances"
-            case this.FT_NUMBER_OF_CARD_ISSUANCE_CHECK_DIGIT:
-                return "Check digit for number of card issuances"
-            case this.FT_CENTURY_DATE_OF_BIRTH:
-                return "Century of birth"
-            case this.FT_DL_CLASSCODE_A3_FROM:
-                return "DL category A3 valid from"
-            case this.FT_DL_CLASSCODE_A3_TO:
-                return "DL category A3 valid to"
-            case this.FT_DL_CLASSCODE_A3_NOTES:
-                return "DL category A3 codes"
-            case this.FT_DL_CLASSCODE_C2_FROM:
-                return "DL category C2 valid from"
-            case this.FT_DL_CLASSCODE_C2_TO:
-                return "DL category C2 valid to"
-            case this.FT_DL_CLASSCODE_C2_NOTES:
-                return "DL category C2 codes"
-            case this.FT_DL_CLASSCODE_B2_FROM:
-                return "DL category B2 valid from"
-            case this.FT_DL_CLASSCODE_B2_TO:
-                return "DL category B2 valid to"
-            case this.FT_DL_CLASSCODE_B2_NOTES:
-                return "DL category B2 codes"
-            case this.FT_DL_CLASSCODE_D2_FROM:
-                return "DL category D2 valid from"
-            case this.FT_DL_CLASSCODE_D2_TO:
-                return "DL category D2 valid to"
-            case this.FT_DL_CLASSCODE_D2_NOTES:
-                return "DL category D2 codes"
-            case this.FT_DL_CLASSCODE_B2E_FROM:
-                return "DL category B2E valid from"
-            case this.FT_DL_CLASSCODE_B2E_TO:
-                return "DL category B2E valid to"
-            case this.FT_DL_CLASSCODE_B2E_NOTES:
-                return "DL category B2E codes"
-            case this.FT_DL_CLASSCODE_G_FROM:
-                return "DL category G valid from"
-            case this.FT_DL_CLASSCODE_G_TO:
-                return "DL category G valid to"
-            case this.FT_DL_CLASSCODE_G_NOTES:
-                return "DL category G codes"
-            case this.FT_DL_CLASSCODE_J_FROM:
-                return "DL category J valid from"
-            case this.FT_DL_CLASSCODE_J_TO:
-                return "DL category J valid to"
-            case this.FT_DL_CLASSCODE_J_NOTES:
-                return "DL category J codes"
-            case this.FT_DL_CLASSCODE_LC_FROM:
-                return "DL category LC valid from"
-            case this.FT_DL_CLASSCODE_LC_TO:
-                return "DL category LC valid to"
-            case this.FT_DLC_LASSCODE_LC_NOTES:
-                return "DL category LC codes"
-            case this.FT_BANKCARDNUMBER:
-                return "Bank card number"
-            case this.FT_BANKCARDVALIDTHRU:
-                return "Bank card validity"
-            case this.FT_TAX_NUMBER:
-                return "Tax number"
-            case this.FT_SBH_SECURITYOPTIONS:
-                return "SBH security options"
-            case this.FT_SBH_INTEGRITYOPTIONS:
-                return "SBH integrity options"
-            case this.FT_DATE_OF_CREATION:
-                return "Creation date"
-            case this.FT_VALIDITY_PERIOD:
-                return "Validity period"
-            case this.FT_PATRON_HEADER_VERSION:
-                return "Patron header version"
-            case this.FT_BDB_TYPE:
-                return "BDB type"
-            case this.FT_BIOMETRIC_TYPE:
-                return "Biometric type"
-            case this.FT_BIOMETRIC_SUBTYPE:
-                return "Biometric subtype"
-            case this.FT_BIOMETRIC_PRODUCTID:
-                return "Biometric product ID"
-            case this.FT_BIOMETRIC_FORMAT_OWNER:
-                return "Biometric format owner"
-            case this.FT_BIOMETRIC_FORMAT_TYPE:
-                return "Biometric format type"
-            case this.FT_PHONE:
-                return "Phone"
-            case this.FT_PROFESSION:
-                return "Profession"
-            case this.FT_TITLE:
-                return "Position"
-            case this.FT_PERSONAL_SUMMARY:
-                return "Personal data summary"
-            case this.FT_OTHER_VALID_ID:
-                return "Other valid IDs"
-            case this.FT_CUSTODY_INFO:
-                return "Custody info"
-            case this.FT_OTHER_NAME:
-                return "Other name"
-            case this.FT_OBSERVATIONS:
-                return "Observations"
-            case this.FT_TAX:
-                return "Tax"
-            case this.FT_DATE_OF_PERSONALIZATION:
-                return "Personalization date"
-            case this.FT_PERSONALIZATION_SN:
-                return "Serial number of personalization"
-            case this.FT_OTHERPERSON_NAME:
-                return "Other person, name"
-            case this.FT_PERSONTONOTIFY_DATE_OF_RECORD:
-                return "Notify person: Date of record"
-            case this.FT_PERSONTONOTIFY_NAME:
-                return "Notify person: Name"
-            case this.FT_PERSONTONOTIFY_PHONE:
-                return "Notify person: Phone"
-            case this.FT_PERSONTONOTIFY_ADDRESS:
-                return "Notify person: Address"
-            case this.FT_DS_CERTIFICATE_ISSUER:
-                return "DS certificate issuer"
-            case this.FT_DS_CERTIFICATE_SUBJECT:
-                return "DS certificate subject"
-            case this.FT_DS_CERTIFICATE_VALIDFROM:
-                return "DS certificate valid from"
-            case this.FT_DS_CERTIFICATE_VALIDTO:
-                return "DS certificate valid to"
-            case this.FT_VRC_DATAOBJECT_ENTRY:
-                return "Vehicle data from the DG1 data group"
-            case this.FT_GRANDFATHERNAME:
-                return "Grandfather\'s name"
-            case this.FT_HEALTH_NUMBER:
-                return "Health insurance number"
-            case this.FT_TYPE_APPROVAL_NUMBER:
-                return "Type of approval number"
-            case this.FT_ADMINISTRATIVE_NUMBER:
-                return "Administrative number"
-            case this.FT_DOCUMENT_DISCRIMINATOR:
-                return "Document discriminator"
-            case this.FT_DATA_DISCRIMINATOR:
-                return "Data discriminator"
-            case this.FT_ISO_ISSUER_ID_NUMBER:
-                return "ID number of ISO issuer"
-            case this.FT_SELECTEE_INDICATOR:
-                return "Selectee indicator"
-            case this.FT_MOTHER_SURNAME:
-                return "Mother\'s surname"
-            case this.FT_MOTHER_GIVENNAME:
-                return "Mother\'s given name"
-            case this.FT_FATHER_SURNAME:
-                return "Father\'s surname"
-            case this.FT_FATHER_GIVENNAME:
-                return "Father\'s given name"
-            case this.FT_MOTHER_DATEOFBIRTH:
-                return "Mother\'s date of birth"
-            case this.FT_FATHER_DATEOFBIRTH:
-                return "Father\'s date of birth"
-            case this.FT_MOTHER_PERSONALNUMBER:
-                return "Mother\'s personal number"
-            case this.FT_FATHER_PERSONALNUMBER:
-                return "Father\'s personal number"
-            case this.FT_MOTHER_PLACEOFBIRTH:
-                return "Mother\'s place of birth"
-            case this.FT_FATHER_PLACEOFBIRTH:
-                return "Father\'s place of birth"
-            case this.FT_MOTHER_COUNTRYOFBIRTH:
-                return "Mother\'s country of birth"
-            case this.FT_FATHER_COUNTRYOFBIRTH:
-                return "Father\'s country of birth"
-            case this.FT_DATE_FIRST_RENEWAL:
-                return "Date of first renewal"
-            case this.FT_DATE_SECOND_RENEWAL:
-                return "Date of second renewal"
-            case this.FT_PLACE_OF_EXAMINATION:
-                return "Place of examination"
-            case this.FT_APPLICATION_NUMBER:
-                return "Application number"
-            case this.FT_VOUCHER_NUMBER:
-                return "Voucher number"
-            case this.FT_AUTHORIZATION_NUMBER:
-                return "Authorization number"
-            case this.FT_FACULTY:
-                return "Faculty"
-            case this.FT_FORM_OF_EDUCATION:
-                return "Form of education"
-            case this.FT_DNI_NUMBER:
-                return "DNI number"
-            case this.FT_RETIREMENT_NUMBER:
-                return "Retirement number"
-            case this.FT_PROFESSIONAL_ID_NUMBER:
-                return "Professional ID number"
-            case this.FT_AGE_AT_ISSUE:
-                return "Age at issue"
-            case this.FT_YEARS_SINCE_ISSUE:
-                return "Years since issue"
-            case this.FT_DLCLASSCODE_BTP_FROM:
-                return "DL category BTP valid from"
-            case this.FT_DLCLASSCODE_BTP_NOTES:
-                return "DL category BTP codes"
-            case this.FT_DLCLASSCODE_BTP_TO:
-                return "DL category BTP valid to"
-            case this.FT_DLCLASSCODE_C3_FROM:
-                return "DL category C3 valid from"
-            case this.FT_DLCLASSCODE_C3_NOTES:
-                return "DL category C3 codes"
-            case this.FT_DLCLASSCODE_C3_TO:
-                return "DL category C3 valid to"
-            case this.FT_DLCLASSCODE_E_FROM:
-                return "DL category E valid from"
-            case this.FT_DLCLASSCODE_E_NOTES:
-                return "DL category E codes"
-            case this.FT_DLCLASSCODE_E_TO:
-                return "DL category E valid to"
-            case this.FT_DLCLASSCODE_F_FROM:
-                return "DL category F valid from"
-            case this.FT_DLCLASSCODE_F_NOTES:
-                return "DL category F codes"
-            case this.FT_DLCLASSCODE_F_TO:
-                return "DL category F valid to"
-            case this.FT_DLCLASSCODE_FA_FROM:
-                return "DL category FA valid from"
-            case this.FT_DLCLASSCODE_FA_NOTES:
-                return "DL category FA codes"
-            case this.FT_DLCLASSCODE_FA_TO:
-                return "DL category FA valid to"
-            case this.FT_DLCLASSCODE_FA1_FROM:
-                return "DL category FA1 valid from"
-            case this.FT_DLCLASSCODE_FA1_NOTES:
-                return "DL category FA1 codes"
-            case this.FT_DLCLASSCODE_FA1_TO:
-                return "DL category FA1 valid to"
-            case this.FT_DLCLASSCODE_FB_FROM:
-                return "DL category FB valid from"
-            case this.FT_DLCLASSCODE_FB_NOTES:
-                return "DL category FB codes"
-            case this.FT_DLCLASSCODE_FB_TO:
-                return "DL category FB valid to"
-            case this.FT_DLCLASSCODE_G1_FROM:
-                return "DL category G1 valid from"
-            case this.FT_DLCLASSCODE_G1_NOTES:
-                return "DL category G1 codes"
-            case this.FT_DLCLASSCODE_G1_TO:
-                return "DL category G1 valid to"
-            case this.FT_DLCLASSCODE_H_FROM:
-                return "DL category H valid from"
-            case this.FT_DLCLASSCODE_H_NOTES:
-                return "DL category H codes"
-            case this.FT_DLCLASSCODE_H_TO:
-                return "DL category H valid to"
-            case this.FT_DLCLASSCODE_I_FROM:
-                return "DL category I valid from"
-            case this.FT_DLCLASSCODE_I_NOTES:
-                return "DL category I codes"
-            case this.FT_DLCLASSCODE_I_TO:
-                return "DL category I valid to"
-            case this.FT_DLCLASSCODE_K_FROM:
-                return "DL category K valid from"
-            case this.FT_DLCLASSCODE_K_NOTES:
-                return "DL category K codes"
-            case this.FT_DLCLASSCODE_K_TO:
-                return "DL category K valid to"
-            case this.FT_DLCLASSCODE_LK_FROM:
-                return "DL category LK valid from"
-            case this.FT_DLCLASSCODE_LK_NOTES:
-                return "DL category LK codes"
-            case this.FT_DLCLASSCODE_LK_TO:
-                return "DL category LK valid to"
-            case this.FT_DLCLASSCODE_N_FROM:
-                return "DL category N valid from"
-            case this.FT_DLCLASSCODE_N_NOTES:
-                return "DL category N codes"
-            case this.FT_DLCLASSCODE_N_TO:
-                return "DL category N valid to"
-            case this.FT_DLCLASSCODE_S_FROM:
-                return "DL category S valid from"
-            case this.FT_DLCLASSCODE_S_NOTES:
-                return "DL category S codes"
-            case this.FT_DLCLASSCODE_S_TO:
-                return "DL category S valid to"
-            case this.FT_DLCLASSCODE_TB_FROM:
-                return "DL category TB valid from"
-            case this.FT_DLCLASSCODE_TB_NOTES:
-                return "DL category TB codes"
-            case this.FT_DLCLASSCODE_TB_TO:
-                return "DL category TB valid to"
-            case this.FT_DLCLASSCODE_TM_FROM:
-                return "DL category TM valid from"
-            case this.FT_DLCLASSCODE_TM_NOTES:
-                return "DL category TM codes"
-            case this.FT_DLCLASSCODE_TM_TO:
-                return "DL category TM valid to"
-            case this.FT_DLCLASSCODE_TR_FROM:
-                return "DL category TR valid from"
-            case this.FT_DLCLASSCODE_TR_NOTES:
-                return "DL category TR codes"
-            case this.FT_DLCLASSCODE_TR_TO:
-                return "DL category TR valid to"
-            case this.FT_DLCLASSCODE_TV_FROM:
-                return "DL category TV valid from"
-            case this.FT_DLCLASSCODE_TV_NOTES:
-                return "DL category TV codes"
-            case this.FT_DLCLASSCODE_TV_TO:
-                return "DL category TV valid to"
-            case this.FT_DLCLASSCODE_V_FROM:
-                return "DL category V valid from"
-            case this.FT_DLCLASSCODE_V_NOTES:
-                return "DL category V codes"
-            case this.FT_DLCLASSCODE_V_TO:
-                return "DL category V valid to"
-            case this.FT_DLCLASSCODE_W_FROM:
-                return "DL category W valid from"
-            case this.FT_DLCLASSCODE_W_NOTES:
-                return "DL category W codes"
-            case this.FT_DLCLASSCODE_W_TO:
-                return "DL category W valid to"
-            case this.FT_CALIBER:
-                return "Caliber"
-            case this.FT_CITIZENSHIP_OF_FIRST_PERSON:
-                return "Citizenship of the first person"
-            case this.FT_CITIZENSHIP_OF_SECOND_PERSON:
-                return "Citizenship of the second person"
-            case this.FT_CVV:
-                return "CVV/CVC"
-            case this.FT_DATE_OF_BIRTH_OF_HUSBAND:
-                return "Date of birth of husband"
-            case this.FT_DATE_OF_BIRTH_OF_WIFE:
-                return "Date of birth of wife"
-            case this.FT_MAKE:
-                return "Make"
-            case this.FT_MODEL:
-                return "Model"
-            case this.FT_NUMBER_OF_CYLINDERS:
-                return "Number of cylinders"
-            case this.FT_SURNAME_OF_HUSBAND_AFTER_REGISTRATION:
-                return "Surname of husband after registration"
-            case this.FT_SURNAME_OF_WIFE_AFTER_REGISTRATION:
-                return "Surname of wife after registration"
-            case this.FT_URL:
-                return "URL"
-            case this.FT_DATE_OF_INSURANCE_EXPIRY:
-                return "Expiry date of insurance"
-            case this.FT_MORTGAGE_BY:
-                return "Mortgage by"
-            case this.FT_OLD_DOCUMENT_NUMBER:
-                return "Old document number"
-            case this.FT_OLD_DATE_OF_ISSUE:
-                return "Old date of issue"
-            case this.FT_OLD_PLACE_OF_ISSUE:
-                return "Old place of issue"
-            case this.FT_DLCLASSCODE_LR_FROM:
-                return "DL category LR valid from"
-            case this.FT_DLCLASSCODE_LR_TO:
-                return "DL category LR valid to"
-            case this.FT_DLCLASSCODE_LR_NOTES:
-                return "DL category LR codes"
-            case this.FT_DLCLASSCODE_MR_FROM:
-                return "DL category MR valid from"
-            case this.FT_DLCLASSCODE_MR_TO:
-                return "DL category MR valid to"
-            case this.FT_DLCLASSCODE_MR_NOTES:
-                return "DL category MR codes"
-            case this.FT_DLCLASSCODE_HR_FROM:
-                return "DL category HR valid from"
-            case this.FT_DLCLASSCODE_HR_TO:
-                return "DL category HR valid to"
-            case this.FT_DLCLASSCODE_HR_NOTES:
-                return "DL category HR codes"
-            case this.FT_DLCLASSCODE_HC_FROM:
-                return "DL category HC valid from"
-            case this.FT_DLCLASSCODE_HC_TO:
-                return "DL category HC valid to"
-            case this.FT_DLCLASSCODE_HC_NOTES:
-                return "DL category HC codes"
-            case this.FT_DLCLASSCODE_MC_FROM:
-                return "DL category MC valid from"
-            case this.FT_DLCLASSCODE_MC_TO:
-                return "DL category MC valid to"
-            case this.FT_DLCLASSCODE_MC_NOTES:
-                return "DL category MC codes"
-            case this.FT_DLCLASSCODE_RE_FROM:
-                return "DL category RE valid from"
-            case this.FT_DLCLASSCODE_RE_TO:
-                return "DL category RE valid to"
-            case this.FT_DLCLASSCODE_RE_NOTES:
-                return "DL category RE codes"
-            case this.FT_DLCLASSCODE_R_FROM:
-                return "DL category R valid from"
-            case this.FT_DLCLASSCODE_R_TO:
-                return "DL category R valid to"
-            case this.FT_DLCLASSCODE_R_NOTES:
-                return "DL category R codes"
-            case this.FT_DLCLASSCODE_CA_FROM:
-                return "DL category CA valid from"
-            case this.FT_DLCLASSCODE_CA_TO:
-                return "DL category CA valid to"
-            case this.FT_DLCLASSCODE_CA_NOTES:
-                return "DL category CA codes"
-            case this.FT_CITIZENSHIP_STATUS:
-                return "Citizenship status"
-            case this.FT_MILITARY_SERVICE_FROM:
-                return "Military service from"
-            case this.FT_MILITARY_SERVICE_TO:
-                return "Military service to"
-            case this.FT_DLCLASSCODE_D3_FROM:
-                return "DL category D3 valid from"
-            case this.FT_DLCLASSCODE_D3_NOTES:
-                return "DL category D3 codes"
-            case this.FT_DLCLASSCODE_D3_TO:
-                return "DL category D3 valid to"
-            case this.FT_DLCLASSCODE_NT_FROM:
-                return "DL category NT valid from"
-            case this.FT_DLCLASSCODE_NT_NOTES:
-                return "DL category NT codes"
-            case this.FT_DLCLASSCODE_NT_TO:
-                return "DL category NT valid to"
-            case this.FT_DLCLASSCODE_TN_FROM:
-                return "DL category TN valid from"
-            case this.FT_DLCLASSCODE_TN_NOTES:
-                return "DL category TN codes"
-            case this.FT_DLCLASSCODE_TN_TO:
-                return "DL category TN valid to"
-            case this.FT_ALT_DATE_OF_EXPIRY:
-                return "Alternative date of expiry"
-            case this.FT_DLCLASSCODE_CD_FROM:
-                return "DL category CD valid from"
-            case this.FT_DLCLASSCODE_CD_TO:
-                return "DL category CD valid to"
-            case this.FT_DLCLASSCODE_CD_NOTES:
-                return "DL category CD codes"
-            case this.FT_FIRST_NAME:
-                return "First name"
-            case this.FT_DATE_OF_ARRIVAL:
-                return "Date of arrival"
-            case this.FT_ISSUER_IDENTIFICATION_NUMBER:
-                return "Issuer identification number"
-            case this.FT_PAYMENT_PERIOD_FROM:
-                return "Payment period from"
-            case this.FT_PAYMENT_PERIOD_TO:
-                return "Payment period to"
-            case this.FT_VACCINATION_CERTIFICATE_IDENTIFIER:
-                return "Unique vaccination certificate identifier"
-            case this.FT_SECOND_NAME:
-                return "Second name"
-            case this.FT_THIRD_NAME:
-                return "Third name"
-            case this.FT_FOURTH_NAME:
-                return "Fourth name"
-            case this.FT_LAST_NAME:
-                return "Last name"
-            case this.FT_DLCLASSCODE_PW_FROM:
-                return "DL class code PW valid from"
-            case this.FT_DLCLASSCODE_PW_NOTES:
-                return "DL class code PW notes"
-            case this.FT_DLCLASSCODE_PW_TO:
-                return "DL class code PW valid to"
-            case this.FT_DLCLASSCODE_RM_FROM:
-                return "DL class code RM valid from"
-            case this.FT_DLCLASSCODE_RM_NOTES:
-                return "DL class code RM notes"
-            case this.FT_DLCLASSCODE_RM_TO:
-                return "DL class code RM valid to"
-            default:
-                return value.toString()
-        }
-    }
+    FT_DLCLASSCODE_EB_FROM: 657,
+    FT_DLCLASSCODE_EB_NOTES: 658,
+    FT_DLCLASSCODE_EB_TO: 659,
+    FT_DLCLASSCODE_EC_FROM: 660,
+    FT_DLCLASSCODE_EC_NOTES: 661,
+    FT_DLCLASSCODE_EC_TO: 662,
+    FT_DLCLASSCODE_EC1_FROM: 663,
+    FT_DLCLASSCODE_EC1_NOTES: 664,
+    FT_DLCLASSCODE_EC1_TO: 665,
+    FT_PLACE_OF_BIRTH_CITY: 666,
+    FT_YEAR_OF_BIRTH: 667,
+    FT_YEAR_OF_EXPIRY: 668,
+    FT_GRANDFATHER_NAME_MATERNAL: 669,
+    FT_FIRST_SURNAME: 670,
+    FT_MONTH_OF_BIRTH: 671,
+    FT_ADDRESS_FLOOR_NUMBER: 672,
+    FT_ADDRESS_ENTRANCE: 673,
+    FT_ADDRESS_BLOCK_NUMBER: 674,
+    FT_ADDRESS_STREET_NUMBER: 675,
+    FT_ADDRESS_STREET_TYPE: 676,
+    FT_ADDRESS_CITY_SECTOR: 677,
+    FT_ADDRESS_COUNTY_TYPE: 678,
+    FT_ADDRESS_CITY_TYPE: 679,
+    FT_ADDRESS_BUILDING_TYPE: 680,
 }
 
 export const DocReaderOrientation = {
@@ -6398,325 +4116,6 @@ export const LCID = {
     VIETNAMESE: 1066,
     CTC_SIMPLIFIED: 50001,
     CTC_TRADITIONAL: 50002,
-
-    getTranslation(value: number) {
-        switch (value) {
-            case this.LATIN:
-                return "Latin"
-            case this.AFRIKAANS:
-                return "Afrikaans"
-            case this.ABKHAZIAN_CYRILLIC:
-                return "Abkhazian (Cyrillic)"
-            case this.ALBANIAN:
-                return "Albanian"
-            case this.AMHARIC:
-                return "Amharic"
-            case this.ARABIC_ALGERIA:
-                return "Arabic (Algeria)"
-            case this.ARABIC_BAHRAIN:
-                return "Arabic (Bahrain)"
-            case this.ARABIC_EGYPT:
-                return "Arabic (Egypt)"
-            case this.ARABIC_IRAQ:
-                return "Arabic (Iraq)"
-            case this.ARABIC_JORDAN:
-                return "Arabic (Jordan)"
-            case this.ARABIC_KUWAIT:
-                return "Arabic (Kuwait)"
-            case this.ARABIC_LEBANON:
-                return "Arabic (Lebanon)"
-            case this.ARABIC_LIBYA:
-                return "Arabic (Libya)"
-            case this.ARABIC_MOROCCO:
-                return "Arabic (Morocco)"
-            case this.ARABIC_OMAN:
-                return "Arabic (Oman)"
-            case this.ARABIC_QATAR:
-                return "Arabic (Qatar)"
-            case this.ARABIC_SAUDI_ARABIA:
-                return "Arabic (Saudi Arabia)"
-            case this.ARABIC_SYRIA:
-                return "Arabic (Syria)"
-            case this.ARABIC_TUNISIA:
-                return "Arabic (Tunisia)"
-            case this.ARABIC_UAE:
-                return "Arabic (U.A.E.)"
-            case this.ARABIC_YEMEN:
-                return "Arabic (Yemen)"
-            case this.ARABIC_ARMENIAN:
-                return "Armenian"
-            case this.ARABIC_WORLD:
-                return "Arabic (World)"
-            case this.AZERI_CYRILIC:
-                return "Azeri (Cyrillic)"
-            case this.AZERI_LATIN:
-                return "Azeri (Latin)"
-            case this.BASQUE:
-                return "Basque"
-            case this.BANK_CARD:
-                return "Bank Card"
-            case this.BANK_CARD_CVV2:
-                return "Bank Card CVV2"
-            case this.BANK_CARD_NAME:
-                return "Bank Card Name"
-            case this.BANK_CARD_NUMBER:
-                return "Bank Card Number"
-            case this.BANK_CARD_VALID_THRU:
-                return "Bank Card Valid Thru"
-            case this.BELARUSIAN:
-                return "Belarusian"
-            case this.BENGALI:
-                return "Bengali"
-            case this.BULGARIAN:
-                return "Bulgarian"
-            case this.CATALAN:
-                return "Catalan"
-            case this.CHINESE_HONGKONG_SAR:
-                return "Chinese (HongKong S.A.R.)"
-            case this.CHINESE_MACAO_SAR:
-                return "Chinese (Macao S.A.R.)"
-            case this.CHINESE:
-                return "Chinese"
-            case this.CHINESE_SINGAPORE:
-                return "Chinese (Singapore)"
-            case this.CHINESE_TAIWAN:
-                return "Chinese (Taiwan)"
-            case this.CROATIAN:
-                return "Croatian"
-            case this.CZECH:
-                return "Czech"
-            case this.DANISH:
-                return "Danish"
-            case this.DIVEHI:
-                return "Divehi"
-            case this.DUTCH_BELGIUM:
-                return "Dutch (Belgium)"
-            case this.DUTCH_NETHERLANDS:
-                return "Dutch (Netherlands)"
-            case this.ENGLISH_AUSTRALIA:
-                return "English (Australia)"
-            case this.ENGLISH_BELIZE:
-                return "English (Belize)"
-            case this.ENGLISH_CANADA:
-                return "English (Canada)"
-            case this.ENGLISH_CARRIBEAN:
-                return "English (Caribbean)"
-            case this.ENGLISH_IRELAND:
-                return "English (Ireland)"
-            case this.ENGLISH_JAMAICA:
-                return "English (Jamaica)"
-            case this.ENGLISH_NEW_ZEALAND:
-                return "English (New Zealand)"
-            case this.ENGLISH_PHILIPPINES:
-                return "English (Philippines)"
-            case this.ENGLISH_SOUTH_AFRICA:
-                return "English (South Africa)"
-            case this.ENGLISH_TRINIDAD:
-                return "English (Trinidad)"
-            case this.ENGLISH_UK:
-                return "English (United Kingdom)"
-            case this.ENGLISH_US:
-                return "English (United States)"
-            case this.ENGLISH_ZIMBABWE:
-                return "English (Zimbabwe)"
-            case this.ESTONIAN:
-                return "Estonian"
-            case this.FAEROESE:
-                return "Faeroese"
-            case this.FARSI:
-                return "Farsi"
-            case this.FINNISH:
-                return "Finnish"
-            case this.FRENCH_BELGIUM:
-                return "French (Belgium)"
-            case this.FRENCH_CANADA:
-                return "French (Canada)"
-            case this.FRENCH_FRANCE:
-                return "French (France)"
-            case this.FRENCH_LUXEMBOURG:
-                return "French (Luxembourg)"
-            case this.FRENCH_MONACO:
-                return "French (Monaco)"
-            case this.FRENCH_SWITZERLAND:
-                return "French (Switzerland)"
-            case this.GALICIAN:
-                return "Galician"
-            case this.GEORGIAN:
-                return "Georgian"
-            case this.GERMAN_AUSTRIA:
-                return "German (Austria)"
-            case this.GERMAN_GERMANY:
-                return "German (Germany)"
-            case this.GERMAN_LIECHTENSTEIN:
-                return "German (Liechtenstein)"
-            case this.GERMAN_LUXEMBOURG:
-                return "German (Luxembourg)"
-            case this.GERMAN_SWITZERLAND:
-                return "German (Switzerland)"
-            case this.GREEK:
-                return "Greek"
-            case this.GUJARATI:
-                return "Gujarati"
-            case this.HEBREW:
-                return "Hebrew"
-            case this.HINDI_INDIA:
-                return "Hindi (India)"
-            case this.HUNGARIAN:
-                return "Hungarian"
-            case this.ICELANDIC:
-                return "Icelandic"
-            case this.INDONESIAN:
-                return "Indonesian"
-            case this.ITALIAN_ITALY:
-                return "Italian (Italy)"
-            case this.ITALIAN_SWITZERLAND:
-                return "Italian (Switzerland)"
-            case this.JAPANESE:
-                return "Japanese"
-            case this.KANNADA:
-                return "Kannada"
-            case this.KASHMIRI:
-                return "Kashmiri"
-            case this.KAZAKH:
-                return "Kazakh"
-            case this.KONKANI:
-                return "Konkani"
-            case this.KOREAN:
-                return "Korean"
-            case this.KYRGYZ_CYRILICK:
-                return "Kyrgyz (Cyrillic)"
-            case this.LAO:
-                return "Lao"
-            case this.LATVIAN:
-                return "Latvian"
-            case this.LITHUANIAN:
-                return "Lithuanian"
-            case this.FYRO_MACEDONIAN:
-                return "FYRO Macedonian"
-            case this.MALAY_MALAYSIA:
-                return "Malay (Malaysia)"
-            case this.MALAY_BRUNEI_DARUSSALAM:
-                return "Malay (Brunei Darussalam)"
-            case this.MARATHI:
-                return "Marathi"
-            case this.MONGOLIAN_CYRILIC:
-                return "Mongolian (Cyrillic)"
-            case this.NORWEGIAN_BOKMAL:
-                return "Norwegian (Bokmal)"
-            case this.NORWEGIAN_NYORSK:
-                return "Norwegian (Nynorsk)"
-            case this.PASHTO:
-                return "Pashto"
-            case this.POLISH:
-                return "Polish"
-            case this.PORTUGUESE_BRAZIL:
-                return "Portuguese (Brazil)"
-            case this.PORTUGUESE_PORTUGAL:
-                return "Portuguese (Portugal)"
-            case this.PUNJABI:
-                return "Punjabi"
-            case this.RHAETO_ROMANIC:
-                return "Rhaeto-Romanic"
-            case this.ROMANIAN:
-                return "Romanian"
-            case this.RUSSIAN:
-                return "Russian"
-            case this.SANSKRIT:
-                return "Sanskrit"
-            case this.SINDHI:
-                return "Sindhi"
-            case this.SINDHI_INDIA:
-                return "Sindhi (India)"
-            case this.SINHALA:
-                return "Sinhala"
-            case this.SERBIAN_CYRILIC:
-                return "Serbian (Cyrillic)"
-            case this.SERBIAN_LATIN:
-                return "Serbian (Latin)"
-            case this.SLOVAK:
-                return "Slovak"
-            case this.SLOVENIAN:
-                return "Slovenian"
-            case this.SPANISH_ARGENTINA:
-                return "Spanish (Argentina)"
-            case this.SPANISH_BOLIVIA:
-                return "Spanish (Bolivia)"
-            case this.SPANISH_CHILE:
-                return "Spanish (Chile)"
-            case this.SPANICH_COLOMBIA:
-                return "Spanish (Colombia)"
-            case this.SPANISH_COSTA_RICA:
-                return "Spanish (Costa Rica)"
-            case this.SPANISH_DOMINICAN_REPUBLIC:
-                return "Spanish (Dominican Republic)"
-            case this.SPANISH_ECUADOR:
-                return "Spanish (Ecuador)"
-            case this.SPANISH_EL_SALVADOR:
-                return "Spanish (El Salvador)"
-            case this.SPANISH_GUATEMALA:
-                return "Spanish (Guatemala)"
-            case this.SPANISH_HONDURAS:
-                return "Spanish (Honduras)"
-            case this.SPANISH_MEXICO:
-                return "Spanish (Mexico)"
-            case this.SPANISH_NICARAGUA:
-                return "Spanish (Nicaragua)"
-            case this.SPANISH_PANAMA:
-                return "Spanish (Panama)"
-            case this.SPANISH_PARAGUAY:
-                return "Spanish (Paraguay)"
-            case this.SPANISH_PERU:
-                return "Spanish (Peru)"
-            case this.SPANISH_PUERTO_RICO:
-                return "Spanish (Puerto Rico)"
-            case this.SPANISH_TRADITIONAL_SORT:
-                return "Spanish (Traditional Sort)"
-            case this.SPANISH_INTERNATIONAL_SORT:
-                return "Spanish (International Sort)"
-            case this.SPANISH_URUGUAY:
-                return "Spanish (Uruguay)"
-            case this.SPANISH_VENEZUELA:
-                return "Spanish (Venezuela)"
-            case this.SWAHILI:
-                return "Swahili"
-            case this.SWEDISH:
-                return "Swedish"
-            case this.SWEDISH_FINLAND:
-                return "Swedish (Finland)"
-            case this.SYRIAC:
-                return "Syriac"
-            case this.TAMIL:
-                return "Tamil"
-            case this.TATAR:
-                return "Tatar"
-            case this.TELUGU:
-                return "Telugu"
-            case this.THAI_THAILAND:
-                return "Thai (Thailand)"
-            case this.TURKISH:
-                return "Turkish"
-            case this.TAJIK_CYRILLIC:
-                return "Tajik (Cyrillic)"
-            case this.TURKMEN:
-                return "Turkmen"
-            case this.UKRAINIAN:
-                return "Ukrainian"
-            case this.URDU:
-                return "Urdu"
-            case this.UZBEK_CYRILIC:
-                return "Uzbek (Cyrillic)"
-            case this.UZBEK_LATIN:
-                return "Uzbek (Latin)"
-            case this.VIETNAMESE:
-                return "Vietnamese"
-            case this.CTC_SIMPLIFIED:
-                return "CTC Simplified"
-            case this.CTC_TRADITIONAL:
-                return "CTC Traditional"
-            default:
-                return value.toString()
-        }
-    }
 }
 
 export const DocReaderFrame = {
@@ -6736,19 +4135,6 @@ export const eRPRM_Lights = {
     RPRM_Light_IR_Full: (8 | 16),
     RPRM_LIGHT_OVD: 67108864,
     RPRM_LIGHT_WHITE_FULL_OVD: (6 | 67108864),
-
-    getTranslation(value: number) {
-        switch (value) {
-            case this.RPRM_LIGHT_UV:
-                return "UV"
-            case this.RPRM_Light_IR_Full:
-                return "IR"
-            case this.RPRM_LIGHT_WHITE_FULL:
-                return "Visible light"
-            default:
-                return value.toString()
-        }
-    }
 }
 
 export const LineCap = {
@@ -6822,6 +4208,7 @@ export const Enum = {
    eProcessGLCommands,
    PKDResourceType,
    eRFID_AuthenticationProcedureType,
+   DocumentReaderErrorCodes,
    ScenarioIdentifier,
    eRFID_AccessControl_ProcedureType,
    eRFID_NotificationCodes,
@@ -6884,6 +4271,9 @@ export default class DocumentReader {
     static selectedScenario(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getSessionLogFolder(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getDatabaseDescription(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    /**
+     * @deprecated
+     */
     static showScanner(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewPage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewSession(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
@@ -6905,33 +4295,54 @@ export default class DocumentReader {
     static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static readRFID(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getRfidSessionStatus(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setRfidDelegate(delegate: int, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setRfidDelegate(delegate: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setEnableCoreLogs(logs: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static addPKDCertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setCameraSessionIsPaused(paused: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setTag(tag: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static checkDatabaseUpdate(databaseId: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getScenario(scenario: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static scan(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static recognize(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    /**
+     * @deprecated
+     */
     static recognizeImages(images: string[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    /**
+     * @deprecated
+     */
     static showScannerWithCameraID(cameraID: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static runAutoUpdate(databaseType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setConfig(config: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setRfidScenario(scenario: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static initializeReader(config: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setConfig(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setRfidScenario(scenario: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static initializeReader(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static prepareDatabase(databaseType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    /**
+     * @deprecated
+     */
     static recognizeImage(image: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static recognizeData(data: byte[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    /**
+     * @deprecated
+     */
+    static recognizeData(data: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setRfidSessionStatus(status: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static providePACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static provideTASignature(signature: byte[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static provideTASignature(signature: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static parseCoreResults(json: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setTCCParams(params: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static recognizeImageWithOpts(image: string, options: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static recognizeVideoFrame(byteString: string, params: ImageInputParam, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static showScannerWithCameraIDAndOpts(cameraID: number, options: object, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setTCCParams(params: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    /**
+     * @deprecated
+     */
+    static recognizeImageWithOpts(image: string, options: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static recognizeVideoFrame(byteString: string, params: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    /**
+     * @deprecated
+     */
+    static showScannerWithCameraIDAndOpts(cameraID: number, options: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognizeImageWithCameraMode(image: string, mode: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    /**
+     * @deprecated
+     */
     static recognizeImagesWithImageInputs(images: ImageInputData[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setOnCustomButtonTappedListener(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setLanguage(language: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
 }
