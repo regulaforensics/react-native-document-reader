@@ -1490,11 +1490,11 @@ export class DocumentReaderValidity {
 export class FaceApiParams {
     url?: string
     mode?: string
-    search?: Search
+    searchParams?: Search
     threshold?: number
     serviceTimeout?: number
     proxy?: string
-    proxyUserPwd?: string
+    proxyPassword?: string
     proxyType?: number
 
     static fromJson(jsonObject?: any): FaceApiParams | undefined {
@@ -1503,11 +1503,11 @@ export class FaceApiParams {
 
         result.url = jsonObject["url"]
         result.mode = jsonObject["mode"]
-        result.search = Search.fromJson(jsonObject["search"])
+        result.searchParams = Search.fromJson(jsonObject["searchParams"])
         result.threshold = jsonObject["threshold"]
         result.serviceTimeout = jsonObject["serviceTimeout"]
         result.proxy = jsonObject["proxy"]
-        result.proxyUserPwd = jsonObject["proxyUserPwd"]
+        result.proxyPassword = jsonObject["proxyPassword"]
         result.proxyType = jsonObject["proxyType"]
 
         return result
