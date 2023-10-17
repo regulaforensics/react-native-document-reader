@@ -60,7 +60,7 @@ export default class App extends React.Component<IProps, IState> {
           }, error => console.log(error))
           DocumentReader.getAvailableScenarios((jstring) => {
             var scenarios = JSON.parse(jstring)
-            var items = []
+            var items: any = []
             for (var i in scenarios) {
               var scenario = DocumentReaderScenario.fromJson(typeof scenarios[i] === "string" ? JSON.parse(scenarios[i]) : scenarios[i])!.name
               items.push({
@@ -187,7 +187,7 @@ export default class App extends React.Component<IProps, IState> {
       this.setState({ fullName: "COPYING IMAGE..." })
       var response = r.assets
 
-      var images = []
+      var images: any = []
 
       for (var i = 0; i < response!.length; i++) {
         images.push(response![i].base64!)
