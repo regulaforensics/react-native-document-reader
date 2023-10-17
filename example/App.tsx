@@ -2,7 +2,7 @@ import React from 'react'
 import { SafeAreaView, ScrollView, StyleSheet, Text, View, NativeEventEmitter, Platform, TouchableOpacity, Image, Button } from 'react-native'
 import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader, DocumentReaderResults, DocumentReaderNotification, ScannerConfig, RecognizeConfig } from '@regulaforensics/react-native-document-reader-api-beta'
 import * as RNFS from 'react-native-fs'
-import RadioGroup from 'react-native-radio-buttons-group'
+import RadioGroup, { RadioButtonProps } from 'react-native-radio-buttons-group'
 import { CheckBox } from '@rneui/themed'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { launchImageLibrary } from 'react-native-image-picker'
@@ -60,12 +60,13 @@ export default class App extends React.Component<IProps, IState> {
           }, error => console.log(error))
           DocumentReader.getAvailableScenarios((jstring) => {
             var scenarios = JSON.parse(jstring)
-            var items: any = []
+            var items: RadioButtonProps[] = []
             for (var i in scenarios) {
-              var scenario = DocumentReaderScenario.fromJson(typeof scenarios[i] === "string" ? JSON.parse(scenarios[i]) : scenarios[i])!.name
+              var scenario = DocumentReaderScenario.fromJson(typeof scenarios[i] === "string" ? JSON.parse(scenarios[i]) : scenarios[i])!.name!
               items.push({
                 label: scenario,
-                id: scenario
+                id: scenario,
+                labelStyle: { color: 'black' }
               })
             }
             this.setState({ radioButtons: items })
@@ -302,8 +303,10 @@ export default class App extends React.Component<IProps, IState> {
           </View>
 
           <ScrollView style={{ padding: 5, alignSelf: 'center' }} showsVerticalScrollIndicator={false}>
-            <RadioGroup containerStyle={styles.radio}
+            <RadioGroup
+              containerStyle={styles.radio}
               radioButtons={this.state.radioButtons}
+
               onPress={
                 (selectedID) => {
                   this.setState({ selectedScenario: selectedID })
