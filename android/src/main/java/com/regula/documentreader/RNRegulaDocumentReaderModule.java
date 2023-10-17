@@ -176,9 +176,13 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         if (data instanceof JSONObject || data instanceof JSONArray)
             result = data.toString();
         else
-            result = (String) data;
+            result = data + "";
         map.putString("msg", result);
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(event, map);
+    }
+
+    private void sendEvent(String event) {
+        sendEvent(event, "");
     }
 
     private interface Callback {
@@ -530,11 +534,11 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                     return null;
                 },
                 () -> {
-                    sendEvent(bleOnServiceDisconnectedEvent, "");
+                    sendEvent(bleOnServiceDisconnectedEvent);
                     return null;
                 },
                 () -> {
-                    sendEvent(bleOnDeviceReadyEvent, "");
+                    sendEvent(bleOnDeviceReadyEvent);
                     return null;
                 }
         );
@@ -1031,7 +1035,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
             @Override
             public void onChipDetected() {
-                sendEvent(rfidOnChipDetectedEvent, "");
+                sendEvent(rfidOnChipDetectedEvent);
             }
 
             @Override
@@ -1051,7 +1055,7 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
             @Override
             public void onPrepareProgressChanged(int progress) {
                 if (progress != databaseDownloadProgress) {
-                    sendEvent(eventDatabaseProgress, progress + "");
+                    sendEvent(eventDatabaseProgress, progress);
                     databaseDownloadProgress = progress;
                 }
             }
