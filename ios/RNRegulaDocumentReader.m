@@ -295,8 +295,8 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         [self recognizeImageWithCameraMode :[args objectAtIndex:0] :[args objectAtIndex:1] :successCallback :errorCallback];
     else if([action isEqualToString:@"recognizeImagesWithImageInputs"])
         [self recognizeImagesWithImageInputs :[args objectAtIndex:0] :successCallback :errorCallback];
-    else if([action isEqualToString:@"setLanguage"])
-        [self setLanguage :[args objectAtIndex:0] :successCallback :errorCallback];
+    else if([action isEqualToString:@"setLocalizationDictionary"])
+        [self setLocalizationDictionary :[args objectAtIndex:0] :successCallback :errorCallback];
     else if([action isEqualToString:@"textFieldValueByType"])
         [self textFieldValueByType :[args objectAtIndex:0] :[args objectAtIndex:1] :successCallback :errorCallback];
     else if([action isEqualToString:@"textFieldValueByTypeLcid"])
@@ -390,11 +390,10 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
     [self result:@"getLicenseMessage() is an android-only method" :successCallback];
 }
 
-- (void) setLanguage:(NSString*)language :(RGLWCallback)successCallback :(RGLWCallback)errorCallback{
+- (void) setLocalizationDictionary:(NSDictionary*)dictionary :(RGLWCallback)successCallback :(RGLWCallback)errorCallback{
     RGLDocReader.shared.localizationHandler = ^NSString * _Nullable(NSString * _Nonnull localizationKey) {
-        NSString *result = NSLocalizedStringFromTable(localizationKey, language, @"");
-        if (![result isEqualToString:localizationKey])
-            return result;
+        if(dictionary != nil && ![dictionary isEqual:[NSNull null]] && [dictionary valueForKey:localizationKey] != nil)
+            return [dictionary valueForKey:localizationKey];
         return nil;
     };
     [self result:@"" :successCallback];
