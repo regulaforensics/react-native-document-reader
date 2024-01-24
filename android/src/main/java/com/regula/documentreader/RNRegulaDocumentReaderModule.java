@@ -6,14 +6,18 @@ import static com.regula.documentreader.JSONConstructor.*;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.LocaleManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.IsoDep;
 import android.os.Build;
+import android.os.LocaleList;
 import android.util.Base64;
 
 import androidx.annotation.NonNull;
@@ -29,7 +33,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.regula.common.LocalizationCallbacks;
 import com.regula.documentreader.api.completions.ICheckDatabaseUpdate;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
@@ -64,6 +67,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings({"ConstantConditions", "RedundantSuppression", "MissingPermission", "deprecation"})
 public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
@@ -168,8 +172,11 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
 
     private void sendEvent(String event, Object data) {
         WritableMap map = Arguments.createMap();
-        if (data instanceof JSONObject || data instanceof JSONArray) data = data.toString();
-        String result = data + "";
+        String result;
+        if (data instanceof JSONObject || data instanceof JSONArray)
+            result = data.toString();
+        else
+            result = data + "";
         map.putString("msg", result);
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(event, map);
     }
@@ -417,8 +424,8 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
                 case "recognizeImagesWithImageInputs":
                     recognizeImagesWithImageInputs(callback, args(0));
                     break;
-                case "setLocalizationDictionary":
-                    setLocalizationDictionary(callback, args(0));
+                case "setLanguage":
+                    setLanguage(callback, args(0));
                     break;
                 case "textFieldValueByType":
                     textFieldValueByType(callback, args(0), args(1));
@@ -815,9 +822,18 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         startForegroundDispatch(getActivity());
     }
 
-    private void setLocalizationDictionary(Callback callback, JSONObject dictionary) {
-        localizationCallbacks = key -> dictionary == null ? null : dictionary.optString(key, null);
-        Instance().setLocalizationCallback(localizationCallbacks);
+    private void setLanguage(Callback callback, String language) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            LocaleManager localeManager = (LocaleManager) getContext().getSystemService(Context.LOCALE_SERVICE);
+            localeManager.setApplicationLocales(new LocaleList(Locale.forLanguageTag(language)));
+        } else {
+            Locale locale = new Locale(language);
+            Locale.setDefault(locale);
+            Resources resources = getContext().getResources();
+            Configuration config = resources.getConfiguration();
+            config.setLocale(locale);
+            resources.updateConfiguration(config, resources.getDisplayMetrics());
+        }
         callback.success();
     }
 
@@ -1138,7 +1154,4 @@ public class RNRegulaDocumentReaderModule extends ReactContextBaseJavaModule imp
         public static final int NO_PA = 1;
         public static final int FULL = 2;
     }
-
-    // Weak references
-    LocalizationCallbacks localizationCallbacks = null;
 }

@@ -63,11 +63,7 @@ export default class App extends React.Component<IProps, IState> {
             var items: RadioButtonProps[] = []
             for (var i in scenarios) {
               var scenario = DocumentReaderScenario.fromJson(typeof scenarios[i] === "string" ? JSON.parse(scenarios[i]) : scenarios[i])!.name!
-              items.push({
-                label: scenario,
-                id: scenario,
-                labelStyle: { color: 'black' }
-              })
+              items.push({ label: scenario, id: scenario })
             }
             this.setState({ radioButtons: items })
             this.setState({ selectedScenario: this.state.radioButtons[0]['id'] })
@@ -243,75 +239,25 @@ export default class App extends React.Component<IProps, IState> {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        {(this.state.isReadingRfidCustomUi) && <View style={styles.container}>
-          <Text style={{ paddingBottom: 30, fontSize: 23, color: this.state.rfidUIHeaderColor }}>{this.state.rfidUIHeader}</Text>
-          <Text style={{ paddingBottom: 50, fontSize: 20, color: "black" }}>{this.state.rfidDescription}</Text>
-          <Progress.Bar width={200} useNativeDriver={true} color="#4285F4" progress={this.state.rfidProgress} />
-          <TouchableOpacity style={styles.cancelButton} onPress={() => { this.hideRfidUI() }}>
-            <Text style={{ fontSize: 20, color: "black" }}>X</Text>
-          </TouchableOpacity>
-        </View>
-        }
         {!this.state.isReadingRfidCustomUi && <View style={styles.container}>
-          <Text /><Text />
-          <Text style={{
-            top: 1,
-            left: 1,
-            padding: 30,
-            fontSize: 20,
-            color: "black"
-          }}>
-            {this.state.fullName}
-          </Text>
+          <Text style={styles.title}>{this.state.fullName}</Text>
+
           <View style={{ flexDirection: "row", padding: 5 }}>
             <View style={{ flexDirection: "column", alignItems: "center" }}>
-              <Text style={{
-                top: 1,
-                right: 1,
-                padding: 5,
-                color: "black"
-              }}>
-                Portrait
-              </Text>
-              <Image
-                style={{
-                  height: 150,
-                  width: 150,
-                }}
-                source={this.state.portrait}
-                resizeMode="contain"
-              />
+              <Text style={styles.imageLabel}>Portrait</Text>
+              <Image style={{ height: 150, width: 150 }} source={this.state.portrait} resizeMode="contain" />
             </View>
             <View style={{ flexDirection: "column", alignItems: "center", padding: 5 }}>
-              <Text style={{
-                top: 1,
-                right: 1,
-                padding: 5,
-                color: "black"
-              }}>
-                Document image
-              </Text>
-              <Image
-                style={{
-                  height: 150,
-                  width: 200,
-                }}
-                source={this.state.docFront}
-                resizeMode="contain"
-              />
+              <Text style={styles.imageLabel}>Document image</Text>
+              <Image style={{ height: 150, width: 200 }} source={this.state.docFront} resizeMode="contain" />
             </View>
           </View>
 
           <ScrollView style={{ padding: 5, alignSelf: 'center' }} showsVerticalScrollIndicator={false}>
             <RadioGroup
-              containerStyle={styles.radio}
+              containerStyle={{ alignItems: 'flex-start' }}
               radioButtons={this.state.radioButtons}
-
-              onPress={
-                (selectedID) => {
-                  this.setState({ selectedScenario: selectedID })
-                }
-              }
+              onPress={(selectedID) => { this.setState({ selectedScenario: selectedID }) }}
               selectedId={this.state.selectedScenario}
             />
           </ScrollView>
@@ -331,10 +277,18 @@ export default class App extends React.Component<IProps, IState> {
           <View style={{ flexDirection: 'row' }}>
             <Button color="#4285F4" title="Scan document" onPress={() => this.scan()} />
             <Text style={{ padding: 5 }}></Text>
-            <Button color="#4285F4" title="     Scan image     " onPress={() => this.recognize()} />
+            <Button color="#4285F4" title="Scan image" onPress={() => this.recognize()} />
           </View>
-        </View>
-        }
+        </View>}
+
+        {(this.state.isReadingRfidCustomUi) && <View style={styles.container}>
+          <Text style={{ paddingBottom: 30, fontSize: 23, color: this.state.rfidUIHeaderColor }}>{this.state.rfidUIHeader}</Text>
+          <Text style={{ paddingBottom: 50, fontSize: 20 }}>{this.state.rfidDescription}</Text>
+          <Progress.Bar width={200} useNativeDriver={true} color="#4285F4" progress={this.state.rfidProgress} />
+          <TouchableOpacity style={styles.cancelButton} onPress={() => { this.hideRfidUI() }}>
+            <Text style={{ fontSize: 20 }}>X</Text>
+          </TouchableOpacity>
+        </View>}
       </SafeAreaView>
     )
   }
@@ -350,12 +304,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
     marginBottom: 12,
   },
-  radio: {
-    alignItems: 'flex-start'
-  },
   cancelButton: {
     position: 'absolute',
     bottom: 0,
     right: 20
+  },
+  imageLabel: {
+    top: 1,
+    right: 1,
+    padding: 5
+  },
+  title: {
+    top: 1,
+    left: 1,
+    padding: 30,
+    fontSize: 20
   }
 })

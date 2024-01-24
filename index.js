@@ -3759,6 +3759,6 @@ DocumentReader.recognizeImageWithCameraMode = (image, mode, successCallback, err
  * @deprecated
  */
 DocumentReader.recognizeImagesWithImageInputs = (images, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImagesWithImageInputs", [images], successCallback, errorCallback)
-DocumentReader.setLocalizationDictionary = (dictionary, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setLocalizationDictionary", [dictionary], successCallback, errorCallback)
+DocumentReader.setLanguage = (language, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setLanguage", [language], successCallback, errorCallback)
 
 export default DocumentReader

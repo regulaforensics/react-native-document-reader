@@ -4344,5 +4344,5 @@ export default class DocumentReader {
      * @deprecated
      */
     static recognizeImagesWithImageInputs(images: ImageInputData[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setLocalizationDictionary(dictionary: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setLanguage(language: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
 }
