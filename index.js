@@ -40,20 +40,6 @@ export class Rect {
     }
 }
 
-export class DocReaderFieldRect {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new DocReaderFieldRect()
-
-        result.bottom = jsonObject["bottom"]
-        result.top = jsonObject["top"]
-        result.left = jsonObject["left"]
-        result.right = jsonObject["right"]
-
-        return result
-    }
-}
-
 export class DocumentReaderGraphicField {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
@@ -67,7 +53,7 @@ export class DocumentReaderGraphicField {
         result.fieldName = jsonObject["fieldName"]
         result.lightName = jsonObject["lightName"]
         result.value = jsonObject["value"]
-        result.fieldRect = DocReaderFieldRect.fromJson(jsonObject["fieldRect"])
+        result.fieldRect = Rect.fromJson(jsonObject["fieldRect"])
 
         return result
     }
@@ -94,15 +80,10 @@ export class DocumentReaderValue {
 
         result.pageIndex = jsonObject["pageIndex"]
         result.sourceType = jsonObject["sourceType"]
-        result.validity = jsonObject["validity"]
         result.probability = jsonObject["probability"]
         result.value = jsonObject["value"]
         result.originalValue = jsonObject["originalValue"]
         result.boundRect = Rect.fromJson(jsonObject["boundRect"])
-        result.comparison = {}
-        if (jsonObject["comparison"] != null)
-            for (const i in jsonObject["comparison"])
-                result.comparison[i] = jsonObject["comparison"][i]
         result.originalSymbols = []
         if (jsonObject["originalSymbols"] != null)
             for (const i in jsonObject["originalSymbols"])
@@ -211,6 +192,10 @@ export class ImageQuality {
         result.featureType = jsonObject["featureType"]
         result.result = jsonObject["result"]
         result.type = jsonObject["type"]
+        result.boundRects = []
+        if (jsonObject["boundRects"] != null)
+            for (const i in jsonObject["boundRects"])
+                result.boundRects.push(Rect.fromJson(jsonObject["boundRects"][i]))
 
         return result
     }
@@ -332,6 +317,7 @@ export class File {
 
         result.readingTime = jsonObject["readingTime"]
         result.type = jsonObject["type"]
+        result.typeName = jsonObject["typeName"]
         result.pAStatus = jsonObject["pAStatus"]
         result.readingStatus = jsonObject["readingStatus"]
         result.fileID = jsonObject["fileID"]
@@ -741,6 +727,21 @@ export class PKDCertificate {
     }
 }
 
+export class TccParams {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new TccParams()
+
+        result.serviceUrlTA = jsonObject["serviceUrlTA"]
+        result.serviceUrlPA = jsonObject["serviceUrlPA"]
+        result.pfxCertUrl = jsonObject["pfxCertUrl"]
+        result.pfxPassPhrase = jsonObject["pfxPassPhrase"]
+        result.pfxCert = jsonObject["pfxCert"]
+
+        return result
+    }
+}
+
 export class ImageInputParam {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
@@ -1033,6 +1034,45 @@ export class Search {
     }
 }
 
+export class AuthenticityParams {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new AuthenticityParams()
+
+        result.useLivenessCheck = jsonObject["useLivenessCheck"]
+        result.livenessParams = LivenessParams.fromJson(jsonObject["livenessParams"])
+        result.checkUVLuminiscence = jsonObject["checkUVLuminiscence"]
+        result.checkIRB900 = jsonObject["checkIRB900"]
+        result.checkImagePatterns = jsonObject["checkImagePatterns"]
+        result.checkFibers = jsonObject["checkFibers"]
+        result.checkExtMRZ = jsonObject["checkExtMRZ"]
+        result.checkExtOCR = jsonObject["checkExtOCR"]
+        result.checkAxial = jsonObject["checkAxial"]
+        result.checkBarcodeFormat = jsonObject["checkBarcodeFormat"]
+        result.checkIRVisibility = jsonObject["checkIRVisibility"]
+        result.checkIPI = jsonObject["checkIPI"]
+        result.checkPhotoEmbedding = jsonObject["checkPhotoEmbedding"]
+        result.checkPhotoComparison = jsonObject["checkPhotoComparison"]
+        result.checkLetterScreen = jsonObject["checkLetterScreen"]
+
+        return result
+    }
+}
+
+export class LivenessParams {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new LivenessParams()
+
+        result.checkOVI = jsonObject["checkOVI"]
+        result.checkMLI = jsonObject["checkMLI"]
+        result.checkHolo = jsonObject["checkHolo"]
+        result.checkED = jsonObject["checkED"]
+
+        return result
+    }
+}
+
 export class ImageQA {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
@@ -1043,13 +1083,14 @@ export class ImageQA {
         result.focusCheck = jsonObject["focusCheck"]
         result.glaresCheck = jsonObject["glaresCheck"]
         result.colornessCheck = jsonObject["colornessCheck"]
-        result.moireCheck = jsonObject["moireCheck"]
+        result.screenCapture = jsonObject["screenCapture"]
+        result.documentPositionIndent = jsonObject["documentPositionIndent"]
         result.expectedPass = []
         if (jsonObject["expectedPass"] != null)
             for (const i in jsonObject["expectedPass"])
                 result.expectedPass.push(jsonObject["expectedPass"][i])
         result.glaresCheckParams = GlaresCheckParams.fromJson(jsonObject["glaresCheckParams"])
-        result.documentPositionIndent = jsonObject["documentPositionIndent"]
+        result.brightnessThreshold = jsonObject["brightnessThreshold"]
 
         return result
     }
@@ -1096,6 +1137,22 @@ export class OnlineProcessingConfig {
     }
 }
 
+export class DocReaderConfig {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocReaderConfig()
+
+        result.license = jsonObject["license"]
+        result.customDb = jsonObject["customDb"]
+        result.databasePath = jsonObject["databasePath"]
+        result.licenseUpdate = jsonObject["licenseUpdate"]
+        result.delayedNNLoad = jsonObject["delayedNNLoad"]
+        result.blackList = jsonObject["blackList"]
+
+        return result
+    }
+}
+
 export class ScannerConfig {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
@@ -1117,11 +1174,12 @@ export class RecognizeConfig {
         const result = new RecognizeConfig()
 
         result.scenario = jsonObject["scenario"]
+        result.onlineProcessingConfig = OnlineProcessingConfig.fromJson(jsonObject["onlineProcessingConfig"])
+        result.oneShotIdentification = jsonObject["oneShotIdentification"]
         result.livePortrait = jsonObject["livePortrait"]
         result.extPortrait = jsonObject["extPortrait"]
-        result.onlineProcessingConfig = OnlineProcessingConfig.fromJson(jsonObject["onlineProcessingConfig"])
         result.image = jsonObject["image"]
-        result.oneShotIdentification = jsonObject["oneShotIdentification"]
+        result.data = jsonObject["data"]
         result.images = []
         if (jsonObject["images"] != null)
             for (const i in jsonObject["images"])
@@ -1130,6 +1188,48 @@ export class RecognizeConfig {
         if (jsonObject["imageInputData"] != null)
             for (const i in jsonObject["imageInputData"])
                 result.imageInputData.push(ImageInputData.fromJson(jsonObject["imageInputData"][i]))
+
+        return result
+    }
+}
+
+export class License {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new License()
+
+        result.expiryDate = jsonObject["expiryDate"]
+        result.countryFilter = []
+        if (jsonObject["countryFilter"] != null)
+            for (const i in jsonObject["countryFilter"])
+                result.countryFilter.push(jsonObject["countryFilter"][i])
+        result.isRfidAvailable = jsonObject["isRfidAvailable"]
+
+        return result
+    }
+}
+
+export class DocReaderVersion {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocReaderVersion()
+
+        result.api = jsonObject["api"]
+        result.core = jsonObject["core"]
+        result.coreMode = jsonObject["coreMode"]
+        result.database = DocReaderDocumentsDatabase.fromJson(jsonObject["database"])
+
+        return result
+    }
+}
+
+export class TransactionInfo {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new TransactionInfo()
+
+        result.transactionId = jsonObject["transactionId"]
+        result.tag = jsonObject["tag"]
 
         return result
     }
@@ -1214,15 +1314,11 @@ export class DocumentReaderResults {
         if (jsonObject == null) return null
         const result = new DocumentReaderResults()
 
-        result.videoCaptureSessionId = jsonObject["videoCaptureSessionId"]
         result.chipPage = jsonObject["chipPage"]
-        result.irElapsedTime = jsonObject["irElapsedTime"]
         result.processingFinishedStatus = jsonObject["processingFinishedStatus"]
         result.elapsedTime = jsonObject["elapsedTime"]
         result.elapsedTimeRFID = jsonObject["elapsedTimeRFID"]
         result.morePagesAvailable = jsonObject["morePagesAvailable"]
-        result.rfidResult = jsonObject["rfidResult"]
-        result.highResolution = jsonObject["highResolution"]
         result.graphicResult = DocumentReaderGraphicResult.fromJson(jsonObject["graphicResult"])
         result.textResult = DocumentReaderTextResult.fromJson(jsonObject["textResult"])
         result.documentPosition = []
@@ -1242,17 +1338,16 @@ export class DocumentReaderResults {
             for (const i in jsonObject["imageQuality"])
                 result.imageQuality.push(ImageQualityGroup.fromJson(jsonObject["imageQuality"][i]))
         result.rawResult = jsonObject["rawResult"]
-        result.documentReaderNotification = DocumentReaderNotification.fromJson(jsonObject["documentReaderNotification"])
         result.rfidSessionData = RFIDSessionData.fromJson(jsonObject["rfidSessionData"])
         result.authenticityResult = DocumentReaderAuthenticityResult.fromJson(jsonObject["authenticityResult"])
         result.barcodeResult = DocumentReaderBarcodeResult.fromJson(jsonObject["barcodeResult"])
-        result.ppmIn = jsonObject["ppmIn"]
         result.documentType = []
         if (jsonObject["documentType"] != null)
             for (const i in jsonObject["documentType"])
                 result.documentType.push(DocumentReaderDocumentType.fromJson(jsonObject["documentType"][i]))
         result.status = DocumentReaderResultsStatus.fromJson(jsonObject["status"])
         result.vdsncData = VDSNCData.fromJson(jsonObject["vdsncData"])
+        result.transactionInfo = TransactionInfo.fromJson(jsonObject["transactionInfo"])
 
         return result
     }
@@ -1289,6 +1384,16 @@ export const eRPRM_Authenticity = {
     OVI: 1024,
     LIVENESS: 2097152,
     OCR: 4194304,
+}
+
+export const CustomizationColor = {
+    RFID_PROCESSING_SCREEN_BACKGROUND: "rfidProcessingScreenBackground",
+    RFID_PROCESSING_SCREEN_HINT_LABEL_TEXT: "rfidProcessingScreenHintLabelText",
+    RFID_PROCESSING_SCREEN_HINT_LABEL_BACKGROUND: "rfidProcessingScreenHintLabelBackground",
+    RFID_PROCESSING_SCREEN_PROGRESS_LABEL_TEXT: "rfidProcessingScreenProgressLabelText",
+    RFID_PROCESSING_SCREEN_PROGRESS_BAR: "rfidProcessingScreenProgressBar",
+    RFID_PROCESSING_SCREEN_PROGRESS_BAR_BACKGROUND: "rfidProcessingScreenProgressBarBackground",
+    RFID_PROCESSING_SCREEN_RESULT_LABEL_TEXT: "rfidProcessingScreenResultLabelText",
 }
 
 export const eRFID_ErrorCodes = {
@@ -1650,11 +1755,13 @@ export const eProcessGLCommands = {
     ePC_ProcMgr_ProcessImage: 12104,
     ePC_ProcMgr_StartNewDocument: 12105,
     ePC_ProcMgr_StartNewPage: 12106,
+    ePC_ProcMgr_AddDataToPackage: 12121,
+    ePC_ProcMgr_FinalizePackage: 12122,
+    ePC_ProcMgr_CreateBackendTransaction: 12125,
     ePC_ProcMgr_Unload: 12107,
     ePC_ProcMgr_CheckDatabase: 12109,
     ePC_ProcMgr_ComparePortraits: 12111,
     ePC_RFID_SetTCCParams: 12522,
-    ePC_RFID_SetReprocessingParams: 12523,
 }
 
 export const PKDResourceType = {
@@ -1742,6 +1849,7 @@ export const ScenarioIdentifier = {
     SCENARIO_MRZ_OR_BARCODE: "MrzOrBarcode",
     SCENARIO_MRZ_OR_LOCATE: "MrzOrLocate",
     SCENARIO_MRZ_AND_LOCATE: "MrzAndLocate",
+    SCENARIO_BARCODE_AND_LOCATE: "BarcodeAndLocate",
     SCENARIO_MRZ_OR_OCR: "MrzOrOcr",
     SCENARIO_MRZ_OR_BARCODE_OR_OCR: "MrzOrBarcodeOrOcr",
     SCENARIO_LOCATE_VISUAL_AND_MRZ_OR_OCR: "LocateVisual_And_MrzOrOcr",
@@ -1752,7 +1860,6 @@ export const ScenarioIdentifier = {
     SCENARIO_OCR_FREE: "OcrFree",
     SCENARIO_CREDIT_CARD: "CreditCard",
     SCENARIO_CAPTURE: "Capture",
-    SCENARIO_BARCODE_AND_LOCATE: "BarcodeAndLocate",
 }
 
 export const eRFID_AccessControl_ProcedureType = {
@@ -1883,6 +1990,7 @@ export const eCheckDiagnose = {
     INCORRECT_TEXT_COLOR: 26,
     PHOTO_FALSE_LUMINISCENCE: 27,
     TOO_MUCH_SHIFT: 28,
+    CONTACT_CHIP_TYPE_MISMATCH: 29,
     FIBERS_NOT_FOUND: 30,
     TOO_MANY_OBJECTS: 31,
     SPECKS_IN_UV: 33,
@@ -1982,6 +2090,20 @@ export const TextProcessing = {
     ocUppercase: 1,
     ocLowercase: 2,
     ocCapital: 3,
+}
+
+export const AnimationImage = {
+    UNKNOWN: 0,
+    PASSPORT_SINGLE_PAGE: 1,
+    PASSPORT_TWO_PAGES: 2,
+    ID_FRONT: 3,
+    ID_FRONT_MRZ: 4,
+    ID_BACK: 5,
+    ID_BACK_MRZ: 6,
+    ID_BACK_BARCODE: 7,
+    ID_BACK_BARCODE_MRZ: 8,
+    BANK_CARD_FRONT: 9,
+    BANK_CARD_BACK: 10,
 }
 
 export const ProcessingFinishedStatus = {
@@ -2240,6 +2362,7 @@ export const eImageQualityCheckType = {
     IQC_SCREEN_CAPTURE: 6,
     IQC_PORTRAIT: 7,
     IQC_HANDWRITTEN: 8,
+    IQC_BRIGHTNESS: 9,
 }
 
 export const MRZFormat = {
@@ -2321,6 +2444,12 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_LAS_INK: 43,
     SECURITY_FEATURE_TYPE_LIVENESS_MLI: 44,
     SECURITY_FEATURE_TYPE_LIVENESS_BARCODE_BACKGROUND: 45,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_VS_BARCODE: 46,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_RFID_VS_BARCODE: 47,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_EXT_VS_BARCODE: 48,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_BARCODE_VS_CAMERA: 49,
+    SECURITY_FEATURE_TYPE_CHECK_DIGITAL_SIGNATURE: 50,
+    SECURITY_FEATURE_TYPE_CONTACT_CHIP_CLASSIFICATION: 51,
 }
 
 export const OnlineMode = {
@@ -2566,6 +2695,15 @@ export const diDocType = {
     dtPassengerLocatorForm: 242,
 }
 
+export const ButtonTag = {
+    CLOSE: 1001,
+    TORCH: 1002,
+    CAPTURE: 1003,
+    CHANGE_FRAME: 1004,
+    SKIP: 1005,
+    CAMERA_SWITCH: 1006,
+}
+
 export const HoloAnimationType = {
     DocumentHoloAnimationUnknown: 0,
     DocumentHoloAnimationTypeHorizontal: 1,
@@ -2582,6 +2720,12 @@ export const eRequestCommand = {
     eReqCmd_InternetSend: 300,
     eReqCmd_GetGuid: 400,
     eReqCmd_WltToImage: 401,
+}
+
+export const CustomizationFont = {
+    RFID_PROCESSING_SCREEN_HINT_LABEL: "rfidProcessingScreenHintLabel",
+    RFID_PROCESSING_SCREEN_PROGRESS_LABEL: "rfidProcessingScreenProgressLabel",
+    RFID_PROCESSING_SCREEN_RESULT_LABEL: "rfidProcessingScreenResultLabel",
 }
 
 export const ImageFormat = {
@@ -2601,6 +2745,7 @@ export const eGraphicFieldType = {
     GF_GHOST_PORTRAIT: 210,
     GF_STAMP: 211,
     GF_PORTRAIT_OF_CHILD: 212,
+    GF_CONTACT_CHIP: 213,
     GF_OTHER: 250,
     GF_FINGER_LEFT_THUMB: 300,
     GF_FINGER_LEFT_INDEX: 301,
@@ -2615,7 +2760,7 @@ export const eGraphicFieldType = {
 }
 
 export const RegDeviceConfigType = {
-    DEVICE_7310: 1,
+    DEVICE_7310: "DEVICE_7310",
 }
 
 export const CameraMode = {
@@ -3363,6 +3508,8 @@ export const eVisualFieldType = {
     FT_ADDRESS_COUNTY_TYPE: 678,
     FT_ADDRESS_CITY_TYPE: 679,
     FT_ADDRESS_BUILDING_TYPE: 680,
+    FT_DATE_OF_RETIREMENT: 681,
+    FT_DOCUMENT_STATUS: 682,
 }
 
 export const DocReaderOrientation = {
@@ -3406,7 +3553,7 @@ export const LCID = {
     BANK_CARD_NUMBER: 10000,
     BANK_CARD_VALID_THRU: 10001,
     BELARUSIAN: 1059,
-    BENGALI: 2117,
+    BENGALI_BANGLADESH: 2117,
     BULGARIAN: 1026,
     CATALAN: 1027,
     CHINESE_HONGKONG_SAR: 3076,
@@ -3472,6 +3619,7 @@ export const LCID = {
     LITHUANIAN: 1063,
     MALAY_MALAYSIA: 1086,
     MALAY_BRUNEI_DARUSSALAM: 2110,
+    ASSAMESE: 1101,
     MARATHI: 1102,
     MONGOLIAN_CYRILIC: 1104,
     NORWEGIAN_BOKMAL: 1044,
@@ -3518,6 +3666,7 @@ export const LCID = {
     SYRIAC: 1114,
     TAMIL: 1097,
     TATAR: 1092,
+    BENGALI_INDIA: 1093,
     TELUGU: 1098,
     THAI_THAILAND: 1054,
     TURKISH: 1055,
@@ -3530,6 +3679,18 @@ export const LCID = {
     VIETNAMESE: 1066,
     CTC_SIMPLIFIED: 50001,
     CTC_TRADITIONAL: 50002,
+    MALTESE: 1082,
+    BURMESE: 1109,
+    KHMER: 1107,
+    KARAKALPAK_LATIN: 10012,
+    MALAYALAM: 1100,
+    NEPALI: 1121,
+    ORIYA: 1096,
+    URDU_DETECTION: 10560,
+}
+
+export const CustomizationImage = {
+    RFID_PROCESSING_SCREEN_FAILURE_IMAGE: "rfidProcessingScreenFailureImage",
 }
 
 export const DocReaderFrame = {
@@ -3609,6 +3770,7 @@ export const UIViewContentMode = {
 export const Enum = {
    FontStyle,
    eRPRM_Authenticity,
+   CustomizationColor,
    eRFID_ErrorCodes,
    eLDS_ParsingErrorCodes,
    eRFID_CertificateType,
@@ -3632,6 +3794,7 @@ export const Enum = {
    eCheckDiagnose,
    RFIDDelegate,
    TextProcessing,
+   AnimationImage,
    ProcessingFinishedStatus,
    DocFormat,
    eLDS_ParsingNotificationCodes,
@@ -3642,8 +3805,10 @@ export const Enum = {
    OnlineMode,
    eRFID_SDK_ProfilerType,
    diDocType,
+   ButtonTag,
    HoloAnimationType,
    eRequestCommand,
+   CustomizationFont,
    ImageFormat,
    eGraphicFieldType,
    RegDeviceConfigType,
@@ -3655,6 +3820,7 @@ export const Enum = {
    eVisualFieldType,
    DocReaderOrientation,
    LCID,
+   CustomizationImage,
    DocReaderFrame,
    eRPRM_Lights,
    LineCap,
@@ -3666,99 +3832,52 @@ export const Enum = {
 
 const DocumentReader = {}
 
-DocumentReader.initializeReaderAutomatically = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderAutomatically", [], successCallback, errorCallback)
-DocumentReader.isBlePermissionsGranted = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isBlePermissionsGranted", [], successCallback, errorCallback)
-DocumentReader.startBluetoothService = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startBluetoothService", [], successCallback, errorCallback)
-DocumentReader.initializeReaderBleDeviceConfig = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderBleDeviceConfig", [], successCallback, errorCallback)
-DocumentReader.getTag = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getTag", [], successCallback, errorCallback)
-DocumentReader.getAPIVersion = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAPIVersion", [], successCallback, errorCallback)
-DocumentReader.getAvailableScenarios = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAvailableScenarios", [], successCallback, errorCallback)
-DocumentReader.isRFIDAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isRFIDAvailableForUse", [], successCallback, errorCallback)
-DocumentReader.getCoreMode = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getCoreMode", [], successCallback, errorCallback)
-DocumentReader.getCoreVersion = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getCoreVersion", [], successCallback, errorCallback)
-DocumentReader.getDatabaseDate = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDatabaseDate", [], successCallback, errorCallback)
-DocumentReader.getDatabaseID = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDatabaseID", [], successCallback, errorCallback)
-DocumentReader.getDatabaseVersion = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDatabaseVersion", [], successCallback, errorCallback)
 DocumentReader.getDocumentReaderIsReady = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocumentReaderIsReady", [], successCallback, errorCallback)
 DocumentReader.getDocumentReaderStatus = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocumentReaderStatus", [], successCallback, errorCallback)
-DocumentReader.getDatabaseCountriesNumber = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDatabaseCountriesNumber", [], successCallback, errorCallback)
-DocumentReader.getDatabaseDocumentsNumber = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDatabaseDocumentsNumber", [], successCallback, errorCallback)
-DocumentReader.selectedScenario = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "selectedScenario", [], successCallback, errorCallback)
-DocumentReader.getSessionLogFolder = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getSessionLogFolder", [], successCallback, errorCallback)
-DocumentReader.getDatabaseDescription = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDatabaseDescription", [], successCallback, errorCallback)
-/**
- * @deprecated
- */
-DocumentReader.showScanner = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "showScanner", [], successCallback, errorCallback)
-DocumentReader.startNewPage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewPage", [], successCallback, errorCallback)
-DocumentReader.startNewSession = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewSession", [], successCallback, errorCallback)
-DocumentReader.startRFIDReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startRFIDReader", [], successCallback, errorCallback)
-DocumentReader.stopRFIDReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopRFIDReader", [], successCallback, errorCallback)
-DocumentReader.stopRFIDReaderWithErrorMessage = (message, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopRFIDReaderWithErrorMessage", [message], successCallback, errorCallback)
-DocumentReader.stopScanner = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopScanner", [], successCallback, errorCallback)
-DocumentReader.deinitializeReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "deinitializeReader", [], successCallback, errorCallback)
 DocumentReader.isAuthenticatorAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isAuthenticatorAvailableForUse", [], successCallback, errorCallback)
-DocumentReader.getConfig = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getConfig", [], successCallback, errorCallback)
-DocumentReader.getRfidScenario = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidScenario", [], successCallback, errorCallback)
-DocumentReader.getLicenseExpiryDate = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getLicenseExpiryDate", [], successCallback, errorCallback)
-DocumentReader.getLicenseCountryFilter = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getLicenseCountryFilter", [], successCallback, errorCallback)
-DocumentReader.licenseIsRfidAvailable = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "licenseIsRfidAvailable", [], successCallback, errorCallback)
-DocumentReader.getCameraSessionIsPaused = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getCameraSessionIsPaused", [], successCallback, errorCallback)
-DocumentReader.removeDatabase = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "removeDatabase", [], successCallback, errorCallback)
-DocumentReader.cancelDBUpdate = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "cancelDBUpdate", [], successCallback, errorCallback)
-DocumentReader.resetConfiguration = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "resetConfiguration", [], successCallback, errorCallback)
-DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
-DocumentReader.readRFID = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "readRFID", [], successCallback, errorCallback)
+DocumentReader.isBlePermissionsGranted = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isBlePermissionsGranted", [], successCallback, errorCallback)
 DocumentReader.getRfidSessionStatus = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidSessionStatus", [], successCallback, errorCallback)
-DocumentReader.setRfidDelegate = (delegate, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidDelegate", [delegate], successCallback, errorCallback)
-DocumentReader.setEnableCoreLogs = (logs, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setEnableCoreLogs", [logs], successCallback, errorCallback)
-DocumentReader.addPKDCertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "addPKDCertificates", [certificates], successCallback, errorCallback)
-DocumentReader.setCameraSessionIsPaused = (paused, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setCameraSessionIsPaused", [paused], successCallback, errorCallback)
+DocumentReader.setRfidSessionStatus = (status, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidSessionStatus", [status], successCallback, errorCallback)
+DocumentReader.getTag = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getTag", [], successCallback, errorCallback)
 DocumentReader.setTag = (tag, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTag", [tag], successCallback, errorCallback)
+DocumentReader.getFunctionality = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getFunctionality", [], successCallback, errorCallback)
+DocumentReader.setFunctionality = (functionality, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setFunctionality", [functionality], successCallback, errorCallback)
+DocumentReader.getProcessParams = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getProcessParams", [], successCallback, errorCallback)
+DocumentReader.setProcessParams = (processParams, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setProcessParams", [processParams], successCallback, errorCallback)
+DocumentReader.getCustomization = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getCustomization", [], successCallback, errorCallback)
+DocumentReader.setCustomization = (customization, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setCustomization", [customization], successCallback, errorCallback)
+DocumentReader.getRfidScenario = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidScenario", [], successCallback, errorCallback)
+DocumentReader.setRfidScenario = (rfidScenario, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidScenario", [rfidScenario], successCallback, errorCallback)
+DocumentReader.initializeReader = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReader", [config], successCallback, errorCallback)
+DocumentReader.initializeReaderWithBleDeviceConfig = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithBleDeviceConfig", [config], successCallback, errorCallback)
+DocumentReader.deinitializeReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "deinitializeReader", [], successCallback, errorCallback)
+DocumentReader.prepareDatabase = (databaseType, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "prepareDatabase", [databaseType], successCallback, errorCallback)
+DocumentReader.removeDatabase = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "removeDatabase", [], successCallback, errorCallback)
+DocumentReader.runAutoUpdate = (databaseId, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "runAutoUpdate", [databaseId], successCallback, errorCallback)
+DocumentReader.cancelDBUpdate = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "cancelDBUpdate", [], successCallback, errorCallback)
 DocumentReader.checkDatabaseUpdate = (databaseId, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "checkDatabaseUpdate", [databaseId], successCallback, errorCallback)
 DocumentReader.scan = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "scan", [config], successCallback, errorCallback)
 DocumentReader.recognize = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognize", [config], successCallback, errorCallback)
-/**
- * @deprecated
- */
-DocumentReader.recognizeImages = (images, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImages", [images], successCallback, errorCallback)
-/**
- * @deprecated
- */
-DocumentReader.showScannerWithCameraID = (cameraID, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "showScannerWithCameraID", [cameraID], successCallback, errorCallback)
-DocumentReader.runAutoUpdate = (databaseType, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "runAutoUpdate", [databaseType], successCallback, errorCallback)
-DocumentReader.setConfig = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setConfig", [config], successCallback, errorCallback)
-DocumentReader.setRfidScenario = (scenario, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidScenario", [scenario], successCallback, errorCallback)
-DocumentReader.initializeReader = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReader", [config], successCallback, errorCallback)
-DocumentReader.prepareDatabase = (databaseType, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "prepareDatabase", [databaseType], successCallback, errorCallback)
-/**
- * @deprecated
- */
-DocumentReader.recognizeImage = (image, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImage", [image], successCallback, errorCallback)
-/**
- * @deprecated
- */
-DocumentReader.recognizeData = (data, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeData", [data], successCallback, errorCallback)
-DocumentReader.setRfidSessionStatus = (status, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidSessionStatus", [status], successCallback, errorCallback)
+DocumentReader.startNewPage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewPage", [], successCallback, errorCallback)
+DocumentReader.stopScanner = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopScanner", [], successCallback, errorCallback)
+DocumentReader.startRFIDReader = (requestPACertificates, requestTACertificates, requestTASignature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startRFIDReader", [requestPACertificates, requestTACertificates, requestTASignature], successCallback, errorCallback)
+DocumentReader.stopRFIDReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopRFIDReader", [], successCallback, errorCallback)
+DocumentReader.readRFID = (requestPACertificates, requestTACertificates, requestTASignature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "readRFID", [requestPACertificates, requestTACertificates, requestTASignature], successCallback, errorCallback)
 DocumentReader.providePACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "providePACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTASignature = (signature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTASignature", [signature], successCallback, errorCallback)
-DocumentReader.parseCoreResults = (json, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "parseCoreResults", [json], successCallback, errorCallback)
 DocumentReader.setTCCParams = (params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTCCParams", [params], successCallback, errorCallback)
-/**
- * @deprecated
- */
-DocumentReader.recognizeImageWithOpts = (image, options, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithOpts", [image, options], successCallback, errorCallback)
-DocumentReader.recognizeVideoFrame = (byteString, params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeVideoFrame", [byteString, params], successCallback, errorCallback)
-/**
- * @deprecated
- */
-DocumentReader.showScannerWithCameraIDAndOpts = (cameraID, options, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "showScannerWithCameraIDAndOpts", [cameraID, options], successCallback, errorCallback)
-DocumentReader.recognizeImageWithCameraMode = (image, mode, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImageWithCameraMode", [image, mode], successCallback, errorCallback)
-/**
- * @deprecated
- */
-DocumentReader.recognizeImagesWithImageInputs = (images, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognizeImagesWithImageInputs", [images], successCallback, errorCallback)
-DocumentReader.setLanguage = (language, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setLanguage", [language], successCallback, errorCallback)
+DocumentReader.addPKDCertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "addPKDCertificates", [certificates], successCallback, errorCallback)
+DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
+DocumentReader.startNewSession = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewSession", [], successCallback, errorCallback)
+DocumentReader.startBluetoothService = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startBluetoothService", [], successCallback, errorCallback)
+DocumentReader.setLocalizationDictionary = (dictionary, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setLocalizationDictionary", [dictionary], successCallback, errorCallback)
+DocumentReader.getLicense = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getLicense", [], successCallback, errorCallback)
+DocumentReader.getAvailableScenarios = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAvailableScenarios", [], successCallback, errorCallback)
+DocumentReader.getIsRFIDAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getIsRFIDAvailableForUse", [], successCallback, errorCallback)
+DocumentReader.getDocReaderVersion = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocReaderVersion", [], successCallback, errorCallback)
+DocumentReader.getDocReaderDocumentsDatabase = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocReaderDocumentsDatabase", [], successCallback, errorCallback)
+DocumentReader.getTranslation = (className, value, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getTranslation", [className, value], successCallback, errorCallback)
+DocumentReader.finalizePackage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "finalizePackage", [], successCallback, errorCallback)
 
 export default DocumentReader
