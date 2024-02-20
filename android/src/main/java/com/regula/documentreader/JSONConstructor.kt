@@ -1592,7 +1592,7 @@ fun generateDocumentReaderAuthenticityCheck(temp: DocumentReaderAuthenticityChec
     val input: DocumentReaderAuthenticityCheck = temp
 
     result.put("type", input.type)
-    result.put("status", input.getStatus())
+    result.put("status", input.status)
     result.put("typeName", input.getTypeName(context))
     result.put("pageIndex", input.pageIndex)
     result.put("elements", generateList(input.elements, ::generateDocumentReaderAuthenticityElement, context))
