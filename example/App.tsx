@@ -32,7 +32,7 @@ interface IState {
 export default class App extends React.Component<IProps, IState> {
   onInitialized() {
     this.setState({ fullName: "Ready" })
-    
+
     DocumentReader.setFunctionality({
       showCaptureButton: true
     }, _ => { }, _ => { })
@@ -44,49 +44,40 @@ export default class App extends React.Component<IProps, IState> {
 
     var eventManager = new NativeEventEmitter(RNRegulaDocumentReader)
     eventManager.addListener('completion', (e) => this.handleCompletion(DocumentReaderCompletion.fromJson(JSON.parse(e["msg"]))!))
-    eventManager.addListener('database_progress', e => this.setState({ fullName: "Downloading database: " + e["msg"] + "%" }))
     eventManager.addListener('rfidOnProgressCompletion', e => this.updateRfidUI(DocumentReaderNotification.fromJson(JSON.parse(e["msg"]))!))
 
-    DocumentReader.prepareDatabase("Full", (response) => {
-      if (!JSON.parse(response)["success"]) {
-        console.log(response)
-        return
-      }
-      console.log("Database prepared")
-
-      var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license"
-      var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets
-      readFile(licPath, 'base64').then((res) => {
-        this.setState({ fullName: "Initializing..." })
-        var config = new DocReaderConfig()
-        config.license = res
-        config.delayedNNLoad = true
-        DocumentReader.initializeReader(config, (response) => {
-          if (!JSON.parse(response)["success"]) {
-            console.log(response)
-            return
+    var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license"
+    var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets
+    readFile(licPath, 'base64').then((res) => {
+      this.setState({ fullName: "Initializing..." })
+      var config = new DocReaderConfig()
+      config.license = res
+      config.delayedNNLoad = true
+      DocumentReader.initializeReader(config, (response) => {
+        if (!JSON.parse(response)["success"]) {
+          console.log(response)
+          return
+        }
+        console.log("Init complete")
+        DocumentReader.getIsRFIDAvailableForUse((canRfid) => {
+          if (canRfid) {
+            this.setState({ canRfid: true, rfidUIHeader: "Reading RFID", rfidDescription: "Place your phone on top of the NFC tag", rfidUIHeaderColor: "black" })
+            this.setState({ canRfidTitle: '' })
           }
-          console.log("Init complete")
-          DocumentReader.getIsRFIDAvailableForUse((canRfid) => {
-            if (canRfid) {
-              this.setState({ canRfid: true, rfidUIHeader: "Reading RFID", rfidDescription: "Place your phone on top of the NFC tag", rfidUIHeaderColor: "black" })
-              this.setState({ canRfidTitle: '' })
-            }
-          }, error => console.log(error))
-          DocumentReader.getAvailableScenarios((jstring) => {
-            var scenarios = JSON.parse(jstring)
-            var items: RadioButtonProps[] = []
-            for (var i in scenarios) {
-              var scenario = DocumentReaderScenario.fromJson(typeof scenarios[i] === "string" ? JSON.parse(scenarios[i]) : scenarios[i])!.name!
-              items.push({ label: scenario, id: scenario })
-            }
-            this.setState({ radioButtons: items })
-            this.setState({ selectedScenario: this.state.radioButtons[0]['id'] })
-          }, error => console.log(error))
-          this.onInitialized()
         }, error => console.log(error))
-      })
-    }, error => console.log(error))
+        DocumentReader.getAvailableScenarios((jstring) => {
+          var scenarios = JSON.parse(jstring)
+          var items: RadioButtonProps[] = []
+          for (var i in scenarios) {
+            var scenario = DocumentReaderScenario.fromJson(typeof scenarios[i] === "string" ? JSON.parse(scenarios[i]) : scenarios[i])!.name!
+            items.push({ label: scenario, id: scenario })
+          }
+          this.setState({ radioButtons: items })
+          this.setState({ selectedScenario: this.state.radioButtons[0]['id'] })
+        }, error => console.log(error))
+        this.onInitialized()
+      }, error => console.log(error))
+    })
 
     this.state = {
       fullName: "Please wait...",
