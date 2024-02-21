@@ -12,8 +12,8 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-native": "^0.72.5",
-    "@regulaforensics/react-native-document-reader-api-beta": "0.0.209",
-    "@regulaforensics/react-native-document-reader-core-fullrfid-beta": "0.0.48",
+    "@regulaforensics/react-native-document-reader-api-beta": "0.0.210",
+    "@regulaforensics/react-native-document-reader-core-fullrfid-beta": "0.0.50",
     "react-native-fs": "^2.20.0",
     "react-native-image-picker": "^7.0.0",
     "react-native-progress": "^5.0.0",
