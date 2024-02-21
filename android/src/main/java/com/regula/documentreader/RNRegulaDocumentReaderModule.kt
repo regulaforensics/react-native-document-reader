@@ -57,6 +57,7 @@ import org.json.JSONObject
 class RNRegulaDocumentReaderModule(rc: ReactApplicationContext) : ReactContextBaseJavaModule(rc), ActivityEventListener {
     init {
         reactContext = rc
+        reactContext.addActivityEventListener(this)
     }
 
     @ReactMethod
