@@ -57,25 +57,6 @@ export class Rect {
     }
 }
 
-export class DocReaderFieldRect {
-    bottom?: number
-    top?: number
-    left?: number
-    right?: number
-
-    static fromJson(jsonObject?: any): DocReaderFieldRect | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new DocReaderFieldRect
-
-        result.bottom = jsonObject["bottom"]
-        result.top = jsonObject["top"]
-        result.left = jsonObject["left"]
-        result.right = jsonObject["right"]
-
-        return result
-    }
-}
-
 export class DocumentReaderGraphicField {
     sourceType?: number
     fieldType?: number
@@ -85,7 +66,7 @@ export class DocumentReaderGraphicField {
     fieldName?: string
     lightName?: string
     value?: string
-    fieldRect?: DocReaderFieldRect
+    fieldRect?: Rect
 
     static fromJson(jsonObject?: any): DocumentReaderGraphicField | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -99,7 +80,7 @@ export class DocumentReaderGraphicField {
         result.fieldName = jsonObject["fieldName"]
         result.lightName = jsonObject["lightName"]
         result.value = jsonObject["value"]
-        result.fieldRect = DocReaderFieldRect.fromJson(jsonObject["fieldRect"])
+        result.fieldRect = Rect.fromJson(jsonObject["fieldRect"])
 
         return result
     }
@@ -128,12 +109,10 @@ export class DocumentReaderGraphicResult {
 export class DocumentReaderValue {
     pageIndex?: number
     sourceType?: number
-    validity?: number
     probability?: number
     value?: string
     originalValue?: string
     boundRect?: Rect
-    comparison?: Record<number, number>
     originalSymbols?: DocumentReaderSymbol[]
     rfidOrigin?: DocumentReaderRfidOrigin
 
@@ -143,17 +122,10 @@ export class DocumentReaderValue {
 
         result.pageIndex = jsonObject["pageIndex"]
         result.sourceType = jsonObject["sourceType"]
-        result.validity = jsonObject["validity"]
         result.probability = jsonObject["probability"]
         result.value = jsonObject["value"]
         result.originalValue = jsonObject["originalValue"]
         result.boundRect = Rect.fromJson(jsonObject["boundRect"])
-        result.comparison = {}
-        if (jsonObject["comparison"] != null) {
-            for (const i in jsonObject["comparison"]) {
-                result.comparison[i as unknown as number] = jsonObject["comparison"][i]
-            }
-        }
         result.originalSymbols = []
         if (jsonObject["originalSymbols"] != null) {
             for (const i in jsonObject["originalSymbols"]) {
@@ -321,6 +293,7 @@ export class ImageQuality {
     featureType?: number
     result?: number
     type?: number
+    boundRects?: Rect[]
 
     static fromJson(jsonObject?: any): ImageQuality | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -329,6 +302,14 @@ export class ImageQuality {
         result.featureType = jsonObject["featureType"]
         result.result = jsonObject["result"]
         result.type = jsonObject["type"]
+        result.boundRects = []
+        if (jsonObject["boundRects"] != null) {
+            for (const i in jsonObject["boundRects"]) {
+                const item = Rect.fromJson(jsonObject["boundRects"][i])
+                if (item != undefined)
+                    result.boundRects.push(item)
+            }
+        }
 
         return result
     }
@@ -491,6 +472,7 @@ export class SecurityObjectCertificates {
 export class File {
     readingTime?: number
     type?: number
+    typeName?: string
     pAStatus?: number
     readingStatus?: number
     fileID?: string
@@ -507,6 +489,7 @@ export class File {
 
         result.readingTime = jsonObject["readingTime"]
         result.type = jsonObject["type"]
+        result.typeName = jsonObject["typeName"]
         result.pAStatus = jsonObject["pAStatus"]
         result.readingStatus = jsonObject["readingStatus"]
         result.fileID = jsonObject["fileID"]
@@ -1117,6 +1100,27 @@ export class PKDCertificate {
     }
 }
 
+export class TccParams {
+    serviceUrlTA?: string
+    serviceUrlPA?: string
+    pfxCertUrl?: string
+    pfxPassPhrase?: string
+    pfxCert?: string
+
+    static fromJson(jsonObject?: any): TccParams | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new TccParams
+
+        result.serviceUrlTA = jsonObject["serviceUrlTA"]
+        result.serviceUrlPA = jsonObject["serviceUrlPA"]
+        result.pfxCertUrl = jsonObject["pfxCertUrl"]
+        result.pfxPassPhrase = jsonObject["pfxPassPhrase"]
+        result.pfxCert = jsonObject["pfxCert"]
+
+        return result
+    }
+}
+
 export class ImageInputParam {
     width?: number
     height?: number
@@ -1536,16 +1540,77 @@ export class Search {
     }
 }
 
+export class AuthenticityParams {
+    useLivenessCheck?: boolean
+    livenessParams?: LivenessParams
+    checkUVLuminiscence?: boolean
+    checkIRB900?: boolean
+    checkImagePatterns?: boolean
+    checkFibers?: boolean
+    checkExtMRZ?: boolean
+    checkExtOCR?: boolean
+    checkAxial?: boolean
+    checkBarcodeFormat?: boolean
+    checkIRVisibility?: boolean
+    checkIPI?: boolean
+    checkPhotoEmbedding?: boolean
+    checkPhotoComparison?: boolean
+    checkLetterScreen?: boolean
+
+    static fromJson(jsonObject?: any): AuthenticityParams | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new AuthenticityParams
+
+        result.useLivenessCheck = jsonObject["useLivenessCheck"]
+        result.livenessParams = LivenessParams.fromJson(jsonObject["livenessParams"])
+        result.checkUVLuminiscence = jsonObject["checkUVLuminiscence"]
+        result.checkIRB900 = jsonObject["checkIRB900"]
+        result.checkImagePatterns = jsonObject["checkImagePatterns"]
+        result.checkFibers = jsonObject["checkFibers"]
+        result.checkExtMRZ = jsonObject["checkExtMRZ"]
+        result.checkExtOCR = jsonObject["checkExtOCR"]
+        result.checkAxial = jsonObject["checkAxial"]
+        result.checkBarcodeFormat = jsonObject["checkBarcodeFormat"]
+        result.checkIRVisibility = jsonObject["checkIRVisibility"]
+        result.checkIPI = jsonObject["checkIPI"]
+        result.checkPhotoEmbedding = jsonObject["checkPhotoEmbedding"]
+        result.checkPhotoComparison = jsonObject["checkPhotoComparison"]
+        result.checkLetterScreen = jsonObject["checkLetterScreen"]
+
+        return result
+    }
+}
+
+export class LivenessParams {
+    checkOVI?: boolean
+    checkMLI?: boolean
+    checkHolo?: boolean
+    checkED?: boolean
+
+    static fromJson(jsonObject?: any): LivenessParams | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new LivenessParams
+
+        result.checkOVI = jsonObject["checkOVI"]
+        result.checkMLI = jsonObject["checkMLI"]
+        result.checkHolo = jsonObject["checkHolo"]
+        result.checkED = jsonObject["checkED"]
+
+        return result
+    }
+}
+
 export class ImageQA {
     dpiThreshold?: number
     angleThreshold?: number
     focusCheck?: boolean
     glaresCheck?: boolean
     colornessCheck?: boolean
-    moireCheck?: boolean
+    screenCapture?: boolean
+    documentPositionIndent?: number
     expectedPass?: number[]
     glaresCheckParams?: GlaresCheckParams
-    documentPositionIndent?: number
+    brightnessThreshold?: number
 
     static fromJson(jsonObject?: any): ImageQA | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -1556,7 +1621,8 @@ export class ImageQA {
         result.focusCheck = jsonObject["focusCheck"]
         result.glaresCheck = jsonObject["glaresCheck"]
         result.colornessCheck = jsonObject["colornessCheck"]
-        result.moireCheck = jsonObject["moireCheck"]
+        result.screenCapture = jsonObject["screenCapture"]
+        result.documentPositionIndent = jsonObject["documentPositionIndent"]
         result.expectedPass = []
         if (jsonObject["expectedPass"] != null) {
             for (const i in jsonObject["expectedPass"]) {
@@ -1564,7 +1630,7 @@ export class ImageQA {
             }
         }
         result.glaresCheckParams = GlaresCheckParams.fromJson(jsonObject["glaresCheckParams"])
-        result.documentPositionIndent = jsonObject["documentPositionIndent"]
+        result.brightnessThreshold = jsonObject["brightnessThreshold"]
 
         return result
     }
@@ -1624,6 +1690,29 @@ export class OnlineProcessingConfig {
     }
 }
 
+export class DocReaderConfig {
+    license?: string
+    customDb?: string
+    databasePath?: string
+    licenseUpdate?: boolean
+    delayedNNLoad?: boolean
+    blackList?: any
+
+    static fromJson(jsonObject?: any): DocReaderConfig | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new DocReaderConfig
+
+        result.license = jsonObject["license"]
+        result.customDb = jsonObject["customDb"]
+        result.databasePath = jsonObject["databasePath"]
+        result.licenseUpdate = jsonObject["licenseUpdate"]
+        result.delayedNNLoad = jsonObject["delayedNNLoad"]
+        result.blackList = jsonObject["blackList"]
+
+        return result
+    }
+}
+
 export class ScannerConfig {
     scenario?: string
     livePortrait?: string
@@ -1647,11 +1736,12 @@ export class ScannerConfig {
 
 export class RecognizeConfig {
     scenario?: string
+    onlineProcessingConfig?: OnlineProcessingConfig
+    oneShotIdentification?: boolean
     livePortrait?: string
     extPortrait?: string
-    onlineProcessingConfig?: OnlineProcessingConfig
     image?: string
-    oneShotIdentification?: boolean
+    data?: string
     images?: string[]
     imageInputData?: ImageInputData[]
 
@@ -1660,11 +1750,12 @@ export class RecognizeConfig {
         const result = new RecognizeConfig
 
         result.scenario = jsonObject["scenario"]
+        result.onlineProcessingConfig = OnlineProcessingConfig.fromJson(jsonObject["onlineProcessingConfig"])
+        result.oneShotIdentification = jsonObject["oneShotIdentification"]
         result.livePortrait = jsonObject["livePortrait"]
         result.extPortrait = jsonObject["extPortrait"]
-        result.onlineProcessingConfig = OnlineProcessingConfig.fromJson(jsonObject["onlineProcessingConfig"])
         result.image = jsonObject["image"]
-        result.oneShotIdentification = jsonObject["oneShotIdentification"]
+        result.data = jsonObject["data"]
         result.images = []
         if (jsonObject["images"] != null) {
             for (const i in jsonObject["images"]) {
@@ -1684,16 +1775,68 @@ export class RecognizeConfig {
     }
 }
 
+export class License {
+    expiryDate?: string
+    countryFilter?: string[]
+    isRfidAvailable?: boolean
+
+    static fromJson(jsonObject?: any): License | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new License
+
+        result.expiryDate = jsonObject["expiryDate"]
+        result.countryFilter = []
+        if (jsonObject["countryFilter"] != null) {
+            for (const i in jsonObject["countryFilter"]) {
+                result.countryFilter.push(jsonObject["countryFilter"][i])
+            }
+        }
+        result.isRfidAvailable = jsonObject["isRfidAvailable"]
+
+        return result
+    }
+}
+
+export class DocReaderVersion {
+    api?: string
+    core?: string
+    coreMode?: string
+    database?: DocReaderDocumentsDatabase
+
+    static fromJson(jsonObject?: any): DocReaderVersion | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new DocReaderVersion
+
+        result.api = jsonObject["api"]
+        result.core = jsonObject["core"]
+        result.coreMode = jsonObject["coreMode"]
+        result.database = DocReaderDocumentsDatabase.fromJson(jsonObject["database"])
+
+        return result
+    }
+}
+
+export class TransactionInfo {
+    transactionId?: string
+    tag?: string
+
+    static fromJson(jsonObject?: any): TransactionInfo | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new TransactionInfo
+
+        result.transactionId = jsonObject["transactionId"]
+        result.tag = jsonObject["tag"]
+
+        return result
+    }
+}
+
 export class DocumentReaderResults {
-    videoCaptureSessionId?: string
     chipPage?: number
-    irElapsedTime?: number
     processingFinishedStatus?: number
     elapsedTime?: number
     elapsedTimeRFID?: number
     morePagesAvailable?: number
-    rfidResult?: number
-    highResolution?: boolean
     graphicResult?: DocumentReaderGraphicResult
     textResult?: DocumentReaderTextResult
     documentPosition?: ElementPosition[]
@@ -1701,14 +1844,13 @@ export class DocumentReaderResults {
     mrzPosition?: ElementPosition[]
     imageQuality?: ImageQualityGroup[]
     rawResult?: string
-    documentReaderNotification?: DocumentReaderNotification
     rfidSessionData?: RFIDSessionData
     authenticityResult?: DocumentReaderAuthenticityResult
     barcodeResult?: DocumentReaderBarcodeResult
-    ppmIn?: number
     documentType?: DocumentReaderDocumentType[]
     status?: DocumentReaderResultsStatus
     vdsncData?: VDSNCData
+    transactionInfo?: TransactionInfo
 
     textFieldValueByType(fieldType, successCallback, errorCallback) {
         RNRegulaDocumentReader.exec("DocumentReader", "textFieldValueByType", [this.rawResult, fieldType], successCallback, errorCallback)
@@ -1782,15 +1924,11 @@ export class DocumentReaderResults {
         if (jsonObject == null || jsonObject == undefined) return undefined
         const result = new DocumentReaderResults
 
-        result.videoCaptureSessionId = jsonObject["videoCaptureSessionId"]
         result.chipPage = jsonObject["chipPage"]
-        result.irElapsedTime = jsonObject["irElapsedTime"]
         result.processingFinishedStatus = jsonObject["processingFinishedStatus"]
         result.elapsedTime = jsonObject["elapsedTime"]
         result.elapsedTimeRFID = jsonObject["elapsedTimeRFID"]
         result.morePagesAvailable = jsonObject["morePagesAvailable"]
-        result.rfidResult = jsonObject["rfidResult"]
-        result.highResolution = jsonObject["highResolution"]
         result.graphicResult = DocumentReaderGraphicResult.fromJson(jsonObject["graphicResult"])
         result.textResult = DocumentReaderTextResult.fromJson(jsonObject["textResult"])
         result.documentPosition = []
@@ -1826,11 +1964,9 @@ export class DocumentReaderResults {
             }
         }
         result.rawResult = jsonObject["rawResult"]
-        result.documentReaderNotification = DocumentReaderNotification.fromJson(jsonObject["documentReaderNotification"])
         result.rfidSessionData = RFIDSessionData.fromJson(jsonObject["rfidSessionData"])
         result.authenticityResult = DocumentReaderAuthenticityResult.fromJson(jsonObject["authenticityResult"])
         result.barcodeResult = DocumentReaderBarcodeResult.fromJson(jsonObject["barcodeResult"])
-        result.ppmIn = jsonObject["ppmIn"]
         result.documentType = []
         if (jsonObject["documentType"] != null) {
             for (const i in jsonObject["documentType"]) {
@@ -1841,6 +1977,7 @@ export class DocumentReaderResults {
         }
         result.status = DocumentReaderResultsStatus.fromJson(jsonObject["status"])
         result.vdsncData = VDSNCData.fromJson(jsonObject["vdsncData"])
+        result.transactionInfo = TransactionInfo.fromJson(jsonObject["transactionInfo"])
 
         return result
     }
@@ -1875,6 +2012,16 @@ export const eRPRM_Authenticity = {
     OVI: 1024,
     LIVENESS: 2097152,
     OCR: 4194304,
+}
+
+export const CustomizationColor = {
+    RFID_PROCESSING_SCREEN_BACKGROUND: "rfidProcessingScreenBackground",
+    RFID_PROCESSING_SCREEN_HINT_LABEL_TEXT: "rfidProcessingScreenHintLabelText",
+    RFID_PROCESSING_SCREEN_HINT_LABEL_BACKGROUND: "rfidProcessingScreenHintLabelBackground",
+    RFID_PROCESSING_SCREEN_PROGRESS_LABEL_TEXT: "rfidProcessingScreenProgressLabelText",
+    RFID_PROCESSING_SCREEN_PROGRESS_BAR: "rfidProcessingScreenProgressBar",
+    RFID_PROCESSING_SCREEN_PROGRESS_BAR_BACKGROUND: "rfidProcessingScreenProgressBarBackground",
+    RFID_PROCESSING_SCREEN_RESULT_LABEL_TEXT: "rfidProcessingScreenResultLabelText",
 }
 
 export const eRFID_ErrorCodes = {
@@ -2236,11 +2383,13 @@ export const eProcessGLCommands = {
     ePC_ProcMgr_ProcessImage: 12104,
     ePC_ProcMgr_StartNewDocument: 12105,
     ePC_ProcMgr_StartNewPage: 12106,
+    ePC_ProcMgr_AddDataToPackage: 12121,
+    ePC_ProcMgr_FinalizePackage: 12122,
+    ePC_ProcMgr_CreateBackendTransaction: 12125,
     ePC_ProcMgr_Unload: 12107,
     ePC_ProcMgr_CheckDatabase: 12109,
     ePC_ProcMgr_ComparePortraits: 12111,
     ePC_RFID_SetTCCParams: 12522,
-    ePC_RFID_SetReprocessingParams: 12523,
 }
 
 export const PKDResourceType = {
@@ -2328,6 +2477,7 @@ export const ScenarioIdentifier = {
     SCENARIO_MRZ_OR_BARCODE: "MrzOrBarcode",
     SCENARIO_MRZ_OR_LOCATE: "MrzOrLocate",
     SCENARIO_MRZ_AND_LOCATE: "MrzAndLocate",
+    SCENARIO_BARCODE_AND_LOCATE: "BarcodeAndLocate",
     SCENARIO_MRZ_OR_OCR: "MrzOrOcr",
     SCENARIO_MRZ_OR_BARCODE_OR_OCR: "MrzOrBarcodeOrOcr",
     SCENARIO_LOCATE_VISUAL_AND_MRZ_OR_OCR: "LocateVisual_And_MrzOrOcr",
@@ -2338,7 +2488,6 @@ export const ScenarioIdentifier = {
     SCENARIO_OCR_FREE: "OcrFree",
     SCENARIO_CREDIT_CARD: "CreditCard",
     SCENARIO_CAPTURE: "Capture",
-    SCENARIO_BARCODE_AND_LOCATE: "BarcodeAndLocate",
 }
 
 export const eRFID_AccessControl_ProcedureType = {
@@ -2469,6 +2618,7 @@ export const eCheckDiagnose = {
     INCORRECT_TEXT_COLOR: 26,
     PHOTO_FALSE_LUMINISCENCE: 27,
     TOO_MUCH_SHIFT: 28,
+    CONTACT_CHIP_TYPE_MISMATCH: 29,
     FIBERS_NOT_FOUND: 30,
     TOO_MANY_OBJECTS: 31,
     SPECKS_IN_UV: 33,
@@ -2568,6 +2718,20 @@ export const TextProcessing = {
     ocUppercase: 1,
     ocLowercase: 2,
     ocCapital: 3,
+}
+
+export const AnimationImage = {
+    UNKNOWN: 0,
+    PASSPORT_SINGLE_PAGE: 1,
+    PASSPORT_TWO_PAGES: 2,
+    ID_FRONT: 3,
+    ID_FRONT_MRZ: 4,
+    ID_BACK: 5,
+    ID_BACK_MRZ: 6,
+    ID_BACK_BARCODE: 7,
+    ID_BACK_BARCODE_MRZ: 8,
+    BANK_CARD_FRONT: 9,
+    BANK_CARD_BACK: 10,
 }
 
 export const ProcessingFinishedStatus = {
@@ -2826,6 +2990,7 @@ export const eImageQualityCheckType = {
     IQC_SCREEN_CAPTURE: 6,
     IQC_PORTRAIT: 7,
     IQC_HANDWRITTEN: 8,
+    IQC_BRIGHTNESS: 9,
 }
 
 export const MRZFormat = {
@@ -2907,6 +3072,12 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_LAS_INK: 43,
     SECURITY_FEATURE_TYPE_LIVENESS_MLI: 44,
     SECURITY_FEATURE_TYPE_LIVENESS_BARCODE_BACKGROUND: 45,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_VS_BARCODE: 46,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_RFID_VS_BARCODE: 47,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_EXT_VS_BARCODE: 48,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_BARCODE_VS_CAMERA: 49,
+    SECURITY_FEATURE_TYPE_CHECK_DIGITAL_SIGNATURE: 50,
+    SECURITY_FEATURE_TYPE_CONTACT_CHIP_CLASSIFICATION: 51,
 }
 
 export const OnlineMode = {
@@ -3152,6 +3323,15 @@ export const diDocType = {
     dtPassengerLocatorForm: 242,
 }
 
+export const ButtonTag = {
+    CLOSE: 1001,
+    TORCH: 1002,
+    CAPTURE: 1003,
+    CHANGE_FRAME: 1004,
+    SKIP: 1005,
+    CAMERA_SWITCH: 1006,
+}
+
 export const HoloAnimationType = {
     DocumentHoloAnimationUnknown: 0,
     DocumentHoloAnimationTypeHorizontal: 1,
@@ -3168,6 +3348,12 @@ export const eRequestCommand = {
     eReqCmd_InternetSend: 300,
     eReqCmd_GetGuid: 400,
     eReqCmd_WltToImage: 401,
+}
+
+export const CustomizationFont = {
+    RFID_PROCESSING_SCREEN_HINT_LABEL: "rfidProcessingScreenHintLabel",
+    RFID_PROCESSING_SCREEN_PROGRESS_LABEL: "rfidProcessingScreenProgressLabel",
+    RFID_PROCESSING_SCREEN_RESULT_LABEL: "rfidProcessingScreenResultLabel",
 }
 
 export const ImageFormat = {
@@ -3187,6 +3373,7 @@ export const eGraphicFieldType = {
     GF_GHOST_PORTRAIT: 210,
     GF_STAMP: 211,
     GF_PORTRAIT_OF_CHILD: 212,
+    GF_CONTACT_CHIP: 213,
     GF_OTHER: 250,
     GF_FINGER_LEFT_THUMB: 300,
     GF_FINGER_LEFT_INDEX: 301,
@@ -3201,7 +3388,7 @@ export const eGraphicFieldType = {
 }
 
 export const RegDeviceConfigType = {
-    DEVICE_7310: 1,
+    DEVICE_7310: "DEVICE_7310",
 }
 
 export const CameraMode = {
@@ -3949,6 +4136,8 @@ export const eVisualFieldType = {
     FT_ADDRESS_COUNTY_TYPE: 678,
     FT_ADDRESS_CITY_TYPE: 679,
     FT_ADDRESS_BUILDING_TYPE: 680,
+    FT_DATE_OF_RETIREMENT: 681,
+    FT_DOCUMENT_STATUS: 682,
 }
 
 export const DocReaderOrientation = {
@@ -3992,7 +4181,7 @@ export const LCID = {
     BANK_CARD_NUMBER: 10000,
     BANK_CARD_VALID_THRU: 10001,
     BELARUSIAN: 1059,
-    BENGALI: 2117,
+    BENGALI_BANGLADESH: 2117,
     BULGARIAN: 1026,
     CATALAN: 1027,
     CHINESE_HONGKONG_SAR: 3076,
@@ -4058,6 +4247,7 @@ export const LCID = {
     LITHUANIAN: 1063,
     MALAY_MALAYSIA: 1086,
     MALAY_BRUNEI_DARUSSALAM: 2110,
+    ASSAMESE: 1101,
     MARATHI: 1102,
     MONGOLIAN_CYRILIC: 1104,
     NORWEGIAN_BOKMAL: 1044,
@@ -4104,6 +4294,7 @@ export const LCID = {
     SYRIAC: 1114,
     TAMIL: 1097,
     TATAR: 1092,
+    BENGALI_INDIA: 1093,
     TELUGU: 1098,
     THAI_THAILAND: 1054,
     TURKISH: 1055,
@@ -4116,6 +4307,18 @@ export const LCID = {
     VIETNAMESE: 1066,
     CTC_SIMPLIFIED: 50001,
     CTC_TRADITIONAL: 50002,
+    MALTESE: 1082,
+    BURMESE: 1109,
+    KHMER: 1107,
+    KARAKALPAK_LATIN: 10012,
+    MALAYALAM: 1100,
+    NEPALI: 1121,
+    ORIYA: 1096,
+    URDU_DETECTION: 10560,
+}
+
+export const CustomizationImage = {
+    RFID_PROCESSING_SCREEN_FAILURE_IMAGE: "rfidProcessingScreenFailureImage",
 }
 
 export const DocReaderFrame = {
@@ -4195,6 +4398,7 @@ export const UIViewContentMode = {
 export const Enum = {
    FontStyle,
    eRPRM_Authenticity,
+   CustomizationColor,
    eRFID_ErrorCodes,
    eLDS_ParsingErrorCodes,
    eRFID_CertificateType,
@@ -4218,6 +4422,7 @@ export const Enum = {
    eCheckDiagnose,
    RFIDDelegate,
    TextProcessing,
+   AnimationImage,
    ProcessingFinishedStatus,
    DocFormat,
    eLDS_ParsingNotificationCodes,
@@ -4228,8 +4433,10 @@ export const Enum = {
    OnlineMode,
    eRFID_SDK_ProfilerType,
    diDocType,
+   ButtonTag,
    HoloAnimationType,
    eRequestCommand,
+   CustomizationFont,
    ImageFormat,
    eGraphicFieldType,
    RegDeviceConfigType,
@@ -4241,6 +4448,7 @@ export const Enum = {
    eVisualFieldType,
    DocReaderOrientation,
    LCID,
+   CustomizationImage,
    DocReaderFrame,
    eRPRM_Lights,
    LineCap,
@@ -4251,98 +4459,51 @@ export const Enum = {
 }
 
 export default class DocumentReader {
-    static initializeReaderAutomatically(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static isBlePermissionsGranted(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static startBluetoothService(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static initializeReaderBleDeviceConfig(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getTag(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getAPIVersion(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getAvailableScenarios(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static isRFIDAvailableForUse(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getCoreMode(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getCoreVersion(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getDatabaseDate(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getDatabaseID(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getDatabaseVersion(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getDocumentReaderIsReady(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getDocumentReaderStatus(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getDatabaseCountriesNumber(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getDatabaseDocumentsNumber(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static selectedScenario(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getSessionLogFolder(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getDatabaseDescription(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    /**
-     * @deprecated
-     */
-    static showScanner(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static startNewPage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static startNewSession(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static startRFIDReader(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static stopRFIDReader(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static stopRFIDReaderWithErrorMessage(message: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static stopScanner(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static deinitializeReader(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static isAuthenticatorAvailableForUse(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getConfig(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getRfidScenario(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getLicenseExpiryDate(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getLicenseCountryFilter(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static licenseIsRfidAvailable(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static getCameraSessionIsPaused(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static removeDatabase(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static cancelDBUpdate(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static resetConfiguration(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static readRFID(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static isBlePermissionsGranted(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getRfidSessionStatus(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setRfidDelegate(delegate: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setEnableCoreLogs(logs: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static addPKDCertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setCameraSessionIsPaused(paused: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setRfidSessionStatus(status: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getTag(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setTag(tag: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getFunctionality(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setFunctionality(functionality: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getProcessParams(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setProcessParams(processParams: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getCustomization(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setCustomization(customization: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getRfidScenario(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setRfidScenario(rfidScenario: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static initializeReader(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static initializeReaderWithBleDeviceConfig(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static deinitializeReader(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static prepareDatabase(databaseType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static removeDatabase(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static runAutoUpdate(databaseId: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static cancelDBUpdate(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static checkDatabaseUpdate(databaseId: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static scan(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognize(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    /**
-     * @deprecated
-     */
-    static recognizeImages(images: string[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    /**
-     * @deprecated
-     */
-    static showScannerWithCameraID(cameraID: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static runAutoUpdate(databaseType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setConfig(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setRfidScenario(scenario: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static initializeReader(config: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static prepareDatabase(databaseType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    /**
-     * @deprecated
-     */
-    static recognizeImage(image: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    /**
-     * @deprecated
-     */
-    static recognizeData(data: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setRfidSessionStatus(status: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startNewPage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static stopScanner(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startRFIDReader(requestPACertificates: boolean, requestTACertificates: boolean, requestTASignature: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static stopRFIDReader(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static readRFID(requestPACertificates: boolean, requestTACertificates: boolean, requestTASignature: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static providePACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTACertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTASignature(signature: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static parseCoreResults(json: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setTCCParams(params: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    /**
-     * @deprecated
-     */
-    static recognizeImageWithOpts(image: string, options: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static recognizeVideoFrame(byteString: string, params: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    /**
-     * @deprecated
-     */
-    static showScannerWithCameraIDAndOpts(cameraID: number, options: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static recognizeImageWithCameraMode(image: string, mode: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    /**
-     * @deprecated
-     */
-    static recognizeImagesWithImageInputs(images: ImageInputData[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static setLanguage(language: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static addPKDCertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startNewSession(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startBluetoothService(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setLocalizationDictionary(dictionary: any, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getLicense(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getAvailableScenarios(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getIsRFIDAvailableForUse(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getDocReaderVersion(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getDocReaderDocumentsDatabase(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getTranslation(className: string, value: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static finalizePackage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
 }

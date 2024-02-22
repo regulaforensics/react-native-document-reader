@@ -2,9 +2,10 @@
 #import <React/RCTEventEmitter.h>
 #import <DocumentReader/DocumentReader.h>
 #import "RGLWJSONConstructor.h"
-#import "RGLWRegulaConfig.h"
+#import "RGLWConfig.h"
 
-typedef void (^RGLWCallback)(NSString* _Nullable response);
+typedef void (^RGLWCallback)(id _Nullable response);
+typedef void (^RGLWEventSender)(NSString* _Nonnull event, id _Nullable data);
 typedef void (^RGLWRFIDSignatureCallback)(NSData * _Nonnull signature);
 
 @interface RNRegulaDocumentReader : RCTEventEmitter <RCTBridgeModule,
@@ -13,8 +14,8 @@ typedef void (^RGLWRFIDSignatureCallback)(NSData * _Nonnull signature);
                                                         RGLCustomizationActionDelegate>
 
 @property (class) NSNumber* _Nullable databasePercentageDownloaded;
+@property NSNumber* _Nonnull doRequestPACertificates;
+@property NSNumber* _Nonnull doRequestTACertificates;
+@property NSNumber* _Nonnull doRequestTASignature;
 
-@end
-
-@interface RGLWRFIDDelegateNoPA : NSObject<RGLDocReaderRFIDDelegate>
 @end

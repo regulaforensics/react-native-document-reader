@@ -12,7 +12,8 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		347154A12A4DC22300361434 /* regula.license in Resources */ = {isa = PBXBuildFile; fileRef = 347154A02A4DC22300361434 /* regula.license */; };
+		34A6AF2E2B862E4E00266440 /* db.dat in Resources */ = {isa = PBXBuildFile; fileRef = 34A6AF2D2B862E4E00266440 /* db.dat */; };
+		34B2241A2B61327D009FDA33 /* regula.license in Resources */ = {isa = PBXBuildFile; fileRef = 34B224192B61327D009FDA33 /* regula.license */; };
 		7699B88040F8A987B510C191 /* libPods-DocumentReader-DocumentReaderTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-DocumentReader-DocumentReaderTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -39,7 +40,8 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = DocumentReader/main.m; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-DocumentReader-DocumentReaderTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DocumentReader-DocumentReaderTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3471549F2A4D9A1500361434 /* DocumentReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = DocumentReader.entitlements; path = DocumentReader/DocumentReader.entitlements; sourceTree = "<group>"; };
-		347154A02A4DC22300361434 /* regula.license */ = {isa = PBXFileReference; lastKnownFileType = file; name = regula.license; path = ../../../../.hidden/license/regula.license; sourceTree = "<group>"; };
+		34A6AF2D2B862E4E00266440 /* db.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = db.dat; sourceTree = "<group>"; };
+		34B224192B61327D009FDA33 /* regula.license */ = {isa = PBXFileReference; lastKnownFileType = file; path = regula.license; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-DocumentReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DocumentReader.debug.xcconfig"; path = "Target Support Files/Pods-DocumentReader/Pods-DocumentReader.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-DocumentReader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DocumentReader.release.xcconfig"; path = "Target Support Files/Pods-DocumentReader/Pods-DocumentReader.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-DocumentReader-DocumentReaderTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DocumentReader-DocumentReaderTests.debug.xcconfig"; path = "Target Support Files/Pods-DocumentReader-DocumentReaderTests/Pods-DocumentReader-DocumentReaderTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -89,7 +91,8 @@
 		13B07FAE1A68108700A75B9A /* DocumentReader */ = {
 			isa = PBXGroup;
 			children = (
-				347154A02A4DC22300361434 /* regula.license */,
+				34A6AF2D2B862E4E00266440 /* db.dat */,
+				34B224192B61327D009FDA33 /* regula.license */,
 				3471549F2A4D9A1500361434 /* DocumentReader.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -249,7 +252,8 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				347154A12A4DC22300361434 /* regula.license in Resources */,
+				34B2241A2B61327D009FDA33 /* regula.license in Resources */,
+				34A6AF2E2B862E4E00266440 /* db.dat in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
