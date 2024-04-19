@@ -9,11 +9,11 @@ typedef void (^RGLWEventSender)(NSString* _Nonnull event, id _Nullable data);
 typedef void (^RGLWRFIDSignatureCallback)(NSData * _Nonnull signature);
 
 @interface RNRegulaDocumentReader : RCTEventEmitter <RCTBridgeModule,
-                                                        RGLRecordScanningProcessDelegate,
-                                                        RGLDocReaderRFIDDelegate,
-                                                        RGLCustomizationActionDelegate>
+                                                     RGLRecordScanningProcessDelegate,
+                                                     RGLDocReaderRFIDDelegate,
+                                                     RGLCustomizationActionDelegate,
+                                                     RGLDocReaderDatabaseFetchDelegate>
 
-@property (class) NSNumber* _Nullable databasePercentageDownloaded;
 @property NSNumber* _Nonnull doRequestPACertificates;
 @property NSNumber* _Nonnull doRequestTACertificates;
 @property NSNumber* _Nonnull doRequestTASignature;

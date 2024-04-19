@@ -638,10 +638,7 @@ export class DocumentReaderBarcodeField {
         result.status = jsonObject["status"]
         result.pageIndex = jsonObject["pageIndex"]
         result.pdf417Info = PDF417Info.fromJson(jsonObject["pdf417Info"])
-        result.data = []
-        if (jsonObject["data"] != null)
-            for (const i in jsonObject["data"])
-                result.data.push(jsonObject["data"][i])
+        result.data = jsonObject["data"]
 
         return result
     }
@@ -762,10 +759,7 @@ export class PAResourcesIssuer {
         if (jsonObject == null) return null
         const result = new PAResourcesIssuer()
 
-        result.data = []
-        if (jsonObject["data"] != null)
-            for (const i in jsonObject["data"])
-                result.data.push(jsonObject["data"][i])
+        result.data = jsonObject["data"]
         result.friendlyName = jsonObject["friendlyName"]
         result.attributes = []
         if (jsonObject["attributes"] != null)
@@ -793,10 +787,7 @@ export class TAChallenge {
         if (jsonObject == null) return null
         const result = new TAChallenge()
 
-        result.data = []
-        if (jsonObject["data"] != null)
-            for (const i in jsonObject["data"])
-                result.data.push(jsonObject["data"][i])
+        result.data = jsonObject["data"]
         result.auxPCD = jsonObject["auxPCD"]
         result.challengePICC = jsonObject["challengePICC"]
         result.hashPK = jsonObject["hashPK"]
@@ -909,10 +900,7 @@ export class ImageInputData {
         result.width = jsonObject["width"]
         result.height = jsonObject["height"]
         result.bitmap = jsonObject["bitmap"]
-        result.imgBytes = []
-        if (jsonObject["imgBytes"] != null)
-            for (const i in jsonObject["imgBytes"])
-                result.imgBytes.push(jsonObject["imgBytes"][i])
+        result.imgBytes = jsonObject["imgBytes"]
 
         return result
     }
@@ -1000,128 +988,6 @@ export class DocumentReaderValidity {
     }
 }
 
-export class FaceApiParams {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new FaceApiParams()
-
-        result.url = jsonObject["url"]
-        result.mode = jsonObject["mode"]
-        result.searchParams = Search.fromJson(jsonObject["searchParams"])
-        result.threshold = jsonObject["threshold"]
-        result.serviceTimeout = jsonObject["serviceTimeout"]
-        result.proxy = jsonObject["proxy"]
-        result.proxyPassword = jsonObject["proxyPassword"]
-        result.proxyType = jsonObject["proxyType"]
-
-        return result
-    }
-}
-
-export class Search {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new Search()
-
-        result.limit = jsonObject["limit"]
-        result.threshold = jsonObject["threshold"]
-        result.groupIds = []
-        if (jsonObject["groupIds"] != null)
-            for (const i in jsonObject["groupIds"])
-                result.groupIds.push(jsonObject["groupIds"][i])
-
-        return result
-    }
-}
-
-export class AuthenticityParams {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new AuthenticityParams()
-
-        result.useLivenessCheck = jsonObject["useLivenessCheck"]
-        result.livenessParams = LivenessParams.fromJson(jsonObject["livenessParams"])
-        result.checkUVLuminiscence = jsonObject["checkUVLuminiscence"]
-        result.checkIRB900 = jsonObject["checkIRB900"]
-        result.checkImagePatterns = jsonObject["checkImagePatterns"]
-        result.checkFibers = jsonObject["checkFibers"]
-        result.checkExtMRZ = jsonObject["checkExtMRZ"]
-        result.checkExtOCR = jsonObject["checkExtOCR"]
-        result.checkAxial = jsonObject["checkAxial"]
-        result.checkBarcodeFormat = jsonObject["checkBarcodeFormat"]
-        result.checkIRVisibility = jsonObject["checkIRVisibility"]
-        result.checkIPI = jsonObject["checkIPI"]
-        result.checkPhotoEmbedding = jsonObject["checkPhotoEmbedding"]
-        result.checkPhotoComparison = jsonObject["checkPhotoComparison"]
-        result.checkLetterScreen = jsonObject["checkLetterScreen"]
-
-        return result
-    }
-}
-
-export class LivenessParams {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new LivenessParams()
-
-        result.checkOVI = jsonObject["checkOVI"]
-        result.checkMLI = jsonObject["checkMLI"]
-        result.checkHolo = jsonObject["checkHolo"]
-        result.checkED = jsonObject["checkED"]
-
-        return result
-    }
-}
-
-export class ImageQA {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new ImageQA()
-
-        result.dpiThreshold = jsonObject["dpiThreshold"]
-        result.angleThreshold = jsonObject["angleThreshold"]
-        result.focusCheck = jsonObject["focusCheck"]
-        result.glaresCheck = jsonObject["glaresCheck"]
-        result.colornessCheck = jsonObject["colornessCheck"]
-        result.screenCapture = jsonObject["screenCapture"]
-        result.documentPositionIndent = jsonObject["documentPositionIndent"]
-        result.expectedPass = []
-        if (jsonObject["expectedPass"] != null)
-            for (const i in jsonObject["expectedPass"])
-                result.expectedPass.push(jsonObject["expectedPass"][i])
-        result.glaresCheckParams = GlaresCheckParams.fromJson(jsonObject["glaresCheckParams"])
-        result.brightnessThreshold = jsonObject["brightnessThreshold"]
-
-        return result
-    }
-}
-
-export class GlaresCheckParams {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new GlaresCheckParams()
-
-        result.imgMarginPart = jsonObject["imgMarginPart"]
-        result.maxGlaringPart = jsonObject["maxGlaringPart"]
-
-        return result
-    }
-}
-
-export class RFIDParams {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new RFIDParams()
-
-        result.paIgnoreNotificationCodes = []
-        if (jsonObject["paIgnoreNotificationCodes"] != null)
-            for (const i in jsonObject["paIgnoreNotificationCodes"])
-                result.paIgnoreNotificationCodes.push(jsonObject["paIgnoreNotificationCodes"][i])
-
-        return result
-    }
-}
-
 export class OnlineProcessingConfig {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
@@ -1129,7 +995,7 @@ export class OnlineProcessingConfig {
 
         result.mode = jsonObject["mode"]
         result.url = jsonObject["url"]
-        result.processParam = jsonObject["processParam"]
+        result.processParam = ProcessParams.fromJson(jsonObject["processParam"])
         result.imageFormat = jsonObject["imageFormat"]
         result.imageCompressionQuality = jsonObject["imageCompressionQuality"]
 
@@ -1348,6 +1214,592 @@ export class DocumentReaderResults {
         result.status = DocumentReaderResultsStatus.fromJson(jsonObject["status"])
         result.vdsncData = VDSNCData.fromJson(jsonObject["vdsncData"])
         result.transactionInfo = TransactionInfo.fromJson(jsonObject["transactionInfo"])
+
+        return result
+    }
+}
+
+export class CameraSize {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new CameraSize()
+
+        result.width = jsonObject["width"]
+        result.height = jsonObject["height"]
+
+        return result
+    }
+}
+
+export class Functionality {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new Functionality()
+
+        result.pictureOnBoundsReady = jsonObject["pictureOnBoundsReady"]
+        result.showTorchButton = jsonObject["showTorchButton"]
+        result.showCloseButton = jsonObject["showCloseButton"]
+        result.videoCaptureMotionControl = jsonObject["videoCaptureMotionControl"]
+        result.showCaptureButton = jsonObject["showCaptureButton"]
+        result.showChangeFrameButton = jsonObject["showChangeFrameButton"]
+        result.showSkipNextPageButton = jsonObject["showSkipNextPageButton"]
+        result.useAuthenticator = jsonObject["useAuthenticator"]
+        result.skipFocusingFrames = jsonObject["skipFocusingFrames"]
+        result.showCameraSwitchButton = jsonObject["showCameraSwitchButton"]
+        result.displayMetadata = jsonObject["displayMetadata"]
+        result.isZoomEnabled = jsonObject["isZoomEnabled"]
+        result.isCameraTorchCheckDisabled = jsonObject["isCameraTorchCheckDisabled"]
+        result.recordScanningProcess = jsonObject["recordScanningProcess"]
+        result.manualMultipageMode = jsonObject["manualMultipageMode"]
+        result.singleResult = jsonObject["singleResult"]
+        result.showCaptureButtonDelayFromDetect = jsonObject["showCaptureButtonDelayFromDetect"]
+        result.showCaptureButtonDelayFromStart = jsonObject["showCaptureButtonDelayFromStart"]
+        result.rfidTimeout = jsonObject["rfidTimeout"]
+        result.forcePagesCount = jsonObject["forcePagesCount"]
+        result.orientation = jsonObject["orientation"]
+        result.captureMode = jsonObject["captureMode"]
+        result.cameraMode = jsonObject["cameraMode"]
+        result.cameraPositionIOS = jsonObject["cameraPositionIOS"]
+        result.cameraFrame = jsonObject["cameraFrame"]
+        result.btDeviceName = jsonObject["btDeviceName"]
+        result.zoomFactor = jsonObject["zoomFactor"]
+        result.exposure = jsonObject["exposure"]
+        result.excludedCamera2Models = []
+        if (jsonObject["excludedCamera2Models"] != null)
+            for (const i in jsonObject["excludedCamera2Models"])
+                result.excludedCamera2Models.push(jsonObject["excludedCamera2Models"][i])
+        result.cameraSize = CameraSize.fromJson(jsonObject["cameraSize"])
+        result.videoSessionPreset = jsonObject["videoSessionPreset"]
+
+        return result
+    }
+}
+
+export class GlaresCheckParams {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new GlaresCheckParams()
+
+        result.imgMarginPart = jsonObject["imgMarginPart"]
+        result.maxGlaringPart = jsonObject["maxGlaringPart"]
+
+        return result
+    }
+}
+
+export class ImageQA {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new ImageQA()
+
+        result.dpiThreshold = jsonObject["dpiThreshold"]
+        result.angleThreshold = jsonObject["angleThreshold"]
+        result.focusCheck = jsonObject["focusCheck"]
+        result.glaresCheck = jsonObject["glaresCheck"]
+        result.glaresCheckParams = GlaresCheckParams.fromJson(jsonObject["glaresCheckParams"])
+        result.colornessCheck = jsonObject["colornessCheck"]
+        result.screenCapture = jsonObject["screenCapture"]
+        result.expectedPass = []
+        if (jsonObject["expectedPass"] != null)
+            for (const i in jsonObject["expectedPass"])
+                result.expectedPass.push(jsonObject["expectedPass"][i])
+        result.documentPositionIndent = jsonObject["documentPositionIndent"]
+        result.brightnessThreshold = jsonObject["brightnessThreshold"]
+
+        return result
+    }
+}
+
+export class RFIDParams {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new RFIDParams()
+
+        result.paIgnoreNotificationCodes = []
+        if (jsonObject["paIgnoreNotificationCodes"] != null)
+            for (const i in jsonObject["paIgnoreNotificationCodes"])
+                result.paIgnoreNotificationCodes.push(jsonObject["paIgnoreNotificationCodes"][i])
+
+        return result
+    }
+}
+
+export class FaceApiSearchParams {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new FaceApiSearchParams()
+
+        result.limit = jsonObject["limit"]
+        result.threshold = jsonObject["threshold"]
+        result.groupIds = []
+        if (jsonObject["groupIds"] != null)
+            for (const i in jsonObject["groupIds"])
+                result.groupIds.push(jsonObject["groupIds"][i])
+
+        return result
+    }
+}
+
+export class FaceApiParams {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new FaceApiParams()
+
+        result.url = jsonObject["url"]
+        result.mode = jsonObject["mode"]
+        result.threshold = jsonObject["threshold"]
+        result.searchParams = FaceApiSearchParams.fromJson(jsonObject["searchParams"])
+        result.serviceTimeout = jsonObject["serviceTimeout"]
+        result.proxy = jsonObject["proxy"]
+        result.proxyPassword = jsonObject["proxyPassword"]
+        result.proxyType = jsonObject["proxyType"]
+
+        return result
+    }
+}
+
+export class BackendProcessingConfig {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new BackendProcessingConfig()
+
+        result.url = jsonObject["url"]
+        result.httpHeaders = jsonObject["httpHeaders"]
+        result.rfidServerSideChipVerification = jsonObject["rfidServerSideChipVerification"]
+
+        return result
+    }
+}
+
+export class LivenessParams {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new LivenessParams()
+
+        result.checkOVI = jsonObject["checkOVI"]
+        result.checkMLI = jsonObject["checkMLI"]
+        result.checkHolo = jsonObject["checkHolo"]
+        result.checkED = jsonObject["checkED"]
+
+        return result
+    }
+}
+
+export class AuthenticityParams {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new AuthenticityParams()
+
+        result.useLivenessCheck = jsonObject["useLivenessCheck"]
+        result.livenessParams = LivenessParams.fromJson(jsonObject["livenessParams"])
+        result.checkUVLuminiscence = jsonObject["checkUVLuminiscence"]
+        result.checkIRB900 = jsonObject["checkIRB900"]
+        result.checkImagePatterns = jsonObject["checkImagePatterns"]
+        result.checkFibers = jsonObject["checkFibers"]
+        result.checkExtMRZ = jsonObject["checkExtMRZ"]
+        result.checkExtOCR = jsonObject["checkExtOCR"]
+        result.checkAxial = jsonObject["checkAxial"]
+        result.checkBarcodeFormat = jsonObject["checkBarcodeFormat"]
+        result.checkIRVisibility = jsonObject["checkIRVisibility"]
+        result.checkIPI = jsonObject["checkIPI"]
+        result.checkPhotoEmbedding = jsonObject["checkPhotoEmbedding"]
+        result.checkPhotoComparison = jsonObject["checkPhotoComparison"]
+        result.checkLetterScreen = jsonObject["checkLetterScreen"]
+
+        return result
+    }
+}
+
+export class ProcessParams {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new ProcessParams()
+
+        result.multipageProcessing = jsonObject["multipageProcessing"]
+        result.logs = jsonObject["logs"]
+        result.debugSaveImages = jsonObject["debugSaveImages"]
+        result.debugSaveLogs = jsonObject["debugSaveLogs"]
+        result.returnUncroppedImage = jsonObject["returnUncroppedImage"]
+        result.uvTorchEnabled = jsonObject["uvTorchEnabled"]
+        result.debugSaveCroppedImages = jsonObject["debugSaveCroppedImages"]
+        result.disableFocusingCheck = jsonObject["disableFocusingCheck"]
+        result.debugSaveRFIDSession = jsonObject["debugSaveRFIDSession"]
+        result.doublePageSpread = jsonObject["doublePageSpread"]
+        result.manualCrop = jsonObject["manualCrop"]
+        result.integralImage = jsonObject["integralImage"]
+        result.returnCroppedBarcode = jsonObject["returnCroppedBarcode"]
+        result.checkRequiredTextFields = jsonObject["checkRequiredTextFields"]
+        result.depersonalizeLog = jsonObject["depersonalizeLog"]
+        result.generateDoublePageSpreadImage = jsonObject["generateDoublePageSpreadImage"]
+        result.alreadyCropped = jsonObject["alreadyCropped"]
+        result.matchTextFieldMask = jsonObject["matchTextFieldMask"]
+        result.updateOCRValidityByGlare = jsonObject["updateOCRValidityByGlare"]
+        result.noGraphics = jsonObject["noGraphics"]
+        result.multiDocOnImage = jsonObject["multiDocOnImage"]
+        result.forceReadMrzBeforeLocate = jsonObject["forceReadMrzBeforeLocate"]
+        result.parseBarcodes = jsonObject["parseBarcodes"]
+        result.shouldReturnPackageForReprocess = jsonObject["shouldReturnPackageForReprocess"]
+        result.disablePerforationOCR = jsonObject["disablePerforationOCR"]
+        result.respectImageQuality = jsonObject["respectImageQuality"]
+        result.splitNames = jsonObject["splitNames"]
+        result.useFaceApi = jsonObject["useFaceApi"]
+        result.useAuthenticityCheck = jsonObject["useAuthenticityCheck"]
+        result.checkHologram = jsonObject["checkHologram"]
+        result.barcodeParserType = jsonObject["barcodeParserType"]
+        result.perspectiveAngle = jsonObject["perspectiveAngle"]
+        result.minDPI = jsonObject["minDPI"]
+        result.imageDpiOutMax = jsonObject["imageDpiOutMax"]
+        result.forceDocFormat = jsonObject["forceDocFormat"]
+        result.shiftExpiryDate = jsonObject["shiftExpiryDate"]
+        result.minimalHolderAge = jsonObject["minimalHolderAge"]
+        result.imageOutputMaxHeight = jsonObject["imageOutputMaxHeight"]
+        result.imageOutputMaxWidth = jsonObject["imageOutputMaxWidth"]
+        result.processAuth = jsonObject["processAuth"]
+        result.convertCase = jsonObject["convertCase"]
+        result.measureSystem = jsonObject["measureSystem"]
+        result.forceDocID = jsonObject["forceDocID"]
+        result.dateFormat = jsonObject["dateFormat"]
+        result.scenario = jsonObject["scenario"]
+        result.captureButtonScenario = jsonObject["captureButtonScenario"]
+        result.sessionLogFolder = jsonObject["sessionLogFolder"]
+        result.timeout = jsonObject["timeout"]
+        result.timeoutFromFirstDetect = jsonObject["timeoutFromFirstDetect"]
+        result.timeoutFromFirstDocType = jsonObject["timeoutFromFirstDocType"]
+        result.documentAreaMin = jsonObject["documentAreaMin"]
+        result.documentIDList = []
+        if (jsonObject["documentIDList"] != null)
+            for (const i in jsonObject["documentIDList"])
+                result.documentIDList.push(jsonObject["documentIDList"][i])
+        result.barcodeTypes = []
+        if (jsonObject["barcodeTypes"] != null)
+            for (const i in jsonObject["barcodeTypes"])
+                result.barcodeTypes.push(jsonObject["barcodeTypes"][i])
+        result.fieldTypesFilter = []
+        if (jsonObject["fieldTypesFilter"] != null)
+            for (const i in jsonObject["fieldTypesFilter"])
+                result.fieldTypesFilter.push(jsonObject["fieldTypesFilter"][i])
+        result.resultTypeOutput = []
+        if (jsonObject["resultTypeOutput"] != null)
+            for (const i in jsonObject["resultTypeOutput"])
+                result.resultTypeOutput.push(jsonObject["resultTypeOutput"][i])
+        result.documentGroupFilter = []
+        if (jsonObject["documentGroupFilter"] != null)
+            for (const i in jsonObject["documentGroupFilter"])
+                result.documentGroupFilter.push(jsonObject["documentGroupFilter"][i])
+        result.lcidIgnoreFilter = []
+        if (jsonObject["lcidIgnoreFilter"] != null)
+            for (const i in jsonObject["lcidIgnoreFilter"])
+                result.lcidIgnoreFilter.push(jsonObject["lcidIgnoreFilter"][i])
+        result.lcidFilter = []
+        if (jsonObject["lcidFilter"] != null)
+            for (const i in jsonObject["lcidFilter"])
+                result.lcidFilter.push(jsonObject["lcidFilter"][i])
+        result.mrzFormatsFilter = []
+        if (jsonObject["mrzFormatsFilter"] != null)
+            for (const i in jsonObject["mrzFormatsFilter"])
+                result.mrzFormatsFilter.push(jsonObject["mrzFormatsFilter"][i])
+        result.imageQA = ImageQA.fromJson(jsonObject["imageQA"])
+        result.rfidParams = RFIDParams.fromJson(jsonObject["rfidParams"])
+        result.faceApiParams = FaceApiParams.fromJson(jsonObject["faceApiParams"])
+        result.backendProcessingConfig = BackendProcessingConfig.fromJson(jsonObject["backendProcessingConfig"])
+        result.authenticityParams = AuthenticityParams.fromJson(jsonObject["authenticityParams"])
+        result.customParams = jsonObject["customParams"]
+
+        return result
+    }
+}
+
+export class Font {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new Font()
+
+        result.name = jsonObject["name"]
+        result.size = jsonObject["size"]
+        result.style = jsonObject["style"]
+
+        return result
+    }
+}
+
+export class CustomizationColors {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new CustomizationColors()
+
+        result.rfidProcessingScreenBackground = jsonObject["rfidProcessingScreenBackground"]
+        result.rfidProcessingScreenHintLabelText = jsonObject["rfidProcessingScreenHintLabelText"]
+        result.rfidProcessingScreenHintLabelBackground = jsonObject["rfidProcessingScreenHintLabelBackground"]
+        result.rfidProcessingScreenProgressLabelText = jsonObject["rfidProcessingScreenProgressLabelText"]
+        result.rfidProcessingScreenProgressBar = jsonObject["rfidProcessingScreenProgressBar"]
+        result.rfidProcessingScreenProgressBarBackground = jsonObject["rfidProcessingScreenProgressBarBackground"]
+        result.rfidProcessingScreenResultLabelText = jsonObject["rfidProcessingScreenResultLabelText"]
+
+        return result
+    }
+}
+
+export class CustomizationFonts {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new CustomizationFonts()
+
+        result.rfidProcessingScreenHintLabel = Font.fromJson(jsonObject["rfidProcessingScreenHintLabel"])
+        result.rfidProcessingScreenProgressLabel = Font.fromJson(jsonObject["rfidProcessingScreenProgressLabel"])
+        result.rfidProcessingScreenResultLabel = Font.fromJson(jsonObject["rfidProcessingScreenResultLabel"])
+
+        return result
+    }
+}
+
+export class CustomizationImages {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new CustomizationImages()
+
+        result.rfidProcessingScreenFailureImage = jsonObject["rfidProcessingScreenFailureImage"]
+
+        return result
+    }
+}
+
+export class Customization {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new Customization()
+
+        result.showStatusMessages = jsonObject["showStatusMessages"]
+        result.showResultStatusMessages = jsonObject["showResultStatusMessages"]
+        result.showHelpAnimation = jsonObject["showHelpAnimation"]
+        result.showNextPageAnimation = jsonObject["showNextPageAnimation"]
+        result.showBackgroundMask = jsonObject["showBackgroundMask"]
+        result.cameraFrameBorderWidth = jsonObject["cameraFrameBorderWidth"]
+        result.cameraFrameLineLength = jsonObject["cameraFrameLineLength"]
+        result.cameraFrameOffsetWidth = jsonObject["cameraFrameOffsetWidth"]
+        result.cameraFrameShapeType = jsonObject["cameraFrameShapeType"]
+        result.status = jsonObject["status"]
+        result.resultStatus = jsonObject["resultStatus"]
+        result.cameraFrameDefaultColor = jsonObject["cameraFrameDefaultColor"]
+        result.cameraFrameActiveColor = jsonObject["cameraFrameActiveColor"]
+        result.statusTextColor = jsonObject["statusTextColor"]
+        result.resultStatusTextColor = jsonObject["resultStatusTextColor"]
+        result.resultStatusBackgroundColor = jsonObject["resultStatusBackgroundColor"]
+        result.multipageButtonBackgroundColor = jsonObject["multipageButtonBackgroundColor"]
+        result.tintColor = jsonObject["tintColor"]
+        result.activityIndicatorColor = jsonObject["activityIndicatorColor"]
+        result.statusBackgroundColor = jsonObject["statusBackgroundColor"]
+        result.cameraPreviewBackgroundColor = jsonObject["cameraPreviewBackgroundColor"]
+        result.statusPositionMultiplier = jsonObject["statusPositionMultiplier"]
+        result.resultStatusPositionMultiplier = jsonObject["resultStatusPositionMultiplier"]
+        result.toolbarSize = jsonObject["toolbarSize"]
+        result.backgroundMaskAlpha = jsonObject["backgroundMaskAlpha"]
+        result.customStatusPositionMultiplier = jsonObject["customStatusPositionMultiplier"]
+        result.livenessAnimationPositionMultiplier = jsonObject["livenessAnimationPositionMultiplier"]
+        result.cameraFrameVerticalPositionMultiplier = jsonObject["cameraFrameVerticalPositionMultiplier"]
+        result.cameraFrameLandscapeAspectRatio = jsonObject["cameraFrameLandscapeAspectRatio"]
+        result.cameraFramePortraitAspectRatio = jsonObject["cameraFramePortraitAspectRatio"]
+        result.cameraFrameCornerRadius = jsonObject["cameraFrameCornerRadius"]
+        result.multipageAnimationFrontImage = jsonObject["multipageAnimationFrontImage"]
+        result.multipageAnimationBackImage = jsonObject["multipageAnimationBackImage"]
+        result.borderBackgroundImage = jsonObject["borderBackgroundImage"]
+        result.helpAnimationImage = jsonObject["helpAnimationImage"]
+        result.closeButtonImage = jsonObject["closeButtonImage"]
+        result.captureButtonImage = jsonObject["captureButtonImage"]
+        result.cameraSwitchButtonImage = jsonObject["cameraSwitchButtonImage"]
+        result.torchButtonOnImage = jsonObject["torchButtonOnImage"]
+        result.torchButtonOffImage = jsonObject["torchButtonOffImage"]
+        result.changeFrameButtonExpandImage = jsonObject["changeFrameButtonExpandImage"]
+        result.changeFrameButtonCollapseImage = jsonObject["changeFrameButtonCollapseImage"]
+        result.livenessAnimationImage = jsonObject["livenessAnimationImage"]
+        result.statusTextFont = Font.fromJson(jsonObject["statusTextFont"])
+        result.resultStatusTextFont = Font.fromJson(jsonObject["resultStatusTextFont"])
+        result.customLabelStatus = jsonObject["customLabelStatus"]
+        result.cameraFrameLineCap = jsonObject["cameraFrameLineCap"]
+        result.uiCustomizationLayer = jsonObject["uiCustomizationLayer"]
+        result.helpAnimationImageContentMode = jsonObject["helpAnimationImageContentMode"]
+        result.multipageAnimationFrontImageContentMode = jsonObject["multipageAnimationFrontImageContentMode"]
+        result.multipageAnimationBackImageContentMode = jsonObject["multipageAnimationBackImageContentMode"]
+        result.livenessAnimationImageContentMode = jsonObject["livenessAnimationImageContentMode"]
+        result.borderBackgroundImageContentMode = jsonObject["borderBackgroundImageContentMode"]
+        result.helpAnimationImageMatrix = []
+        if (jsonObject["helpAnimationImageMatrix"] != null)
+            for (const i in jsonObject["helpAnimationImageMatrix"])
+                result.helpAnimationImageMatrix.push(jsonObject["helpAnimationImageMatrix"][i])
+        result.multipageAnimationFrontImageMatrix = []
+        if (jsonObject["multipageAnimationFrontImageMatrix"] != null)
+            for (const i in jsonObject["multipageAnimationFrontImageMatrix"])
+                result.multipageAnimationFrontImageMatrix.push(jsonObject["multipageAnimationFrontImageMatrix"][i])
+        result.multipageAnimationBackImageMatrix = []
+        if (jsonObject["multipageAnimationBackImageMatrix"] != null)
+            for (const i in jsonObject["multipageAnimationBackImageMatrix"])
+                result.multipageAnimationBackImageMatrix.push(jsonObject["multipageAnimationBackImageMatrix"][i])
+        result.livenessAnimationImageMatrix = []
+        if (jsonObject["livenessAnimationImageMatrix"] != null)
+            for (const i in jsonObject["livenessAnimationImageMatrix"])
+                result.livenessAnimationImageMatrix.push(jsonObject["livenessAnimationImageMatrix"][i])
+        result.borderBackgroundImageMatrix = []
+        if (jsonObject["borderBackgroundImageMatrix"] != null)
+            for (const i in jsonObject["borderBackgroundImageMatrix"])
+                result.borderBackgroundImageMatrix.push(jsonObject["borderBackgroundImageMatrix"][i])
+        result.colors = CustomizationColors.fromJson(jsonObject["colors"])
+        result.fonts = CustomizationFonts.fromJson(jsonObject["fonts"])
+        result.images = CustomizationImages.fromJson(jsonObject["images"])
+
+        return result
+    }
+}
+
+export class EDLDataGroups {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new EDLDataGroups()
+
+        result.DG1 = jsonObject["DG1"]
+        result.DG2 = jsonObject["DG2"]
+        result.DG3 = jsonObject["DG3"]
+        result.DG4 = jsonObject["DG4"]
+        result.DG5 = jsonObject["DG5"]
+        result.DG6 = jsonObject["DG6"]
+        result.DG7 = jsonObject["DG7"]
+        result.DG8 = jsonObject["DG8"]
+        result.DG9 = jsonObject["DG9"]
+        result.DG10 = jsonObject["DG10"]
+        result.DG11 = jsonObject["DG11"]
+        result.DG12 = jsonObject["DG12"]
+        result.DG13 = jsonObject["DG13"]
+        result.DG14 = jsonObject["DG14"]
+
+        return result
+    }
+}
+
+export class EPassportDataGroups {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new EPassportDataGroups()
+
+        result.DG1 = jsonObject["DG1"]
+        result.DG2 = jsonObject["DG2"]
+        result.DG3 = jsonObject["DG3"]
+        result.DG4 = jsonObject["DG4"]
+        result.DG5 = jsonObject["DG5"]
+        result.DG6 = jsonObject["DG6"]
+        result.DG7 = jsonObject["DG7"]
+        result.DG8 = jsonObject["DG8"]
+        result.DG9 = jsonObject["DG9"]
+        result.DG10 = jsonObject["DG10"]
+        result.DG11 = jsonObject["DG11"]
+        result.DG12 = jsonObject["DG12"]
+        result.DG13 = jsonObject["DG13"]
+        result.DG14 = jsonObject["DG14"]
+        result.DG15 = jsonObject["DG15"]
+        result.DG16 = jsonObject["DG16"]
+
+        return result
+    }
+}
+
+export class EIDDataGroups {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new EIDDataGroups()
+
+        result.DG1 = jsonObject["DG1"]
+        result.DG2 = jsonObject["DG2"]
+        result.DG3 = jsonObject["DG3"]
+        result.DG4 = jsonObject["DG4"]
+        result.DG5 = jsonObject["DG5"]
+        result.DG6 = jsonObject["DG6"]
+        result.DG7 = jsonObject["DG7"]
+        result.DG8 = jsonObject["DG8"]
+        result.DG9 = jsonObject["DG9"]
+        result.DG10 = jsonObject["DG10"]
+        result.DG11 = jsonObject["DG11"]
+        result.DG12 = jsonObject["DG12"]
+        result.DG13 = jsonObject["DG13"]
+        result.DG14 = jsonObject["DG14"]
+        result.DG15 = jsonObject["DG15"]
+        result.DG16 = jsonObject["DG16"]
+        result.DG17 = jsonObject["DG17"]
+        result.DG18 = jsonObject["DG18"]
+        result.DG19 = jsonObject["DG19"]
+        result.DG20 = jsonObject["DG20"]
+        result.DG21 = jsonObject["DG21"]
+
+        return result
+    }
+}
+
+export class RFIDScenario {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new RFIDScenario()
+
+        result.paceStaticBinding = jsonObject["paceStaticBinding"]
+        result.onlineTA = jsonObject["onlineTA"]
+        result.writeEid = jsonObject["writeEid"]
+        result.universalAccessRights = jsonObject["universalAccessRights"]
+        result.authorizedRestrictedIdentification = jsonObject["authorizedRestrictedIdentification"]
+        result.auxVerificationCommunityID = jsonObject["auxVerificationCommunityID"]
+        result.auxVerificationDateOfBirth = jsonObject["auxVerificationDateOfBirth"]
+        result.skipAA = jsonObject["skipAA"]
+        result.strictProcessing = jsonObject["strictProcessing"]
+        result.pkdDSCertPriority = jsonObject["pkdDSCertPriority"]
+        result.pkdUseExternalCSCA = jsonObject["pkdUseExternalCSCA"]
+        result.trustedPKD = jsonObject["trustedPKD"]
+        result.passiveAuth = jsonObject["passiveAuth"]
+        result.useSFI = jsonObject["useSFI"]
+        result.readEPassport = jsonObject["readEPassport"]
+        result.readEID = jsonObject["readEID"]
+        result.readEDL = jsonObject["readEDL"]
+        result.authorizedSTSignature = jsonObject["authorizedSTSignature"]
+        result.authorizedSTQSignature = jsonObject["authorizedSTQSignature"]
+        result.authorizedWriteDG17 = jsonObject["authorizedWriteDG17"]
+        result.authorizedWriteDG18 = jsonObject["authorizedWriteDG18"]
+        result.authorizedWriteDG19 = jsonObject["authorizedWriteDG19"]
+        result.authorizedWriteDG20 = jsonObject["authorizedWriteDG20"]
+        result.authorizedWriteDG21 = jsonObject["authorizedWriteDG21"]
+        result.authorizedVerifyAge = jsonObject["authorizedVerifyAge"]
+        result.authorizedVerifyCommunityID = jsonObject["authorizedVerifyCommunityID"]
+        result.authorizedPrivilegedTerminal = jsonObject["authorizedPrivilegedTerminal"]
+        result.authorizedCANAllowed = jsonObject["authorizedCANAllowed"]
+        result.authorizedPINManagement = jsonObject["authorizedPINManagement"]
+        result.authorizedInstallCert = jsonObject["authorizedInstallCert"]
+        result.authorizedInstallQCert = jsonObject["authorizedInstallQCert"]
+        result.applyAmendments = jsonObject["applyAmendments"]
+        result.autoSettings = jsonObject["autoSettings"]
+        result.proceedReadingAlways = jsonObject["proceedReadingAlways"]
+        result.readingBuffer = jsonObject["readingBuffer"]
+        result.onlineTAToSignDataType = jsonObject["onlineTAToSignDataType"]
+        result.defaultReadingBufferSize = jsonObject["defaultReadingBufferSize"]
+        result.signManagementAction = jsonObject["signManagementAction"]
+        result.profilerType = jsonObject["profilerType"]
+        result.authProcType = jsonObject["authProcType"]
+        result.baseSMProcedure = jsonObject["baseSMProcedure"]
+        result.pacePasswordType = jsonObject["pacePasswordType"]
+        result.terminalType = jsonObject["terminalType"]
+        result.password = jsonObject["password"]
+        result.pkdPA = jsonObject["pkdPA"]
+        result.pkdEAC = jsonObject["pkdEAC"]
+        result.mrz = jsonObject["mrz"]
+        result.eSignPINDefault = jsonObject["eSignPINDefault"]
+        result.eSignPINNewValue = jsonObject["eSignPINNewValue"]
+        result.eDLDataGroups = EDLDataGroups.fromJson(jsonObject["eDLDataGroups"])
+        result.ePassportDataGroups = EPassportDataGroups.fromJson(jsonObject["ePassportDataGroups"])
+        result.eIDDataGroups = EIDDataGroups.fromJson(jsonObject["eIDDataGroups"])
+
+        return result
+    }
+}
+
+export class PrepareProgress {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new PrepareProgress()
+
+        result.downloadedBytes = jsonObject["downloadedBytes"]
+        result.totalBytes = jsonObject["totalBytes"]
+        result.progress = jsonObject["progress"]
 
         return result
     }
@@ -1708,11 +2160,6 @@ export const eRPRM_ResultType = {
     RPRM_RESULT_TYPE_EXT_PORTRAIT: 35,
 }
 
-export const CameraTypes = {
-    FRONT: "front",
-    BACK: "back",
-}
-
 export const FrameShapeType = {
     LINE: 0,
     CORNER: 1,
@@ -1723,6 +2170,12 @@ export const eRFID_BaudRate = {
     rfbr_212: 2,
     rfbr_424: 4,
     rfbr_848: 8,
+}
+
+export const LineCap = {
+    BUTT: 0,
+    ROUND: 1,
+    SQUARE: 2,
 }
 
 export const eRPRM_FieldVerificationResult = {
@@ -1830,6 +2283,11 @@ export const DocumentReaderErrorCodes = {
     LICENSE_DATABASE_INCORRECT: 23,
     INVALID_TCC_PARAMS: 24,
     RFID_IN_PROGRESS: 25,
+    START_BACKEND_PROCESSING: 26,
+    ADD_DATA_TO_PACKAGE: 27,
+    FINALIZE_FAILED: 28,
+    CAMERA_NO_PERMISSION: 29,
+    CAMERA_NOT_AVAILABLE: 30,
     NATIVE_JAVA_EXCEPTION: 1000,
     BACKEND_ONLINE_PROCESSING: 303,
     WRONG_INPUT: 400,
@@ -1912,6 +2370,12 @@ export const eRFID_NotificationCodes = {
     RFID_NOTIFICATION_BIOMETRICS_EMPTY_PLACEHOLDER: 0x000F0000,
 }
 
+export const CameraPosition = {
+    UNSPECIFIED: 0,
+    BACK: 1,
+    FRONT: 2,
+}
+
 export const eRFID_Password_Type = {
     PPT_UNKNOWN: 0,
     PPT_MRZ: 1,
@@ -1920,6 +2384,23 @@ export const eRFID_Password_Type = {
     PPT_PUK: 4,
     PPT_PIN_ESIGN: 5,
     PPT_SAI: 6,
+}
+
+export const ViewContentMode = {
+    UNKNOWN: -1,
+    SCALE_TO_FILL: 0,
+    SCALE_ASPECT_FIT: 1,
+    SCALE_ASPECT_FILL: 2,
+    REDRAW: 3,
+    CENTER: 4,
+    TOP: 5,
+    BOTTOM: 6,
+    LEFT: 7,
+    RIGHT: 8,
+    TOP_LEFT: 9,
+    TOP_RIGHT: 10,
+    BOTTOM_LEFT: 11,
+    BOTTOM_RIGHT: 12,
 }
 
 export const BarcodeResult = {
@@ -2076,6 +2557,12 @@ export const eCheckDiagnose = {
     LAS_INK_INVALID_LINES_FREQUENCY: 230,
     DOC_LIVENESS_ELECTRONIC_DEVICE_DETECTED: 240,
     DOC_LIVENESS_INVALID_BARCODE_BACKGROUND: 241,
+    ICAO_IDB_BASE_32_ERROR: 243,
+    ICAO_IDB_ZIPPED_ERROR: 244,
+    ICAO_IDB_MESSAGE_ZONE_EMPTY: 245,
+    ICAO_IDB_SIGNATURE_MUST_BE_PRESENT: 246,
+    ICAO_IDB_SIGNATURE_MUST_NOT_BE_PRESENT: 247,
+    ICAO_IDB_CERTIFICATE_MUST_NOT_BE_PRESENT: 248,
     LAST_DIAGNOSE_VALUE: 250,
 }
 
@@ -2350,6 +2837,10 @@ export const eLDS_ParsingNotificationCodes = {
     NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_CANT_FIND_CSCA: 0x92000117,
     NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_REVOKED: 0x92000118,
     NTF_LDS_AUTH_ML_SIGNER_INFO_CERTIFICATE_SIGNATURE_INVALID: 0x92000119,
+    NTF_LDS_ICAO_CERTIFICATE_CHAIN_COUNTRY_NON_MATCHING: 0x90000250,
+    NTF_LDS_ICAO_CERTIFICATE_VISUAL_MRZ_COUNTRY_NON_MATCHING: 0x90000251,
+    NTF_LDS_MRZ_COUNTRYCODE_VISUALMRZ_NON_MATCHING: 0x00022019,
+    NTF_LDS_ICAO_CERTIFICATE_MRZ_COUNTRY_NON_MATCHING: 0x90000252,
 }
 
 export const eImageQualityCheckType = {
@@ -2761,6 +3252,22 @@ export const eGraphicFieldType = {
 
 export const RegDeviceConfigType = {
     DEVICE_7310: "DEVICE_7310",
+}
+
+export const CaptureSessionPreset = {
+    UNKNOWN: -1,
+    LOW: 0,
+    MEDIUM: 1,
+    HIGH: 2,
+    PHOTO: 3,
+    INPUT_PRIORITY: 4,
+    PRESET_1280x720: 6,
+    PRESET_1920x1080: 7,
+    PRESET_3840x2160: 8,
+    FRAME_960x540: 9,
+    FRAME_1280x720: 10,
+    PRESET_640x480: 12,
+    PRESET_352x288: 13,
 }
 
 export const CameraMode = {
@@ -3510,6 +4017,7 @@ export const eVisualFieldType = {
     FT_ADDRESS_BUILDING_TYPE: 680,
     FT_DATE_OF_RETIREMENT: 681,
     FT_DOCUMENT_STATUS: 682,
+    FT_SIGNATURE: 683,
 }
 
 export const DocReaderOrientation = {
@@ -3712,61 +4220,6 @@ export const eRPRM_Lights = {
     RPRM_LIGHT_WHITE_FULL_OVD: (6 | 67108864),
 }
 
-export const LineCap = {
-    Butt: 0,
-    Round: 1,
-    Square: 2,
-}
-
-export const UIInterfaceOrientationMask = {
-    Portrait: 0,
-    LandscapeLeft: 1,
-    LandscapeRight: 2,
-    PortraitUpsideDown: 3,
-    Landscape: 4,
-    All: 5,
-    AllButUpsideDown: 6,
-}
-
-export const AVCaptureSessionPreset = {
-    Low: 0,
-    Medium: 1,
-    High: 2,
-    Photo: 3,
-    InputPriority: 4,
-    QHD960x540: 5,
-    Hd1280x720: 6,
-    Hd1920x1080: 7,
-    Hd4K3840x2160: 8,
-    IFrame960x540: 9,
-    IFrame1280x720: 10,
-    Qvga320x240: 11,
-    Vga640x480: 12,
-    Cif352x288: 13,
-}
-
-export const AVCaptureDevicePosition = {
-    Front: 0,
-    Back: 1,
-    Unspecified: 2,
-}
-
-export const UIViewContentMode = {
-    ScaleToFill: 0,
-    ScaleAspectFit: 1,
-    ScaleAspectFill: 2,
-    Redraw: 3,
-    Center: 4,
-    Top: 5,
-    Bottom: 6,
-    Left: 7,
-    Right: 8,
-    TopLeft: 9,
-    TopRight: 10,
-    BottomLeft: 11,
-    BottomRight: 12,
-}
-
 export const Enum = {
    FontStyle,
    eRPRM_Authenticity,
@@ -3776,9 +4229,9 @@ export const Enum = {
    eRFID_CertificateType,
    RGLMeasureSystem,
    eRPRM_ResultType,
-   CameraTypes,
    FrameShapeType,
    eRFID_BaudRate,
+   LineCap,
    eRPRM_FieldVerificationResult,
    DocReaderAction,
    eProcessGLCommands,
@@ -3788,7 +4241,9 @@ export const Enum = {
    ScenarioIdentifier,
    eRFID_AccessControl_ProcedureType,
    eRFID_NotificationCodes,
+   CameraPosition,
    eRFID_Password_Type,
+   ViewContentMode,
    BarcodeResult,
    eSignManagementAction,
    eCheckDiagnose,
@@ -3812,6 +4267,7 @@ export const Enum = {
    ImageFormat,
    eGraphicFieldType,
    RegDeviceConfigType,
+   CaptureSessionPreset,
    CameraMode,
    CaptureMode,
    eCheckResult,
@@ -3823,11 +4279,6 @@ export const Enum = {
    CustomizationImage,
    DocReaderFrame,
    eRPRM_Lights,
-   LineCap,
-   UIInterfaceOrientationMask,
-   AVCaptureSessionPreset,
-   AVCaptureDevicePosition,
-   UIViewContentMode,
 }
 
 const DocumentReader = {}
@@ -3848,6 +4299,7 @@ DocumentReader.getCustomization = (successCallback, errorCallback) => RNRegulaDo
 DocumentReader.setCustomization = (customization, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setCustomization", [customization], successCallback, errorCallback)
 DocumentReader.getRfidScenario = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidScenario", [], successCallback, errorCallback)
 DocumentReader.setRfidScenario = (rfidScenario, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidScenario", [rfidScenario], successCallback, errorCallback)
+DocumentReader.resetConfiguration = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "resetConfiguration", [], successCallback, errorCallback)
 DocumentReader.initializeReader = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReader", [config], successCallback, errorCallback)
 DocumentReader.initializeReaderWithBleDeviceConfig = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "initializeReaderWithBleDeviceConfig", [config], successCallback, errorCallback)
 DocumentReader.deinitializeReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "deinitializeReader", [], successCallback, errorCallback)
@@ -3861,8 +4313,8 @@ DocumentReader.recognize = (config, successCallback, errorCallback) => RNRegulaD
 DocumentReader.startNewPage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewPage", [], successCallback, errorCallback)
 DocumentReader.stopScanner = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopScanner", [], successCallback, errorCallback)
 DocumentReader.startRFIDReader = (requestPACertificates, requestTACertificates, requestTASignature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startRFIDReader", [requestPACertificates, requestTACertificates, requestTASignature], successCallback, errorCallback)
-DocumentReader.stopRFIDReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopRFIDReader", [], successCallback, errorCallback)
 DocumentReader.readRFID = (requestPACertificates, requestTACertificates, requestTASignature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "readRFID", [requestPACertificates, requestTACertificates, requestTASignature], successCallback, errorCallback)
+DocumentReader.stopRFIDReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopRFIDReader", [], successCallback, errorCallback)
 DocumentReader.providePACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "providePACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTASignature = (signature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTASignature", [signature], successCallback, errorCallback)
@@ -3877,7 +4329,7 @@ DocumentReader.getAvailableScenarios = (successCallback, errorCallback) => RNReg
 DocumentReader.getIsRFIDAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getIsRFIDAvailableForUse", [], successCallback, errorCallback)
 DocumentReader.getDocReaderVersion = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocReaderVersion", [], successCallback, errorCallback)
 DocumentReader.getDocReaderDocumentsDatabase = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocReaderDocumentsDatabase", [], successCallback, errorCallback)
-DocumentReader.getTranslation = (className, value, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getTranslation", [className, value], successCallback, errorCallback)
 DocumentReader.finalizePackage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "finalizePackage", [], successCallback, errorCallback)
+DocumentReader.getTranslation = (className, value, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getTranslation", [className, value], successCallback, errorCallback)
 
 export default DocumentReader
