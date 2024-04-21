@@ -1,6 +1,6 @@
 import React from 'react'
 import { SafeAreaView, ScrollView, StyleSheet, Text, View, NativeEventEmitter, Platform, TouchableOpacity, Image, Button } from 'react-native'
-import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader, DocumentReaderResults, DocumentReaderNotification, ScannerConfig, RecognizeConfig, DocReaderConfig } from '@regulaforensics/react-native-document-reader-api'
+import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader, DocumentReaderResults, DocumentReaderNotification, ScannerConfig, RecognizeConfig, DocReaderConfig, Functionality } from '@regulaforensics/react-native-document-reader-api'
 import * as RNFS from 'react-native-fs'
 import RadioGroup, { RadioButtonProps } from 'react-native-radio-buttons-group'
 import { CheckBox } from '@rneui/themed'
@@ -33,9 +33,9 @@ export default class App extends React.Component<IProps, IState> {
   onInitialized() {
     this.setState({ fullName: "Ready" })
 
-    DocumentReader.setFunctionality({
-      showCaptureButton: true
-    }, _ => { }, _ => { })
+    var functionality = new Functionality()
+    functionality.showCaptureButton = true
+    DocumentReader.setFunctionality(functionality, _ => { }, _ => { })
   }
 
   constructor(props: {} | Readonly<{}>) {
@@ -103,7 +103,7 @@ export default class App extends React.Component<IProps, IState> {
         this.hideRfidUI()
         this.displayResults(completion.results!)
       }
-    } else if (this.actionSuccess(completion.action!))
+    } else if (this.actionSuccess(completion.action!) || this.actionError(completion.action!))
       this.handleResults(completion.results!)
   }
 

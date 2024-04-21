@@ -27,7 +27,8 @@ import com.regula.documentreader.Convert.byteArrayFromBase64
 import com.regula.documentreader.api.DocumentReader.Instance
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion
-import com.regula.documentreader.api.completions.IDocumentReaderPrepareCompletion
+import com.regula.documentreader.api.completions.IDocumentReaderPrepareDbCompletion
+import com.regula.documentreader.api.completions.model.PrepareProgress
 import com.regula.documentreader.api.completions.rfid.IRfidPKDCertificateCompletion
 import com.regula.documentreader.api.completions.rfid.IRfidReaderCompletion
 import com.regula.documentreader.api.completions.rfid.IRfidReaderRequest
@@ -89,6 +90,7 @@ fun <T> argsNullable(index: Int): T? {
         val intValue = value.toInt()
         return intValue as T
     }
+    if (args[index].toString() == "null") return null
     return args[index] as T
 }
 
@@ -121,6 +123,7 @@ fun exec(action: String?, arguments: ReadableArray, successCallback: com.faceboo
         "setCustomization" -> setCustomization(args(0))
         "getRfidScenario" -> getRfidScenario(callback)
         "setRfidScenario" -> setRfidScenario(args(0))
+        "resetConfiguration" -> resetConfiguration()
         "initializeReader" -> initializeReader(callback, args(0))
         "initializeReaderWithBleDeviceConfig" -> initializeReaderWithBleDeviceConfig(callback, args(0))
         "deinitializeReader" -> deinitializeReader(callback)
@@ -134,8 +137,8 @@ fun exec(action: String?, arguments: ReadableArray, successCallback: com.faceboo
         "startNewPage" -> startNewPage(callback)
         "stopScanner" -> stopScanner(callback)
         "startRFIDReader" -> startRFIDReader(args(0), args(1), args(2))
-        "stopRFIDReader" -> stopRFIDReader(callback)
         "readRFID" -> readRFID(args(0), args(1), args(2))
+        "stopRFIDReader" -> stopRFIDReader(callback)
         "providePACertificates" -> providePACertificates(callback, argsNullable(0))
         "provideTACertificates" -> provideTACertificates(callback, argsNullable(0))
         "provideTASignature" -> provideTASignature(callback, args(0))
@@ -167,12 +170,12 @@ fun exec(action: String?, arguments: ReadableArray, successCallback: com.faceboo
         "graphicFieldImageByTypeSourcePageIndexLight" -> graphicFieldImageByTypeSourcePageIndexLight(callback, args(0), args(1), args(2), args(3), args(4))
         "containers" -> containers(callback, args(0), args(1))
         "encryptedContainers" -> encryptedContainers(callback, args(0))
-        "getTranslation" -> getTranslation(callback, args(0), args(1))
         "finalizePackage" -> finalizePackage(callback)
+        "getTranslation" -> getTranslation(callback, args(0), args(1))
     }
 }
 
-fun <T> args(index: Int): T = argsNullable(index)!!
+inline fun <reified T> args(index: Int) = argsNullable<T>(index)!!
 interface Callback {
     fun success(data: Any? = "")
     fun error(message: String)
@@ -236,6 +239,8 @@ fun setCustomization(customization: JSONObject) = setCustomization(Instance().cu
 fun getRfidScenario(callback: Callback) = callback.success(getRfidScenario(Instance().rfidScenario()))
 
 fun setRfidScenario(rfidScenario: JSONObject) = setRfidScenario(Instance().rfidScenario(), rfidScenario)
+
+fun resetConfiguration() = Instance().resetConfiguration()
 
 fun initializeReader(callback: Callback, config: JSONObject) = Instance().initializeReader(context, docReaderConfigFromJSON(config), getInitCompletion(callback))
 
@@ -344,9 +349,8 @@ fun startBluetoothService() = startBluetoothService(
     { sendEvent(bleOnDeviceReadyEvent) }
 )
 
-@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 fun setLocalizationDictionary(dictionary: JSONObject) {
-    localizationCallbacks = LocalizationCallbacks { dictionary.optString(it, null) }
+    localizationCallbacks = LocalizationCallbacks { if (dictionary.has(it)) dictionary.getString(it) else null }
     Instance().setLocalizationCallback(localizationCallbacks!!)
 }
 
@@ -427,15 +431,9 @@ val rfidReaderCompletion = object : IRfidReaderCompletion() {
     override fun onProgress(notification: DocumentReaderNotification) = sendEvent(rfidOnProgressEvent, generateDocumentReaderNotification(notification))
 }
 
-fun getPrepareCompletion(callback: Callback) = object : IDocumentReaderPrepareCompletion {
-    override fun onPrepareProgressChanged(progress: Int) {
-        if (progress != databaseDownloadProgress) {
-            sendEvent(eventDatabaseProgress, progress)
-            databaseDownloadProgress = progress
-        }
-    }
-
-    override fun onPrepareCompleted(s: Boolean, e: DocumentReaderException?) = callback.success(generateSuccessCompletion(s, e))
+fun getPrepareCompletion(callback: Callback) = object : IDocumentReaderPrepareDbCompletion() {
+    override fun onPrepareProgressChanged(progress: PrepareProgress) = sendEvent(eventDatabaseProgress, generatePrepareProgress(progress))
+    override fun onPrepareCompleted(success: Boolean, error: DocumentReaderException?) = callback.success(generateSuccessCompletion(success, error))
 }
 
 fun getInitCompletion(callback: Callback) = IDocumentReaderInitCompletion { success, error ->
