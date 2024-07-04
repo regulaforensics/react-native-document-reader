@@ -2115,6 +2115,8 @@ export class ProcessParams {
     imageOutputMaxWidth?: number
     processAuth?: number
     convertCase?: number
+    logLevel?: string
+    mrzDetectMode?: number
     measureSystem?: number
     forceDocID?: number
     dateFormat?: string
@@ -2185,6 +2187,8 @@ export class ProcessParams {
         result.imageOutputMaxWidth = jsonObject["imageOutputMaxWidth"]
         result.processAuth = jsonObject["processAuth"]
         result.convertCase = jsonObject["convertCase"]
+        result.logLevel = jsonObject["logLevel"]
+        result.mrzDetectMode = jsonObject["mrzDetectMode"]
         result.measureSystem = jsonObject["measureSystem"]
         result.forceDocID = jsonObject["forceDocID"]
         result.dateFormat = jsonObject["dateFormat"]
@@ -2790,6 +2794,7 @@ export const CustomizationColor = {
     RFID_PROCESSING_SCREEN_PROGRESS_BAR: "rfidProcessingScreenProgressBar",
     RFID_PROCESSING_SCREEN_PROGRESS_BAR_BACKGROUND: "rfidProcessingScreenProgressBarBackground",
     RFID_PROCESSING_SCREEN_RESULT_LABEL_TEXT: "rfidProcessingScreenResultLabelText",
+    RFID_PROCESSING_SCREEN_LOADING_BAR: "rfidProcessingScreenLoadingBar",
 }
 
 export const eRFID_ErrorCodes = {
@@ -3436,6 +3441,9 @@ export const eCheckDiagnose = {
     FIELD_POS_CORRECTOR_HIGHLIGHT_IR: 80,
     FIELD_POS_CORRECTOR_GLARES_IN_PHOTO_AREA: 81,
     FIELD_POS_CORRECTOR_PHOTO_REPLACED: 82,
+    FIELD_POS_CORRECTOR_LANDMARKS_CHECK_ERROR: 83,
+    FIELD_POS_CORRECTOR_FACE_PRESENCE_CHECK_ERROR: 84,
+    FIELD_POS_CORRECTOR_FACE_ABSENCE_CHECK_ERROR: 85,
     OVI_IR_INVISIBLE: 90,
     OVI_INSUFFICIENT_AREA: 91,
     OVI_COLOR_INVARIABLE: 92,
@@ -3507,7 +3515,7 @@ export const eCheckDiagnose = {
     ICAO_IDB_SIGNATURE_MUST_BE_PRESENT: 246,
     ICAO_IDB_SIGNATURE_MUST_NOT_BE_PRESENT: 247,
     ICAO_IDB_CERTIFICATE_MUST_NOT_BE_PRESENT: 248,
-    LAST_DIAGNOSE_VALUE: 250,
+    INCORRECT_OBJECT_COLOR: 250,
 }
 
 export const RFIDDelegate = {
@@ -3521,6 +3529,14 @@ export const TextProcessing = {
     ocUppercase: 1,
     ocLowercase: 2,
     ocCapital: 3,
+}
+
+export const LogLevel = {
+    FatalError: "FatalError",
+    Error: "Error",
+    Warning: "Warning",
+    Info: "Info",
+    Debug: "Debug",
 }
 
 export const AnimationImage = {
@@ -4962,6 +4978,14 @@ export const eVisualFieldType = {
     FT_DATE_OF_RETIREMENT: 681,
     FT_DOCUMENT_STATUS: 682,
     FT_SIGNATURE: 683,
+    FT_UNIQUE_CERTIFICATE_IDENTIFIER: 684,
+    FT_EMAIL: 685,
+    FT_DATE_OF_SPECIMEN_COLLECTION: 686,
+    FT_TYPE_OF_TESTING: 687,
+    FT_RESULT_OF_TESTING: 688,
+    FT_METHOD_OF_TESTING: 689,
+    FT_DIGITAL_TRAVEL_AUTHORIZATION_NUMBER: 690,
+    FT_DATE_OF_FIRST_POSITIVE_TEST_RESULT: 691,
 }
 
 export const DocReaderOrientation = {
@@ -5164,6 +5188,12 @@ export const eRPRM_Lights = {
     RPRM_LIGHT_WHITE_FULL_OVD: (6 | 67108864),
 }
 
+export const eMrzDetectionModes = {
+    DEFAULT: 0,
+    RESIZE_BINARIZE_WINDOW: 1,
+    BLUR_BEFORE_BINARIZATION: 2,
+}
+
 export const Enum = {
    FontStyle,
    eRPRM_Authenticity,
@@ -5193,6 +5223,7 @@ export const Enum = {
    eCheckDiagnose,
    RFIDDelegate,
    TextProcessing,
+   LogLevel,
    AnimationImage,
    ProcessingFinishedStatus,
    DocFormat,
@@ -5223,6 +5254,7 @@ export const Enum = {
    CustomizationImage,
    DocReaderFrame,
    eRPRM_Lights,
+   eMrzDetectionModes,
 }
 
 export default class DocumentReader {
@@ -5234,6 +5266,10 @@ export default class DocumentReader {
     static setRfidSessionStatus(status: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getTag(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setTag(tag: string | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getTenant(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setTenant(tenant: string | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getEnv(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setEnv(env: string | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getFunctionality(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setFunctionality(functionality: Functionality, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getProcessParams(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
