@@ -2127,6 +2127,7 @@ export class ProcessParams {
     timeoutFromFirstDetect?: number
     timeoutFromFirstDocType?: number
     documentAreaMin?: number
+    timeoutLiveness?: number
     documentIDList?: number[]
     barcodeTypes?: number[]
     fieldTypesFilter?: number[]
@@ -2199,6 +2200,7 @@ export class ProcessParams {
         result.timeoutFromFirstDetect = jsonObject["timeoutFromFirstDetect"]
         result.timeoutFromFirstDocType = jsonObject["timeoutFromFirstDocType"]
         result.documentAreaMin = jsonObject["documentAreaMin"]
+        result.timeoutLiveness = jsonObject["timeoutLiveness"]
         result.documentIDList = []
         if (jsonObject["documentIDList"] != null) {
             for (const i in jsonObject["documentIDList"]) {
@@ -2283,6 +2285,7 @@ export class CustomizationColors {
     rfidProcessingScreenProgressBar?: number
     rfidProcessingScreenProgressBarBackground?: number
     rfidProcessingScreenResultLabelText?: number
+    rfidProcessingScreenLoadingBar?: number
 
     static fromJson(jsonObject?: any): CustomizationColors | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2295,6 +2298,7 @@ export class CustomizationColors {
         result.rfidProcessingScreenProgressBar = jsonObject["rfidProcessingScreenProgressBar"]
         result.rfidProcessingScreenProgressBarBackground = jsonObject["rfidProcessingScreenProgressBarBackground"]
         result.rfidProcessingScreenResultLabelText = jsonObject["rfidProcessingScreenResultLabelText"]
+        result.rfidProcessingScreenLoadingBar = jsonObject["rfidProcessingScreenLoadingBar"]
 
         return result
     }
