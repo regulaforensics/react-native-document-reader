@@ -214,7 +214,7 @@ export default class App extends React.Component<IProps, IState> {
   }
 
   handleResults(results: DocumentReaderResults) {
-    if (this.state.doRfid && !isReadingRfid && results.chipPage != 0) {
+    if (this.state.doRfid && !isReadingRfid && results != null && results.chipPage != 0) {
       // this.customRFID()
       this.usualRFID()
     } else {
