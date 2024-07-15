@@ -23,7 +23,7 @@ RCT_EXPORT_MODULE();
              RGLWOnCustomButtonTappedEvent];
 }
 
-RGLWEventSender sendEvent = ^(NSString* _Nonnull event, id _Nullable data) {
+static RGLWEventSender sendEvent = ^(NSString* event, id data) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [RGLWPlugin sendEventWithName:event body:@{@"msg": data}];
     });
@@ -57,6 +57,14 @@ RCT_EXPORT_METHOD(exec:(NSString*)moduleName:(NSString*)action:(NSArray*)args:(R
         [self getTag :successCallback :errorCallback];
     else if([action isEqualToString:@"setTag"])
         [self setTag :[args objectAtIndex:0] :successCallback :errorCallback];
+    else if([action isEqualToString:@"getTenant"])
+        [self getTenant :successCallback :errorCallback];
+    else if([action isEqualToString:@"setTenant"])
+        [self setTenant :[args objectAtIndex:0] :successCallback :errorCallback];
+    else if([action isEqualToString:@"getEnv"])
+        [self getEnv :successCallback :errorCallback];
+    else if([action isEqualToString:@"setEnv"])
+        [self setEnv :[args objectAtIndex:0] :successCallback :errorCallback];
     else if([action isEqualToString:@"getFunctionality"])
         [self getFunctionality :successCallback :errorCallback];
     else if([action isEqualToString:@"setFunctionality"])
@@ -223,6 +231,22 @@ NSString* RGLWOnCustomButtonTappedEvent = @"onCustomButtonTappedEvent";
 
 - (void) setTag:(NSString*)tag :(RGLWCallback)successCallback :(RGLWCallback)errorCallback{
     [RGLDocReader.shared setTag:tag];
+}
+
+- (void) getTenant:(RGLWCallback)successCallback :(RGLWCallback)errorCallback{
+    successCallback([RGLDocReader.shared tenant]);
+}
+
+- (void) setTenant:(NSString*)tag :(RGLWCallback)successCallback :(RGLWCallback)errorCallback{
+    [RGLDocReader.shared setTenant:tag];
+}
+
+- (void) getEnv:(RGLWCallback)successCallback :(RGLWCallback)errorCallback{
+    successCallback([RGLDocReader.shared env]);
+}
+
+- (void) setEnv:(NSString*)tag :(RGLWCallback)successCallback :(RGLWCallback)errorCallback{
+    [RGLDocReader.shared setEnv:tag];
 }
 
 - (void) getFunctionality:(RGLWCallback)successCallback :(RGLWCallback)errorCallback{
