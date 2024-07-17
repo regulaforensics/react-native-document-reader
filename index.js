@@ -1445,6 +1445,7 @@ export class ProcessParams {
         result.useFaceApi = jsonObject["useFaceApi"]
         result.useAuthenticityCheck = jsonObject["useAuthenticityCheck"]
         result.checkHologram = jsonObject["checkHologram"]
+        result.generateNumericCodes = jsonObject["generateNumericCodes"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
