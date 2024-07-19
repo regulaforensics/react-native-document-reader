@@ -1445,6 +1445,7 @@ export class ProcessParams {
         result.useFaceApi = jsonObject["useFaceApi"]
         result.useAuthenticityCheck = jsonObject["useAuthenticityCheck"]
         result.checkHologram = jsonObject["checkHologram"]
+        result.generateNumericCodes = jsonObject["generateNumericCodes"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -1456,6 +1457,8 @@ export class ProcessParams {
         result.imageOutputMaxWidth = jsonObject["imageOutputMaxWidth"]
         result.processAuth = jsonObject["processAuth"]
         result.convertCase = jsonObject["convertCase"]
+        result.logLevel = jsonObject["logLevel"]
+        result.mrzDetectMode = jsonObject["mrzDetectMode"]
         result.measureSystem = jsonObject["measureSystem"]
         result.forceDocID = jsonObject["forceDocID"]
         result.dateFormat = jsonObject["dateFormat"]
@@ -1466,6 +1469,7 @@ export class ProcessParams {
         result.timeoutFromFirstDetect = jsonObject["timeoutFromFirstDetect"]
         result.timeoutFromFirstDocType = jsonObject["timeoutFromFirstDocType"]
         result.documentAreaMin = jsonObject["documentAreaMin"]
+        result.timeoutLiveness = jsonObject["timeoutLiveness"]
         result.documentIDList = []
         if (jsonObject["documentIDList"] != null)
             for (const i in jsonObject["documentIDList"])
@@ -1534,6 +1538,7 @@ export class CustomizationColors {
         result.rfidProcessingScreenProgressBar = jsonObject["rfidProcessingScreenProgressBar"]
         result.rfidProcessingScreenProgressBarBackground = jsonObject["rfidProcessingScreenProgressBarBackground"]
         result.rfidProcessingScreenResultLabelText = jsonObject["rfidProcessingScreenResultLabelText"]
+        result.rfidProcessingScreenLoadingBar = jsonObject["rfidProcessingScreenLoadingBar"]
 
         return result
     }
@@ -1846,6 +1851,7 @@ export const CustomizationColor = {
     RFID_PROCESSING_SCREEN_PROGRESS_BAR: "rfidProcessingScreenProgressBar",
     RFID_PROCESSING_SCREEN_PROGRESS_BAR_BACKGROUND: "rfidProcessingScreenProgressBarBackground",
     RFID_PROCESSING_SCREEN_RESULT_LABEL_TEXT: "rfidProcessingScreenResultLabelText",
+    RFID_PROCESSING_SCREEN_LOADING_BAR: "rfidProcessingScreenLoadingBar",
 }
 
 export const eRFID_ErrorCodes = {
@@ -2492,6 +2498,9 @@ export const eCheckDiagnose = {
     FIELD_POS_CORRECTOR_HIGHLIGHT_IR: 80,
     FIELD_POS_CORRECTOR_GLARES_IN_PHOTO_AREA: 81,
     FIELD_POS_CORRECTOR_PHOTO_REPLACED: 82,
+    FIELD_POS_CORRECTOR_LANDMARKS_CHECK_ERROR: 83,
+    FIELD_POS_CORRECTOR_FACE_PRESENCE_CHECK_ERROR: 84,
+    FIELD_POS_CORRECTOR_FACE_ABSENCE_CHECK_ERROR: 85,
     OVI_IR_INVISIBLE: 90,
     OVI_INSUFFICIENT_AREA: 91,
     OVI_COLOR_INVARIABLE: 92,
@@ -2563,7 +2572,7 @@ export const eCheckDiagnose = {
     ICAO_IDB_SIGNATURE_MUST_BE_PRESENT: 246,
     ICAO_IDB_SIGNATURE_MUST_NOT_BE_PRESENT: 247,
     ICAO_IDB_CERTIFICATE_MUST_NOT_BE_PRESENT: 248,
-    LAST_DIAGNOSE_VALUE: 250,
+    INCORRECT_OBJECT_COLOR: 250,
 }
 
 export const RFIDDelegate = {
@@ -2577,6 +2586,14 @@ export const TextProcessing = {
     ocUppercase: 1,
     ocLowercase: 2,
     ocCapital: 3,
+}
+
+export const LogLevel = {
+    FatalError: "FatalError",
+    Error: "Error",
+    Warning: "Warning",
+    Info: "Info",
+    Debug: "Debug",
 }
 
 export const AnimationImage = {
@@ -4018,6 +4035,14 @@ export const eVisualFieldType = {
     FT_DATE_OF_RETIREMENT: 681,
     FT_DOCUMENT_STATUS: 682,
     FT_SIGNATURE: 683,
+    FT_UNIQUE_CERTIFICATE_IDENTIFIER: 684,
+    FT_EMAIL: 685,
+    FT_DATE_OF_SPECIMEN_COLLECTION: 686,
+    FT_TYPE_OF_TESTING: 687,
+    FT_RESULT_OF_TESTING: 688,
+    FT_METHOD_OF_TESTING: 689,
+    FT_DIGITAL_TRAVEL_AUTHORIZATION_NUMBER: 690,
+    FT_DATE_OF_FIRST_POSITIVE_TEST_RESULT: 691,
 }
 
 export const DocReaderOrientation = {
@@ -4220,6 +4245,12 @@ export const eRPRM_Lights = {
     RPRM_LIGHT_WHITE_FULL_OVD: (6 | 67108864),
 }
 
+export const eMrzDetectionModes = {
+    DEFAULT: 0,
+    RESIZE_BINARIZE_WINDOW: 1,
+    BLUR_BEFORE_BINARIZATION: 2,
+}
+
 export const Enum = {
    FontStyle,
    eRPRM_Authenticity,
@@ -4249,6 +4280,7 @@ export const Enum = {
    eCheckDiagnose,
    RFIDDelegate,
    TextProcessing,
+   LogLevel,
    AnimationImage,
    ProcessingFinishedStatus,
    DocFormat,
@@ -4279,6 +4311,7 @@ export const Enum = {
    CustomizationImage,
    DocReaderFrame,
    eRPRM_Lights,
+   eMrzDetectionModes,
 }
 
 const DocumentReader = {}
@@ -4291,6 +4324,10 @@ DocumentReader.getRfidSessionStatus = (successCallback, errorCallback) => RNRegu
 DocumentReader.setRfidSessionStatus = (status, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidSessionStatus", [status], successCallback, errorCallback)
 DocumentReader.getTag = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getTag", [], successCallback, errorCallback)
 DocumentReader.setTag = (tag, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTag", [tag], successCallback, errorCallback)
+DocumentReader.getTenant = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getTenant", [], successCallback, errorCallback)
+DocumentReader.setTenant = (tenant, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTenant", [tenant], successCallback, errorCallback)
+DocumentReader.getEnv = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getEnv", [], successCallback, errorCallback)
+DocumentReader.setEnv = (env, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setEnv", [env], successCallback, errorCallback)
 DocumentReader.getFunctionality = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getFunctionality", [], successCallback, errorCallback)
 DocumentReader.setFunctionality = (functionality, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setFunctionality", [functionality], successCallback, errorCallback)
 DocumentReader.getProcessParams = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getProcessParams", [], successCallback, errorCallback)
