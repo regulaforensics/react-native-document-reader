@@ -23,9 +23,13 @@ RCT_EXPORT_MODULE();
              RGLWOnCustomButtonTappedEvent];
 }
 
+static bool hasListeners;
+-(void)startObserving { hasListeners = YES; }
+-(void)stopObserving { hasListeners = NO; }
+
 static RGLWEventSender sendEvent = ^(NSString* event, id data) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [RGLWPlugin sendEventWithName:event body:@{@"msg": data}];
+        if (hasListeners) [RGLWPlugin sendEventWithName:event body:@{@"msg": data}];
     });
 };
 
