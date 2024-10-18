@@ -1474,7 +1474,7 @@ export class DocumentReaderValidity {
 export class OnlineProcessingConfig {
     mode?: number
     url?: string
-    processParam?: ProcessParams
+    processParams?: ProcessParams
     imageFormat?: number
     imageCompressionQuality?: number
 
@@ -1484,7 +1484,7 @@ export class OnlineProcessingConfig {
 
         result.mode = jsonObject["mode"]
         result.url = jsonObject["url"]
-        result.processParam = ProcessParams.fromJson(jsonObject["processParam"])
+        result.processParams = ProcessParams.fromJson(jsonObject["processParams"])
         result.imageFormat = jsonObject["imageFormat"]
         result.imageCompressionQuality = jsonObject["imageCompressionQuality"]
 

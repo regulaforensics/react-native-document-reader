@@ -995,7 +995,7 @@ export class OnlineProcessingConfig {
 
         result.mode = jsonObject["mode"]
         result.url = jsonObject["url"]
-        result.processParam = ProcessParams.fromJson(jsonObject["processParam"])
+        result.processParams = ProcessParams.fromJson(jsonObject["processParams"])
         result.imageFormat = jsonObject["imageFormat"]
         result.imageCompressionQuality = jsonObject["imageCompressionQuality"]
 
