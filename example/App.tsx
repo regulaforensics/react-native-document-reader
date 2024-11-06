@@ -201,6 +201,11 @@ export default class App extends React.Component<IProps, IState> {
       if (value != null && value != "")
         this.setState({ portrait: { uri: "data:image/png;base64," + value } })
     }, (error: string) => console.log(error))
+
+    results.graphicFieldImageByTypeSource(Enum.eGraphicFieldType.GF_PORTRAIT, Enum.eRPRM_ResultType.RFID_RESULT_TYPE_RFID_IMAGE_DATA, (value: string | undefined) => {
+      if (value != null && value != "")
+        this.setState({ portrait: { uri: "data:image/png;base64," + value } })
+    }, (error: string) => console.log(error))
   }
 
   customRFID() {
