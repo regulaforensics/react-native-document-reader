@@ -1064,14 +1064,14 @@ export class RfidNotificationCompletion {
 }
 
 export class RegulaException {
-    errorCode?: number
+    code?: number
     message?: string
 
     static fromJson(jsonObject?: any): RegulaException | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
         const result = new RegulaException
 
-        result.errorCode = jsonObject["errorCode"]
+        result.code = jsonObject["code"]
         result.message = jsonObject["message"]
 
         return result
