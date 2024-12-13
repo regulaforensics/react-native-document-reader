@@ -1,5 +1,6 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
+#import <CoreBluetooth/CoreBluetooth.h>
 #import <DocumentReader/DocumentReader.h>
 #import "RGLWJSONConstructor.h"
 #import "RGLWConfig.h"
@@ -12,7 +13,9 @@ typedef void (^RGLWRFIDSignatureCallback)(NSData * _Nonnull signature);
                                                      RGLRecordScanningProcessDelegate,
                                                      RGLDocReaderRFIDDelegate,
                                                      RGLCustomizationActionDelegate,
-                                                     RGLDocReaderDatabaseFetchDelegate>
+                                                     RGLDocReaderDatabaseFetchDelegate,
+                                                     RGLBluetoothDelegate,
+                                                     CBCentralManagerDelegate>
 
 @property NSNumber* _Nonnull doRequestPACertificates;
 @property NSNumber* _Nonnull doRequestTACertificates;
