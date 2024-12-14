@@ -274,8 +274,6 @@ fun setCustomization(customization: ParamsCustomization, opts: JSONObject, conte
         "cameraFrameLineLength" -> editor.setCameraFrameLineLength(v.toInt())
         "cameraFrameShapeType" -> editor.setCameraFrameShapeType(v.toInt())
         "cameraFrameOffsetWidth" -> editor.setCameraFrameOffsetWidth(v.toInt())
-        "nextPageAnimationStartDelay" -> editor.setNextPageAnimationStartDelay(v.toInt())
-        "nextPageAnimationEndDelay" -> editor.setNextPageAnimationEndDelay(v.toInt())
         "activityIndicatorSize" -> editor.setActivityIndicatorSize(v.toInt())
         "status" -> editor.setStatus(v as String)
         "resultStatus" -> editor.setResultStatus(v as String)
@@ -300,6 +298,8 @@ fun setCustomization(customization: ParamsCustomization, opts: JSONObject, conte
         "cameraFramePortraitAspectRatio" -> editor.setCameraFramePortraitAspectRatio(v.toFloat())
         "cameraFrameCornerRadius" -> editor.setCameraFrameCornerRadius(v.toFloat())
         "livenessAnimationPositionMultiplier" -> editor.setLivenessAnimationPositionMultiplier(v.toFloat())
+        "nextPageAnimationStartDelay" -> editor.setNextPageAnimationStartDelay(v.toFloat())
+        "nextPageAnimationEndDelay" -> editor.setNextPageAnimationEndDelay(v.toFloat())
         "multipageAnimationFrontImage" -> editor.setMultipageAnimationFrontImage(v.toDrawable(context))
         "multipageAnimationBackImage" -> editor.setMultipageAnimationBackImage(v.toDrawable(context))
         "borderBackgroundImage" -> editor.setBorderBackgroundImage(v.toDrawable(context))
@@ -348,8 +348,6 @@ fun getCustomization(customization: ParamsCustomization) = mapOf(
     "cameraFrameLineLength" to customization.cameraFrameLineLength,
     "cameraFrameShapeType" to customization.cameraFrameShapeType,
     "cameraFrameOffsetWidth" to customization.cameraFrameOffsetWidth,
-    "nextPageAnimationStartDelay" to customization.nextPageAnimationStartDelay,
-    "nextPageAnimationEndDelay" to customization.nextPageAnimationEndDelay,
     "activityIndicatorSize" to customization.activityIndicatorSize,
     "status" to customization.status,
     "resultStatus" to customization.resultStatus,
@@ -374,6 +372,8 @@ fun getCustomization(customization: ParamsCustomization) = mapOf(
     "cameraFramePortraitAspectRatio" to customization.cameraFramePortraitAspectRatio,
     "cameraFrameCornerRadius" to customization.cameraFrameCornerRadius,
     "livenessAnimationPositionMultiplier" to customization.livenessAnimationPositionMultiplier,
+    "nextPageAnimationStartDelay" to customization.nextPageAnimationStartDelay,
+    "nextPageAnimationEndDelay" to customization.nextPageAnimationEndDelay,
     "multipageAnimationFrontImage" to customization.multipageAnimationFrontImage.toString(),
     "multipageAnimationBackImage" to customization.multipageAnimationBackImage.toString(),
     "borderBackgroundImage" to customization.borderBackgroundImage.toString(),
