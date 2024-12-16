@@ -1064,14 +1064,14 @@ export class RfidNotificationCompletion {
 }
 
 export class RegulaException {
-    errorCode?: number
+    code?: number
     message?: string
 
     static fromJson(jsonObject?: any): RegulaException | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
         const result = new RegulaException
 
-        result.errorCode = jsonObject["errorCode"]
+        result.code = jsonObject["code"]
         result.message = jsonObject["message"]
 
         return result
@@ -1540,6 +1540,7 @@ export class RecognizeConfig {
     scenario?: string
     onlineProcessingConfig?: OnlineProcessingConfig
     oneShotIdentification?: boolean
+    dtc?: string
     livePortrait?: string
     extPortrait?: string
     image?: string
@@ -1554,6 +1555,7 @@ export class RecognizeConfig {
         result.scenario = jsonObject["scenario"]
         result.onlineProcessingConfig = OnlineProcessingConfig.fromJson(jsonObject["onlineProcessingConfig"])
         result.oneShotIdentification = jsonObject["oneShotIdentification"]
+        result.dtc = jsonObject["dtc"]
         result.livePortrait = jsonObject["livePortrait"]
         result.extPortrait = jsonObject["extPortrait"]
         result.image = jsonObject["image"]
@@ -1652,6 +1654,7 @@ export class DocumentReaderResults {
     documentType?: DocumentReaderDocumentType[]
     status?: DocumentReaderResultsStatus
     vdsncData?: VDSNCData
+    dtcData?: string
     transactionInfo?: TransactionInfo
 
     textFieldValueByType(fieldType, successCallback, errorCallback) {
@@ -1779,6 +1782,7 @@ export class DocumentReaderResults {
         }
         result.status = DocumentReaderResultsStatus.fromJson(jsonObject["status"])
         result.vdsncData = VDSNCData.fromJson(jsonObject["vdsncData"])
+        result.dtcData = jsonObject["dtcData"]
         result.transactionInfo = TransactionInfo.fromJson(jsonObject["transactionInfo"])
 
         return result
@@ -2000,6 +2004,7 @@ export class BackendProcessingConfig {
     url?: string
     httpHeaders?: Record<string, string>
     rfidServerSideChipVerification?: boolean
+    timeoutConnection?: number
 
     static fromJson(jsonObject?: any): BackendProcessingConfig | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2008,6 +2013,7 @@ export class BackendProcessingConfig {
         result.url = jsonObject["url"]
         result.httpHeaders = jsonObject["httpHeaders"]
         result.rfidServerSideChipVerification = jsonObject["rfidServerSideChipVerification"]
+        result.timeoutConnection = jsonObject["timeoutConnection"]
 
         return result
     }
@@ -2100,11 +2106,15 @@ export class ProcessParams {
     shouldReturnPackageForReprocess?: boolean
     disablePerforationOCR?: boolean
     respectImageQuality?: boolean
+    strictImageQuality?: boolean
     splitNames?: boolean
     useFaceApi?: boolean
     useAuthenticityCheck?: boolean
     checkHologram?: boolean
     generateNumericCodes?: boolean
+    strictBarcodeDigitalSignatureCheck?: boolean
+    selectLongestNames?: boolean
+    generateDTCVC?: boolean
     barcodeParserType?: number
     perspectiveAngle?: number
     minDPI?: number
@@ -2174,11 +2184,15 @@ export class ProcessParams {
         result.shouldReturnPackageForReprocess = jsonObject["shouldReturnPackageForReprocess"]
         result.disablePerforationOCR = jsonObject["disablePerforationOCR"]
         result.respectImageQuality = jsonObject["respectImageQuality"]
+        result.strictImageQuality = jsonObject["strictImageQuality"]
         result.splitNames = jsonObject["splitNames"]
         result.useFaceApi = jsonObject["useFaceApi"]
         result.useAuthenticityCheck = jsonObject["useAuthenticityCheck"]
         result.checkHologram = jsonObject["checkHologram"]
         result.generateNumericCodes = jsonObject["generateNumericCodes"]
+        result.strictBarcodeDigitalSignatureCheck = jsonObject["strictBarcodeDigitalSignatureCheck"]
+        result.selectLongestNames = jsonObject["selectLongestNames"]
+        result.generateDTCVC = jsonObject["generateDTCVC"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -2345,6 +2359,8 @@ export class Customization {
     cameraFrameBorderWidth?: number
     cameraFrameLineLength?: number
     cameraFrameOffsetWidth?: number
+    nextPageAnimationStartDelay?: number
+    nextPageAnimationEndDelay?: number
     cameraFrameShapeType?: number
     status?: string
     resultStatus?: string
@@ -2358,6 +2374,7 @@ export class Customization {
     activityIndicatorColor?: number
     statusBackgroundColor?: number
     cameraPreviewBackgroundColor?: number
+    backgroundMaskColor?: number
     statusPositionMultiplier?: number
     resultStatusPositionMultiplier?: number
     toolbarSize?: number
@@ -2411,6 +2428,8 @@ export class Customization {
         result.cameraFrameBorderWidth = jsonObject["cameraFrameBorderWidth"]
         result.cameraFrameLineLength = jsonObject["cameraFrameLineLength"]
         result.cameraFrameOffsetWidth = jsonObject["cameraFrameOffsetWidth"]
+        result.nextPageAnimationStartDelay = jsonObject["nextPageAnimationStartDelay"]
+        result.nextPageAnimationEndDelay = jsonObject["nextPageAnimationEndDelay"]
         result.cameraFrameShapeType = jsonObject["cameraFrameShapeType"]
         result.status = jsonObject["status"]
         result.resultStatus = jsonObject["resultStatus"]
@@ -2424,6 +2443,7 @@ export class Customization {
         result.activityIndicatorColor = jsonObject["activityIndicatorColor"]
         result.statusBackgroundColor = jsonObject["statusBackgroundColor"]
         result.cameraPreviewBackgroundColor = jsonObject["cameraPreviewBackgroundColor"]
+        result.backgroundMaskColor = jsonObject["backgroundMaskColor"]
         result.statusPositionMultiplier = jsonObject["statusPositionMultiplier"]
         result.resultStatusPositionMultiplier = jsonObject["resultStatusPositionMultiplier"]
         result.toolbarSize = jsonObject["toolbarSize"]
@@ -2629,6 +2649,59 @@ export class EIDDataGroups {
     }
 }
 
+export class DTCDataGroups {
+    DG1?: boolean
+    DG2?: boolean
+    DG3?: boolean
+    DG4?: boolean
+    DG5?: boolean
+    DG6?: boolean
+    DG7?: boolean
+    DG8?: boolean
+    DG9?: boolean
+    DG10?: boolean
+    DG11?: boolean
+    DG12?: boolean
+    DG13?: boolean
+    DG14?: boolean
+    DG15?: boolean
+    DG16?: boolean
+    DG17?: boolean
+    DG18?: boolean
+    DG22?: boolean
+    DG23?: boolean
+    DG24?: boolean
+
+    static fromJson(jsonObject?: any): DTCDataGroups | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new DTCDataGroups
+
+        result.DG1 = jsonObject["DG1"]
+        result.DG2 = jsonObject["DG2"]
+        result.DG3 = jsonObject["DG3"]
+        result.DG4 = jsonObject["DG4"]
+        result.DG5 = jsonObject["DG5"]
+        result.DG6 = jsonObject["DG6"]
+        result.DG7 = jsonObject["DG7"]
+        result.DG8 = jsonObject["DG8"]
+        result.DG9 = jsonObject["DG9"]
+        result.DG10 = jsonObject["DG10"]
+        result.DG11 = jsonObject["DG11"]
+        result.DG12 = jsonObject["DG12"]
+        result.DG13 = jsonObject["DG13"]
+        result.DG14 = jsonObject["DG14"]
+        result.DG15 = jsonObject["DG15"]
+        result.DG16 = jsonObject["DG16"]
+        result.DG17 = jsonObject["DG17"]
+        result.DG18 = jsonObject["DG18"]
+        result.DG22 = jsonObject["DG22"]
+        result.DG23 = jsonObject["DG23"]
+        result.DG24 = jsonObject["DG24"]
+
+        return result
+    }
+}
+
 export class RFIDScenario {
     paceStaticBinding?: boolean
     onlineTA?: boolean
@@ -2664,6 +2737,8 @@ export class RFIDScenario {
     applyAmendments?: boolean
     autoSettings?: boolean
     proceedReadingAlways?: boolean
+    readDTC?: boolean
+    mrzStrictCheck?: boolean
     readingBuffer?: number
     onlineTAToSignDataType?: number
     defaultReadingBufferSize?: number
@@ -2679,9 +2754,11 @@ export class RFIDScenario {
     mrz?: string
     eSignPINDefault?: string
     eSignPINNewValue?: string
+    cardAccess?: string
     eDLDataGroups?: EDLDataGroups
     ePassportDataGroups?: EPassportDataGroups
     eIDDataGroups?: EIDDataGroups
+    dtcDataGroups?: DTCDataGroups
 
     static fromJson(jsonObject?: any): RFIDScenario | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2721,6 +2798,8 @@ export class RFIDScenario {
         result.applyAmendments = jsonObject["applyAmendments"]
         result.autoSettings = jsonObject["autoSettings"]
         result.proceedReadingAlways = jsonObject["proceedReadingAlways"]
+        result.readDTC = jsonObject["readDTC"]
+        result.mrzStrictCheck = jsonObject["mrzStrictCheck"]
         result.readingBuffer = jsonObject["readingBuffer"]
         result.onlineTAToSignDataType = jsonObject["onlineTAToSignDataType"]
         result.defaultReadingBufferSize = jsonObject["defaultReadingBufferSize"]
@@ -2736,9 +2815,11 @@ export class RFIDScenario {
         result.mrz = jsonObject["mrz"]
         result.eSignPINDefault = jsonObject["eSignPINDefault"]
         result.eSignPINNewValue = jsonObject["eSignPINNewValue"]
+        result.cardAccess = jsonObject["cardAccess"]
         result.eDLDataGroups = EDLDataGroups.fromJson(jsonObject["eDLDataGroups"])
         result.ePassportDataGroups = EPassportDataGroups.fromJson(jsonObject["ePassportDataGroups"])
         result.eIDDataGroups = EIDDataGroups.fromJson(jsonObject["eIDDataGroups"])
+        result.dtcDataGroups = DTCDataGroups.fromJson(jsonObject["dtcDataGroups"])
 
         return result
     }
@@ -3113,6 +3194,7 @@ export const eRPRM_ResultType = {
     RPRM_RESULT_TYPE_STATUS: 33,
     RPRM_RESULT_TYPE_PORTRAIT_COMPARISON: 34,
     RPRM_RESULT_TYPE_EXT_PORTRAIT: 35,
+    RFID_RESULT_TYPE_RFID_DTC_VC: 109,
 }
 
 export const FrameShapeType = {
@@ -3243,6 +3325,7 @@ export const DocumentReaderErrorCodes = {
     FINALIZE_FAILED: 28,
     CAMERA_NO_PERMISSION: 29,
     CAMERA_NOT_AVAILABLE: 30,
+    CANNOT_USE_CAMERA_IN_SCENARIO: 40,
     NATIVE_JAVA_EXCEPTION: 1000,
     BACKEND_ONLINE_PROCESSING: 303,
     WRONG_INPUT: 400,
@@ -3273,6 +3356,7 @@ export const ScenarioIdentifier = {
     SCENARIO_OCR_FREE: "OcrFree",
     SCENARIO_CREDIT_CARD: "CreditCard",
     SCENARIO_CAPTURE: "Capture",
+    SCENARIO_DTC: "DTC",
 }
 
 export const eRFID_AccessControl_ProcedureType = {
@@ -3391,6 +3475,17 @@ export const BarcodeResult = {
     IPDECODE_ERROR_LOADING_DEV_TABLE: -4512,
 }
 
+export const eRFID_Application_Type = {
+    ePASSPORT: 1,
+    eID: 2,
+    eSIGN: 3,
+    eDL: 4,
+    LDS2_TRAVEL_RECORDS: 5,
+    LDS2_VISA_RECORDS: 6,
+    LDS2_ADD_BIOMETRICS: 7,
+    eDTC_PC: 8,
+}
+
 export const eSignManagementAction = {
     smaUndefined: 0,
     smaCreatePIN: 1,
@@ -3444,12 +3539,15 @@ export const eCheckDiagnose = {
     FALSE_LUMINISCENCE_IN_BLANK: 55,
     BAD_AREA_IN_AXIAL: 60,
     FALSE_IPI_PARAMETERS: 65,
+    ENCRYPTED_IPI_NOT_FOUND: 66,
+    ENCRYPTED_IPI_DATA_DONT_MATCH: 67,
     FIELD_POS_CORRECTOR_HIGHLIGHT_IR: 80,
     FIELD_POS_CORRECTOR_GLARES_IN_PHOTO_AREA: 81,
     FIELD_POS_CORRECTOR_PHOTO_REPLACED: 82,
     FIELD_POS_CORRECTOR_LANDMARKS_CHECK_ERROR: 83,
     FIELD_POS_CORRECTOR_FACE_PRESENCE_CHECK_ERROR: 84,
     FIELD_POS_CORRECTOR_FACE_ABSENCE_CHECK_ERROR: 85,
+    CHD_FIELD_POS_CORRECTOR_INCORRECT_HEAD_POSITION: 86,
     OVI_IR_INVISIBLE: 90,
     OVI_INSUFFICIENT_AREA: 91,
     OVI_COLOR_INVARIABLE: 92,
@@ -3484,6 +3582,7 @@ export const eCheckDiagnose = {
     BARCODE_SIZE_PARAMS_ERROR: 142,
     NOT_ALL_BARCODES_READ: 143,
     GLARES_IN_BARCODE_AREA: 144,
+    CHD_NO_CERTIFICATE_FOR_DIGITAL_SIGNATURE_CHECK: 145,
     PORTRAIT_COMPARISON_PORTRAITS_DIFFER: 150,
     PORTRAIT_COMPARISON_NO_SERVICE_REPLY: 151,
     PORTRAIT_COMPARISON_SERVICE_ERROR: 152,
@@ -3513,6 +3612,7 @@ export const eCheckDiagnose = {
     OCR_QUALITY_INVALID_FONT: 221,
     OCR_QUALITY_INVALID_BACKGROUND: 222,
     LAS_INK_INVALID_LINES_FREQUENCY: 230,
+    CHD_DOC_LIVENESS_BLACK_AND_WHITE_COPY_DETECTED: 239,
     DOC_LIVENESS_ELECTRONIC_DEVICE_DETECTED: 240,
     DOC_LIVENESS_INVALID_BARCODE_BACKGROUND: 241,
     ICAO_IDB_BASE_32_ERROR: 243,
@@ -3907,6 +4007,8 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_BARCODE_VS_CAMERA: 49,
     SECURITY_FEATURE_TYPE_CHECK_DIGITAL_SIGNATURE: 50,
     SECURITY_FEATURE_TYPE_CONTACT_CHIP_CLASSIFICATION: 51,
+    SECURITY_FEATURE_TYPE_HEAD_POSITION_CHECK: 52,
+    SECURITY_FEATURE_TYPE_LIVENESS_BLACK_AND_WHITE_COPY_CHECK: 53,
 }
 
 export const OnlineMode = {
@@ -4287,6 +4389,11 @@ export const eRFID_DataFile_Type = {
     DFT_PASSPORT_SOD: 21,
     DFT_PASSPORT_CVCA: 22,
     DFT_PASSPORT_COM: 23,
+    DFT_DTC_DG17: 57,
+    DFT_DTC_DG18: 58,
+    DFT_DTC_DG22: 62,
+    DFT_DTC_DG23: 63,
+    DFT_DTC_DG24: 64,
     DFT_ID_DG1: 101,
     DFT_ID_DG2: 102,
     DFT_ID_DG3: 103,
@@ -4640,6 +4747,9 @@ export const eVisualFieldType = {
     FT_DOCUMENT_DISCRIMINATOR: 334,
     FT_DATA_DISCRIMINATOR: 335,
     FT_ISO_ISSUER_ID_NUMBER: 336,
+    FT_DTC_VERSION: 337,
+    FT_DTC_ID: 338,
+    FT_DTC_DATE_OF_EXPIRY: 339,
     FT_GNIB_NUMBER: 340,
     FT_DEPT_NUMBER: 341,
     FT_TELEX_CODE: 342,
@@ -4992,6 +5102,7 @@ export const eVisualFieldType = {
     FT_METHOD_OF_TESTING: 689,
     FT_DIGITAL_TRAVEL_AUTHORIZATION_NUMBER: 690,
     FT_DATE_OF_FIRST_POSITIVE_TEST_RESULT: 691,
+    FT_EF_CARD_ACCESS: 692,
 }
 
 export const DocReaderOrientation = {
@@ -5225,6 +5336,7 @@ export const Enum = {
    eRFID_Password_Type,
    ViewContentMode,
    BarcodeResult,
+   eRFID_Application_Type,
    eSignManagementAction,
    eCheckDiagnose,
    RFIDDelegate,
@@ -5266,8 +5378,6 @@ export const Enum = {
 export default class DocumentReader {
     static getDocumentReaderIsReady(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getDocumentReaderStatus(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static isAuthenticatorAvailableForUse(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static isBlePermissionsGranted(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getRfidSessionStatus(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setRfidSessionStatus(status: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getTag(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
@@ -5307,13 +5417,16 @@ export default class DocumentReader {
     static addPKDCertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewSession(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static startBluetoothService(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static connectBluetoothDevice(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setLocalizationDictionary(dictionary: Record<string, string>, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getLicense(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAvailableScenarios(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getIsRFIDAvailableForUse(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static isAuthenticatorRFIDAvailableForUse(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static isAuthenticatorAvailableForUse(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getDocReaderVersion(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getDocReaderDocumentsDatabase(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static finalizePackage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static endBackendTransaction(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getTranslation(className: string, value: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
 }

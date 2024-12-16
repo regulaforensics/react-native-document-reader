@@ -704,7 +704,7 @@ export class RegulaException {
         if (jsonObject == null) return null
         const result = new RegulaException()
 
-        result.errorCode = jsonObject["errorCode"]
+        result.code = jsonObject["code"]
         result.message = jsonObject["message"]
 
         return result
@@ -1042,6 +1042,7 @@ export class RecognizeConfig {
         result.scenario = jsonObject["scenario"]
         result.onlineProcessingConfig = OnlineProcessingConfig.fromJson(jsonObject["onlineProcessingConfig"])
         result.oneShotIdentification = jsonObject["oneShotIdentification"]
+        result.dtc = jsonObject["dtc"]
         result.livePortrait = jsonObject["livePortrait"]
         result.extPortrait = jsonObject["extPortrait"]
         result.image = jsonObject["image"]
@@ -1213,6 +1214,7 @@ export class DocumentReaderResults {
                 result.documentType.push(DocumentReaderDocumentType.fromJson(jsonObject["documentType"][i]))
         result.status = DocumentReaderResultsStatus.fromJson(jsonObject["status"])
         result.vdsncData = VDSNCData.fromJson(jsonObject["vdsncData"])
+        result.dtcData = jsonObject["dtcData"]
         result.transactionInfo = TransactionInfo.fromJson(jsonObject["transactionInfo"])
 
         return result
@@ -1366,6 +1368,7 @@ export class BackendProcessingConfig {
         result.url = jsonObject["url"]
         result.httpHeaders = jsonObject["httpHeaders"]
         result.rfidServerSideChipVerification = jsonObject["rfidServerSideChipVerification"]
+        result.timeoutConnection = jsonObject["timeoutConnection"]
 
         return result
     }
@@ -1441,11 +1444,15 @@ export class ProcessParams {
         result.shouldReturnPackageForReprocess = jsonObject["shouldReturnPackageForReprocess"]
         result.disablePerforationOCR = jsonObject["disablePerforationOCR"]
         result.respectImageQuality = jsonObject["respectImageQuality"]
+        result.strictImageQuality = jsonObject["strictImageQuality"]
         result.splitNames = jsonObject["splitNames"]
         result.useFaceApi = jsonObject["useFaceApi"]
         result.useAuthenticityCheck = jsonObject["useAuthenticityCheck"]
         result.checkHologram = jsonObject["checkHologram"]
         result.generateNumericCodes = jsonObject["generateNumericCodes"]
+        result.strictBarcodeDigitalSignatureCheck = jsonObject["strictBarcodeDigitalSignatureCheck"]
+        result.selectLongestNames = jsonObject["selectLongestNames"]
+        result.generateDTCVC = jsonObject["generateDTCVC"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -1581,6 +1588,8 @@ export class Customization {
         result.cameraFrameBorderWidth = jsonObject["cameraFrameBorderWidth"]
         result.cameraFrameLineLength = jsonObject["cameraFrameLineLength"]
         result.cameraFrameOffsetWidth = jsonObject["cameraFrameOffsetWidth"]
+        result.nextPageAnimationStartDelay = jsonObject["nextPageAnimationStartDelay"]
+        result.nextPageAnimationEndDelay = jsonObject["nextPageAnimationEndDelay"]
         result.cameraFrameShapeType = jsonObject["cameraFrameShapeType"]
         result.status = jsonObject["status"]
         result.resultStatus = jsonObject["resultStatus"]
@@ -1594,6 +1603,7 @@ export class Customization {
         result.activityIndicatorColor = jsonObject["activityIndicatorColor"]
         result.statusBackgroundColor = jsonObject["statusBackgroundColor"]
         result.cameraPreviewBackgroundColor = jsonObject["cameraPreviewBackgroundColor"]
+        result.backgroundMaskColor = jsonObject["backgroundMaskColor"]
         result.statusPositionMultiplier = jsonObject["statusPositionMultiplier"]
         result.resultStatusPositionMultiplier = jsonObject["resultStatusPositionMultiplier"]
         result.toolbarSize = jsonObject["toolbarSize"]
@@ -1735,6 +1745,37 @@ export class EIDDataGroups {
     }
 }
 
+export class DTCDataGroups {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DTCDataGroups()
+
+        result.DG1 = jsonObject["DG1"]
+        result.DG2 = jsonObject["DG2"]
+        result.DG3 = jsonObject["DG3"]
+        result.DG4 = jsonObject["DG4"]
+        result.DG5 = jsonObject["DG5"]
+        result.DG6 = jsonObject["DG6"]
+        result.DG7 = jsonObject["DG7"]
+        result.DG8 = jsonObject["DG8"]
+        result.DG9 = jsonObject["DG9"]
+        result.DG10 = jsonObject["DG10"]
+        result.DG11 = jsonObject["DG11"]
+        result.DG12 = jsonObject["DG12"]
+        result.DG13 = jsonObject["DG13"]
+        result.DG14 = jsonObject["DG14"]
+        result.DG15 = jsonObject["DG15"]
+        result.DG16 = jsonObject["DG16"]
+        result.DG17 = jsonObject["DG17"]
+        result.DG18 = jsonObject["DG18"]
+        result.DG22 = jsonObject["DG22"]
+        result.DG23 = jsonObject["DG23"]
+        result.DG24 = jsonObject["DG24"]
+
+        return result
+    }
+}
+
 export class RFIDScenario {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
@@ -1774,6 +1815,8 @@ export class RFIDScenario {
         result.applyAmendments = jsonObject["applyAmendments"]
         result.autoSettings = jsonObject["autoSettings"]
         result.proceedReadingAlways = jsonObject["proceedReadingAlways"]
+        result.readDTC = jsonObject["readDTC"]
+        result.mrzStrictCheck = jsonObject["mrzStrictCheck"]
         result.readingBuffer = jsonObject["readingBuffer"]
         result.onlineTAToSignDataType = jsonObject["onlineTAToSignDataType"]
         result.defaultReadingBufferSize = jsonObject["defaultReadingBufferSize"]
@@ -1789,9 +1832,11 @@ export class RFIDScenario {
         result.mrz = jsonObject["mrz"]
         result.eSignPINDefault = jsonObject["eSignPINDefault"]
         result.eSignPINNewValue = jsonObject["eSignPINNewValue"]
+        result.cardAccess = jsonObject["cardAccess"]
         result.eDLDataGroups = EDLDataGroups.fromJson(jsonObject["eDLDataGroups"])
         result.ePassportDataGroups = EPassportDataGroups.fromJson(jsonObject["ePassportDataGroups"])
         result.eIDDataGroups = EIDDataGroups.fromJson(jsonObject["eIDDataGroups"])
+        result.dtcDataGroups = DTCDataGroups.fromJson(jsonObject["dtcDataGroups"])
 
         return result
     }
@@ -2164,6 +2209,7 @@ export const eRPRM_ResultType = {
     RPRM_RESULT_TYPE_STATUS: 33,
     RPRM_RESULT_TYPE_PORTRAIT_COMPARISON: 34,
     RPRM_RESULT_TYPE_EXT_PORTRAIT: 35,
+    RFID_RESULT_TYPE_RFID_DTC_VC: 109,
 }
 
 export const FrameShapeType = {
@@ -2294,6 +2340,7 @@ export const DocumentReaderErrorCodes = {
     FINALIZE_FAILED: 28,
     CAMERA_NO_PERMISSION: 29,
     CAMERA_NOT_AVAILABLE: 30,
+    CANNOT_USE_CAMERA_IN_SCENARIO: 40,
     NATIVE_JAVA_EXCEPTION: 1000,
     BACKEND_ONLINE_PROCESSING: 303,
     WRONG_INPUT: 400,
@@ -2324,6 +2371,7 @@ export const ScenarioIdentifier = {
     SCENARIO_OCR_FREE: "OcrFree",
     SCENARIO_CREDIT_CARD: "CreditCard",
     SCENARIO_CAPTURE: "Capture",
+    SCENARIO_DTC: "DTC",
 }
 
 export const eRFID_AccessControl_ProcedureType = {
@@ -2442,6 +2490,17 @@ export const BarcodeResult = {
     IPDECODE_ERROR_LOADING_DEV_TABLE: -4512,
 }
 
+export const eRFID_Application_Type = {
+    ePASSPORT: 1,
+    eID: 2,
+    eSIGN: 3,
+    eDL: 4,
+    LDS2_TRAVEL_RECORDS: 5,
+    LDS2_VISA_RECORDS: 6,
+    LDS2_ADD_BIOMETRICS: 7,
+    eDTC_PC: 8,
+}
+
 export const eSignManagementAction = {
     smaUndefined: 0,
     smaCreatePIN: 1,
@@ -2495,12 +2554,15 @@ export const eCheckDiagnose = {
     FALSE_LUMINISCENCE_IN_BLANK: 55,
     BAD_AREA_IN_AXIAL: 60,
     FALSE_IPI_PARAMETERS: 65,
+    ENCRYPTED_IPI_NOT_FOUND: 66,
+    ENCRYPTED_IPI_DATA_DONT_MATCH: 67,
     FIELD_POS_CORRECTOR_HIGHLIGHT_IR: 80,
     FIELD_POS_CORRECTOR_GLARES_IN_PHOTO_AREA: 81,
     FIELD_POS_CORRECTOR_PHOTO_REPLACED: 82,
     FIELD_POS_CORRECTOR_LANDMARKS_CHECK_ERROR: 83,
     FIELD_POS_CORRECTOR_FACE_PRESENCE_CHECK_ERROR: 84,
     FIELD_POS_CORRECTOR_FACE_ABSENCE_CHECK_ERROR: 85,
+    CHD_FIELD_POS_CORRECTOR_INCORRECT_HEAD_POSITION: 86,
     OVI_IR_INVISIBLE: 90,
     OVI_INSUFFICIENT_AREA: 91,
     OVI_COLOR_INVARIABLE: 92,
@@ -2535,6 +2597,7 @@ export const eCheckDiagnose = {
     BARCODE_SIZE_PARAMS_ERROR: 142,
     NOT_ALL_BARCODES_READ: 143,
     GLARES_IN_BARCODE_AREA: 144,
+    CHD_NO_CERTIFICATE_FOR_DIGITAL_SIGNATURE_CHECK: 145,
     PORTRAIT_COMPARISON_PORTRAITS_DIFFER: 150,
     PORTRAIT_COMPARISON_NO_SERVICE_REPLY: 151,
     PORTRAIT_COMPARISON_SERVICE_ERROR: 152,
@@ -2564,6 +2627,7 @@ export const eCheckDiagnose = {
     OCR_QUALITY_INVALID_FONT: 221,
     OCR_QUALITY_INVALID_BACKGROUND: 222,
     LAS_INK_INVALID_LINES_FREQUENCY: 230,
+    CHD_DOC_LIVENESS_BLACK_AND_WHITE_COPY_DETECTED: 239,
     DOC_LIVENESS_ELECTRONIC_DEVICE_DETECTED: 240,
     DOC_LIVENESS_INVALID_BARCODE_BACKGROUND: 241,
     ICAO_IDB_BASE_32_ERROR: 243,
@@ -2958,6 +3022,8 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_BARCODE_VS_CAMERA: 49,
     SECURITY_FEATURE_TYPE_CHECK_DIGITAL_SIGNATURE: 50,
     SECURITY_FEATURE_TYPE_CONTACT_CHIP_CLASSIFICATION: 51,
+    SECURITY_FEATURE_TYPE_HEAD_POSITION_CHECK: 52,
+    SECURITY_FEATURE_TYPE_LIVENESS_BLACK_AND_WHITE_COPY_CHECK: 53,
 }
 
 export const OnlineMode = {
@@ -3338,6 +3404,11 @@ export const eRFID_DataFile_Type = {
     DFT_PASSPORT_SOD: 21,
     DFT_PASSPORT_CVCA: 22,
     DFT_PASSPORT_COM: 23,
+    DFT_DTC_DG17: 57,
+    DFT_DTC_DG18: 58,
+    DFT_DTC_DG22: 62,
+    DFT_DTC_DG23: 63,
+    DFT_DTC_DG24: 64,
     DFT_ID_DG1: 101,
     DFT_ID_DG2: 102,
     DFT_ID_DG3: 103,
@@ -3691,6 +3762,9 @@ export const eVisualFieldType = {
     FT_DOCUMENT_DISCRIMINATOR: 334,
     FT_DATA_DISCRIMINATOR: 335,
     FT_ISO_ISSUER_ID_NUMBER: 336,
+    FT_DTC_VERSION: 337,
+    FT_DTC_ID: 338,
+    FT_DTC_DATE_OF_EXPIRY: 339,
     FT_GNIB_NUMBER: 340,
     FT_DEPT_NUMBER: 341,
     FT_TELEX_CODE: 342,
@@ -4043,6 +4117,7 @@ export const eVisualFieldType = {
     FT_METHOD_OF_TESTING: 689,
     FT_DIGITAL_TRAVEL_AUTHORIZATION_NUMBER: 690,
     FT_DATE_OF_FIRST_POSITIVE_TEST_RESULT: 691,
+    FT_EF_CARD_ACCESS: 692,
 }
 
 export const DocReaderOrientation = {
@@ -4276,6 +4351,7 @@ export const Enum = {
    eRFID_Password_Type,
    ViewContentMode,
    BarcodeResult,
+   eRFID_Application_Type,
    eSignManagementAction,
    eCheckDiagnose,
    RFIDDelegate,
@@ -4318,8 +4394,6 @@ const DocumentReader = {}
 
 DocumentReader.getDocumentReaderIsReady = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocumentReaderIsReady", [], successCallback, errorCallback)
 DocumentReader.getDocumentReaderStatus = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocumentReaderStatus", [], successCallback, errorCallback)
-DocumentReader.isAuthenticatorAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isAuthenticatorAvailableForUse", [], successCallback, errorCallback)
-DocumentReader.isBlePermissionsGranted = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isBlePermissionsGranted", [], successCallback, errorCallback)
 DocumentReader.getRfidSessionStatus = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getRfidSessionStatus", [], successCallback, errorCallback)
 DocumentReader.setRfidSessionStatus = (status, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setRfidSessionStatus", [status], successCallback, errorCallback)
 DocumentReader.getTag = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getTag", [], successCallback, errorCallback)
@@ -4359,14 +4433,17 @@ DocumentReader.setTCCParams = (params, successCallback, errorCallback) => RNRegu
 DocumentReader.addPKDCertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "addPKDCertificates", [certificates], successCallback, errorCallback)
 DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
 DocumentReader.startNewSession = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewSession", [], successCallback, errorCallback)
-DocumentReader.startBluetoothService = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startBluetoothService", [], successCallback, errorCallback)
+DocumentReader.connectBluetoothDevice = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "connectBluetoothDevice", [], successCallback, errorCallback)
 DocumentReader.setLocalizationDictionary = (dictionary, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setLocalizationDictionary", [dictionary], successCallback, errorCallback)
 DocumentReader.getLicense = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getLicense", [], successCallback, errorCallback)
 DocumentReader.getAvailableScenarios = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAvailableScenarios", [], successCallback, errorCallback)
 DocumentReader.getIsRFIDAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getIsRFIDAvailableForUse", [], successCallback, errorCallback)
+DocumentReader.isAuthenticatorRFIDAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isAuthenticatorRFIDAvailableForUse", [], successCallback, errorCallback)
+DocumentReader.isAuthenticatorAvailableForUse = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "isAuthenticatorAvailableForUse", [], successCallback, errorCallback)
 DocumentReader.getDocReaderVersion = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocReaderVersion", [], successCallback, errorCallback)
 DocumentReader.getDocReaderDocumentsDatabase = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocReaderDocumentsDatabase", [], successCallback, errorCallback)
 DocumentReader.finalizePackage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "finalizePackage", [], successCallback, errorCallback)
+DocumentReader.endBackendTransaction = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "endBackendTransaction", [], successCallback, errorCallback)
 DocumentReader.getTranslation = (className, value, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getTranslation", [className, value], successCallback, errorCallback)
 
 export default DocumentReader
