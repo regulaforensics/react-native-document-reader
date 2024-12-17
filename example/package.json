@@ -10,8 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@regulaforensics/react-native-document-reader-api": "7.5.772-nightly",
-    "@regulaforensics/react-native-document-reader-core-fullauthrfid": "7.5.810-nightly",
+    "@regulaforensics/react-native-document-reader-api": "7.5.777-nightly",
+    "@regulaforensics/react-native-document-reader-core-fullauthrfid": "7.5.852-nightly",
     "react-native-progress": "5.0.0",
     "react-native-radio-buttons-group": "3.0.5",
     "@rneui/base": "4.0.0-rc.7",
