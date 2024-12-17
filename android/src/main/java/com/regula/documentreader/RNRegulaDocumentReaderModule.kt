@@ -21,6 +21,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.facebook.react.modules.core.PermissionListener
 import com.regula.common.LocalizationCallbacks
 import com.regula.documentreader.Convert.bitmapToBase64
 import com.regula.documentreader.Convert.byteArrayFromBase64
@@ -55,7 +56,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 @Suppress("unused", "UNUSED_PARAMETER")
-class RNRegulaDocumentReaderModule(rc: ReactApplicationContext) : ReactContextBaseJavaModule(rc), ActivityEventListener {
+class RNRegulaDocumentReaderModule(rc: ReactApplicationContext) : ReactContextBaseJavaModule(rc), ActivityEventListener, PermissionListener {
     init {
         reactContext = rc
         reactContext.addActivityEventListener(this)
@@ -70,8 +71,15 @@ class RNRegulaDocumentReaderModule(rc: ReactApplicationContext) : ReactContextBa
     @ReactMethod
     fun exec(moduleName: String?, action: String?, args: ReadableArray, successCallback: com.facebook.react.bridge.Callback, errorCallback: com.facebook.react.bridge.Callback) = exec(action, args, successCallback, errorCallback)
     override fun getName() = "RNRegulaDocumentReader"
-    override fun onNewIntent(intent: Intent) = newIntent(intent)
-    override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) = Unit
+    override fun onNewIntent(intent: Intent) {
+        newIntent(intent)
+    }
+
+    override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
+        onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) = com.regula.documentreader.onRequestPermissionsResult(requestCode, permissions!!, grantResults!!)
 }
 
 fun sendEvent(event: String, data: Any? = "") {
@@ -109,8 +117,6 @@ fun exec(action: String?, arguments: ReadableArray, successCallback: com.faceboo
     when (action) {
         "getDocumentReaderIsReady" -> getDocumentReaderIsReady(callback)
         "getDocumentReaderStatus" -> getDocumentReaderStatus(callback)
-        "isAuthenticatorAvailableForUse" -> isAuthenticatorAvailableForUse(callback)
-        "isBlePermissionsGranted" -> isBlePermissionsGranted(callback)
         "getRfidSessionStatus" -> getRfidSessionStatus(callback)
         "setRfidSessionStatus" -> setRfidSessionStatus(callback)
         "getTag" -> getTag(callback)
@@ -150,11 +156,13 @@ fun exec(action: String?, arguments: ReadableArray, successCallback: com.faceboo
         "addPKDCertificates" -> addPKDCertificates(callback, args(0))
         "clearPKDCertificates" -> clearPKDCertificates(callback)
         "startNewSession" -> startNewSession(callback)
-        "startBluetoothService" -> startBluetoothService()
+        "connectBluetoothDevice" -> connectBluetoothDevice(callback)
         "setLocalizationDictionary" -> setLocalizationDictionary(args(0))
         "getLicense" -> getLicense(callback)
         "getAvailableScenarios" -> getAvailableScenarios(callback)
         "getIsRFIDAvailableForUse" -> getIsRFIDAvailableForUse(callback)
+        "isAuthenticatorAvailableForUse" -> isAuthenticatorAvailableForUse(callback)
+        "isAuthenticatorRFIDAvailableForUse" -> isAuthenticatorRFIDAvailableForUse(callback)
         "getDocReaderVersion" -> getDocReaderVersion(callback)
         "getDocReaderDocumentsDatabase" -> getDocReaderDocumentsDatabase(callback)
         "textFieldValueByType" -> textFieldValueByType(callback, args(0), args(1))
@@ -175,6 +183,7 @@ fun exec(action: String?, arguments: ReadableArray, successCallback: com.faceboo
         "containers" -> containers(callback, args(0), args(1))
         "encryptedContainers" -> encryptedContainers(callback, args(0))
         "finalizePackage" -> finalizePackage(callback)
+        "endBackendTransaction" -> endBackendTransaction(callback)
         "getTranslation" -> getTranslation(callback, args(0), args(1))
     }
 }
@@ -204,20 +213,12 @@ const val eventPACertificateCompletion = "pa_certificate_completion"
 const val eventTACertificateCompletion = "ta_certificate_completion"
 const val eventTASignatureCompletion = "ta_signature_completion"
 
-const val bleOnServiceConnectedEvent = "bleOnServiceConnectedEvent"
-const val bleOnServiceDisconnectedEvent = "bleOnServiceDisconnectedEvent"
-const val bleOnDeviceReadyEvent = "bleOnDeviceReadyEvent"
-
 const val eventVideoEncoderCompletion = "video_encoder_completion"
 const val onCustomButtonTappedEvent = "onCustomButtonTappedEvent"
 
 fun getDocumentReaderIsReady(callback: Callback) = callback.success(Instance().isReady)
 
 fun getDocumentReaderStatus(callback: Callback) = callback.success(Instance().status)
-
-fun isAuthenticatorAvailableForUse(callback: Callback) = callback.success(Instance().isAuthenticatorAvailableForUse)
-
-fun isBlePermissionsGranted(callback: Callback) = callback.success(isBlePermissionsGranted((activity)))
 
 fun getRfidSessionStatus(callback: Callback) = callback.error("getRfidSessionStatus() is an ios-only method")
 
@@ -353,13 +354,6 @@ fun startNewSession(callback: Callback) {
     callback.success()
 }
 
-fun startBluetoothService() = startBluetoothService(
-    activity,
-    { sendEvent(bleOnServiceConnectedEvent, it) },
-    { sendEvent(bleOnServiceDisconnectedEvent) },
-    { sendEvent(bleOnDeviceReadyEvent) }
-)
-
 fun setLocalizationDictionary(dictionary: JSONObject) {
     localizationCallbacks = LocalizationCallbacks { if (dictionary.has(it)) dictionary.getString(it) else null }
     Instance().setLocalizationCallback(localizationCallbacks!!)
@@ -375,6 +369,10 @@ fun getAvailableScenarios(callback: Callback) {
 }
 
 fun getIsRFIDAvailableForUse(callback: Callback) = callback.success(Instance().isRFIDAvailableForUse)
+
+fun isAuthenticatorAvailableForUse(callback: Callback) = callback.success(Instance().isAuthenticatorAvailableForUse)
+
+fun isAuthenticatorRFIDAvailableForUse(callback: Callback) = callback.success(Instance().isAuthenticatorRFIDAvailableForUse)
 
 fun getDocReaderVersion(callback: Callback) = callback.success(generateDocReaderVersion(Instance().version))
 
@@ -415,6 +413,11 @@ fun containers(callback: Callback, raw: String, resultType: JSONArray) = callbac
 fun encryptedContainers(callback: Callback, raw: String) = callback.success(fromRawResults(raw).encryptedContainers)
 
 fun finalizePackage(callback: Callback) = Instance().finalizePackage { action, info, error -> callback.success(generateFinalizePackageCompletion(action, info, error)) }
+
+fun endBackendTransaction(callback: Callback) {
+    Instance().endBackendTransaction()
+    callback.success()
+}
 
 fun getTranslation(callback: Callback, className: String, value: Int) = when (className) {
     "RFIDErrorCodes" -> callback.success(eRFID_ErrorCodes.getTranslation(context, value))
@@ -496,12 +499,15 @@ var requestType = RfidReaderRequestType(
 )
 
 @Suppress("DEPRECATION")
-fun newIntent(intent: Intent) = if (intent.action == NfcAdapter.ACTION_TECH_DISCOVERED)
+fun newIntent(intent: Intent): Boolean {
+    if (intent.action != NfcAdapter.ACTION_TECH_DISCOVERED) return false
     Instance().readRFID(
         IsoDep.get(intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)),
         rfidReaderCompletion,
         requestType.getRfidReaderRequest()
-    ) else Unit
+    )
+    return true
+}
 
 fun startForegroundDispatch() {
     backgroundRFIDEnabled = true
