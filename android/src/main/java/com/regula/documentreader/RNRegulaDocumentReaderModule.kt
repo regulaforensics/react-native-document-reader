@@ -79,7 +79,7 @@ class RNRegulaDocumentReaderModule(rc: ReactApplicationContext) : ReactContextBa
         onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) = com.regula.documentreader.onRequestPermissionsResult(requestCode, permissions!!, grantResults!!)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) = com.regula.documentreader.onRequestPermissionsResult(requestCode, permissions, grantResults)
 }
 
 fun sendEvent(event: String, data: Any? = "") {
