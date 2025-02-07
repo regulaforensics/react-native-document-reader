@@ -998,7 +998,6 @@ export class OnlineProcessingConfig {
         result.processParams = ProcessParams.fromJson(jsonObject["processParams"])
         result.imageFormat = jsonObject["imageFormat"]
         result.imageCompressionQuality = jsonObject["imageCompressionQuality"]
-        result.requestHeaders = jsonObject["requestHeaders"]
 
         return result
     }
@@ -4434,7 +4433,7 @@ DocumentReader.setTCCParams = (params, successCallback, errorCallback) => RNRegu
 DocumentReader.addPKDCertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "addPKDCertificates", [certificates], successCallback, errorCallback)
 DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
 DocumentReader.startNewSession = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewSession", [], successCallback, errorCallback)
-DocumentReader.connectBluetoothDevice = (btDeviceName, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "connectBluetoothDevice", [btDeviceName], successCallback, errorCallback)
+DocumentReader.connectBluetoothDevice = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "connectBluetoothDevice", [], successCallback, errorCallback)
 DocumentReader.setLocalizationDictionary = (dictionary, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setLocalizationDictionary", [dictionary], successCallback, errorCallback)
 DocumentReader.getLicense = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getLicense", [], successCallback, errorCallback)
 DocumentReader.getAvailableScenarios = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAvailableScenarios", [], successCallback, errorCallback)

@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "MissingPermission")
+@file:Suppress("UNCHECKED_CAST")
 
 package com.regula.documentreader
 
@@ -21,7 +21,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.modules.core.DeviceEventManagerModule
-import com.facebook.react.modules.core.PermissionAwareActivity
+import com.facebook.react.modules.core.PermissionListener
 import com.regula.common.LocalizationCallbacks
 import com.regula.documentreader.Convert.bitmapToBase64
 import com.regula.documentreader.Convert.byteArrayFromBase64
@@ -56,7 +56,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 @Suppress("unused", "UNUSED_PARAMETER")
-class RNRegulaDocumentReaderModule(rc: ReactApplicationContext) : ReactContextBaseJavaModule(rc), ActivityEventListener {
+class RNRegulaDocumentReaderModule(rc: ReactApplicationContext) : ReactContextBaseJavaModule(rc), ActivityEventListener, PermissionListener {
     init {
         reactContext = rc
         reactContext.addActivityEventListener(this)
@@ -78,16 +78,8 @@ class RNRegulaDocumentReaderModule(rc: ReactApplicationContext) : ReactContextBa
     override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
         onActivityResult(requestCode, resultCode, data)
     }
-}
 
-fun requestPermissions(activity: Activity, permissions: Array<String>, requestCode: Int) {
-    (activity as PermissionAwareActivity).requestPermissions(permissions, requestCode) { code, perms, grantResults ->
-        onRequestPermissionsResult(code, perms, grantResults)
-    }
-}
-
-fun startActivityForResult(activity: Activity, intent: Intent, requestCode: Int) {
-    activity.startActivityForResult(intent, requestCode)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) = com.regula.documentreader.onRequestPermissionsResult(requestCode, permissions, grantResults)
 }
 
 fun sendEvent(event: String, data: Any? = "") {

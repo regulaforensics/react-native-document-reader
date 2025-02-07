@@ -22,6 +22,7 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
+import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat.checkSelfPermission
 import com.regula.documentreader.api.ble.BLEWrapper
 import com.regula.documentreader.api.ble.BleWrapperCallback
@@ -152,10 +153,10 @@ fun deniedBluetoothPermission(
 
 fun requestEnableBluetooth(activity: Activity) {
     val enableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-    startActivityForResult(activity, enableIntent, INTENT_REQUEST_ENABLE_BLUETOOTH)
+    activity.startActivityForResult(enableIntent, INTENT_REQUEST_ENABLE_BLUETOOTH)
 }
 
 fun requestEnableLocationService(activity: Activity) {
     val myIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-    startActivityForResult(activity, myIntent, INTENT_REQUEST_ENABLE_LOCATION)
+    activity.startActivityForResult(myIntent, INTENT_REQUEST_ENABLE_LOCATION)
 }

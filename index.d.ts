@@ -1477,7 +1477,6 @@ export class OnlineProcessingConfig {
     processParams?: ProcessParams
     imageFormat?: number
     imageCompressionQuality?: number
-    requestHeaders?: Record<string, string>
 
     static fromJson(jsonObject?: any): OnlineProcessingConfig | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -1488,7 +1487,6 @@ export class OnlineProcessingConfig {
         result.processParams = ProcessParams.fromJson(jsonObject["processParams"])
         result.imageFormat = jsonObject["imageFormat"]
         result.imageCompressionQuality = jsonObject["imageCompressionQuality"]
-        result.requestHeaders = jsonObject["requestHeaders"]
 
         return result
     }
@@ -5419,7 +5417,7 @@ export default class DocumentReader {
     static addPKDCertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewSession(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static connectBluetoothDevice(btDeviceName: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static connectBluetoothDevice(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setLocalizationDictionary(dictionary: Record<string, string>, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getLicense(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAvailableScenarios(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
