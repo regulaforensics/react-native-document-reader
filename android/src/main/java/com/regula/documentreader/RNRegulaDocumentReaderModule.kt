@@ -1,10 +1,10 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "MissingPermission")
 
 package com.regula.documentreader
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.nfc.NfcAdapter
@@ -21,7 +21,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.modules.core.DeviceEventManagerModule
-import com.facebook.react.modules.core.PermissionListener
+import com.facebook.react.modules.core.PermissionAwareActivity
 import com.regula.common.LocalizationCallbacks
 import com.regula.documentreader.Convert.bitmapToBase64
 import com.regula.documentreader.Convert.byteArrayFromBase64
@@ -55,38 +55,20 @@ import com.regula.documentreader.api.results.DocumentReaderScenario
 import org.json.JSONArray
 import org.json.JSONObject
 
-@Suppress("unused", "UNUSED_PARAMETER")
-class RNRegulaDocumentReaderModule(rc: ReactApplicationContext) : ReactContextBaseJavaModule(rc), ActivityEventListener, PermissionListener {
-    init {
-        reactContext = rc
-        reactContext.addActivityEventListener(this)
-    }
-
-    @ReactMethod
-    fun addListener(eventName: String?) = Unit
-
-    @ReactMethod
-    fun removeListeners(count: Int?) = Unit
-
-    @ReactMethod
-    fun exec(moduleName: String?, action: String?, args: ReadableArray, successCallback: com.facebook.react.bridge.Callback, errorCallback: com.facebook.react.bridge.Callback) = exec(action, args, successCallback, errorCallback)
-    override fun getName() = "RNRegulaDocumentReader"
-    override fun onNewIntent(intent: Intent) {
-        newIntent(intent)
-    }
-
-    override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
-        onActivityResult(requestCode, resultCode, data)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) = com.regula.documentreader.onRequestPermissionsResult(requestCode, permissions, grantResults)
-}
+lateinit var args: JSONArray
+lateinit var binding: ReactContext
+val context: Context
+    get() = binding.applicationContext
+val activity: Activity
+    get() = binding.currentActivity!!
+val lifecycle: Lifecycle
+    get() = (activity as AppCompatActivity).lifecycle
 
 fun sendEvent(event: String, data: Any? = "") {
     val map = Arguments.createMap()
     val result = if (data is JSONObject || data is JSONArray) data.toString() else data.toString() + ""
     map.putString("msg", result)
-    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(event, map)
+    binding.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(event, map)
 }
 
 fun <T> argsNullable(index: Int): T? {
@@ -102,14 +84,45 @@ fun <T> argsNullable(index: Int): T? {
     return args[index] as T
 }
 
-lateinit var args: JSONArray
-lateinit var reactContext: ReactContext
-val lifecycle: Lifecycle
-    get() = (activity as AppCompatActivity).lifecycle
+@Suppress("unused", "UNUSED_PARAMETER")
+class RNRegulaDocumentReaderModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), ActivityEventListener {
+    init {
+        binding = reactContext
+        binding.addActivityEventListener(this)
+    }
+
+    @ReactMethod
+    fun addListener(eventName: String?) = Unit
+
+    @ReactMethod
+    fun removeListeners(count: Int?) = Unit
+
+    @ReactMethod
+    fun exec(moduleName: String?, action: String?, args: ReadableArray, successCallback: com.facebook.react.bridge.Callback, errorCallback: com.facebook.react.bridge.Callback) = exec(action, args, successCallback, errorCallback)
+
+    override fun getName() = "RNRegulaDocumentReader"
+
+    override fun onNewIntent(intent: Intent) {
+        newIntent(intent)
+    }
+
+    override fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {
+        onActivityResult(requestCode, resultCode, data)
+    }
+}
+
+fun requestPermissions(activity: Activity, permissions: Array<String>, requestCode: Int) {
+    (activity as PermissionAwareActivity).requestPermissions(permissions, requestCode) { code, perms, grantResults ->
+        onRequestPermissionsResult(code, perms, grantResults)
+    }
+}
+
+fun startActivityForResult(activity: Activity, intent: Intent, requestCode: Int) {
+    activity.startActivityForResult(intent, requestCode)
+}
 
 fun exec(action: String?, arguments: ReadableArray, successCallback: com.facebook.react.bridge.Callback, errorCallback: com.facebook.react.bridge.Callback) {
     args = JSONArray(arguments.toArrayList())
-    reactContext.currentActivity?.let { activity = it }
     val callback = object : Callback {
         override fun success(data: Any?) = successCallback.invoke(data.toSendable())
         override fun error(message: String) = errorCallback.invoke(message)
@@ -193,14 +206,6 @@ interface Callback {
     fun success(data: Any? = "")
     fun error(message: String)
 }
-
-@SuppressLint("StaticFieldLeak")
-lateinit var activity: Activity
-lateinit var lifecycleObserver: LifecycleEventObserver
-val context
-    get() = activity
-
-var backgroundRFIDEnabled = false
 
 const val eventCompletion = "completion"
 const val eventDatabaseProgress = "database_progress"
@@ -509,6 +514,9 @@ fun newIntent(intent: Intent): Boolean {
     return true
 }
 
+var backgroundRFIDEnabled = false
+lateinit var lifecycleObserver: LifecycleEventObserver
+
 fun startForegroundDispatch() {
     backgroundRFIDEnabled = true
     val filters: Array<IntentFilter?> = arrayOfNulls(1)
@@ -529,7 +537,7 @@ fun startForegroundDispatch() {
             else -> Unit
         }
     }
-    context.runOnUiThread { lifecycle.addObserver(lifecycleObserver) }
+    activity.runOnUiThread { lifecycle.addObserver(lifecycleObserver) }
 }
 
 fun enableForegroundDispatch(
@@ -538,14 +546,14 @@ fun enableForegroundDispatch(
     techList: Array<Array<String>>
 ) = NfcAdapter.getDefaultAdapter(context).enableForegroundDispatch(activity, pendingIntent, filters, techList)
 
-fun disableForegroundDispatch() = NfcAdapter.getDefaultAdapter(activity).disableForegroundDispatch(activity)
+fun disableForegroundDispatch() = NfcAdapter.getDefaultAdapter(context).disableForegroundDispatch(activity)
 
 fun stopBackgroundRFID() {
     if (!backgroundRFIDEnabled) return
     backgroundRFIDEnabled = false
     if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
         disableForegroundDispatch()
-    context.runOnUiThread { lifecycle.removeObserver(lifecycleObserver) }
+    activity.runOnUiThread { lifecycle.removeObserver(lifecycleObserver) }
 }
 
 // Weak references

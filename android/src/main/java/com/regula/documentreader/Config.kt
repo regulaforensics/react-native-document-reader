@@ -6,6 +6,8 @@
 //  Copyright © 2023 Regula. All rights reserved.
 //
 
+@file:Suppress("EnumValuesSoftDeprecate")
+
 package com.regula.documentreader
 
 import android.content.Context
