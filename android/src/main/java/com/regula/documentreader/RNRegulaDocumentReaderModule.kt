@@ -524,9 +524,9 @@ fun startForegroundDispatch() {
     filters[0]!!.addAction(NfcAdapter.ACTION_TECH_DISCOVERED)
     filters[0]!!.addCategory(Intent.CATEGORY_DEFAULT)
     val techList = arrayOf(arrayOf("android.nfc.tech.IsoDep"))
-    val intent = Intent(context, context.javaClass)
+    val intent = Intent(activity, activity.javaClass)
     val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
-    val pendingIntent = PendingIntent.getActivity(context, 0, intent, flag)
+    val pendingIntent = PendingIntent.getActivity(activity, 0, intent, flag)
 
     if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
         enableForegroundDispatch(pendingIntent, filters, techList)
