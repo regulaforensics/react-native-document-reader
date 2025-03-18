@@ -1625,6 +1625,7 @@ export class DocReaderVersion {
 export class TransactionInfo {
     transactionId?: string
     tag?: string
+    sessionLogFolder?: string
 
     static fromJson(jsonObject?: any): TransactionInfo | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -1632,6 +1633,7 @@ export class TransactionInfo {
 
         result.transactionId = jsonObject["transactionId"]
         result.tag = jsonObject["tag"]
+        result.sessionLogFolder = jsonObject["sessionLogFolder"]
 
         return result
     }
@@ -1823,6 +1825,7 @@ export class Functionality {
     recordScanningProcess?: boolean
     manualMultipageMode?: boolean
     singleResult?: boolean
+    torchTurnedOn?: boolean
     showCaptureButtonDelayFromDetect?: number
     showCaptureButtonDelayFromStart?: number
     rfidTimeout?: number
@@ -1859,6 +1862,7 @@ export class Functionality {
         result.recordScanningProcess = jsonObject["recordScanningProcess"]
         result.manualMultipageMode = jsonObject["manualMultipageMode"]
         result.singleResult = jsonObject["singleResult"]
+        result.torchTurnedOn = jsonObject["torchTurnedOn"]
         result.showCaptureButtonDelayFromDetect = jsonObject["showCaptureButtonDelayFromDetect"]
         result.showCaptureButtonDelayFromStart = jsonObject["showCaptureButtonDelayFromStart"]
         result.rfidTimeout = jsonObject["rfidTimeout"]
@@ -2026,6 +2030,8 @@ export class LivenessParams {
     checkMLI?: boolean
     checkHolo?: boolean
     checkED?: boolean
+    checkBlackAndWhiteCopy?: boolean
+    checkDynaprint?: boolean
 
     static fromJson(jsonObject?: any): LivenessParams | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2035,6 +2041,8 @@ export class LivenessParams {
         result.checkMLI = jsonObject["checkMLI"]
         result.checkHolo = jsonObject["checkHolo"]
         result.checkED = jsonObject["checkED"]
+        result.checkBlackAndWhiteCopy = jsonObject["checkBlackAndWhiteCopy"]
+        result.checkDynaprint = jsonObject["checkDynaprint"]
 
         return result
     }
@@ -2056,6 +2064,7 @@ export class AuthenticityParams {
     checkPhotoEmbedding?: boolean
     checkPhotoComparison?: boolean
     checkLetterScreen?: boolean
+    checkSecurityText?: boolean
 
     static fromJson(jsonObject?: any): AuthenticityParams | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2076,6 +2085,7 @@ export class AuthenticityParams {
         result.checkPhotoEmbedding = jsonObject["checkPhotoEmbedding"]
         result.checkPhotoComparison = jsonObject["checkPhotoComparison"]
         result.checkLetterScreen = jsonObject["checkLetterScreen"]
+        result.checkSecurityText = jsonObject["checkSecurityText"]
 
         return result
     }
@@ -2135,7 +2145,6 @@ export class ProcessParams {
     dateFormat?: string
     scenario?: string
     captureButtonScenario?: string
-    sessionLogFolder?: string
     timeout?: number
     timeoutFromFirstDetect?: number
     timeoutFromFirstDocType?: number
@@ -2213,7 +2222,6 @@ export class ProcessParams {
         result.dateFormat = jsonObject["dateFormat"]
         result.scenario = jsonObject["scenario"]
         result.captureButtonScenario = jsonObject["captureButtonScenario"]
-        result.sessionLogFolder = jsonObject["sessionLogFolder"]
         result.timeout = jsonObject["timeout"]
         result.timeoutFromFirstDetect = jsonObject["timeoutFromFirstDetect"]
         result.timeoutFromFirstDocType = jsonObject["timeoutFromFirstDocType"]
@@ -2651,49 +2659,17 @@ export class EIDDataGroups {
     }
 }
 
-export class DTCDataGroups {
-    DG1?: boolean
-    DG2?: boolean
-    DG3?: boolean
-    DG4?: boolean
-    DG5?: boolean
-    DG6?: boolean
-    DG7?: boolean
-    DG8?: boolean
-    DG9?: boolean
-    DG10?: boolean
-    DG11?: boolean
-    DG12?: boolean
-    DG13?: boolean
-    DG14?: boolean
-    DG15?: boolean
-    DG16?: boolean
+export class DTCDataGroup {
     DG17?: boolean
     DG18?: boolean
     DG22?: boolean
     DG23?: boolean
     DG24?: boolean
 
-    static fromJson(jsonObject?: any): DTCDataGroups | undefined {
+    static fromJson(jsonObject?: any): DTCDataGroup | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new DTCDataGroups
+        const result = new DTCDataGroup
 
-        result.DG1 = jsonObject["DG1"]
-        result.DG2 = jsonObject["DG2"]
-        result.DG3 = jsonObject["DG3"]
-        result.DG4 = jsonObject["DG4"]
-        result.DG5 = jsonObject["DG5"]
-        result.DG6 = jsonObject["DG6"]
-        result.DG7 = jsonObject["DG7"]
-        result.DG8 = jsonObject["DG8"]
-        result.DG9 = jsonObject["DG9"]
-        result.DG10 = jsonObject["DG10"]
-        result.DG11 = jsonObject["DG11"]
-        result.DG12 = jsonObject["DG12"]
-        result.DG13 = jsonObject["DG13"]
-        result.DG14 = jsonObject["DG14"]
-        result.DG15 = jsonObject["DG15"]
-        result.DG16 = jsonObject["DG16"]
         result.DG17 = jsonObject["DG17"]
         result.DG18 = jsonObject["DG18"]
         result.DG22 = jsonObject["DG22"]
@@ -2741,6 +2717,7 @@ export class RFIDScenario {
     proceedReadingAlways?: boolean
     readDTC?: boolean
     mrzStrictCheck?: boolean
+    loadCRLFromRemote?: boolean
     readingBuffer?: number
     onlineTAToSignDataType?: number
     defaultReadingBufferSize?: number
@@ -2760,7 +2737,7 @@ export class RFIDScenario {
     eDLDataGroups?: EDLDataGroups
     ePassportDataGroups?: EPassportDataGroups
     eIDDataGroups?: EIDDataGroups
-    dtcDataGroups?: DTCDataGroups
+    dtcDataGroups?: DTCDataGroup
 
     static fromJson(jsonObject?: any): RFIDScenario | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2802,6 +2779,7 @@ export class RFIDScenario {
         result.proceedReadingAlways = jsonObject["proceedReadingAlways"]
         result.readDTC = jsonObject["readDTC"]
         result.mrzStrictCheck = jsonObject["mrzStrictCheck"]
+        result.loadCRLFromRemote = jsonObject["loadCRLFromRemote"]
         result.readingBuffer = jsonObject["readingBuffer"]
         result.onlineTAToSignDataType = jsonObject["onlineTAToSignDataType"]
         result.defaultReadingBufferSize = jsonObject["defaultReadingBufferSize"]
@@ -2821,7 +2799,7 @@ export class RFIDScenario {
         result.eDLDataGroups = EDLDataGroups.fromJson(jsonObject["eDLDataGroups"])
         result.ePassportDataGroups = EPassportDataGroups.fromJson(jsonObject["ePassportDataGroups"])
         result.eIDDataGroups = EIDDataGroups.fromJson(jsonObject["eIDDataGroups"])
-        result.dtcDataGroups = DTCDataGroups.fromJson(jsonObject["dtcDataGroups"])
+        result.dtcDataGroups = DTCDataGroup.fromJson(jsonObject["dtcDataGroups"])
 
         return result
     }
@@ -3446,6 +3424,7 @@ export const ViewContentMode = {
 
 export const BarcodeResult = {
     NO_ERR: 0,
+    INVALID_RESULT: 140,
     NULL_PTR_ERR: -6001,
     BAD_ARG_ERR: -6002,
     SIZE_ERR: -6003,
@@ -3614,6 +3593,7 @@ export const eCheckDiagnose = {
     OCR_QUALITY_INVALID_FONT: 221,
     OCR_QUALITY_INVALID_BACKGROUND: 222,
     LAS_INK_INVALID_LINES_FREQUENCY: 230,
+    DOC_LIVENESS_DOCUMENT_NOT_LIVE: 238,
     CHD_DOC_LIVENESS_BLACK_AND_WHITE_COPY_DETECTED: 239,
     DOC_LIVENESS_ELECTRONIC_DEVICE_DETECTED: 240,
     DOC_LIVENESS_INVALID_BARCODE_BACKGROUND: 241,
