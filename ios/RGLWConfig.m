@@ -41,6 +41,7 @@
         functionality.manualMultipageMode = [[options valueForKey:@"manualMultipageMode"] boolValue];
     if([options valueForKey:@"singleResult"] != nil)
         functionality.singleResult = [[options valueForKey:@"singleResult"] boolValue];
+    if(options[@"torchTurnedOn"]) functionality.torchTurnedOn = [options[@"torchTurnedOn"] boolValue];
     
     // Int
     if([options valueForKey:@"showCaptureButtonDelayFromDetect"] != nil)
@@ -94,6 +95,7 @@
     result[@"recordScanningProcess"] = [NSNumber numberWithBool:functionality.recordScanningProcess];
     result[@"manualMultipageMode"] = [NSNumber numberWithBool:functionality.manualMultipageMode];
     result[@"singleResult"] = [NSNumber numberWithBool:functionality.singleResult];
+    result[@"torchTurnedOn"] = @(functionality.torchTurnedOn);
     
     // Int
     result[@"showCaptureButtonDelayFromDetect"] = [NSNumber numberWithDouble:functionality.showCaptureButtonDelayFromDetect];
@@ -188,6 +190,7 @@
     if (options[@"strictBarcodeDigitalSignatureCheck"]) processParams.strictBarcodeDigitalSignatureCheck = options[@"strictBarcodeDigitalSignatureCheck"];
     if (options[@"selectLongestNames"]) processParams.selectLongestNames = options[@"selectLongestNames"];
     if (options[@"generateDTCVC"]) processParams.generateDTCVC = options[@"generateDTCVC"];
+    if (options[@"strictDLCategoryExpiry"]) processParams.strictDLCategoryExpiry = options[@"strictDLCategoryExpiry"];
 
     // Int
     if([options valueForKey:@"measureSystem"] != nil)
@@ -315,7 +318,8 @@
     result[@"strictBarcodeDigitalSignatureCheck"] = processParams.strictBarcodeDigitalSignatureCheck;
     result[@"selectLongestNames"] = processParams.selectLongestNames;
     result[@"generateDTCVC"] = processParams.generateDTCVC;
-    
+    result[@"strictDLCategoryExpiry"] = processParams.strictDLCategoryExpiry;
+
     // Int
     result[@"measureSystem"] = [NSNumber numberWithInteger:processParams.measureSystem];
     result[@"barcodeParserType"] = processParams.barcodeParserType;
@@ -332,20 +336,19 @@
     result[@"convertCase"] = [self generateWithTextProcessing:processParams.convertCase];
     result[@"logLevel"] = processParams.logLevel;
     result[@"mrzDetectMode"] = processParams.mrzDetectMode;
-    
+
     // String
     result[@"dateFormat"] = processParams.dateFormat;
     result[@"scenario"] = processParams.scenario;
     result[@"captureButtonScenario"] = processParams.captureButtonScenario;
-    result[@"sessionLogFolder"] = processParams.sessionLogFolder;
-    
+
     // Double
     result[@"timeout"] = processParams.timeout;
     result[@"timeoutFromFirstDetect"] = processParams.timeoutFromFirstDetect;
     result[@"timeoutFromFirstDocType"] = processParams.timeoutFromFirstDocType;
     result[@"documentAreaMin"] = processParams.documentAreaMin;
     result[@"timeoutLiveness"] = processParams.timeoutLiveness;
-    
+
     // JSONArray
     result[@"documentIDList"] = processParams.documentIDList;
     result[@"barcodeTypes"] = processParams.barcodeTypes;
@@ -355,17 +358,17 @@
     result[@"lcidFilter"] = processParams.lcidFilter;
     result[@"mrzFormatsFilter"] = processParams.mrzFormatsFilter;
     result[@"resultTypeOutput"] = processParams.resultTypeOutput;
-    
+
     // JSONObject
     result[@"imageQA"] = [self getImageQA:processParams.imageQA];
     result[@"rfidParams"] = [RGLWJSONConstructor generateRFIDParams:processParams.rfidParams];
     result[@"faceApiParams"] = [RGLWJSONConstructor generateFaceAPIParams:processParams.faceApiParams];
     result[@"backendProcessingConfig"] = [RGLWJSONConstructor generateBackendProcessingConfig:processParams.backendProcessingConfig];
     result[@"authenticityParams"] = [self getAuthenticityParams:processParams.authenticityParams];
-    
+
     // Custom
     result[@"customParams"] = processParams.customParams;
-    
+
     return result;
 }
 
@@ -381,7 +384,7 @@
         customization.showNextPageAnimation = [[options valueForKey:@"showNextPageAnimation"] boolValue];
     if([options valueForKey:@"showBackgroundMask"] != nil)
         customization.showBackgroundMask = [[options valueForKey:@"showBackgroundMask"] boolValue];
-    
+
     // Int
     if([options valueForKey:@"cameraFrameBorderWidth"] != nil)
         customization.cameraFrameBorderWidth = [[options valueForKey:@"cameraFrameBorderWidth"] floatValue];
@@ -393,13 +396,13 @@
         customization.cameraFrameOffsetWidth = [[options valueForKey:@"cameraFrameOffsetWidth"] floatValue];
     if(options[@"nextPageAnimationStartDelay"]) customization.nextPageAnimationStartDelay = [options[@"nextPageAnimationStartDelay"] floatValue];
     if(options[@"nextPageAnimationEndDelay"]) customization.nextPageAnimationEndDelay = [options[@"nextPageAnimationEndDelay"] floatValue];
-    
+
     // String
     if([options valueForKey:@"status"] != nil)
         customization.status = [options valueForKey:@"status"];
     if([options valueForKey:@"resultStatus"] != nil)
         customization.resultStatus = [options valueForKey:@"resultStatus"];
-    
+
     // Color
     if([options valueForKey:@"cameraFrameDefaultColor"] != nil)
         customization.cameraFrameDefaultColor = [self colorWithInt:[options valueForKey:@"cameraFrameDefaultColor"]];
@@ -423,7 +426,7 @@
         customization.cameraPreviewBackgroundColor = [self colorWithInt:[options valueForKey:@"cameraPreviewBackgroundColor"]];
     if([options valueForKey:@"backgroundMaskColor"] != nil)
         customization.backgroundMaskColor = [self colorWithInt:[options valueForKey:@"backgroundMaskColor"]];
-    
+
     // Float
     if([options valueForKey:@"statusPositionMultiplier"] != nil)
         customization.statusPositionMultiplier = [[options valueForKey:@"statusPositionMultiplier"] floatValue];
@@ -445,7 +448,7 @@
         customization.cameraFrameCornerRadius = [[options valueForKey:@"cameraFrameCornerRadius"] floatValue];
     if([options valueForKey:@"livenessAnimationPositionMultiplier"] != nil)
         customization.livenessAnimationPositionMultiplier = [[options valueForKey:@"livenessAnimationPositionMultiplier"] floatValue];
-    
+
     // Drawable
     if([options valueForKey:@"multipageAnimationFrontImage"] != nil)
         customization.multipageAnimationFrontImage = [RGLWJSONConstructor imageWithBase64:[options valueForKey:@"multipageAnimationFrontImage"]];
@@ -471,13 +474,13 @@
         customization.torchButtonOffImage = [RGLWJSONConstructor imageWithBase64:[options valueForKey:@"torchButtonOffImage"]];
     if([options valueForKey:@"livenessAnimationImage"] != nil)
         customization.livenessAnimationImage = [RGLWJSONConstructor imageWithBase64:[options valueForKey:@"livenessAnimationImage"]];
-    
+
     // Font
     if([options valueForKey:@"statusTextFont"] != nil)
         customization.statusTextFont = [self UIFontFromJSON:[options valueForKey:@"statusTextFont"]];
     if([options valueForKey:@"resultStatusTextFont"] != nil)
         customization.resultStatusTextFont = [self UIFontFromJSON:[options valueForKey:@"resultStatusTextFont"]];
-    
+
     // Custom
     if([options valueForKey:@"customLabelStatus"] != nil)
         customization.customLabelStatus = [[NSAttributedString alloc]initWithString:[options valueForKey:@"customLabelStatus"]];
@@ -485,7 +488,7 @@
         customization.cameraFrameLineCap = [self lineCapWithNumber:[options valueForKey:@"cameraFrameLineCap"]];
     if([options valueForKey:@"uiCustomizationLayer"] != nil)
         customization.customUILayerJSON = [options valueForKey:@"uiCustomizationLayer"];
-    
+
     // ContentMode
     if([options valueForKey:@"helpAnimationImageContentMode"] != nil)
         customization.helpAnimationImageContentMode = [self viewContentModeWithNumber:[options valueForKey:@"helpAnimationImageContentMode"]];
@@ -508,14 +511,14 @@
 
 +(NSDictionary*)getCustomization:(RGLCustomization*)customization {
     NSMutableDictionary *result = [NSMutableDictionary new];
-    
+
     // Boolean
     result[@"showStatusMessages"] = [NSNumber numberWithBool:customization.showStatusMessages];
     result[@"showResultStatusMessages"] = [NSNumber numberWithBool:customization.showResultStatusMessages];
     result[@"showHelpAnimation"] = [NSNumber numberWithBool:customization.showHelpAnimation];
     result[@"showNextPageAnimation"] = [NSNumber numberWithBool:customization.showNextPageAnimation];
     result[@"showBackgroundMask"] = [NSNumber numberWithBool:customization.showBackgroundMask];
-    
+
     // Int
     result[@"cameraFrameBorderWidth"] = [NSNumber numberWithFloat:customization.cameraFrameBorderWidth];
     result[@"cameraFrameLineLength"] = [NSNumber numberWithFloat:customization.cameraFrameLineLength];
@@ -523,11 +526,11 @@
     result[@"cameraFrameOffsetWidth"] = [NSNumber numberWithFloat:customization.cameraFrameOffsetWidth];
     result[@"nextPageAnimationStartDelay"] = [NSNumber numberWithFloat:customization.nextPageAnimationStartDelay];
     result[@"nextPageAnimationEndDelay"] = [NSNumber numberWithFloat:customization.nextPageAnimationEndDelay];
-    
+
     // String
     result[@"status"] = customization.status;
     result[@"resultStatus"] = customization.resultStatus;
-    
+
     // Color
     result[@"cameraFrameDefaultColor"] = [self intWithColor:customization.cameraFrameDefaultColor];
     result[@"cameraFrameActiveColor"] = [self intWithColor:customization.cameraFrameActiveColor];
@@ -540,7 +543,7 @@
     result[@"statusBackgroundColor"] = [self intWithColor:customization.statusBackgroundColor];
     result[@"cameraPreviewBackgroundColor"] = [self intWithColor:customization.cameraPreviewBackgroundColor];
     result[@"backgroundMaskColor"] = [self intWithColor:customization.backgroundMaskColor];
-    
+
     // Float
     result[@"statusPositionMultiplier"] = [NSNumber numberWithFloat:customization.statusPositionMultiplier];
     result[@"resultStatusPositionMultiplier"] = [NSNumber numberWithFloat:customization.resultStatusPositionMultiplier];
@@ -552,7 +555,7 @@
     result[@"cameraFramePortraitAspectRatio"] = [NSNumber numberWithFloat:customization.cameraFramePortraitAspectRatio];
     result[@"cameraFrameCornerRadius"] = [NSNumber numberWithFloat:customization.cameraFrameCornerRadius];
     result[@"livenessAnimationPositionMultiplier"] = [NSNumber numberWithFloat:customization.livenessAnimationPositionMultiplier];
-    
+
     // Drawable
     result[@"multipageAnimationFrontImage"] = [RGLWJSONConstructor base64WithImage:customization.multipageAnimationFrontImage];
     result[@"multipageAnimationBackImage"] = [RGLWJSONConstructor base64WithImage:customization.multipageAnimationBackImage];
@@ -566,27 +569,27 @@
     result[@"torchButtonOnImage"] = [RGLWJSONConstructor base64WithImage:customization.torchButtonOnImage];
     result[@"torchButtonOffImage"] = [RGLWJSONConstructor base64WithImage:customization.torchButtonOffImage];
     result[@"livenessAnimationImage"] = [RGLWJSONConstructor base64WithImage:customization.livenessAnimationImage];
-    
+
     // Font
     result[@"statusTextFont"] = [self generateUIFont:customization.statusTextFont];
     result[@"resultStatusTextFont"] = [self generateUIFont:customization.resultStatusTextFont];
-    
+
     // Custom
     if(customization.customLabelStatus != nil) result[@"customLabelStatus"] = customization.customLabelStatus.string;
     result[@"cameraFrameLineCap"] = [self generateLineCap:customization.cameraFrameLineCap];
     result[@"uiCustomizationLayer"] = customization.customUILayerJSON;
-    
+
     // ContentMode
     result[@"helpAnimationImageContentMode"] = [self generateViewContentMode:customization.helpAnimationImageContentMode];
     result[@"multipageAnimationFrontImageContentMode"] = [self generateViewContentMode:customization.multipageAnimationFrontImageContentMode];
     result[@"multipageAnimationBackImageContentMode"] = [self generateViewContentMode:customization.multipageAnimationBackImageContentMode];
     result[@"livenessAnimationImageContentMode"] = [self generateViewContentMode:customization.livenessAnimationImageContentMode];
     result[@"borderBackgroundImageContentMode"] = [self generateViewContentMode:customization.borderBackgroundImageContentMode];
-    
+
     result[@"colors"] = [self getColors: [customization.uiConfiguration valueForKey:@"colors"]];
     result[@"fonts"] = [self getFonts: [customization.uiConfiguration valueForKey:@"fonts"]];
     result[@"images"] = [self getImages: [customization.uiConfiguration valueForKey:@"images"]];
-    
+
     return result;
 }
 
@@ -662,7 +665,9 @@
         rfidScenario.proceedReadingAlways = [[options valueForKey:@"proceedReadingAlways"] boolValue];
     if(options[@"readDTC"]) rfidScenario.readDTC = [options[@"readDTC"] boolValue];
     if(options[@"mrzStrictCheck"]) rfidScenario.mrzStrictCheck = options[@"mrzStrictCheck"];
-    
+    if(options[@"loadCRLFromRemote"]) rfidScenario.loadCRLFromRemote = [options[@"loadCRLFromRemote"] boolValue];
+    if(options[@"independentSODStatus"]) rfidScenario.independentSODStatus = options[@"independentSODStatus"];
+
     // Int
     if([options valueForKey:@"signManagementAction"] != nil)
         rfidScenario.signManagementAction = [[options valueForKey:@"signManagementAction"] integerValue];
@@ -682,7 +687,7 @@
         rfidScenario.terminalType = [[options valueForKey:@"terminalType"] integerValue];
     if([options valueForKey:@"defaultReadingBufferSize"] != nil)
         rfidScenario.defaultReadingBufferSize = [[options valueForKey:@"defaultReadingBufferSize"] intValue];
-    
+
     // String
     if([options valueForKey:@"password"] != nil)
         rfidScenario.password = [options valueForKey:@"password"];
@@ -697,7 +702,7 @@
     if([options valueForKey:@"eSignPINNewValue"] != nil)
         rfidScenario.eSignPINNewValue = [options valueForKey:@"eSignPINNewValue"];
     if(options[@"cardAccess"]) rfidScenario.cardAccess = options[@"cardAccess"];
-    
+
     // DataGroup
     if([options valueForKey:@"ePassportDataGroups"] != nil)
         [self setDataGroups :rfidScenario.ePassportDataGroups dict:[options valueForKey:@"ePassportDataGroups"]];
@@ -705,12 +710,12 @@
         [self setDataGroups :rfidScenario.eIDDataGroups dict:[options valueForKey:@"eIDDataGroups"]];
     if([options valueForKey:@"eDLDataGroups"] != nil)
         [self setDataGroups :rfidScenario.eDLDataGroups dict:[options valueForKey:@"eDLDataGroups"]];
-    if(options[@"dtcDataGroups"]) [self setDataGroups :rfidScenario.DTCDataGroups dict:options[@"dtcDataGroups"]];
+    if(options[@"dtcDataGroups"]) [self setDTCDataGroup :rfidScenario.DTCDataGroups dict:options[@"dtcDataGroups"]];
 }
 
 +(NSDictionary*)getRfidScenario:(RGLRFIDScenario*)rfidScenario {
     NSMutableDictionary *result = [NSMutableDictionary new];
-    
+
     // Boolean
     result[@"paceStaticBinding"] = [NSNumber numberWithBool:rfidScenario.paceStaticBinding];
     result[@"onlineTA"] = [NSNumber numberWithBool:rfidScenario.onlineTA];
@@ -748,7 +753,9 @@
     result[@"proceedReadingAlways"] = [NSNumber numberWithBool:rfidScenario.proceedReadingAlways];
     result[@"readDTC"] = [NSNumber numberWithBool:rfidScenario.readDTC];
     result[@"mrzStrictCheck"] = rfidScenario.mrzStrictCheck;
-    
+    result[@"loadCRLFromRemote"] = @(rfidScenario.loadCRLFromRemote);
+    result[@"independentSODStatus"] = rfidScenario.independentSODStatus;
+
     // Int
     result[@"signManagementAction"] = [NSNumber numberWithInteger:rfidScenario.signManagementAction];
     result[@"readingBuffer"] = [NSNumber numberWithInteger:rfidScenario.readingBuffer];
@@ -759,7 +766,7 @@
     result[@"pacePasswordType"] = [NSNumber numberWithInteger:rfidScenario.pacePasswordType];
     result[@"terminalType"] = [NSNumber numberWithInteger:rfidScenario.terminalType];
     result[@"defaultReadingBufferSize"] = [NSNumber numberWithInteger:rfidScenario.defaultReadingBufferSize];
-    
+
     // String
     result[@"password"] = rfidScenario.password;
     result[@"pkdPA"] = rfidScenario.pkdPA;
@@ -768,18 +775,18 @@
     result[@"eSignPINDefault"] = rfidScenario.eSignPINDefault;
     result[@"eSignPINNewValue"] = rfidScenario.eSignPINNewValue;
     result[@"cardAccess"] = rfidScenario.cardAccess;
-    
+
     // DataGroup
     result[@"eDLDataGroups"] = [self getDataGroups:rfidScenario.eDLDataGroups];
     result[@"ePassportDataGroups"] = [self getDataGroups:rfidScenario.ePassportDataGroups];
     result[@"eIDDataGroups"] = [self getDataGroups:rfidScenario.eIDDataGroups];
-    result[@"dtcDataGroups"] = [self getDataGroups:rfidScenario.DTCDataGroups];
-    
+    result[@"dtcDataGroups"] = [self getDTCDataGroup:rfidScenario.DTCDataGroups];
+
     return result;
 }
 
 +(void)setDataGroups:(RGLDataGroup*)dataGroup dict:(NSDictionary*)dict {
-    
+
     // EDLDataGroups/Common: 1-14
     if([dict valueForKey:@"DG1"] != nil)
         dataGroup.dG1 = [[dict valueForKey:@"DG1"] boolValue];
@@ -809,7 +816,7 @@
         dataGroup.dG13 = [[dict valueForKey:@"DG13"] boolValue];
     if([dict valueForKey:@"DG14"] != nil)
         dataGroup.dG14 = [[dict valueForKey:@"DG14"] boolValue];
-    
+
     // EPassportDataGroups: 1-16
     if ([dataGroup class] == [RGLePassportDataGroup class]) {
         if([dict valueForKey:@"DG15"] != nil)
@@ -817,7 +824,7 @@
         if([dict valueForKey:@"DG16"] != nil)
             ((RGLePassportDataGroup*)dataGroup).dG16 = [[dict valueForKey:@"DG16"] boolValue];
     }
-    
+
     // EIDDataGroups: 1-21
     if ([dataGroup class] == [RGLeIDDataGroup class]) {
         if([dict valueForKey:@"DG15"] != nil)
@@ -835,22 +842,11 @@
         if([dict valueForKey:@"DG21"] != nil)
             ((RGLeIDDataGroup*)dataGroup).dG21 = [[dict valueForKey:@"DG21"] boolValue];
     }
-    
-    // DTCDataGroups: 1-18 & 22-24
-    if ([dataGroup class] == [RGLDTCDataGroup class]) {
-        if(dict[@"DG15"]) ((RGLDTCDataGroup*)dataGroup).dG15 = [dict[@"DG15"] boolValue];
-        if(dict[@"DG16"]) ((RGLDTCDataGroup*)dataGroup).dG16 = [dict[@"DG16"] boolValue];
-        if(dict[@"DG17"]) ((RGLDTCDataGroup*)dataGroup).dG17 = [dict[@"DG17"] boolValue];
-        if(dict[@"DG18"]) ((RGLDTCDataGroup*)dataGroup).dG18 = [dict[@"DG18"] boolValue];
-        if(dict[@"DG22"]) ((RGLDTCDataGroup*)dataGroup).dG22 = [dict[@"DG22"] boolValue];
-        if(dict[@"DG23"]) ((RGLDTCDataGroup*)dataGroup).dG23 = [dict[@"DG23"] boolValue];
-        if(dict[@"DG24"]) ((RGLDTCDataGroup*)dataGroup).dG24 = [dict[@"DG24"] boolValue];
-    }
 }
 
 +(NSDictionary *)getDataGroups:(RGLDataGroup*)dataGroup {
     NSMutableDictionary *result = [NSMutableDictionary new];
-    
+
     // EDLDataGroups/Common: 1-14
     result[@"DG1"] = [NSNumber numberWithBool:dataGroup.dG1];
     result[@"DG2"] = [NSNumber numberWithBool:dataGroup.dG2];
@@ -866,13 +862,13 @@
     result[@"DG12"] = [NSNumber numberWithBool:dataGroup.dG12];
     result[@"DG13"] = [NSNumber numberWithBool:dataGroup.dG13];
     result[@"DG14"] = [NSNumber numberWithBool:dataGroup.dG14];
-    
+
     // EPassportDataGroups: 1-16
     if ([dataGroup class] == [RGLePassportDataGroup class]) {
         result[@"DG15"] = [NSNumber numberWithBool:((RGLePassportDataGroup*)dataGroup).dG15];
         result[@"DG16"] = [NSNumber numberWithBool:((RGLePassportDataGroup*)dataGroup).dG16];
     }
-    
+
     // EIDDataGroups: 1-21
     if ([dataGroup class] == [RGLeIDDataGroup class]) {
         result[@"DG15"] = [NSNumber numberWithBool:((RGLeIDDataGroup*)dataGroup).dG15];
@@ -883,18 +879,27 @@
         result[@"DG20"] = [NSNumber numberWithBool:((RGLeIDDataGroup*)dataGroup).dG20];
         result[@"DG21"] = [NSNumber numberWithBool:((RGLeIDDataGroup*)dataGroup).dG21];
     }
-    
-    // DTCDataGroups: 1-18 & 22-24
-    if ([dataGroup class] == [RGLDTCDataGroup class]) {
-        result[@"DG15"] = [NSNumber numberWithBool:((RGLDTCDataGroup*)dataGroup).dG15];
-        result[@"DG16"] = [NSNumber numberWithBool:((RGLDTCDataGroup*)dataGroup).dG16];
-        result[@"DG17"] = [NSNumber numberWithBool:((RGLDTCDataGroup*)dataGroup).dG17];
-        result[@"DG18"] = [NSNumber numberWithBool:((RGLDTCDataGroup*)dataGroup).dG18];
-        result[@"DG22"] = [NSNumber numberWithBool:((RGLDTCDataGroup*)dataGroup).dG22];
-        result[@"DG23"] = [NSNumber numberWithBool:((RGLDTCDataGroup*)dataGroup).dG23];
-        result[@"DG24"] = [NSNumber numberWithBool:((RGLDTCDataGroup*)dataGroup).dG24];
-    }
-    
+
+    return result;
+}
+
++(void)setDTCDataGroup:(RGLDTCDataGroup*)dataGroup dict:(NSDictionary*)dict {
+    if(dict[@"DG17"]) dataGroup.dG17 = [dict[@"DG17"] boolValue];
+    if(dict[@"DG18"]) dataGroup.dG18 = [dict[@"DG18"] boolValue];
+    if(dict[@"DG22"]) dataGroup.dG22 = [dict[@"DG22"] boolValue];
+    if(dict[@"DG23"]) dataGroup.dG23 = [dict[@"DG23"] boolValue];
+    if(dict[@"DG24"]) dataGroup.dG24 = [dict[@"DG24"] boolValue];
+}
+
++(NSDictionary *)getDTCDataGroup:(RGLDTCDataGroup*)dataGroup {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+
+    result[@"DG17"] = @(dataGroup.dG17);
+    result[@"DG18"] = @(dataGroup.dG18);
+    result[@"DG22"] = @(dataGroup.dG22);
+    result[@"DG23"] = @(dataGroup.dG23);
+    result[@"DG24"] = @(dataGroup.dG24);
+
     return result;
 }
 
@@ -922,11 +927,12 @@
         result.glaresCheckParams = [RGLWJSONConstructor glaresCheckParamsFromJson:[input valueForKey:@"glaresCheckParams"]];
     if([input valueForKey:@"brightnessThreshold"] != nil)
         result.brightnessThreshold = [input valueForKey:@"brightnessThreshold"];
+    if(input[@"occlusionCheck"]) result.occlusionCheck = input[@"occlusionCheck"];
 }
 
 +(NSDictionary*)getImageQA:(RGLImageQA*)input {
     NSMutableDictionary *result = [NSMutableDictionary new];
-    
+
     result[@"dpiThreshold"] = input.dpiThreshold;
     result[@"angleThreshold"] = input.angleThreshold;
     result[@"focusCheck"] = input.focusCheck;
@@ -941,6 +947,7 @@
     result[@"documentPositionIndent"] = input.documentPositionIndent;
     result[@"glaresCheckParams"] = [RGLWJSONConstructor generateGlaresCheckParams:input.glaresCheckParams];
     result[@"brightnessThreshold"] = input.brightnessThreshold;
+    result[@"occlusionCheck"] = input.occlusionCheck;
     
     return result;
 }
@@ -978,6 +985,7 @@
         result.checkPhotoComparison = [input valueForKey:@"checkPhotoComparison"];
     if([input valueForKey:@"checkLetterScreen"] != nil)
         result.checkLetterScreen = [input valueForKey:@"checkLetterScreen"];
+    if(input[@"checkSecurityText"]) result.checkSecurityText = input[@"checkSecurityText"];
 }
 
 +(NSDictionary*)getAuthenticityParams:(RGLAuthenticityParams*)input {
@@ -999,6 +1007,7 @@
     result[@"checkPhotoEmbedding"] = input.checkPhotoEmbedding;
     result[@"checkPhotoComparison"] = input.checkPhotoComparison;
     result[@"checkLetterScreen"] = input.checkLetterScreen;
+    result[@"checkSecurityText"] = input.checkSecurityText;
     
     return result;
 }
@@ -1012,6 +1021,8 @@
         result.checkHolo = [input valueForKey:@"checkHolo"];
     if([input valueForKey:@"checkED"] != nil)
         result.checkED = [input valueForKey:@"checkED"];
+    if(input[@"checkBlackAndWhiteCopy"]) result.checkBlackAndWhiteCopy = input[@"checkBlackAndWhiteCopy"];
+    if(input[@"checkDynaprint"]) result.checkDynaprint = input[@"checkDynaprint"];
 }
 
 +(NSDictionary*)getLivenessParams:(RGLLivenessParams*)input {
@@ -1022,6 +1033,8 @@
     result[@"checkMLI"] = input.checkMLI;
     result[@"checkHolo"] = input.checkHolo;
     result[@"checkED"] = input.checkED;
+    result[@"checkBlackAndWhiteCopy"] = input.checkBlackAndWhiteCopy;
+    result[@"checkDynaprint"] = input.checkDynaprint;
     
     return result;
 }
@@ -1340,6 +1353,7 @@
     if(value == RGLImageQualityCheckTypePortrait) return @7;
     if(value == RGLImageQualityCheckTypeHandwritten) return @8;
     if(value == RGLImageQualityCheckTypeBrightness) return @9;
+    if(value == RGLImageQualityCheckTypeOcclusion) return @10;
     return 0;
 }
 
@@ -1356,6 +1370,7 @@
     if(value == 7) return RGLImageQualityCheckTypePortrait;
     if(value == 8) return RGLImageQualityCheckTypeHandwritten;
     if(value == 9) return RGLImageQualityCheckTypeBrightness;
+    if(value == 10) return RGLImageQualityCheckTypeOcclusion;
     return RGLImageQualityCheckTypeImageGlares;
 }
 
