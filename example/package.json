@@ -10,8 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@regulaforensics/react-native-document-reader-api": "7.6.62",
-    "@regulaforensics/react-native-document-reader-core-fullauthrfid": "7.6.43",
+    "@regulaforensics/react-native-document-reader-api": "7.7.79",
+    "@regulaforensics/react-native-document-reader-core-fullauthrfid": "7.7.177",
     "react-native-progress": "5.0.0",
     "react-native-radio-buttons-group": "3.0.5",
     "@rneui/base": "4.0.0-rc.7",
@@ -24,9 +24,9 @@
     "ip": "2.0.1"
   },
   "devDependencies": {
-    "@babel/core": "7.23.2",
-    "@babel/preset-env": "7.23.2",
-    "@babel/runtime": "7.23.2",
+    "@babel/core": "7.26.10",
+    "@babel/preset-env": "7.26.9",
+    "@babel/runtime": "7.27.0",
     "@react-native/eslint-config": "0.73.2",
     "@react-native/metro-config": "0.73.2",
     "@tsconfig/react-native": "3.0.2",
@@ -43,4 +43,3 @@
     "node": ">=16"
   }
 }
-
