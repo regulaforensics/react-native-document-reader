@@ -928,17 +928,19 @@ static NSMutableArray* weakReferencesHolder;
 +(NSDictionary*)generateImageQuality:(RGLImageQuality*)input {
     if(input == nil) return nil;
     NSMutableDictionary* result = [NSMutableDictionary new];
-    
+
     result[@"type"] = [RGLWConfig generateImageQualityCheckType:input.type];
     result[@"result"] = @(input.result);
     result[@"featureType"] = @(input.featureType);
     if(input.boundRects != nil){
         NSMutableArray *array = [NSMutableArray new];
-        for(NSValue* item in input.boundRects)
-            [array addObject:[self generateRect:[item CGRectValue]]];
+        for(NSValue* item in input.boundRects) {
+            id rect = [self generateRect:[item CGRectValue]];
+            if(rect) [array addObject:rect];
+        }
         result[@"boundRects"] = array;
     }
-    
+
     return result;
 }
 
