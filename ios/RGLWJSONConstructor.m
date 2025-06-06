@@ -1,11 +1,3 @@
-//
-//  RGLWJSONConstructor.m
-//  DocumentReader
-//
-//  Created by Pavel Masiuk on 21.09.2023.
-//  Copyright © 2023 Regula. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 #import "RGLWJSONConstructor.h"
 
@@ -16,6 +8,16 @@ static NSMutableArray* weakReferencesHolder;
     if(!weakReferencesHolder)
         weakReferencesHolder = [NSMutableArray new];
     [weakReferencesHolder addObject:reference];
+}
+
++(id)toSendable:(id)input {
+    if (!input || [input isEqual:[NSNull null]])  return nil;
+    if ([input isKindOfClass:[NSDictionary class]] || [input isKindOfClass:[NSArray class]])
+        return [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:input
+                                                                              options:NSJSONWritingPrettyPrinted
+                                                                                error:nil]
+                                     encoding:NSUTF8StringEncoding];
+    return input;
 }
 
 +(NSString*)dictToString:(NSDictionary*)input {
@@ -928,7 +930,7 @@ static NSMutableArray* weakReferencesHolder;
 +(NSDictionary*)generateImageQuality:(RGLImageQuality*)input {
     if(input == nil) return nil;
     NSMutableDictionary* result = [NSMutableDictionary new];
-
+    
     result[@"type"] = [RGLWConfig generateImageQualityCheckType:input.type];
     result[@"result"] = @(input.result);
     result[@"featureType"] = @(input.featureType);
@@ -940,7 +942,7 @@ static NSMutableArray* weakReferencesHolder;
         }
         result[@"boundRects"] = array;
     }
-
+    
     return result;
 }
 
