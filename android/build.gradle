@@ -16,7 +16,7 @@ apply plugin: 'kotlin-android'
 android {
     // Conditional for compatibility with AGP <4.2.
     if (project.android.hasProperty("namespace")) {
-        namespace 'com.regula.documentreader'
+        namespace 'com.regula.plugin.documentreader'
     }
 
     compileSdk 34
@@ -41,7 +41,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
     //noinspection GradleDependency
-    implementation('com.regula.documentreader:api:8.1.11429') {
+    implementation('com.regula.documentreader:api:8.1.11472') {
         transitive = true
     }
 }
