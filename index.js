@@ -2275,6 +2275,11 @@ export const eProcessGLCommands = {
     ePC_RFID_SetTCCParams: 12522,
 }
 
+export const eRFIDReadingBufferSize = {
+    EXTENDED_LENGTH: 0,
+    SINGLE_LENGTH: -1,
+}
+
 export const PKDResourceType = {
     CERTIFICATE_PA: 0,
     CERTIFICATE_TA: 1,
@@ -4361,6 +4366,7 @@ export const Enum = {
    eRPRM_FieldVerificationResult,
    DocReaderAction,
    eProcessGLCommands,
+   eRFIDReadingBufferSize,
    PKDResourceType,
    eRFID_AuthenticationProcedureType,
    DocumentReaderErrorCodes,
