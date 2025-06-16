@@ -4446,6 +4446,7 @@ DocumentReader.runAutoUpdate = (databaseId, successCallback, errorCallback) => R
 DocumentReader.cancelDBUpdate = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "cancelDBUpdate", [], successCallback, errorCallback)
 DocumentReader.checkDatabaseUpdate = (databaseId, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "checkDatabaseUpdate", [databaseId], successCallback, errorCallback)
 DocumentReader.scan = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "scan", [config], successCallback, errorCallback)
+DocumentReader.startScanner = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startScanner", [config], successCallback, errorCallback)
 DocumentReader.recognize = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognize", [config], successCallback, errorCallback)
 DocumentReader.startNewPage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewPage", [], successCallback, errorCallback)
 DocumentReader.stopScanner = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopScanner", [], successCallback, errorCallback)

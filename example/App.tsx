@@ -151,7 +151,7 @@ export default class App extends React.Component<IProps, IState> {
     this.clearResults()
     var config = new ScannerConfig()
     config.scenario = this.state.selectedScenario
-    DocumentReader.scan(config, _ => { }, e => console.log(e))
+    DocumentReader.startScanner(config, _ => { }, e => console.log(e))
   }
 
   recognize() {

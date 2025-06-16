@@ -5436,6 +5436,7 @@ export default class DocumentReader {
     static cancelDBUpdate(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static checkDatabaseUpdate(databaseId: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static scan(config: ScannerConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startScanner(config: ScannerConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognize(config: RecognizeConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewPage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static stopScanner(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
