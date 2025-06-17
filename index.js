@@ -2276,8 +2276,8 @@ export const eProcessGLCommands = {
 }
 
 export const eRFIDReadingBufferSize = {
-    EXTENDED_LENGTH: 0,
-    SINGLE_LENGTH: -1,
+    STANDARD_LENGTH: 0,
+    EXTENDED_LENGTH: -1,
 }
 
 export const PKDResourceType = {
