@@ -3267,8 +3267,8 @@ export const eProcessGLCommands = {
 }
 
 export const eRFIDReadingBufferSize = {
-    EXTENDED_LENGTH: 0,
-    SINGLE_LENGTH: -1,
+    STANDARD_LENGTH: 0,
+    EXTENDED_LENGTH: -1,
 }
 
 export const PKDResourceType = {
@@ -5436,6 +5436,7 @@ export default class DocumentReader {
     static cancelDBUpdate(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static checkDatabaseUpdate(databaseId: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static scan(config: ScannerConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startScanner(config: ScannerConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognize(config: RecognizeConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewPage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static stopScanner(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
