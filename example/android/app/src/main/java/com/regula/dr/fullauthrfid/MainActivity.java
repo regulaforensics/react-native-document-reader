@@ -1,4 +1,4 @@
-package com.regula.dr.fullrfid;
+package com.regula.dr.fullauthrfid;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
