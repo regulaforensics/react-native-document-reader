@@ -5451,6 +5451,9 @@ export default class DocumentReader {
     static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewSession(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static connectBluetoothDevice(btDeviceName: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static btDeviceRequestFlashing(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static btDeviceRequestFlashingFullIR(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static btDeviceRequestTurnOffAll(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setLocalizationDictionary(dictionary: Record<string, string>, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getLicense(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAvailableScenarios(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
