@@ -64,6 +64,7 @@ fun methodCall(method: String, callback: (Any?) -> Unit): Any = when (method) {
     "resetConfiguration" -> resetConfiguration()
     "initialize" -> initialize(callback, args(0))
     "initializeReader" -> initialize(callback, args(0)) // deprecated
+    "initializeReaderWithBleDeviceConfig" -> initializeReaderWithBleDeviceConfig(callback, args(0)) // deprecated
     "deinitialize" -> deinitialize()
     "prepareDatabase" -> prepareDatabase(callback, args(0))
     "removeDatabase" -> removeDatabase(callback)
@@ -86,6 +87,9 @@ fun methodCall(method: String, callback: (Any?) -> Unit): Any = when (method) {
     "clearPKDCertificates" -> clearPKDCertificates()
     "startNewSession" -> startNewSession()
     "connectBluetoothDevice" -> connectBluetoothDevice(callback)
+    "btDeviceRequestFlashing" -> btDeviceRequestFlashing()
+    "btDeviceRequestFlashingFullIR" -> btDeviceRequestFlashingFullIR()
+    "btDeviceRequestTurnOffAll" -> btDeviceRequestTurnOffAll()
     "setLocalizationDictionary" -> setLocalizationDictionary(args(0))
     "getLicense" -> getLicense(callback)
     "getAvailableScenarios" -> getAvailableScenarios(callback)
@@ -173,6 +177,9 @@ fun initialize(callback: Callback, config: JSONObject) =
         Instance().initializeReader(context, initConfigFromJSON(config), initCompletion(callback))
     else
         Instance().initializeReader(context, initBleDeviceConfigFromJSON(config), initCompletion(callback))
+
+// deprecated
+fun initializeReaderWithBleDeviceConfig(callback: Callback, config: JSONObject) = Instance().initializeReader(context, initBleDeviceConfigFromJSON(config), initCompletion(callback))
 
 fun deinitialize() = Instance().deinitializeReader()
 
