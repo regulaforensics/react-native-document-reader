@@ -1914,6 +1914,7 @@ export class ImageQA {
     expectedPass?: number[]
     documentPositionIndent?: number
     brightnessThreshold?: number
+    occlusionCheck?: boolean
 
     static fromJson(jsonObject?: any): ImageQA | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -1934,6 +1935,7 @@ export class ImageQA {
         }
         result.documentPositionIndent = jsonObject["documentPositionIndent"]
         result.brightnessThreshold = jsonObject["brightnessThreshold"]
+        result.occlusionCheck = jsonObject["occlusionCheck"]
 
         return result
     }
@@ -2032,6 +2034,7 @@ export class LivenessParams {
     checkED?: boolean
     checkBlackAndWhiteCopy?: boolean
     checkDynaprint?: boolean
+    checkGeometry?: boolean
 
     static fromJson(jsonObject?: any): LivenessParams | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2043,6 +2046,7 @@ export class LivenessParams {
         result.checkED = jsonObject["checkED"]
         result.checkBlackAndWhiteCopy = jsonObject["checkBlackAndWhiteCopy"]
         result.checkDynaprint = jsonObject["checkDynaprint"]
+        result.checkGeometry = jsonObject["checkGeometry"]
 
         return result
     }
@@ -2127,6 +2131,9 @@ export class ProcessParams {
     strictBarcodeDigitalSignatureCheck?: boolean
     selectLongestNames?: boolean
     generateDTCVC?: boolean
+    strictDLCategoryExpiry?: boolean
+    generateAlpha2Codes?: boolean
+    disableAuthResolutionFilter?: boolean
     barcodeParserType?: number
     perspectiveAngle?: number
     minDPI?: number
@@ -2142,6 +2149,7 @@ export class ProcessParams {
     mrzDetectMode?: number
     measureSystem?: number
     forceDocID?: number
+    pdfPagesLimit?: number
     dateFormat?: string
     scenario?: string
     captureButtonScenario?: string
@@ -2204,6 +2212,9 @@ export class ProcessParams {
         result.strictBarcodeDigitalSignatureCheck = jsonObject["strictBarcodeDigitalSignatureCheck"]
         result.selectLongestNames = jsonObject["selectLongestNames"]
         result.generateDTCVC = jsonObject["generateDTCVC"]
+        result.strictDLCategoryExpiry = jsonObject["strictDLCategoryExpiry"]
+        result.generateAlpha2Codes = jsonObject["generateAlpha2Codes"]
+        result.disableAuthResolutionFilter = jsonObject["disableAuthResolutionFilter"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -2219,6 +2230,7 @@ export class ProcessParams {
         result.mrzDetectMode = jsonObject["mrzDetectMode"]
         result.measureSystem = jsonObject["measureSystem"]
         result.forceDocID = jsonObject["forceDocID"]
+        result.pdfPagesLimit = jsonObject["pdfPagesLimit"]
         result.dateFormat = jsonObject["dateFormat"]
         result.scenario = jsonObject["scenario"]
         result.captureButtonScenario = jsonObject["captureButtonScenario"]
@@ -2374,6 +2386,7 @@ export class Customization {
     cameraFrameShapeType?: number
     status?: string
     resultStatus?: string
+    multipageButtonText?: string
     cameraFrameDefaultColor?: number
     cameraFrameActiveColor?: number
     statusTextColor?: number
@@ -2385,6 +2398,7 @@ export class Customization {
     statusBackgroundColor?: number
     cameraPreviewBackgroundColor?: number
     backgroundMaskColor?: number
+    multipageButtonTextColor?: number
     statusPositionMultiplier?: number
     resultStatusPositionMultiplier?: number
     toolbarSize?: number
@@ -2395,6 +2409,9 @@ export class Customization {
     cameraFrameLandscapeAspectRatio?: number
     cameraFramePortraitAspectRatio?: number
     cameraFrameCornerRadius?: number
+    activityIndicatorPortraitPositionMultiplier?: number
+    activityIndicatorLandscapePositionMultiplier?: number
+    cameraPreviewVerticalPositionMultiplier?: number
     multipageAnimationFrontImage?: string
     multipageAnimationBackImage?: string
     borderBackgroundImage?: string
@@ -2407,8 +2424,10 @@ export class Customization {
     changeFrameButtonExpandImage?: string
     changeFrameButtonCollapseImage?: string
     livenessAnimationImage?: string
+    multipageButtonImage?: string
     statusTextFont?: Font
     resultStatusTextFont?: Font
+    multipageButtonTextFont?: Font
     customLabelStatus?: string
     cameraFrameLineCap?: number
     uiCustomizationLayer?: Record<string, any>
@@ -2443,6 +2462,7 @@ export class Customization {
         result.cameraFrameShapeType = jsonObject["cameraFrameShapeType"]
         result.status = jsonObject["status"]
         result.resultStatus = jsonObject["resultStatus"]
+        result.multipageButtonText = jsonObject["multipageButtonText"]
         result.cameraFrameDefaultColor = jsonObject["cameraFrameDefaultColor"]
         result.cameraFrameActiveColor = jsonObject["cameraFrameActiveColor"]
         result.statusTextColor = jsonObject["statusTextColor"]
@@ -2454,6 +2474,7 @@ export class Customization {
         result.statusBackgroundColor = jsonObject["statusBackgroundColor"]
         result.cameraPreviewBackgroundColor = jsonObject["cameraPreviewBackgroundColor"]
         result.backgroundMaskColor = jsonObject["backgroundMaskColor"]
+        result.multipageButtonTextColor = jsonObject["multipageButtonTextColor"]
         result.statusPositionMultiplier = jsonObject["statusPositionMultiplier"]
         result.resultStatusPositionMultiplier = jsonObject["resultStatusPositionMultiplier"]
         result.toolbarSize = jsonObject["toolbarSize"]
@@ -2464,6 +2485,9 @@ export class Customization {
         result.cameraFrameLandscapeAspectRatio = jsonObject["cameraFrameLandscapeAspectRatio"]
         result.cameraFramePortraitAspectRatio = jsonObject["cameraFramePortraitAspectRatio"]
         result.cameraFrameCornerRadius = jsonObject["cameraFrameCornerRadius"]
+        result.activityIndicatorPortraitPositionMultiplier = jsonObject["activityIndicatorPortraitPositionMultiplier"]
+        result.activityIndicatorLandscapePositionMultiplier = jsonObject["activityIndicatorLandscapePositionMultiplier"]
+        result.cameraPreviewVerticalPositionMultiplier = jsonObject["cameraPreviewVerticalPositionMultiplier"]
         result.multipageAnimationFrontImage = jsonObject["multipageAnimationFrontImage"]
         result.multipageAnimationBackImage = jsonObject["multipageAnimationBackImage"]
         result.borderBackgroundImage = jsonObject["borderBackgroundImage"]
@@ -2476,8 +2500,10 @@ export class Customization {
         result.changeFrameButtonExpandImage = jsonObject["changeFrameButtonExpandImage"]
         result.changeFrameButtonCollapseImage = jsonObject["changeFrameButtonCollapseImage"]
         result.livenessAnimationImage = jsonObject["livenessAnimationImage"]
+        result.multipageButtonImage = jsonObject["multipageButtonImage"]
         result.statusTextFont = Font.fromJson(jsonObject["statusTextFont"])
         result.resultStatusTextFont = Font.fromJson(jsonObject["resultStatusTextFont"])
+        result.multipageButtonTextFont = Font.fromJson(jsonObject["multipageButtonTextFont"])
         result.customLabelStatus = jsonObject["customLabelStatus"]
         result.cameraFrameLineCap = jsonObject["cameraFrameLineCap"]
         result.uiCustomizationLayer = jsonObject["uiCustomizationLayer"]
@@ -2718,6 +2744,7 @@ export class RFIDScenario {
     readDTC?: boolean
     mrzStrictCheck?: boolean
     loadCRLFromRemote?: boolean
+    independentSODStatus?: boolean
     readingBuffer?: number
     onlineTAToSignDataType?: number
     defaultReadingBufferSize?: number
@@ -2734,6 +2761,10 @@ export class RFIDScenario {
     eSignPINDefault?: string
     eSignPINNewValue?: string
     cardAccess?: string
+    mrzHash?: string
+    documentNumber?: string
+    dateOfBirth?: string
+    dateOfExpiry?: string
     eDLDataGroups?: EDLDataGroups
     ePassportDataGroups?: EPassportDataGroups
     eIDDataGroups?: EIDDataGroups
@@ -2780,6 +2811,7 @@ export class RFIDScenario {
         result.readDTC = jsonObject["readDTC"]
         result.mrzStrictCheck = jsonObject["mrzStrictCheck"]
         result.loadCRLFromRemote = jsonObject["loadCRLFromRemote"]
+        result.independentSODStatus = jsonObject["independentSODStatus"]
         result.readingBuffer = jsonObject["readingBuffer"]
         result.onlineTAToSignDataType = jsonObject["onlineTAToSignDataType"]
         result.defaultReadingBufferSize = jsonObject["defaultReadingBufferSize"]
@@ -2796,6 +2828,10 @@ export class RFIDScenario {
         result.eSignPINDefault = jsonObject["eSignPINDefault"]
         result.eSignPINNewValue = jsonObject["eSignPINNewValue"]
         result.cardAccess = jsonObject["cardAccess"]
+        result.mrzHash = jsonObject["mrzHash"]
+        result.documentNumber = jsonObject["documentNumber"]
+        result.dateOfBirth = jsonObject["dateOfBirth"]
+        result.dateOfExpiry = jsonObject["dateOfExpiry"]
         result.eDLDataGroups = EDLDataGroups.fromJson(jsonObject["eDLDataGroups"])
         result.ePassportDataGroups = EPassportDataGroups.fromJson(jsonObject["ePassportDataGroups"])
         result.eIDDataGroups = EIDDataGroups.fromJson(jsonObject["eIDDataGroups"])
@@ -3234,6 +3270,11 @@ export const eProcessGLCommands = {
     ePC_RFID_SetTCCParams: 12522,
 }
 
+export const eRFIDReadingBufferSize = {
+    STANDARD_LENGTH: 0,
+    EXTENDED_LENGTH: -1,
+}
+
 export const PKDResourceType = {
     CERTIFICATE_PA: 0,
     CERTIFICATE_TA: 1,
@@ -3337,6 +3378,7 @@ export const ScenarioIdentifier = {
     SCENARIO_CREDIT_CARD: "CreditCard",
     SCENARIO_CAPTURE: "Capture",
     SCENARIO_DTC: "DTC",
+    SCENARIO_RFID: "RFID",
 }
 
 export const eRFID_AccessControl_ProcedureType = {
@@ -3403,6 +3445,7 @@ export const eRFID_Password_Type = {
     PPT_PUK: 4,
     PPT_PIN_ESIGN: 5,
     PPT_SAI: 6,
+    PPT_MRZ_HASH: 7,
 }
 
 export const ViewContentMode = {
@@ -3889,6 +3932,8 @@ export const eLDS_ParsingNotificationCodes = {
     NTF_LDS_ICAO_CERTIFICATE_VISUAL_MRZ_COUNTRY_NON_MATCHING: 0x90000251,
     NTF_LDS_MRZ_COUNTRYCODE_VISUALMRZ_NON_MATCHING: 0x00022019,
     NTF_LDS_ICAO_CERTIFICATE_MRZ_COUNTRY_NON_MATCHING: 0x90000252,
+    NTF_LDS_ICAO_CERTIFICATE_ISSUER_COUNTRY_NON_UPPER_CASE: 0x90000253,
+    NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COUNTRY_NON_UPPER_CASE: 0x90000254,
 }
 
 export const eImageQualityCheckType = {
@@ -3902,6 +3947,7 @@ export const eImageQualityCheckType = {
     IQC_PORTRAIT: 7,
     IQC_HANDWRITTEN: 8,
     IQC_BRIGHTNESS: 9,
+    IQC_OCCLUSION: 10,
 }
 
 export const MRZFormat = {
@@ -3991,6 +4037,8 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_CONTACT_CHIP_CLASSIFICATION: 51,
     SECURITY_FEATURE_TYPE_HEAD_POSITION_CHECK: 52,
     SECURITY_FEATURE_TYPE_LIVENESS_BLACK_AND_WHITE_COPY_CHECK: 53,
+    SECURITY_FEATURE_TYPE_LIVENESS_DYNAPRINT_CHECK: 54,
+    SECURITY_FEATURE_TYPE_LIVENESS_GEOMETRY_CHECK: 55,
 }
 
 export const OnlineMode = {
@@ -5085,6 +5133,13 @@ export const eVisualFieldType = {
     FT_DIGITAL_TRAVEL_AUTHORIZATION_NUMBER: 690,
     FT_DATE_OF_FIRST_POSITIVE_TEST_RESULT: 691,
     FT_EF_CARD_ACCESS: 692,
+    FT_SHORT_FLIGHT_NUMBER: 693,
+    FT_AIRLINE_CODE: 694,
+    FT_MVC_AGENCY: 695,
+    FT_ISSUING_STATE_CODE_ALPHA2: 696,
+    FT_NATIONALITY_CODE_ALPHA2: 697,
+    FT_FIRST_ISSUE_DATE_CHECKDIGIT: 698,
+    FT_FIRST_ISSUE_DATE_CHECKSUM: 699,
 }
 
 export const DocReaderOrientation = {
@@ -5308,6 +5363,7 @@ export const Enum = {
    eRPRM_FieldVerificationResult,
    DocReaderAction,
    eProcessGLCommands,
+   eRFIDReadingBufferSize,
    PKDResourceType,
    eRFID_AuthenticationProcedureType,
    DocumentReaderErrorCodes,
@@ -5368,6 +5424,8 @@ export default class DocumentReader {
     static setTenant(tenant: string | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getEnv(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setEnv(env: string | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getLocale(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setLocale(locale: string | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getFunctionality(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setFunctionality(functionality: Functionality, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getProcessParams(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
@@ -5386,6 +5444,7 @@ export default class DocumentReader {
     static cancelDBUpdate(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static checkDatabaseUpdate(databaseId: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static scan(config: ScannerConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startScanner(config: ScannerConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static recognize(config: RecognizeConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewPage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static stopScanner(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
@@ -5400,6 +5459,9 @@ export default class DocumentReader {
     static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewSession(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static connectBluetoothDevice(btDeviceName: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static btDeviceRequestFlashing(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static btDeviceRequestFlashingFullIR(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static btDeviceRequestTurnOffAll(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setLocalizationDictionary(dictionary: Record<string, string>, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getLicense(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAvailableScenarios(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
