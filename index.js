@@ -1463,6 +1463,7 @@ export class ProcessParams {
         result.generateDTCVC = jsonObject["generateDTCVC"]
         result.strictDLCategoryExpiry = jsonObject["strictDLCategoryExpiry"]
         result.generateAlpha2Codes = jsonObject["generateAlpha2Codes"]
+        result.disableAuthResolutionFilter = jsonObject["disableAuthResolutionFilter"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -1641,6 +1642,7 @@ export class Customization {
         result.changeFrameButtonExpandImage = jsonObject["changeFrameButtonExpandImage"]
         result.changeFrameButtonCollapseImage = jsonObject["changeFrameButtonCollapseImage"]
         result.livenessAnimationImage = jsonObject["livenessAnimationImage"]
+        result.multipageButtonImage = jsonObject["multipageButtonImage"]
         result.statusTextFont = Font.fromJson(jsonObject["statusTextFont"])
         result.resultStatusTextFont = Font.fromJson(jsonObject["resultStatusTextFont"])
         result.multipageButtonTextFont = Font.fromJson(jsonObject["multipageButtonTextFont"])
@@ -4143,6 +4145,8 @@ export const eVisualFieldType = {
     FT_MVC_AGENCY: 695,
     FT_ISSUING_STATE_CODE_ALPHA2: 696,
     FT_NATIONALITY_CODE_ALPHA2: 697,
+    FT_FIRST_ISSUE_DATE_CHECKDIGIT: 698,
+    FT_FIRST_ISSUE_DATE_CHECKSUM: 699,
 }
 
 export const DocReaderOrientation = {
@@ -4428,6 +4432,8 @@ DocumentReader.getTenant = (successCallback, errorCallback) => RNRegulaDocumentR
 DocumentReader.setTenant = (tenant, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTenant", [tenant], successCallback, errorCallback)
 DocumentReader.getEnv = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getEnv", [], successCallback, errorCallback)
 DocumentReader.setEnv = (env, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setEnv", [env], successCallback, errorCallback)
+DocumentReader.getLocale = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getLocale", [], successCallback, errorCallback)
+DocumentReader.setLocale = (locale, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setLocale", [locale], successCallback, errorCallback)
 DocumentReader.getFunctionality = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getFunctionality", [], successCallback, errorCallback)
 DocumentReader.setFunctionality = (functionality, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setFunctionality", [functionality], successCallback, errorCallback)
 DocumentReader.getProcessParams = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getProcessParams", [], successCallback, errorCallback)
@@ -4461,6 +4467,9 @@ DocumentReader.addPKDCertificates = (certificates, successCallback, errorCallbac
 DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
 DocumentReader.startNewSession = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewSession", [], successCallback, errorCallback)
 DocumentReader.connectBluetoothDevice = (btDeviceName, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "connectBluetoothDevice", [btDeviceName], successCallback, errorCallback)
+DocumentReader.btDeviceRequestFlashing = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "btDeviceRequestFlashing", [], successCallback, errorCallback)
+DocumentReader.btDeviceRequestFlashingFullIR = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "btDeviceRequestFlashingFullIR", [], successCallback, errorCallback)
+DocumentReader.btDeviceRequestTurnOffAll = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "btDeviceRequestTurnOffAll", [], successCallback, errorCallback)
 DocumentReader.setLocalizationDictionary = (dictionary, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setLocalizationDictionary", [dictionary], successCallback, errorCallback)
 DocumentReader.getLicense = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getLicense", [], successCallback, errorCallback)
 DocumentReader.getAvailableScenarios = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getAvailableScenarios", [], successCallback, errorCallback)

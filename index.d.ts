@@ -2133,6 +2133,7 @@ export class ProcessParams {
     generateDTCVC?: boolean
     strictDLCategoryExpiry?: boolean
     generateAlpha2Codes?: boolean
+    disableAuthResolutionFilter?: boolean
     barcodeParserType?: number
     perspectiveAngle?: number
     minDPI?: number
@@ -2213,6 +2214,7 @@ export class ProcessParams {
         result.generateDTCVC = jsonObject["generateDTCVC"]
         result.strictDLCategoryExpiry = jsonObject["strictDLCategoryExpiry"]
         result.generateAlpha2Codes = jsonObject["generateAlpha2Codes"]
+        result.disableAuthResolutionFilter = jsonObject["disableAuthResolutionFilter"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -2422,6 +2424,7 @@ export class Customization {
     changeFrameButtonExpandImage?: string
     changeFrameButtonCollapseImage?: string
     livenessAnimationImage?: string
+    multipageButtonImage?: string
     statusTextFont?: Font
     resultStatusTextFont?: Font
     multipageButtonTextFont?: Font
@@ -2497,6 +2500,7 @@ export class Customization {
         result.changeFrameButtonExpandImage = jsonObject["changeFrameButtonExpandImage"]
         result.changeFrameButtonCollapseImage = jsonObject["changeFrameButtonCollapseImage"]
         result.livenessAnimationImage = jsonObject["livenessAnimationImage"]
+        result.multipageButtonImage = jsonObject["multipageButtonImage"]
         result.statusTextFont = Font.fromJson(jsonObject["statusTextFont"])
         result.resultStatusTextFont = Font.fromJson(jsonObject["resultStatusTextFont"])
         result.multipageButtonTextFont = Font.fromJson(jsonObject["multipageButtonTextFont"])
@@ -5134,6 +5138,8 @@ export const eVisualFieldType = {
     FT_MVC_AGENCY: 695,
     FT_ISSUING_STATE_CODE_ALPHA2: 696,
     FT_NATIONALITY_CODE_ALPHA2: 697,
+    FT_FIRST_ISSUE_DATE_CHECKDIGIT: 698,
+    FT_FIRST_ISSUE_DATE_CHECKSUM: 699,
 }
 
 export const DocReaderOrientation = {
@@ -5418,6 +5424,8 @@ export default class DocumentReader {
     static setTenant(tenant: string | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getEnv(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setEnv(env: string | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static getLocale(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static setLocale(locale: string | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getFunctionality(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setFunctionality(functionality: Functionality, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getProcessParams(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
@@ -5451,6 +5459,9 @@ export default class DocumentReader {
     static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewSession(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static connectBluetoothDevice(btDeviceName: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static btDeviceRequestFlashing(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static btDeviceRequestFlashingFullIR(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static btDeviceRequestTurnOffAll(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setLocalizationDictionary(dictionary: Record<string, string>, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getLicense(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getAvailableScenarios(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
