@@ -8,6 +8,10 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { launchImageLibrary } from 'react-native-image-picker'
 import * as Progress from 'react-native-progress'
 
+
+// Example of how to get MRZ string is on line 174
+const MRZ_STRING = "PLACE YOUR MRZ STRING HERE"
+
 var isReadingRfid = false
 
 interface IProps {
@@ -36,6 +40,11 @@ export default class App extends React.Component<IProps, IState> {
     var functionality = new Functionality()
     functionality.showCaptureButton = true
     DocumentReader.setFunctionality(functionality, _ => { }, _ => { })
+
+    DocumentReader.setRfidScenario({
+      mrz: MRZ_STRING,
+      pacePasswordType: Enum.eRFID_Password_Type.PPT_MRZ,
+    }, _ => { }, _ => { })
   }
 
   constructor(props: {} | Readonly<{}>) {
@@ -154,39 +163,17 @@ export default class App extends React.Component<IProps, IState> {
     DocumentReader.startScanner(config, _ => { }, e => console.log(e))
   }
 
-  recognize() {
-    launchImageLibrary({
-      mediaType: 'photo',
-      includeBase64: true,
-      selectionLimit: 10
-    }, r => {
-      if (r.errorCode != null) {
-        console.log("error code: " + r.errorCode)
-        console.log("error message: " + r.errorMessage)
-        this.setState({ fullName: r.errorMessage })
-        return
-      }
-      if (r.didCancel) return
-      this.clearResults()
-      this.setState({ fullName: "COPYING IMAGE..." })
-      var response = r.assets
-
-      var images: any = []
-
-      for (var i = 0; i < response!.length; i++) {
-        images.push(response![i].base64!)
-      }
-      this.setState({ fullName: "PROCESSING..." })
-
-      var config = new RecognizeConfig()
-      config.scenario = this.state.selectedScenario
-      config.images = images
-      DocumentReader.recognize(config, _ => { }, e => console.log(e))
-    })
+  nfcOnly() {
+    DocumentReader.startRFIDReader(false, false, false, _ => { }, _ => { });
   }
 
   displayResults(results: DocumentReaderResults) {
     if (results == null) return
+
+    // Here is how you can aquire the MRZ string
+    // results.textFieldValueByType(Enum.eVisualFieldType.FT_MRZ_STRINGS, (value: string | undefined) => {
+    //   console.log("MRZ: " + value)
+    // }, _ => { })
 
     results.textFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES, (value: string | undefined) => {
       this.setState({ fullName: value })
@@ -269,7 +256,7 @@ export default class App extends React.Component<IProps, IState> {
           <View style={{ flexDirection: 'row' }}>
             <Button color="#4285F4" title="Scan document" onPress={() => this.scan()} />
             <Text style={{ padding: 5 }}></Text>
-            <Button color="#4285F4" title="Scan image" onPress={() => this.recognize()} />
+            <Button color="#4285F4" title="Scan image" onPress={() => this.nfcOnly()} />
           </View>
         </View>}
 
