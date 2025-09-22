@@ -14,6 +14,6 @@ Pod::Spec.new do |s|
   s.source       = { :http => 'file:' + __dir__ }
   s.ios.deployment_target = '14.0'
   s.source_files  = "ios/*.{h,m}"
-  s.dependency 'DocumentReaderStage', '8.3.5064'
+  s.dependency 'DocumentReaderStage', '8.3.5071'
   s.dependency 'React'
 end
