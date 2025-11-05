@@ -1,7 +1,6 @@
 # Deprecated
-This plugin is deprecated and `8.6` will be the last release. We kindly recommend migrating to our new plugin `@regulaforensics/document-reader`:
-* [github](https://github.com/regulaforensics/npm-document-reader)
-* [npmjs](https://www.npmjs.com/package/@regulaforensics/document-reader)
+
+Introduced a new unified [NPM package](https://www.npmjs.com/package/@regulaforensics/document-reader) that supports React, Ionic, and Cordova wrappers in a single distribution. The individual packages for each wrapper are now deprecated and will only be supported for a few upcoming releases before being removed in future versions. We’ll provide advance notice prior to their removal. Follow the Migration Guide for detailed steps to transition to the new unified package.
 
 #  Regula Document Reader SDK for React Native
 
