@@ -2884,45 +2884,6 @@ export class PrepareProgress {
     }
 }
 
-export class FilterObjectType {
-    list?: any[]
-    isInclude?: boolean
-
-    static fromJson(jsonObject?: any): FilterObjectType | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new FilterObjectType
-
-        result.list = []
-        if (jsonObject["list"] != null) {
-            for (const i in jsonObject["list"]) {
-                result.list.push(jsonObject["list"][i])
-            }
-        }
-        result.isInclude = jsonObject["isInclude"]
-
-        return result
-    }
-}
-
-export class FilterObject {
-    docIDsFilter?: FilterObjectType
-    docFormatsFilter?: FilterObjectType
-    docCategoriesFilter?: FilterObjectType
-    docCountriesFilter?: FilterObjectType
-
-    static fromJson(jsonObject?: any): FilterObject | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new FilterObject
-
-        result.docIDsFilter = FilterObjectType.fromJson(jsonObject["docIDsFilter"])
-        result.docFormatsFilter = FilterObjectType.fromJson(jsonObject["docFormatsFilter"])
-        result.docCategoriesFilter = FilterObjectType.fromJson(jsonObject["docCategoriesFilter"])
-        result.docCountriesFilter = FilterObjectType.fromJson(jsonObject["docCountriesFilter"])
-
-        return result
-    }
-}
-
 export const FontStyle = {
     NORMAL: 0,
     BOLD: 1,
@@ -3084,16 +3045,6 @@ export const eRFID_ErrorCodes = {
     RFID_ERROR_LAYER34_SAM_ERROR: 0x840D0000,
     RFID_ERROR_LAYER34_SAM_COLLISION: 0x840E0000,
     RFID_ERROR_LAYER34_SAM_ACKNOWLEDGE: 0x840F0000,
-}
-
-export const LivenessCheckType = {
-    OVI: "checkOVI",
-    MLI: "checkMLI",
-    HOLO: "checkHolo",
-    ED: "checkED",
-    BLACK_AND_WHITE_COPY: "checkBlackAndWhiteCopy",
-    DYNAPRINT: "checkDynaprint",
-    GEOMETRY: "checkGeometry",
 }
 
 export const eLDS_ParsingErrorCodes = {
@@ -3308,10 +3259,6 @@ export const LineCap = {
     BUTT: 0,
     ROUND: 1,
     SQUARE: 2,
-}
-
-export const FilterCheckType = {
-    CHECK_AUTH: "checkAuth",
 }
 
 export const eRPRM_FieldVerificationResult = {
@@ -4140,24 +4087,6 @@ export const OnlineMode = {
 export const eRFID_SDK_ProfilerType = {
     SPT_DOC_9303_EDITION_2006: 0x00000001,
     SPT_DOC_9303_LDS_PKI_MAINTENANCE: 0x00000002,
-}
-
-export const AuthenticityCheckType = {
-    USE_LIVENESS: "checkLiveness",
-    UV_LUMINISCENCE: "checkUVLuminiscence",
-    IR_B900: "checkIRB900",
-    IMAGE_PATTERNS: "checkImagePatterns",
-    FIBERS: "checkFibers",
-    EXT_MRZ: "checkExtMRZ",
-    EXT_OCR: "checkExtOCR",
-    AXIAL: "checkAxial",
-    BARCODE_FORMAT: "checkBarcodeFormat",
-    IR_VISIBILITY: "checkIRVisibility",
-    IPI: "checkIPI",
-    PHOTO_EMBEDDING: "checkPhotoEmbedding",
-    PHOTO_COMPARISON: "checkPhotoComparison",
-    LETTER_SCREEN: "checkLetterScreen++",
-    SECURITY_TEXT: "checkSecurityText",
 }
 
 export const diDocType = {
@@ -5466,7 +5395,6 @@ export const Enum = {
    eRPRM_Authenticity,
    CustomizationColor,
    eRFID_ErrorCodes,
-   LivenessCheckType,
    eLDS_ParsingErrorCodes,
    eRFID_CertificateType,
    RGLMeasureSystem,
@@ -5474,7 +5402,6 @@ export const Enum = {
    FrameShapeType,
    eRFID_BaudRate,
    LineCap,
-   FilterCheckType,
    eRPRM_FieldVerificationResult,
    DocReaderAction,
    eProcessGLCommands,
@@ -5505,7 +5432,6 @@ export const Enum = {
    eRPRM_SecurityFeatureType,
    OnlineMode,
    eRFID_SDK_ProfilerType,
-   AuthenticityCheckType,
    diDocType,
    ButtonTag,
    HoloAnimationType,
@@ -5589,13 +5515,4 @@ export default class DocumentReader {
     static finalizePackage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static endBackendTransaction(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getTranslation(className: string, value: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static processParamsSetCheckFilter(checkType: string, filter: FilterObject, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static processParamsRemoveCheckFilter(checkType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static processParamsClearCheckFilter(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static authenticityParamsSetCheckFilter(checkType: string, filter: FilterObject, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static authenticityParamsRemoveCheckFilter(checkType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static authenticityParamsClearCheckFilter(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static livenessParamsSetCheckFilter(checkType: string, filter: FilterObject, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static livenessParamsRemoveCheckFilter(checkType: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static livenessParamsClearCheckFilter(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
 }
