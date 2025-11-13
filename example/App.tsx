@@ -1,5 +1,5 @@
 import React from 'react'
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, NativeEventEmitter, Platform, TouchableOpacity, Image, Button } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, NativeEventEmitter, Platform, TouchableOpacity, Image, Button } from 'react-native'
 import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader, DocumentReaderResults, DocumentReaderNotification, ScannerConfig, RecognizeConfig, DocReaderConfig, Functionality } from '@regulaforensics/react-native-document-reader-api'
 import * as RNFS from 'react-native-fs'
 import RadioGroup, { RadioButtonProps } from 'react-native-radio-buttons-group'
@@ -230,7 +230,7 @@ export default class App extends React.Component<IProps, IState> {
 
   render() {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         {!this.state.isReadingRfidCustomUi && <View style={styles.container}>
           <Text style={styles.title}>{this.state.fullName}</Text>
 
@@ -281,7 +281,7 @@ export default class App extends React.Component<IProps, IState> {
             <Text style={{ fontSize: 20 }}>X</Text>
           </TouchableOpacity>
         </View>}
-      </SafeAreaView>
+      </View>
     )
   }
 }
@@ -295,6 +295,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
     marginBottom: 12,
+    paddingTop: 15
   },
   cancelButton: {
     position: 'absolute',

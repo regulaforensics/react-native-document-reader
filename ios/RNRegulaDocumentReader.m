@@ -15,8 +15,8 @@ RCT_EXPORT_MODULE();
              paCertificateCompletionEvent,
              taCertificateCompletionEvent,
              taSignatureCompletionEvent,
-             videoEncoderCompletionEvent,
-             onCustomButtonTappedEvent];
+             drVideoEncoderCompletionEvent,
+             drOnCustomButtonTappedEvent];
 }
 
 static bool hasListeners;

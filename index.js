@@ -1013,6 +1013,7 @@ export class DocReaderConfig {
         result.customDb = jsonObject["customDb"]
         result.databasePath = jsonObject["databasePath"]
         result.licenseUpdate = jsonObject["licenseUpdate"]
+        result.licenseUpdateTimeout = jsonObject["licenseUpdateTimeout"]
         result.delayedNNLoad = jsonObject["delayedNNLoad"]
         result.blackList = jsonObject["blackList"]
 
@@ -1257,6 +1258,7 @@ export class Functionality {
         result.manualMultipageMode = jsonObject["manualMultipageMode"]
         result.singleResult = jsonObject["singleResult"]
         result.torchTurnedOn = jsonObject["torchTurnedOn"]
+        result.preventScreenRecording = jsonObject["preventScreenRecording"]
         result.showCaptureButtonDelayFromDetect = jsonObject["showCaptureButtonDelayFromDetect"]
         result.showCaptureButtonDelayFromStart = jsonObject["showCaptureButtonDelayFromStart"]
         result.rfidTimeout = jsonObject["rfidTimeout"]
@@ -1466,6 +1468,7 @@ export class ProcessParams {
         result.generateAlpha2Codes = jsonObject["generateAlpha2Codes"]
         result.disableAuthResolutionFilter = jsonObject["disableAuthResolutionFilter"]
         result.strictSecurityChecks = jsonObject["strictSecurityChecks"]
+        result.returnTransliteratedFields = jsonObject["returnTransliteratedFields"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -1559,6 +1562,10 @@ export class CustomizationColors {
         result.rfidProcessingScreenProgressBarBackground = jsonObject["rfidProcessingScreenProgressBarBackground"]
         result.rfidProcessingScreenResultLabelText = jsonObject["rfidProcessingScreenResultLabelText"]
         result.rfidProcessingScreenLoadingBar = jsonObject["rfidProcessingScreenLoadingBar"]
+        result.rfidEnableNfcTitleText = jsonObject["rfidEnableNfcTitleText"]
+        result.rfidEnableNfcDescriptionText = jsonObject["rfidEnableNfcDescriptionText"]
+        result.rfidEnableNfcButtonText = jsonObject["rfidEnableNfcButtonText"]
+        result.rfidEnableNfcButtonBackground = jsonObject["rfidEnableNfcButtonBackground"]
 
         return result
     }
@@ -1572,6 +1579,9 @@ export class CustomizationFonts {
         result.rfidProcessingScreenHintLabel = Font.fromJson(jsonObject["rfidProcessingScreenHintLabel"])
         result.rfidProcessingScreenProgressLabel = Font.fromJson(jsonObject["rfidProcessingScreenProgressLabel"])
         result.rfidProcessingScreenResultLabel = Font.fromJson(jsonObject["rfidProcessingScreenResultLabel"])
+        result.rfidEnableNfcTitleText = Font.fromJson(jsonObject["rfidEnableNfcTitleText"])
+        result.rfidEnableNfcDescriptionText = Font.fromJson(jsonObject["rfidEnableNfcDescriptionText"])
+        result.rfidEnableNfcButtonText = Font.fromJson(jsonObject["rfidEnableNfcButtonText"])
 
         return result
     }
@@ -1583,6 +1593,7 @@ export class CustomizationImages {
         const result = new CustomizationImages()
 
         result.rfidProcessingScreenFailureImage = jsonObject["rfidProcessingScreenFailureImage"]
+        result.rfidEnableNfcImage = jsonObject["rfidEnableNfcImage"]
 
         return result
     }
@@ -1907,6 +1918,10 @@ export const CustomizationColor = {
     RFID_PROCESSING_SCREEN_PROGRESS_BAR_BACKGROUND: "rfidProcessingScreenProgressBarBackground",
     RFID_PROCESSING_SCREEN_RESULT_LABEL_TEXT: "rfidProcessingScreenResultLabelText",
     RFID_PROCESSING_SCREEN_LOADING_BAR: "rfidProcessingScreenLoadingBar",
+    RFID_ENABLE_NFC_TITLE_TEXT: "rfidEnableNfcTitleText",
+    RFID_ENABLE_NFC_DESCRIPTION_TEXT: "rfidEnableNfcDescriptionText",
+    RFID_ENABLE_NFC_BUTTON_TEXT: "rfidEnableNfcButtonText",
+    RFID_ENABLE_NFC_BUTTON_BACKGROUND: "rfidEnableNfcButtonBackground",
 }
 
 export const eRFID_ErrorCodes = {
@@ -2337,6 +2352,7 @@ export const DocumentReaderErrorCodes = {
     SAVE_DB: 8,
     DOWNLOAD_DB_INCORRECT_CHECKSUM: 9,
     DB_DOWNLOAD: 10,
+    RFID_ERROR: 12,
     LICENSE_ABSENT_OR_CORRUPTED: 13,
     LICENSE_INVALID_DATE: 14,
     LICENSE_INVALID_VERSION: 15,
@@ -2359,6 +2375,8 @@ export const DocumentReaderErrorCodes = {
     NATIVE_JAVA_EXCEPTION: 1000,
     BACKEND_ONLINE_PROCESSING: 303,
     WRONG_INPUT: 400,
+    RESULT_UNAVAILABLE: 410,
+    RESULT_WRONG_OUTPUT: 411,
     STATE_EXCEPTION: 500,
     BLE_EXCEPTION: 600,
     FEATURE_BLUETOOTH_LE_NOT_SUPPORTED: 601,
@@ -2581,6 +2599,8 @@ export const eCheckDiagnose = {
     FIELD_POS_CORRECTOR_FACE_PRESENCE_CHECK_ERROR: 84,
     FIELD_POS_CORRECTOR_FACE_ABSENCE_CHECK_ERROR: 85,
     CHD_FIELD_POS_CORRECTOR_INCORRECT_HEAD_POSITION: 86,
+    CHD_FIELD_POS_CORRECTOR_AGE_CHECK_ERROR: 87,
+    CHD_FIELD_POS_CORRECTOR_SEX_CHECK_ERROR: 88,
     OVI_IR_INVISIBLE: 90,
     OVI_INSUFFICIENT_AREA: 91,
     OVI_COLOR_INVARIABLE: 92,
@@ -3049,6 +3069,8 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_LIVENESS_BLACK_AND_WHITE_COPY_CHECK: 53,
     SECURITY_FEATURE_TYPE_LIVENESS_DYNAPRINT_CHECK: 54,
     SECURITY_FEATURE_TYPE_LIVENESS_GEOMETRY_CHECK: 55,
+    SECURITY_FEATURE_TYPE_AGE_CHECK: 56,
+    SECURITY_FEATURE_TYPE_SEX_CHECK: 57,
 }
 
 export const OnlineMode = {
@@ -3325,6 +3347,9 @@ export const CustomizationFont = {
     RFID_PROCESSING_SCREEN_HINT_LABEL: "rfidProcessingScreenHintLabel",
     RFID_PROCESSING_SCREEN_PROGRESS_LABEL: "rfidProcessingScreenProgressLabel",
     RFID_PROCESSING_SCREEN_RESULT_LABEL: "rfidProcessingScreenResultLabel",
+    RFID_ENABLE_NFC_TITLE_TEXT: "rfidEnableNfcTitleText",
+    RFID_ENABLE_NFC_DESCRIPTION_TEXT: "rfidEnableNfcDescriptionText",
+    RFID_ENABLE_NFC_BUTTON_TEXT: "rfidEnableNfcButtonText",
 }
 
 export const ImageFormat = {
@@ -4331,6 +4356,7 @@ export const LCID = {
 
 export const CustomizationImage = {
     RFID_PROCESSING_SCREEN_FAILURE_IMAGE: "rfidProcessingScreenFailureImage",
+    RFID_ENABLE_NFC_IMAGE: "rfidEnableNfcImage",
 }
 
 export const DocReaderFrame = {
