@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.authors      = { 'RegulaForensics' => 'support@regulaforensics.com' }
   s.homepage     = 'https://regulaforensics.com'
 
-  s.source       = { :http => 'file:' + __dir__ }
+  s.source       = { :git => "https://github.com/regulaforensics/react-native-document-reader.git"}
   s.ios.deployment_target = '13.0'
   s.source_files  = "ios/*.{h,m}"
   s.dependency 'DocumentReader', '8.4.5436'
