@@ -220,12 +220,12 @@ fun checkDatabaseUpdate(callback: Callback, databaseID: String) = Instance().che
 @Suppress("DEPRECATION")
 fun scan(config: JSONObject) {
     stopBackgroundRFID()
-    Instance().showScanner(context, scannerConfigFromJSON(config), IDocumentReaderCompletion(completion))
+    Instance().showScanner(activity, scannerConfigFromJSON(config), IDocumentReaderCompletion(completion))
 }
 
 fun startScanner(config: JSONObject) {
     stopBackgroundRFID()
-    Instance().startScanner(context, scannerConfigFromJSON(config), IDocumentReaderCompletion(completion))
+    Instance().startScanner(activity, scannerConfigFromJSON(config), IDocumentReaderCompletion(completion))
 }
 
 fun recognize(config: JSONObject) {
@@ -244,7 +244,7 @@ fun startRFIDReader(onRequestPACertificates: Boolean, onRequestTACertificates: B
         onRequestTACertificates,
         onRequestTASignature
     )
-    Instance().startRFIDReader(context, rfidReaderCompletion, requestType.getRfidReaderRequest())
+    Instance().startRFIDReader(activity, rfidReaderCompletion, requestType.getRfidReaderRequest())
 }
 
 fun readRFID(onRequestPACertificates: Boolean, onRequestTACertificates: Boolean, onRequestTASignature: Boolean) {
