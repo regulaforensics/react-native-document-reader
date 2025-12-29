@@ -797,6 +797,22 @@ export class TAChallenge {
     }
 }
 
+export class DetailsAge {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DetailsAge()
+
+        result.threshold = jsonObject["threshold"]
+        result.overThreshold = jsonObject["overThreshold"]
+        result.over18 = jsonObject["over18"]
+        result.over21 = jsonObject["over21"]
+        result.over25 = jsonObject["over25"]
+        result.over65 = jsonObject["over65"]
+
+        return result
+    }
+}
+
 export class DocumentReaderResultsStatus {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
@@ -809,6 +825,10 @@ export class DocumentReaderResultsStatus {
         result.detailsRFID = DetailsRFID.fromJson(jsonObject["detailsRFID"])
         result.portrait = jsonObject["portrait"]
         result.stopList = jsonObject["stopList"]
+        result.mDL = jsonObject["mDL"]
+        result.age = jsonObject["age"]
+        result.captureProcessIntegrity = jsonObject["captureProcessIntegrity"]
+        result.detailsAge = DetailsAge.fromJson(jsonObject["detailsAge"])
 
         return result
     }
@@ -866,6 +886,50 @@ export class VDSNCData {
         if (jsonObject["certificateChain"] != null)
             for (const i in jsonObject["certificateChain"])
                 result.certificateChain.push(CertificateChain.fromJson(jsonObject["certificateChain"][i]))
+        result.notifications = []
+        if (jsonObject["notifications"] != null)
+            for (const i in jsonObject["notifications"])
+                result.notifications.push(jsonObject["notifications"][i])
+
+        return result
+    }
+}
+
+export class DocFeature {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocFeature()
+
+        result.type = jsonObject["type"]
+        result.data = BytesData.fromJson(jsonObject["data"])
+
+        return result
+    }
+}
+
+export class VDSData {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new VDSData()
+
+        result.type = jsonObject["type"]
+        result.docType = jsonObject["docType"]
+        result.featureRef = jsonObject["featureRef"]
+        result.version = jsonObject["version"]
+        result.issuingCountry = jsonObject["issuingCountry"]
+        result.docIssueDate = jsonObject["docIssueDate"]
+        result.signature = BytesData.fromJson(jsonObject["signature"])
+        result.signatureDate = jsonObject["signatureDate"]
+        result.signer = jsonObject["signer"]
+        result.certificate = jsonObject["certificate"]
+        result.certificateChain = []
+        if (jsonObject["certificateChain"] != null)
+            for (const i in jsonObject["certificateChain"])
+                result.certificateChain.push(CertificateChain.fromJson(jsonObject["certificateChain"][i]))
+        result.docFeatures = []
+        if (jsonObject["docFeatures"] != null)
+            for (const i in jsonObject["docFeatures"])
+                result.docFeatures.push(DocFeature.fromJson(jsonObject["docFeatures"][i]))
         result.notifications = []
         if (jsonObject["notifications"] != null)
             for (const i in jsonObject["notifications"])
@@ -1217,6 +1281,7 @@ export class DocumentReaderResults {
                 result.documentType.push(DocumentReaderDocumentType.fromJson(jsonObject["documentType"][i]))
         result.status = DocumentReaderResultsStatus.fromJson(jsonObject["status"])
         result.vdsncData = VDSNCData.fromJson(jsonObject["vdsncData"])
+        result.vdsData = VDSData.fromJson(jsonObject["vdsData"])
         result.dtcData = jsonObject["dtcData"]
         result.transactionInfo = TransactionInfo.fromJson(jsonObject["transactionInfo"])
 
@@ -1259,6 +1324,7 @@ export class Functionality {
         result.singleResult = jsonObject["singleResult"]
         result.torchTurnedOn = jsonObject["torchTurnedOn"]
         result.preventScreenRecording = jsonObject["preventScreenRecording"]
+        result.homeIndicatorAutoHide = jsonObject["homeIndicatorAutoHide"]
         result.showCaptureButtonDelayFromDetect = jsonObject["showCaptureButtonDelayFromDetect"]
         result.showCaptureButtonDelayFromStart = jsonObject["showCaptureButtonDelayFromStart"]
         result.rfidTimeout = jsonObject["rfidTimeout"]
@@ -1267,6 +1333,7 @@ export class Functionality {
         result.captureMode = jsonObject["captureMode"]
         result.cameraMode = jsonObject["cameraMode"]
         result.cameraPositionIOS = jsonObject["cameraPositionIOS"]
+        result.mdlTimeout = jsonObject["mdlTimeout"]
         result.cameraFrame = jsonObject["cameraFrame"]
         result.btDeviceName = jsonObject["btDeviceName"]
         result.zoomFactor = jsonObject["zoomFactor"]
@@ -1469,6 +1536,7 @@ export class ProcessParams {
         result.disableAuthResolutionFilter = jsonObject["disableAuthResolutionFilter"]
         result.strictSecurityChecks = jsonObject["strictSecurityChecks"]
         result.returnTransliteratedFields = jsonObject["returnTransliteratedFields"]
+        result.checkCaptureProcessIntegrity = jsonObject["checkCaptureProcessIntegrity"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -1521,6 +1589,10 @@ export class ProcessParams {
         if (jsonObject["lcidFilter"] != null)
             for (const i in jsonObject["lcidFilter"])
                 result.lcidFilter.push(jsonObject["lcidFilter"][i])
+        result.fieldTypesIgnoreFilter = []
+        if (jsonObject["fieldTypesIgnoreFilter"] != null)
+            for (const i in jsonObject["fieldTypesIgnoreFilter"])
+                result.fieldTypesIgnoreFilter.push(jsonObject["fieldTypesIgnoreFilter"][i])
         result.mrzFormatsFilter = []
         if (jsonObject["mrzFormatsFilter"] != null)
             for (const i in jsonObject["mrzFormatsFilter"])
@@ -1643,6 +1715,7 @@ export class Customization {
         result.activityIndicatorPortraitPositionMultiplier = jsonObject["activityIndicatorPortraitPositionMultiplier"]
         result.activityIndicatorLandscapePositionMultiplier = jsonObject["activityIndicatorLandscapePositionMultiplier"]
         result.cameraPreviewVerticalPositionMultiplier = jsonObject["cameraPreviewVerticalPositionMultiplier"]
+        result.multipageButtonPositionMultiplier = jsonObject["multipageButtonPositionMultiplier"]
         result.multipageAnimationFrontImage = jsonObject["multipageAnimationFrontImage"]
         result.multipageAnimationBackImage = jsonObject["multipageAnimationBackImage"]
         result.borderBackgroundImage = jsonObject["borderBackgroundImage"]
@@ -1871,6 +1944,133 @@ export class PrepareProgress {
         result.downloadedBytes = jsonObject["downloadedBytes"]
         result.totalBytes = jsonObject["totalBytes"]
         result.progress = jsonObject["progress"]
+
+        return result
+    }
+}
+
+export class DeviceEngagement {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DeviceEngagement()
+
+        result.deviceRetrievalMethods = []
+        if (jsonObject["deviceRetrievalMethods"] != null)
+            for (const i in jsonObject["deviceRetrievalMethods"])
+                result.deviceRetrievalMethods.push(DeviceRetrievalMethod.fromJson(jsonObject["deviceRetrievalMethods"][i]))
+
+        return result
+    }
+}
+
+export class DeviceRetrievalMethod {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DeviceRetrievalMethod()
+
+        result.type = jsonObject["type"]
+        result.version = jsonObject["version"]
+        result.cmdMaxLength = jsonObject["cmdMaxLength"]
+        result.respMaxLength = jsonObject["respMaxLength"]
+        result.clientModeSupport = jsonObject["clientModeSupport"]
+        result.clientModeUUID = jsonObject["clientModeUUID"]
+        result.serverModeSupport = jsonObject["serverModeSupport"]
+        result.serverModeUUID = jsonObject["serverModeUUID"]
+
+        return result
+    }
+}
+
+export class DataRetrieval {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DataRetrieval()
+
+        result.deviceRetrieval = jsonObject["deviceRetrieval"]
+        result.docRequestPreset = jsonObject["docRequestPreset"]
+        result.intentToRetain = jsonObject["intentToRetain"]
+        result.requests = []
+        if (jsonObject["requests"] != null)
+            for (const i in jsonObject["requests"])
+                result.requests.push(jsonObject["requests"][i])
+
+        return result
+    }
+}
+
+export class DocumentRequestMDL {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocumentRequestMDL()
+
+        result.docType = jsonObject["docType"]
+        result.namespaces = []
+        if (jsonObject["namespaces"] != null)
+            for (const i in jsonObject["namespaces"])
+                result.namespaces.push(NameSpaceMDL.fromJson(jsonObject["namespaces"][i]))
+
+        return result
+    }
+}
+
+export class NameSpaceMDL {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new NameSpaceMDL()
+
+        result.name = jsonObject["name"]
+        result.map = jsonObject["map"]
+
+        return result
+    }
+}
+
+export class DocumentRequest18013MDL {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DocumentRequest18013MDL()
+
+        result.docType = jsonObject["docType"]
+        result.namespaces = []
+        if (jsonObject["namespaces"] != null)
+            for (const i in jsonObject["namespaces"])
+                result.namespaces.push(NameSpaceMDL.fromJson(jsonObject["namespaces"][i]))
+        result.familyName = jsonObject["familyName"]
+        result.givenName = jsonObject["givenName"]
+        result.birthDate = jsonObject["birthDate"]
+        result.issueDate = jsonObject["issueDate"]
+        result.expiryDate = jsonObject["expiryDate"]
+        result.issuingCountry = jsonObject["issuingCountry"]
+        result.issuingAuthority = jsonObject["issuingAuthority"]
+        result.documentNumber = jsonObject["documentNumber"]
+        result.portrait = jsonObject["portrait"]
+        result.drivingPrivileges = jsonObject["drivingPrivileges"]
+        result.unDistinguishingSign = jsonObject["unDistinguishingSign"]
+        result.administrativeNumber = jsonObject["administrativeNumber"]
+        result.sex = jsonObject["sex"]
+        result.height = jsonObject["height"]
+        result.weight = jsonObject["weight"]
+        result.eyeColour = jsonObject["eyeColour"]
+        result.hairColour = jsonObject["hairColour"]
+        result.birthPlace = jsonObject["birthPlace"]
+        result.residentAddress = jsonObject["residentAddress"]
+        result.portraitCaptureDate = jsonObject["portraitCaptureDate"]
+        result.ageInYears = jsonObject["ageInYears"]
+        result.ageBirthYear = jsonObject["ageBirthYear"]
+        result.ageOver18 = jsonObject["ageOver18"]
+        result.issuingJurisdiction = jsonObject["issuingJurisdiction"]
+        result.nationality = jsonObject["nationality"]
+        result.residentCity = jsonObject["residentCity"]
+        result.residentState = jsonObject["residentState"]
+        result.residentPostalCode = jsonObject["residentPostalCode"]
+        result.residentCountry = jsonObject["residentCountry"]
+        result.biometricTemplateFace = jsonObject["biometricTemplateFace"]
+        result.biometricTemplateIris = jsonObject["biometricTemplateIris"]
+        result.biometricTemplateFinger = jsonObject["biometricTemplateFinger"]
+        result.biometricTemplateSignatureSign = jsonObject["biometricTemplateSignatureSign"]
+        result.familyNameNationalCharacter = jsonObject["familyNameNationalCharacter"]
+        result.givenNameNationalCharacter = jsonObject["givenNameNationalCharacter"]
+        result.signatureUsualMark = jsonObject["signatureUsualMark"]
 
         return result
     }
@@ -2228,18 +2428,26 @@ export const eRPRM_ResultType = {
     RFID_RESULT_TYPE_RFID_IMAGE_DATA: 103,
     RFID_RESULT_TYPE_RFID_BINARY_DATA: 104,
     RFID_RESULT_TYPE_RFID_ORIGINAL_GRAPHICS: 105,
+    RFID_RESULT_TYPE_RFID_DTC_VC: 109,
+    RPRM_RESULT_TYPE_MDL_PARSED_RESPONSE: 121,
+    RPRM_RESULT_TYPE_VDS_NC: 124,
+    RPRM_RESULT_TYPE_VDS: 125,
     RPRM_RESULT_TYPE_BARCODE_POSITION: 62,
     RPRM_RESULT_TYPE_MRZ_POSITION: 61,
     RPRM_RESULT_TYPE_LIVE_PORTRAIT: 32,
     RPRM_RESULT_TYPE_STATUS: 33,
     RPRM_RESULT_TYPE_PORTRAIT_COMPARISON: 34,
     RPRM_RESULT_TYPE_EXT_PORTRAIT: 35,
-    RFID_RESULT_TYPE_RFID_DTC_VC: 109,
 }
 
 export const FrameShapeType = {
     LINE: 0,
     CORNER: 1,
+}
+
+export const eMDLDeviceRetrieval = {
+    NFC: 1,
+    BLE: 2,
 }
 
 export const eRFID_BaudRate = {
@@ -2308,6 +2516,9 @@ export const PKDResourceType = {
     DEFL: 5,
     DEVL: 6,
     BL: 7,
+    LDIF_TA: 8,
+    ML_TA: 9,
+    CBOR: 10,
 
     getType: function (value) {
         switch (value) {
@@ -2347,11 +2558,10 @@ export const DocumentReaderErrorCodes = {
     NO_RESULT: 3,
     REMOVE_DATABASE: 4,
     FETCHING_DATABASE: 5,
-    DB_ID_NOT_FOUND: 6,
     DB_DESCRIPTION_NOT_FOUND: 7,
     SAVE_DB: 8,
     DOWNLOAD_DB_INCORRECT_CHECKSUM: 9,
-    DB_DOWNLOAD: 10,
+    DOWNLOAD_DB: 10,
     RFID_ERROR: 12,
     LICENSE_ABSENT_OR_CORRUPTED: 13,
     LICENSE_INVALID_DATE: 14,
@@ -2365,13 +2575,14 @@ export const DocumentReaderErrorCodes = {
     LICENSE_NO_DATABASE: 22,
     LICENSE_DATABASE_INCORRECT: 23,
     INVALID_TCC_PARAMS: 24,
-    RFID_IN_PROGRESS: 25,
+    ALREADY_IN_PROGRESS: 25,
     START_BACKEND_PROCESSING: 26,
     ADD_DATA_TO_PACKAGE: 27,
     FINALIZE_FAILED: 28,
     CAMERA_NO_PERMISSION: 29,
     CAMERA_NOT_AVAILABLE: 30,
     CANNOT_USE_CAMERA_IN_SCENARIO: 40,
+    BLUETOOTH_NO_PERMISSION: 41,
     NATIVE_JAVA_EXCEPTION: 1000,
     BACKEND_ONLINE_PROCESSING: 303,
     WRONG_INPUT: 400,
@@ -2382,6 +2593,7 @@ export const DocumentReaderErrorCodes = {
     FEATURE_BLUETOOTH_LE_NOT_SUPPORTED: 601,
     APP_BACKGROUND: 700,
     ONLINE_PROCESSING_WRONG_INPUT: 800,
+    MDL_EXCEPTION: 900,
 }
 
 export const ScenarioIdentifier = {
@@ -2548,6 +2760,11 @@ export const eSignManagementAction = {
     smaSignData: 7,
 }
 
+export const eMDLDeviceEngagement = {
+    QR: 0,
+    NFC: 1,
+}
+
 export const eCheckDiagnose = {
     UNKNOWN: 0,
     PASS: 1,
@@ -2677,6 +2894,11 @@ export const eCheckDiagnose = {
     ICAO_IDB_SIGNATURE_MUST_NOT_BE_PRESENT: 247,
     ICAO_IDB_CERTIFICATE_MUST_NOT_BE_PRESENT: 248,
     INCORRECT_OBJECT_COLOR: 250,
+}
+
+export const eMDLIntentToRetain = {
+    FALSE: 0,
+    TRUE: 1,
 }
 
 export const RFIDDelegate = {
@@ -4175,6 +4397,9 @@ export const eVisualFieldType = {
     FT_NATIONALITY_CODE_ALPHA2: 697,
     FT_FIRST_ISSUE_DATE_CHECKDIGIT: 698,
     FT_FIRST_ISSUE_DATE_CHECKSUM: 699,
+    FT_COMMERCIAL_INDICATOR: 701,
+    FT_NON_DOMICILED_INDICATOR: 702,
+    FT_JURISDICTION_SPECIFIC_DATA: 703,
 }
 
 export const DocReaderOrientation = {
@@ -4366,6 +4591,14 @@ export const DocReaderFrame = {
     DOCUMENT: "document",
 }
 
+export const eMDLDocRequestPreset = {
+    ALL: 0,
+    AGE: 1,
+    STANDARD_ID: 2,
+    TRAVEL: 3,
+    DRIVERS_LICENSE: 4,
+}
+
 export const eRPRM_Lights = {
     NONE: 0,
     RPRM_LIGHT_UV: 128,
@@ -4394,6 +4627,7 @@ export const Enum = {
    RGLMeasureSystem,
    eRPRM_ResultType,
    FrameShapeType,
+   eMDLDeviceRetrieval,
    eRFID_BaudRate,
    LineCap,
    eRPRM_FieldVerificationResult,
@@ -4412,7 +4646,9 @@ export const Enum = {
    BarcodeResult,
    eRFID_Application_Type,
    eSignManagementAction,
+   eMDLDeviceEngagement,
    eCheckDiagnose,
+   eMDLIntentToRetain,
    RFIDDelegate,
    TextProcessing,
    LogLevel,
@@ -4445,6 +4681,7 @@ export const Enum = {
    LCID,
    CustomizationImage,
    DocReaderFrame,
+   eMDLDocRequestPreset,
    eRPRM_Lights,
    eMrzDetectionModes,
 }
@@ -4510,5 +4747,12 @@ DocumentReader.getDocReaderDocumentsDatabase = (successCallback, errorCallback) 
 DocumentReader.finalizePackage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "finalizePackage", [], successCallback, errorCallback)
 DocumentReader.endBackendTransaction = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "endBackendTransaction", [], successCallback, errorCallback)
 DocumentReader.getTranslation = (className, value, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getTranslation", [className, value], successCallback, errorCallback)
+DocumentReader.startReadMDl = (type, dataRetrieval, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startReadMDl", [type, dataRetrieval], successCallback, errorCallback)
+DocumentReader.startEngageDevice = (type, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startEngageDevice", [type], successCallback, errorCallback)
+DocumentReader.engageDeviceNFC = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "engageDeviceNFC", [], successCallback, errorCallback)
+DocumentReader.engageDeviceData = (data, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "engageDeviceData", [data], successCallback, errorCallback)
+DocumentReader.startRetrieveData = (deviceEngagement, dataRetrieval, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startRetrieveData", [deviceEngagement, dataRetrieval], successCallback, errorCallback)
+DocumentReader.retrieveDataNFC = (dataRetrieval, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "retrieveDataNFC", [dataRetrieval], successCallback, errorCallback)
+DocumentReader.retrieveDataBLE = (deviceEngagement, dataRetrieval, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "retrieveDataBLE", [deviceEngagement, dataRetrieval], successCallback, errorCallback)
 
 export default DocumentReader
