@@ -1,3 +1,7 @@
+# Deprecated
+
+Introduced a new unified [NPM package](https://www.npmjs.com/package/@regulaforensics/document-reader) that supports React, Ionic, and Cordova wrappers in a single distribution. The individual packages for each wrapper are now deprecated and will only be supported for a few upcoming releases before being removed in future versions. We’ll provide advance notice prior to their removal. Follow the Migration Guide for detailed steps to transition to the new unified package.
+
 #  Regula Document Reader SDK for React Native
 
 Regula Document Reader SDK allows you to read various kinds of identification documents, passports, driving licenses, ID cards, etc. All processing is performed completely _**offline**_ on your device. No any data leaving your device.

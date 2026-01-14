@@ -55,6 +55,13 @@
         @"btDeviceRequestFlashing": ^{ /* android only */ },
         @"btDeviceRequestFlashingFullIR": ^{ /* android only */ },
         @"btDeviceRequestTurnOffAll": ^{ /* android only */ },
+        @"startReadMDl": ^{ [self startReadMDl :args[0] :args[1] :callback]; },
+        @"startEngageDevice": ^{ [self startEngageDevice :args[0] :callback]; },
+        @"engageDeviceNFC": ^{ [self engageDeviceNFC :callback]; },
+        @"engageDeviceData": ^{ [self engageDeviceData :args[0] :callback]; },
+        @"startRetrieveData": ^{ [self startRetrieveData :args[0] :args[1] :callback]; },
+        @"retrieveDataNFC": ^{ [self retrieveDataNFC :args[0] :callback]; },
+        @"retrieveDataBLE": ^{ [self retrieveDataBLE :args[0] :args[0] :callback]; },
         @"setLocalizationDictionary": ^{ [self setLocalizationDictionary :args[0]]; },
         @"getLicense": ^{ [self getLicense :callback]; },
         @"getAvailableScenarios": ^{ [self getAvailableScenarios :callback]; },
@@ -357,6 +364,48 @@ RGLWCallback savedCallbackForBluetoothResult;
     [bluetooth disconnect];
 }
 
++(void)startReadMDl:(NSNumber*)type :(NSDictionary*)dataRetrieval :(RGLWCallback)callback {
+    [RGLDocReader.shared startReadMDLFromPresenter:RGLWRootViewController() engagementType:[type integerValue] dataRetrieval:[RGLWJSONConstructor dataRetrievalFromJson:dataRetrieval] completion:^(RGLDocReaderAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error) {
+        callback([RGLWJSONConstructor generateCompletion:[RGLWConfig generateDocReaderAction: action] :results :error]);
+    }];
+}
+
++(void)startEngageDevice:(NSNumber*)type :(RGLWCallback)callback {
+    [RGLDocReader.shared startEngageDeviceFromPresenter:RGLWRootViewController() type:[type integerValue] completion:^(RGLDeviceEngagement* deviceEngagement, NSError* error) {
+        callback([RGLWJSONConstructor generateDeviceEngagementCompletion:deviceEngagement :error]);
+    }];
+}
+
++(void)engageDeviceNFC:(RGLWCallback)callback {
+    [RGLDocReader.shared engageDeviceNFC:RGLWRootViewController() completion:^(RGLDeviceEngagement * _Nullable deviceEngagement, NSError * _Nullable error) {
+        callback([RGLWJSONConstructor generateDeviceEngagementCompletion:deviceEngagement :error]);
+    }];
+}
+
++(void)engageDeviceData:(NSString*)data :(RGLWCallback)callback {
+    [RGLDocReader.shared engageDeviceData:data completion:^(RGLDeviceEngagement * _Nullable deviceEngagement, NSError * _Nullable error) {
+        callback([RGLWJSONConstructor generateDeviceEngagementCompletion:deviceEngagement :error]);
+    }];
+}
+
++(void)startRetrieveData:(NSDictionary*)dataRetrieval :(NSDictionary*)deviceEngagement :(RGLWCallback)callback {
+    [RGLDocReader.shared startRetrieveData:[RGLWJSONConstructor deviceEngagementFromJson:deviceEngagement] dataRetrieval:[RGLWJSONConstructor dataRetrievalFromJson:dataRetrieval] completion:^(RGLDocReaderAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error) {
+        callback([RGLWJSONConstructor generateCompletion:[RGLWConfig generateDocReaderAction: action] :results :error]);
+    }];
+}
+
++(void)retrieveDataNFC:(NSDictionary*)dataRetrieval :(RGLWCallback)callback {
+    [RGLDocReader.shared retrieveDataNFC:[RGLWJSONConstructor dataRetrievalFromJson:dataRetrieval] completion:^(RGLDocReaderAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error) {
+        callback([RGLWJSONConstructor generateCompletion:[RGLWConfig generateDocReaderAction: action] :results :error]);
+    }];
+}
+
++(void)retrieveDataBLE:(NSDictionary*)dataRetrieval :(NSDictionary*)deviceEngagement :(RGLWCallback)callback {
+    [RGLDocReader.shared retrieveDataBLE:[RGLWJSONConstructor deviceEngagementFromJson:deviceEngagement] dataRetrieval:[RGLWJSONConstructor dataRetrievalFromJson:dataRetrieval] completion:^(RGLDocReaderAction action, RGLDocumentReaderResults * _Nullable results, NSError * _Nullable error) {
+        callback([RGLWJSONConstructor generateCompletion:[RGLWConfig generateDocReaderAction: action] :results :error]);
+    }];
+}
+
 +(void)setLocalizationDictionary:(NSDictionary*)dictionary {
     RGLDocReader.shared.localizationHandler = ^NSString * _Nullable(NSString * _Nonnull localizationKey) {
         if(dictionary != nil && ![dictionary isEqual:[NSNull null]] && [dictionary valueForKey:localizationKey] != nil)
@@ -561,12 +610,12 @@ RGLWCallback savedCallbackForBluetoothResult;
 
 // RGLCustomizationActionDelegate
 - (void)onCustomButtonTappedWithTag:(NSInteger)tag {
-    sendEvent(onCustomButtonTappedEvent, @(tag));
+    sendEvent(drOnCustomButtonTappedEvent, @(tag));
 }
 
 // RGLRecordScanningProcessDelegate
 - (void)didFinishRecordingToFile:(NSURL *)fileURL {
-    sendEvent(videoEncoderCompletionEvent, fileURL.absoluteString);
+    sendEvent(drVideoEncoderCompletionEvent, fileURL.absoluteString);
 }
 
 - (void)didFailWithError:(NSError *)error {
