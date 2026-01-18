@@ -1963,6 +1963,18 @@ export class DeviceEngagement {
     }
 }
 
+export class DeviceEngagementCompletion {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new DeviceEngagementCompletion()
+
+        result.deviceEngagement = DeviceEngagement.fromJson(jsonObject["deviceEngagement"])
+        result.error = RegulaException.fromJson(jsonObject["error"])
+
+        return result
+    }
+}
+
 export class DeviceRetrievalMethod {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null

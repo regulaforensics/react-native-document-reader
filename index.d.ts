@@ -3023,6 +3023,21 @@ export class DeviceEngagement {
     }
 }
 
+export class DeviceEngagementCompletion {
+    deviceEngagement?: DeviceEngagement
+    error?: RegulaException
+
+    static fromJson(jsonObject?: any): DeviceEngagementCompletion | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new DeviceEngagementCompletion
+
+        result.deviceEngagement = DeviceEngagement.fromJson(jsonObject["deviceEngagement"])
+        result.error = RegulaException.fromJson(jsonObject["error"])
+
+        return result
+    }
+}
+
 export class DeviceRetrievalMethod {
     type?: number
     version?: number
@@ -3053,7 +3068,7 @@ export class DeviceRetrievalMethod {
 export class DataRetrieval {
     deviceRetrieval?: number
     docRequestPreset?: number
-    intentToRetain?: boolean
+    intentToRetain?: number
     requests?: any[]
 
     static fromJson(jsonObject?: any): DataRetrieval | undefined {
