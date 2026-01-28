@@ -1272,6 +1272,7 @@ export class DocumentReaderResults {
             for (const i in jsonObject["imageQuality"])
                 result.imageQuality.push(ImageQualityGroup.fromJson(jsonObject["imageQuality"][i]))
         result.rawResult = jsonObject["rawResult"]
+        result.bsiTr03135Results = jsonObject["bsiTr03135Results"]
         result.rfidSessionData = RFIDSessionData.fromJson(jsonObject["rfidSessionData"])
         result.authenticityResult = DocumentReaderAuthenticityResult.fromJson(jsonObject["authenticityResult"])
         result.barcodeResult = DocumentReaderBarcodeResult.fromJson(jsonObject["barcodeResult"])
@@ -1537,6 +1538,7 @@ export class ProcessParams {
         result.strictSecurityChecks = jsonObject["strictSecurityChecks"]
         result.returnTransliteratedFields = jsonObject["returnTransliteratedFields"]
         result.checkCaptureProcessIntegrity = jsonObject["checkCaptureProcessIntegrity"]
+        result.bsiTr03135Results = jsonObject["bsiTr03135Results"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -2088,6 +2090,19 @@ export class DocumentRequest18013MDL {
     }
 }
 
+export class FinalizeConfig {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new FinalizeConfig()
+
+        result.rawImages = jsonObject["rawImages"]
+        result.video = jsonObject["video"]
+        result.rfidSession = jsonObject["rfidSession"]
+
+        return result
+    }
+}
+
 // Enum
 
 export const FontStyle = {
@@ -2450,6 +2465,7 @@ export const eRPRM_ResultType = {
     RPRM_RESULT_TYPE_STATUS: 33,
     RPRM_RESULT_TYPE_PORTRAIT_COMPARISON: 34,
     RPRM_RESULT_TYPE_EXT_PORTRAIT: 35,
+    RPRM_RESULT_TYPE_BSI_XML_V2: 73,
 }
 
 export const FrameShapeType = {
@@ -2899,6 +2915,7 @@ export const eCheckDiagnose = {
     CHD_DOC_LIVENESS_BLACK_AND_WHITE_COPY_DETECTED: 239,
     DOC_LIVENESS_ELECTRONIC_DEVICE_DETECTED: 240,
     DOC_LIVENESS_INVALID_BARCODE_BACKGROUND: 241,
+    DOC_LIVENESS_VIRTUAL_CAMERA_DETECTED: 242,
     ICAO_IDB_BASE_32_ERROR: 243,
     ICAO_IDB_ZIPPED_ERROR: 244,
     ICAO_IDB_MESSAGE_ZONE_EMPTY: 245,
@@ -3305,6 +3322,10 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_LIVENESS_GEOMETRY_CHECK: 55,
     SECURITY_FEATURE_TYPE_AGE_CHECK: 56,
     SECURITY_FEATURE_TYPE_SEX_CHECK: 57,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_RFIDVSGHOST: 58,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_BARCODEVSGHOST: 59,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_GHOSTVSLIVE: 60,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_EXTVSGHOST: 61,
 }
 
 export const OnlineMode = {
@@ -4766,5 +4787,6 @@ DocumentReader.engageDeviceData = (data, successCallback, errorCallback) => RNRe
 DocumentReader.startRetrieveData = (deviceEngagement, dataRetrieval, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startRetrieveData", [deviceEngagement, dataRetrieval], successCallback, errorCallback)
 DocumentReader.retrieveDataNFC = (dataRetrieval, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "retrieveDataNFC", [dataRetrieval], successCallback, errorCallback)
 DocumentReader.retrieveDataBLE = (deviceEngagement, dataRetrieval, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "retrieveDataBLE", [deviceEngagement, dataRetrieval], successCallback, errorCallback)
+DocumentReader.finalizePackageWithFinalizeConfig = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "finalizePackageWithFinalizeConfig", [config], successCallback, errorCallback)
 
 export default DocumentReader
