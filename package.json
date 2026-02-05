@@ -1,6 +1,6 @@
 {
   "name": "@regulaforensics/react-native-document-reader-api",
-  "version": "9.2.411-nightly",
+  "version": "9.2.413-nightly",
   "description": "React Native module for reading and validation of identification documents (API framework)",
   "main": "index.js",
   "scripts": {
