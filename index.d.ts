@@ -1756,6 +1756,7 @@ export class DocumentReaderResults {
     mrzPosition?: ElementPosition[]
     imageQuality?: ImageQualityGroup[]
     rawResult?: string
+    bsiTr03135Results?: string
     rfidSessionData?: RFIDSessionData
     authenticityResult?: DocumentReaderAuthenticityResult
     barcodeResult?: DocumentReaderBarcodeResult
@@ -1878,6 +1879,7 @@ export class DocumentReaderResults {
             }
         }
         result.rawResult = jsonObject["rawResult"]
+        result.bsiTr03135Results = jsonObject["bsiTr03135Results"]
         result.rfidSessionData = RFIDSessionData.fromJson(jsonObject["rfidSessionData"])
         result.authenticityResult = DocumentReaderAuthenticityResult.fromJson(jsonObject["authenticityResult"])
         result.barcodeResult = DocumentReaderBarcodeResult.fromJson(jsonObject["barcodeResult"])
@@ -2251,6 +2253,7 @@ export class ProcessParams {
     strictSecurityChecks?: boolean
     returnTransliteratedFields?: boolean
     checkCaptureProcessIntegrity?: boolean
+    bsiTr03135?: Bsi
     barcodeParserType?: number
     perspectiveAngle?: number
     minDPI?: number
@@ -2336,6 +2339,7 @@ export class ProcessParams {
         result.strictSecurityChecks = jsonObject["strictSecurityChecks"]
         result.returnTransliteratedFields = jsonObject["returnTransliteratedFields"]
         result.checkCaptureProcessIntegrity = jsonObject["checkCaptureProcessIntegrity"]
+        result.bsiTr03135 = Bsi.fromJson(jsonObject["bsiTr03135"])
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -2437,6 +2441,19 @@ export class Font {
         result.name = jsonObject["name"]
         result.size = jsonObject["size"]
         result.style = jsonObject["style"]
+
+        return result
+    }
+}
+
+export class Bsi {
+    generateResult?: boolean
+
+    static fromJson(jsonObject?: any): Bsi | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new Bsi
+
+        result.generateResult = jsonObject["generateResult"]
 
         return result
     }
@@ -3220,6 +3237,23 @@ export class DocumentRequest18013MDL {
     }
 }
 
+export class FinalizeConfig {
+    rawImages?: boolean
+    video?: boolean
+    rfidSession?: boolean
+
+    static fromJson(jsonObject?: any): FinalizeConfig | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new FinalizeConfig
+
+        result.rawImages = jsonObject["rawImages"]
+        result.video = jsonObject["video"]
+        result.rfidSession = jsonObject["rfidSession"]
+
+        return result
+    }
+}
+
 export const FontStyle = {
     NORMAL: 0,
     BOLD: 1,
@@ -3580,6 +3614,7 @@ export const eRPRM_ResultType = {
     RPRM_RESULT_TYPE_STATUS: 33,
     RPRM_RESULT_TYPE_PORTRAIT_COMPARISON: 34,
     RPRM_RESULT_TYPE_EXT_PORTRAIT: 35,
+    RPRM_RESULT_TYPE_BSI_XML_V2: 73,
 }
 
 export const FrameShapeType = {
@@ -4029,6 +4064,7 @@ export const eCheckDiagnose = {
     CHD_DOC_LIVENESS_BLACK_AND_WHITE_COPY_DETECTED: 239,
     DOC_LIVENESS_ELECTRONIC_DEVICE_DETECTED: 240,
     DOC_LIVENESS_INVALID_BARCODE_BACKGROUND: 241,
+    DOC_LIVENESS_VIRTUAL_CAMERA_DETECTED: 242,
     ICAO_IDB_BASE_32_ERROR: 243,
     ICAO_IDB_ZIPPED_ERROR: 244,
     ICAO_IDB_MESSAGE_ZONE_EMPTY: 245,
@@ -4435,6 +4471,10 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_LIVENESS_GEOMETRY_CHECK: 55,
     SECURITY_FEATURE_TYPE_AGE_CHECK: 56,
     SECURITY_FEATURE_TYPE_SEX_CHECK: 57,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_RFIDVSGHOST: 58,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_BARCODEVSGHOST: 59,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_GHOSTVSLIVE: 60,
+    SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_EXTVSGHOST: 61,
 }
 
 export const OnlineMode = {
@@ -5895,4 +5935,5 @@ export default class DocumentReader {
     static startRetrieveData(deviceEngagement: DeviceEngagement, dataRetrieval: DataRetrieval, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static retrieveDataNFC(dataRetrieval: DataRetrieval, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static retrieveDataBLE(deviceEngagement: DeviceEngagement, dataRetrieval: DataRetrieval, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static finalizePackageWithFinalizeConfig(config: FinalizeConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
 }
