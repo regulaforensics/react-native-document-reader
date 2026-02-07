@@ -2253,7 +2253,7 @@ export class ProcessParams {
     strictSecurityChecks?: boolean
     returnTransliteratedFields?: boolean
     checkCaptureProcessIntegrity?: boolean
-    bsiTr03135Results?: boolean
+    bsiTr03135?: Bsi
     barcodeParserType?: number
     perspectiveAngle?: number
     minDPI?: number
@@ -2339,7 +2339,7 @@ export class ProcessParams {
         result.strictSecurityChecks = jsonObject["strictSecurityChecks"]
         result.returnTransliteratedFields = jsonObject["returnTransliteratedFields"]
         result.checkCaptureProcessIntegrity = jsonObject["checkCaptureProcessIntegrity"]
-        result.bsiTr03135Results = jsonObject["bsiTr03135Results"]
+        result.bsiTr03135 = Bsi.fromJson(jsonObject["bsiTr03135"])
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -2441,6 +2441,19 @@ export class Font {
         result.name = jsonObject["name"]
         result.size = jsonObject["size"]
         result.style = jsonObject["style"]
+
+        return result
+    }
+}
+
+export class Bsi {
+    generateResult?: boolean
+
+    static fromJson(jsonObject?: any): Bsi | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new Bsi
+
+        result.generateResult = jsonObject["generateResult"]
 
         return result
     }
