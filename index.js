@@ -1449,6 +1449,17 @@ export class BackendProcessingConfig {
     }
 }
 
+export class Bsi {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new Bsi()
+
+        result.generateResult = jsonObject["generateResult"]
+
+        return result
+    }
+}
+
 export class LivenessParams {
     static fromJson(jsonObject) {
         if (jsonObject == null) return null
@@ -1538,7 +1549,6 @@ export class ProcessParams {
         result.strictSecurityChecks = jsonObject["strictSecurityChecks"]
         result.returnTransliteratedFields = jsonObject["returnTransliteratedFields"]
         result.checkCaptureProcessIntegrity = jsonObject["checkCaptureProcessIntegrity"]
-        result.bsiTr03135 = Bsi.fromJson(jsonObject["bsiTr03135"])
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -1603,6 +1613,7 @@ export class ProcessParams {
         result.rfidParams = RFIDParams.fromJson(jsonObject["rfidParams"])
         result.faceApiParams = FaceApiParams.fromJson(jsonObject["faceApiParams"])
         result.backendProcessingConfig = BackendProcessingConfig.fromJson(jsonObject["backendProcessingConfig"])
+        result.bsiTr03135 = Bsi.fromJson(jsonObject["bsiTr03135"])
         result.authenticityParams = AuthenticityParams.fromJson(jsonObject["authenticityParams"])
         result.customParams = jsonObject["customParams"]
 
@@ -1618,17 +1629,6 @@ export class Font {
         result.name = jsonObject["name"]
         result.size = jsonObject["size"]
         result.style = jsonObject["style"]
-
-        return result
-    }
-}
-
-export class Bsi {
-    static fromJson(jsonObject) {
-        if (jsonObject == null) return null
-        const result = new Bsi()
-
-        result.generateResult = jsonObject["generateResult"]
 
         return result
     }
@@ -2109,6 +2109,19 @@ export class FinalizeConfig {
         result.rawImages = jsonObject["rawImages"]
         result.video = jsonObject["video"]
         result.rfidSession = jsonObject["rfidSession"]
+
+        return result
+    }
+}
+
+export class FinalizeCompletion {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new FinalizeCompletion()
+
+        result.action = jsonObject["action"]
+        result.info = TransactionInfo.fromJson(jsonObject["info"])
+        result.error = RegulaException.fromJson(jsonObject["error"])
 
         return result
     }
@@ -4789,6 +4802,7 @@ DocumentReader.isAuthenticatorAvailableForUse = (successCallback, errorCallback)
 DocumentReader.getDocReaderVersion = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocReaderVersion", [], successCallback, errorCallback)
 DocumentReader.getDocReaderDocumentsDatabase = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getDocReaderDocumentsDatabase", [], successCallback, errorCallback)
 DocumentReader.finalizePackage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "finalizePackage", [], successCallback, errorCallback)
+DocumentReader.finalizePackageWithFinalizeConfig = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "finalizePackageWithFinalizeConfig", [config], successCallback, errorCallback)
 DocumentReader.endBackendTransaction = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "endBackendTransaction", [], successCallback, errorCallback)
 DocumentReader.getTranslation = (className, value, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "getTranslation", [className, value], successCallback, errorCallback)
 DocumentReader.startReadMDl = (type, dataRetrieval, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startReadMDl", [type, dataRetrieval], successCallback, errorCallback)
@@ -4798,6 +4812,5 @@ DocumentReader.engageDeviceData = (data, successCallback, errorCallback) => RNRe
 DocumentReader.startRetrieveData = (deviceEngagement, dataRetrieval, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startRetrieveData", [deviceEngagement, dataRetrieval], successCallback, errorCallback)
 DocumentReader.retrieveDataNFC = (dataRetrieval, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "retrieveDataNFC", [dataRetrieval], successCallback, errorCallback)
 DocumentReader.retrieveDataBLE = (deviceEngagement, dataRetrieval, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "retrieveDataBLE", [deviceEngagement, dataRetrieval], successCallback, errorCallback)
-DocumentReader.finalizePackageWithFinalizeConfig = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "finalizePackageWithFinalizeConfig", [config], successCallback, errorCallback)
 
 export default DocumentReader

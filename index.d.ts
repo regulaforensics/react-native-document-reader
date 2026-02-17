@@ -2143,6 +2143,19 @@ export class BackendProcessingConfig {
     }
 }
 
+export class Bsi {
+    generateResult?: boolean
+
+    static fromJson(jsonObject?: any): Bsi | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new Bsi
+
+        result.generateResult = jsonObject["generateResult"]
+
+        return result
+    }
+}
+
 export class LivenessParams {
     checkOVI?: boolean
     checkMLI?: boolean
@@ -2253,7 +2266,6 @@ export class ProcessParams {
     strictSecurityChecks?: boolean
     returnTransliteratedFields?: boolean
     checkCaptureProcessIntegrity?: boolean
-    bsiTr03135?: Bsi
     barcodeParserType?: number
     perspectiveAngle?: number
     minDPI?: number
@@ -2291,6 +2303,7 @@ export class ProcessParams {
     rfidParams?: RFIDParams
     faceApiParams?: FaceApiParams
     backendProcessingConfig?: BackendProcessingConfig
+    bsiTr03135?: Bsi
     authenticityParams?: AuthenticityParams
     customParams?: Record<string, any>
 
@@ -2339,7 +2352,6 @@ export class ProcessParams {
         result.strictSecurityChecks = jsonObject["strictSecurityChecks"]
         result.returnTransliteratedFields = jsonObject["returnTransliteratedFields"]
         result.checkCaptureProcessIntegrity = jsonObject["checkCaptureProcessIntegrity"]
-        result.bsiTr03135 = Bsi.fromJson(jsonObject["bsiTr03135"])
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -2422,6 +2434,7 @@ export class ProcessParams {
         result.rfidParams = RFIDParams.fromJson(jsonObject["rfidParams"])
         result.faceApiParams = FaceApiParams.fromJson(jsonObject["faceApiParams"])
         result.backendProcessingConfig = BackendProcessingConfig.fromJson(jsonObject["backendProcessingConfig"])
+        result.bsiTr03135 = Bsi.fromJson(jsonObject["bsiTr03135"])
         result.authenticityParams = AuthenticityParams.fromJson(jsonObject["authenticityParams"])
         result.customParams = jsonObject["customParams"]
 
@@ -2441,19 +2454,6 @@ export class Font {
         result.name = jsonObject["name"]
         result.size = jsonObject["size"]
         result.style = jsonObject["style"]
-
-        return result
-    }
-}
-
-export class Bsi {
-    generateResult?: boolean
-
-    static fromJson(jsonObject?: any): Bsi | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new Bsi
-
-        result.generateResult = jsonObject["generateResult"]
 
         return result
     }
@@ -3249,6 +3249,23 @@ export class FinalizeConfig {
         result.rawImages = jsonObject["rawImages"]
         result.video = jsonObject["video"]
         result.rfidSession = jsonObject["rfidSession"]
+
+        return result
+    }
+}
+
+export class FinalizeCompletion {
+    action?: number
+    info?: TransactionInfo
+    error?: RegulaException
+
+    static fromJson(jsonObject?: any): FinalizeCompletion | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new FinalizeCompletion
+
+        result.action = jsonObject["action"]
+        result.info = TransactionInfo.fromJson(jsonObject["info"])
+        result.error = RegulaException.fromJson(jsonObject["error"])
 
         return result
     }
@@ -5926,6 +5943,7 @@ export default class DocumentReader {
     static getDocReaderVersion(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getDocReaderDocumentsDatabase(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static finalizePackage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static finalizePackageWithFinalizeConfig(config: FinalizeConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static endBackendTransaction(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getTranslation(className: string, value: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startReadMDl(type: number, dataRetrieval: DataRetrieval, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
@@ -5935,5 +5953,4 @@ export default class DocumentReader {
     static startRetrieveData(deviceEngagement: DeviceEngagement, dataRetrieval: DataRetrieval, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static retrieveDataNFC(dataRetrieval: DataRetrieval, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static retrieveDataBLE(deviceEngagement: DeviceEngagement, dataRetrieval: DataRetrieval, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static finalizePackageWithFinalizeConfig(config: FinalizeConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
 }
