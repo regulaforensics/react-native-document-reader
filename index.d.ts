@@ -3315,6 +3315,16 @@ export const CustomizationColor = {
     RFID_ENABLE_NFC_DESCRIPTION_TEXT: "rfidEnableNfcDescriptionText",
     RFID_ENABLE_NFC_BUTTON_TEXT: "rfidEnableNfcButtonText",
     RFID_ENABLE_NFC_BUTTON_BACKGROUND: "rfidEnableNfcButtonBackground",
+    MDL_PROCESSING_SCREEN_BACKGROUND: "mdlProcessingScreenBackground",
+    MDL_PROCESSING_SCREEN_HINT_LABEL_TEXT: "mdlProcessingScreenHintLabelText",
+    MDL_PROCESSING_SCREEN_HINT_LABEL_BACKGROUND: "mdlProcessingScreenHintLabelBackground",
+    MDL_PROCESSING_SCREEN_PROGRESS_LABEL_TEXT: "mdlProcessingScreenProgressLabelText",
+    MDL_PROCESSING_SCREEN_RESULT_LABEL_TEXT: "mdlProcessingScreenResultLabelText",
+    MDL_PROCESSING_SCREEN_LOADING_BAR: "mdlProcessingScreenLoadingBar",
+    MDL_ENABLE_NFC_TITLE_TEXT: "mdlEnableNfcTitleText",
+    MDL_ENABLE_NFC_DESCRIPTION_TEXT: "mdlEnableNfcDescriptionText",
+    MDL_ENABLE_NFC_BUTTON_TEXT: "mdlEnableNfcButtonText",
+    MDL_ENABLE_NFC_BUTTON_BACKGROUND: "mdlEnableNfcButtonBackground",
 }
 
 export const eRFID_ErrorCodes = {
@@ -4771,6 +4781,12 @@ export const CustomizationFont = {
     RFID_ENABLE_NFC_TITLE_TEXT: "rfidEnableNfcTitleText",
     RFID_ENABLE_NFC_DESCRIPTION_TEXT: "rfidEnableNfcDescriptionText",
     RFID_ENABLE_NFC_BUTTON_TEXT: "rfidEnableNfcButtonText",
+    MDL_PROCESSING_SCREEN_HINT_LABEL: "mdlProcessingScreenHintLabel",
+    MDL_PROCESSING_SCREEN_PROGRESS_LABEL: "mdlProcessingScreenProgressLabel",
+    MDL_PROCESSING_SCREEN_RESULT_LABEL: "mdlProcessingScreenResultLabel",
+    MDL_ENABLE_NFC_TITLE_TEXT: "mdlEnableNfcTitleText",
+    MDL_ENABLE_NFC_DESCRIPTION_TEXT: "mdlEnableNfcDescriptionText",
+    MDL_ENABLE_NFC_BUTTON_TEXT: "mdlEnableNfcButtonText",
 }
 
 export const ImageFormat = {
@@ -5781,6 +5797,8 @@ export const LCID = {
 export const CustomizationImage = {
     RFID_PROCESSING_SCREEN_FAILURE_IMAGE: "rfidProcessingScreenFailureImage",
     RFID_ENABLE_NFC_IMAGE: "rfidEnableNfcImage",
+    MDL_PROCESSING_SCREEN_FAILURE_IMAGE: "mdlProcessingScreenFailureImage",
+    MDL_ENABLE_NFC_IMAGE: "mdlEnableNfcImage",
 }
 
 export const DocReaderFrame = {
