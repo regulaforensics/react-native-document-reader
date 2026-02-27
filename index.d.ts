@@ -2143,6 +2143,19 @@ export class BackendProcessingConfig {
     }
 }
 
+export class Bsi {
+    generateResult?: boolean
+
+    static fromJson(jsonObject?: any): Bsi | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new Bsi
+
+        result.generateResult = jsonObject["generateResult"]
+
+        return result
+    }
+}
+
 export class LivenessParams {
     checkOVI?: boolean
     checkMLI?: boolean
@@ -2253,7 +2266,6 @@ export class ProcessParams {
     strictSecurityChecks?: boolean
     returnTransliteratedFields?: boolean
     checkCaptureProcessIntegrity?: boolean
-    bsiTr03135?: Bsi
     barcodeParserType?: number
     perspectiveAngle?: number
     minDPI?: number
@@ -2291,6 +2303,7 @@ export class ProcessParams {
     rfidParams?: RFIDParams
     faceApiParams?: FaceApiParams
     backendProcessingConfig?: BackendProcessingConfig
+    bsiTr03135?: Bsi
     authenticityParams?: AuthenticityParams
     customParams?: Record<string, any>
 
@@ -2339,7 +2352,6 @@ export class ProcessParams {
         result.strictSecurityChecks = jsonObject["strictSecurityChecks"]
         result.returnTransliteratedFields = jsonObject["returnTransliteratedFields"]
         result.checkCaptureProcessIntegrity = jsonObject["checkCaptureProcessIntegrity"]
-        result.bsiTr03135 = Bsi.fromJson(jsonObject["bsiTr03135"])
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -2422,6 +2434,7 @@ export class ProcessParams {
         result.rfidParams = RFIDParams.fromJson(jsonObject["rfidParams"])
         result.faceApiParams = FaceApiParams.fromJson(jsonObject["faceApiParams"])
         result.backendProcessingConfig = BackendProcessingConfig.fromJson(jsonObject["backendProcessingConfig"])
+        result.bsiTr03135 = Bsi.fromJson(jsonObject["bsiTr03135"])
         result.authenticityParams = AuthenticityParams.fromJson(jsonObject["authenticityParams"])
         result.customParams = jsonObject["customParams"]
 
@@ -2441,19 +2454,6 @@ export class Font {
         result.name = jsonObject["name"]
         result.size = jsonObject["size"]
         result.style = jsonObject["style"]
-
-        return result
-    }
-}
-
-export class Bsi {
-    generateResult?: boolean
-
-    static fromJson(jsonObject?: any): Bsi | undefined {
-        if (jsonObject == null || jsonObject == undefined) return undefined
-        const result = new Bsi
-
-        result.generateResult = jsonObject["generateResult"]
 
         return result
     }
@@ -3254,6 +3254,23 @@ export class FinalizeConfig {
     }
 }
 
+export class FinalizeCompletion {
+    action?: number
+    info?: TransactionInfo
+    error?: RegulaException
+
+    static fromJson(jsonObject?: any): FinalizeCompletion | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new FinalizeCompletion
+
+        result.action = jsonObject["action"]
+        result.info = TransactionInfo.fromJson(jsonObject["info"])
+        result.error = RegulaException.fromJson(jsonObject["error"])
+
+        return result
+    }
+}
+
 export const FontStyle = {
     NORMAL: 0,
     BOLD: 1,
@@ -3298,6 +3315,16 @@ export const CustomizationColor = {
     RFID_ENABLE_NFC_DESCRIPTION_TEXT: "rfidEnableNfcDescriptionText",
     RFID_ENABLE_NFC_BUTTON_TEXT: "rfidEnableNfcButtonText",
     RFID_ENABLE_NFC_BUTTON_BACKGROUND: "rfidEnableNfcButtonBackground",
+    MDL_PROCESSING_SCREEN_BACKGROUND: "mdlProcessingScreenBackground",
+    MDL_PROCESSING_SCREEN_HINT_LABEL_TEXT: "mdlProcessingScreenHintLabelText",
+    MDL_PROCESSING_SCREEN_HINT_LABEL_BACKGROUND: "mdlProcessingScreenHintLabelBackground",
+    MDL_PROCESSING_SCREEN_PROGRESS_LABEL_TEXT: "mdlProcessingScreenProgressLabelText",
+    MDL_PROCESSING_SCREEN_RESULT_LABEL_TEXT: "mdlProcessingScreenResultLabelText",
+    MDL_PROCESSING_SCREEN_LOADING_BAR: "mdlProcessingScreenLoadingBar",
+    MDL_ENABLE_NFC_TITLE_TEXT: "mdlEnableNfcTitleText",
+    MDL_ENABLE_NFC_DESCRIPTION_TEXT: "mdlEnableNfcDescriptionText",
+    MDL_ENABLE_NFC_BUTTON_TEXT: "mdlEnableNfcButtonText",
+    MDL_ENABLE_NFC_BUTTON_BACKGROUND: "mdlEnableNfcButtonBackground",
 }
 
 export const eRFID_ErrorCodes = {
@@ -4754,6 +4781,12 @@ export const CustomizationFont = {
     RFID_ENABLE_NFC_TITLE_TEXT: "rfidEnableNfcTitleText",
     RFID_ENABLE_NFC_DESCRIPTION_TEXT: "rfidEnableNfcDescriptionText",
     RFID_ENABLE_NFC_BUTTON_TEXT: "rfidEnableNfcButtonText",
+    MDL_PROCESSING_SCREEN_HINT_LABEL: "mdlProcessingScreenHintLabel",
+    MDL_PROCESSING_SCREEN_PROGRESS_LABEL: "mdlProcessingScreenProgressLabel",
+    MDL_PROCESSING_SCREEN_RESULT_LABEL: "mdlProcessingScreenResultLabel",
+    MDL_ENABLE_NFC_TITLE_TEXT: "mdlEnableNfcTitleText",
+    MDL_ENABLE_NFC_DESCRIPTION_TEXT: "mdlEnableNfcDescriptionText",
+    MDL_ENABLE_NFC_BUTTON_TEXT: "mdlEnableNfcButtonText",
 }
 
 export const ImageFormat = {
@@ -5764,6 +5797,8 @@ export const LCID = {
 export const CustomizationImage = {
     RFID_PROCESSING_SCREEN_FAILURE_IMAGE: "rfidProcessingScreenFailureImage",
     RFID_ENABLE_NFC_IMAGE: "rfidEnableNfcImage",
+    MDL_PROCESSING_SCREEN_FAILURE_IMAGE: "mdlProcessingScreenFailureImage",
+    MDL_ENABLE_NFC_IMAGE: "mdlEnableNfcImage",
 }
 
 export const DocReaderFrame = {
@@ -5926,6 +5961,7 @@ export default class DocumentReader {
     static getDocReaderVersion(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getDocReaderDocumentsDatabase(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static finalizePackage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static finalizePackageWithFinalizeConfig(config: FinalizeConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static endBackendTransaction(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static getTranslation(className: string, value: number, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startReadMDl(type: number, dataRetrieval: DataRetrieval, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
@@ -5935,5 +5971,4 @@ export default class DocumentReader {
     static startRetrieveData(deviceEngagement: DeviceEngagement, dataRetrieval: DataRetrieval, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static retrieveDataNFC(dataRetrieval: DataRetrieval, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static retrieveDataBLE(deviceEngagement: DeviceEngagement, dataRetrieval: DataRetrieval, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static finalizePackageWithFinalizeConfig(config: FinalizeConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
 }
