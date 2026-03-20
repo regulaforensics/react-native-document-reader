@@ -2128,6 +2128,7 @@ export class BackendProcessingConfig {
     url?: string
     httpHeaders?: Record<string, string>
     rfidServerSideChipVerification?: boolean
+    mdlVerification?: boolean
     timeoutConnection?: number
 
     static fromJson(jsonObject?: any): BackendProcessingConfig | undefined {
@@ -2137,6 +2138,7 @@ export class BackendProcessingConfig {
         result.url = jsonObject["url"]
         result.httpHeaders = jsonObject["httpHeaders"]
         result.rfidServerSideChipVerification = jsonObject["rfidServerSideChipVerification"]
+        result.mdlVerification = jsonObject["mdlVerification"]
         result.timeoutConnection = jsonObject["timeoutConnection"]
 
         return result
@@ -2266,6 +2268,9 @@ export class ProcessParams {
     strictSecurityChecks?: boolean
     returnTransliteratedFields?: boolean
     checkCaptureProcessIntegrity?: boolean
+    strictExpiryDate?: boolean
+    debugSaveBinarySession?: boolean
+    checkVDS?: boolean
     barcodeParserType?: number
     perspectiveAngle?: number
     minDPI?: number
@@ -2352,6 +2357,9 @@ export class ProcessParams {
         result.strictSecurityChecks = jsonObject["strictSecurityChecks"]
         result.returnTransliteratedFields = jsonObject["returnTransliteratedFields"]
         result.checkCaptureProcessIntegrity = jsonObject["checkCaptureProcessIntegrity"]
+        result.strictExpiryDate = jsonObject["strictExpiryDate"]
+        result.debugSaveBinarySession = jsonObject["debugSaveBinarySession"]
+        result.checkVDS = jsonObject["checkVDS"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -2472,6 +2480,10 @@ export class CustomizationColors {
     rfidEnableNfcDescriptionText?: number
     rfidEnableNfcButtonText?: number
     rfidEnableNfcButtonBackground?: number
+    nextPageIdCardFront?: number
+    nextPageIdCardBack?: number
+    nextPagePassportShift?: number
+    nextPagePassportFlip?: number
 
     static fromJson(jsonObject?: any): CustomizationColors | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2489,6 +2501,10 @@ export class CustomizationColors {
         result.rfidEnableNfcDescriptionText = jsonObject["rfidEnableNfcDescriptionText"]
         result.rfidEnableNfcButtonText = jsonObject["rfidEnableNfcButtonText"]
         result.rfidEnableNfcButtonBackground = jsonObject["rfidEnableNfcButtonBackground"]
+        result.nextPageIdCardFront = jsonObject["nextPageIdCardFront"]
+        result.nextPageIdCardBack = jsonObject["nextPageIdCardBack"]
+        result.nextPagePassportShift = jsonObject["nextPagePassportShift"]
+        result.nextPagePassportFlip = jsonObject["nextPagePassportFlip"]
 
         return result
     }
@@ -2518,15 +2534,118 @@ export class CustomizationFonts {
 }
 
 export class CustomizationImages {
+    helpAnimation?: string
+    livenessAnimation?: string
+    borderBackground?: string
+    torchButtonOn?: string
+    torchButtonOff?: string
+    captureButton?: string
+    switchButton?: string
+    closeButton?: string
+    multipageButton?: string
     rfidProcessingScreenFailureImage?: string
     rfidEnableNfcImage?: string
+    rfidDisableNfcImage?: string
+    mdlProcessingScreenFailureImage?: string
+    mdlEnableNfcImage?: string
+    mdlDisableNfcImage?: string
+    nextPageIdCardFront?: string
+    nextPageIdCardBack?: string
+    nextPagePassportShift?: string
+    nextPagePassportFlipStart?: string
+    nextPagePassportFlipClean?: string
+    nextPagePassportFlipTop?: string
+    nextPagePassportFlipBottom?: string
 
     static fromJson(jsonObject?: any): CustomizationImages | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
         const result = new CustomizationImages
 
+        result.helpAnimation = jsonObject["helpAnimation"]
+        result.livenessAnimation = jsonObject["livenessAnimation"]
+        result.borderBackground = jsonObject["borderBackground"]
+        result.torchButtonOn = jsonObject["torchButtonOn"]
+        result.torchButtonOff = jsonObject["torchButtonOff"]
+        result.captureButton = jsonObject["captureButton"]
+        result.switchButton = jsonObject["switchButton"]
+        result.closeButton = jsonObject["closeButton"]
+        result.multipageButton = jsonObject["multipageButton"]
         result.rfidProcessingScreenFailureImage = jsonObject["rfidProcessingScreenFailureImage"]
         result.rfidEnableNfcImage = jsonObject["rfidEnableNfcImage"]
+        result.rfidDisableNfcImage = jsonObject["rfidDisableNfcImage"]
+        result.mdlProcessingScreenFailureImage = jsonObject["mdlProcessingScreenFailureImage"]
+        result.mdlEnableNfcImage = jsonObject["mdlEnableNfcImage"]
+        result.mdlDisableNfcImage = jsonObject["mdlDisableNfcImage"]
+        result.nextPageIdCardFront = jsonObject["nextPageIdCardFront"]
+        result.nextPageIdCardBack = jsonObject["nextPageIdCardBack"]
+        result.nextPagePassportShift = jsonObject["nextPagePassportShift"]
+        result.nextPagePassportFlipStart = jsonObject["nextPagePassportFlipStart"]
+        result.nextPagePassportFlipClean = jsonObject["nextPagePassportFlipClean"]
+        result.nextPagePassportFlipTop = jsonObject["nextPagePassportFlipTop"]
+        result.nextPagePassportFlipBottom = jsonObject["nextPagePassportFlipBottom"]
+
+        return result
+    }
+}
+
+export class CustomizationTimings {
+    nextPageIdCardStartDelay?: number
+    nextPageIdCardEndDelay?: number
+    nextPagePassportShiftStartDelay?: number
+    nextPagePassportShiftEndDelay?: number
+    nextPagePassportFlipStartDelay?: number
+    nextPagePassportFlipEndDelay?: number
+
+    static fromJson(jsonObject?: any): CustomizationTimings | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new CustomizationTimings
+
+        result.nextPageIdCardStartDelay = jsonObject["nextPageIdCardStartDelay"]
+        result.nextPageIdCardEndDelay = jsonObject["nextPageIdCardEndDelay"]
+        result.nextPagePassportShiftStartDelay = jsonObject["nextPagePassportShiftStartDelay"]
+        result.nextPagePassportShiftEndDelay = jsonObject["nextPagePassportShiftEndDelay"]
+        result.nextPagePassportFlipStartDelay = jsonObject["nextPagePassportFlipStartDelay"]
+        result.nextPagePassportFlipEndDelay = jsonObject["nextPagePassportFlipEndDelay"]
+
+        return result
+    }
+}
+
+export class CustomizationContentModes {
+    nextPageIdCardFront?: number
+    nextPageIdCardBack?: number
+
+    static fromJson(jsonObject?: any): CustomizationContentModes | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new CustomizationContentModes
+
+        result.nextPageIdCardFront = jsonObject["nextPageIdCardFront"]
+        result.nextPageIdCardBack = jsonObject["nextPageIdCardBack"]
+
+        return result
+    }
+}
+
+export class CustomizationMatrices {
+    nextPageIdCardFront?: number[]
+    nextPageIdCardBack?: number[]
+
+    static fromJson(jsonObject?: any): CustomizationMatrices | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new CustomizationMatrices
+
+        result.nextPageIdCardFront = []
+        if (jsonObject["nextPageIdCardFront"] != null) {
+            for (const i in jsonObject["nextPageIdCardFront"]) {
+                result.nextPageIdCardFront.push(jsonObject["nextPageIdCardFront"][i])
+            }
+        }
+        result.nextPageIdCardBack = []
+        if (jsonObject["nextPageIdCardBack"] != null) {
+            for (const i in jsonObject["nextPageIdCardBack"]) {
+                result.nextPageIdCardBack.push(jsonObject["nextPageIdCardBack"][i])
+            }
+        }
 
         return result
     }
@@ -2605,6 +2724,9 @@ export class Customization {
     colors?: CustomizationColors
     fonts?: CustomizationFonts
     images?: CustomizationImages
+    timings?: CustomizationTimings
+    contentModes?: CustomizationContentModes
+    matrices?: CustomizationMatrices
 
     static fromJson(jsonObject?: any): Customization | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2707,6 +2829,9 @@ export class Customization {
         result.colors = CustomizationColors.fromJson(jsonObject["colors"])
         result.fonts = CustomizationFonts.fromJson(jsonObject["fonts"])
         result.images = CustomizationImages.fromJson(jsonObject["images"])
+        result.timings = CustomizationTimings.fromJson(jsonObject["timings"])
+        result.contentModes = CustomizationContentModes.fromJson(jsonObject["contentModes"])
+        result.matrices = CustomizationMatrices.fromJson(jsonObject["matrices"])
 
         return result
     }
@@ -3241,6 +3366,7 @@ export class FinalizeConfig {
     rawImages?: boolean
     video?: boolean
     rfidSession?: boolean
+    mdlSession?: boolean
 
     static fromJson(jsonObject?: any): FinalizeConfig | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -3249,6 +3375,7 @@ export class FinalizeConfig {
         result.rawImages = jsonObject["rawImages"]
         result.video = jsonObject["video"]
         result.rfidSession = jsonObject["rfidSession"]
+        result.mdlSession = jsonObject["mdlSession"]
 
         return result
     }
@@ -3325,6 +3452,10 @@ export const CustomizationColor = {
     MDL_ENABLE_NFC_DESCRIPTION_TEXT: "mdlEnableNfcDescriptionText",
     MDL_ENABLE_NFC_BUTTON_TEXT: "mdlEnableNfcButtonText",
     MDL_ENABLE_NFC_BUTTON_BACKGROUND: "mdlEnableNfcButtonBackground",
+    NEXT_PAGE_ID_CARD_FRONT: "nextPageIdCardFront",
+    NEXT_PAGE_ID_CARD_BACK: "nextPageIdCardBack",
+    NEXT_PAGE_PASSPORT_SHIFT: "nextPagePassportShift",
+    NEXT_PAGE_PASSPORT_FLIP: "nextPagePassportFlip",
 }
 
 export const eRFID_ErrorCodes = {
@@ -3872,6 +4003,9 @@ export const eRFID_NotificationCodes = {
     RFID_NOTIFICATION_AUXILIARY_DATA_VALIDATION: 0x000D0000,
     RFID_NOTIFICATION_RI_SECTOR_ID: 0x000E0000,
     RFID_NOTIFICATION_BIOMETRICS_EMPTY_PLACEHOLDER: 0x000F0000,
+    RFID_NOTIFICATION_SESSION_FILE_DATA_UPDATED: 1048576,
+    RFID_NOTIFICATION_TCC_TA_RESOURCES: 1114112,
+    RFID_NOTIFICATION_TCC_TA_SIGNATURE: 1114113,
 }
 
 export const CameraPosition = {
@@ -3962,6 +4096,11 @@ export const eSignManagementAction = {
     smaGenerateKeys: 5,
     smaTerminateKeys: 6,
     smaSignData: 7,
+}
+
+export const CustomizationMatrix = {
+    NEXT_PAGE_ID_CARD_FRONT: "nextPageIdCardFront",
+    NEXT_PAGE_ID_CARD_BACK: "nextPageIdCardBack",
 }
 
 export const eMDLDeviceEngagement = {
@@ -4104,6 +4243,11 @@ export const eCheckDiagnose = {
 export const eMDLIntentToRetain = {
     FALSE: 0,
     TRUE: 1,
+}
+
+export const CustomizationContentMode = {
+    NEXT_PAGE_ID_CARD_FRONT: "nextPageIdCardFront",
+    NEXT_PAGE_ID_CARD_BACK: "nextPageIdCardBack",
 }
 
 export const RFIDDelegate = {
@@ -5612,9 +5756,11 @@ export const eVisualFieldType = {
     FT_NATIONALITY_CODE_ALPHA2: 697,
     FT_FIRST_ISSUE_DATE_CHECKDIGIT: 698,
     FT_FIRST_ISSUE_DATE_CHECKSUM: 699,
+    FT_EXPIRY_TIMESTAMP: 700,
     FT_COMMERCIAL_INDICATOR: 701,
     FT_NON_DOMICILED_INDICATOR: 702,
     FT_JURISDICTION_SPECIFIC_DATA: 703,
+    FT_DATA_DATE_OF_EXPIRY: 704,
 }
 
 export const DocReaderOrientation = {
@@ -5794,11 +5940,38 @@ export const LCID = {
     URDU_DETECTION: 10560,
 }
 
+export const CustomizationTiming = {
+    NEXT_PAGE_ID_CARD_START_DELAY: "nextPageIdCardStartDelay",
+    NEXT_PAGE_ID_CARD_END_DELAY: "nextPageIdCardEndDelay",
+    NEXT_PAGE_PASSPORT_SHIFT_START_DELAY: "nextPagePassportShiftStartDelay",
+    NEXT_PAGE_PASSPORT_SHIFT_END_DELAY: "nextPagePassportShiftEndDelay",
+    NEXT_PAGE_PASSPORT_FLIP_START_DELAY: "nextPagePassportFlipStartDelay",
+    NEXT_PAGE_PASSPORT_FLIP_END_DELAY: "nextPagePassportFlipEndDelay",
+}
+
 export const CustomizationImage = {
+    HELP_ANIMATION: "helpAnimation",
+    LIVENESS_ANIMATION: "livenessAnimation",
+    BORDER_BACKGROUND: "borderBackground",
+    TORCH_BUTTON_ON: "torchButtonOn",
+    TORCH_BUTTON_OFF: "torchButtonOff",
+    CAPTURE_BUTTON: "captureButton",
+    SWITCH_BUTTON: "switchButton",
+    CLOSE_BUTTON: "closeButton",
+    MULTIPAGE_BUTTON: "multipageButton",
     RFID_PROCESSING_SCREEN_FAILURE_IMAGE: "rfidProcessingScreenFailureImage",
     RFID_ENABLE_NFC_IMAGE: "rfidEnableNfcImage",
+    RFID_DISABLE_NFC_IMAGE: "rfidDisableNfcImage",
     MDL_PROCESSING_SCREEN_FAILURE_IMAGE: "mdlProcessingScreenFailureImage",
     MDL_ENABLE_NFC_IMAGE: "mdlEnableNfcImage",
+    MDL_DISABLE_NFC_IMAGE: "mdlDisableNfcImage",
+    NEXT_PAGE_ID_CARD_FRONT: "nextPageIdCardFront",
+    NEXT_PAGE_ID_CARD_BACK: "nextPageIdCardBack",
+    NEXT_PAGE_PASSPORT_SHIFT: "nextPagePassportShift",
+    NEXT_PAGE_PASSPORT_FLIP_START: "nextPagePassportFlipStart",
+    NEXT_PAGE_PASSPORT_FLIP_CLEAN: "nextPagePassportFlipClean",
+    NEXT_PAGE_PASSPORT_FLIP_TOP: "nextPagePassportFlipTop",
+    NEXT_PAGE_PASSPORT_FLIP_BOTTOM: "nextPagePassportFlipBottom",
 }
 
 export const DocReaderFrame = {
@@ -5863,9 +6036,11 @@ export const Enum = {
    BarcodeResult,
    eRFID_Application_Type,
    eSignManagementAction,
+   CustomizationMatrix,
    eMDLDeviceEngagement,
    eCheckDiagnose,
    eMDLIntentToRetain,
+   CustomizationContentMode,
    RFIDDelegate,
    TextProcessing,
    LogLevel,
@@ -5896,6 +6071,7 @@ export const Enum = {
    eVisualFieldType,
    DocReaderOrientation,
    LCID,
+   CustomizationTiming,
    CustomizationImage,
    DocReaderFrame,
    eMDLDocRequestPreset,
