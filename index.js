@@ -1850,6 +1850,9 @@ export class Customization {
         result.colors = CustomizationColors.fromJson(jsonObject["colors"])
         result.fonts = CustomizationFonts.fromJson(jsonObject["fonts"])
         result.images = CustomizationImages.fromJson(jsonObject["images"])
+        result.timings = CustomizationTimings.fromJson(jsonObject["timings"])
+        result.contentModes = CustomizationContentModes.fromJson(jsonObject["contentModes"])
+        result.matrices = CustomizationMatrices.fromJson(jsonObject["matrices"])
 
         return result
     }

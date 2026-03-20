@@ -2724,6 +2724,9 @@ export class Customization {
     colors?: CustomizationColors
     fonts?: CustomizationFonts
     images?: CustomizationImages
+    timings?: CustomizationTimings
+    contentModes?: CustomizationContentModes
+    matrices?: CustomizationMatrices
 
     static fromJson(jsonObject?: any): Customization | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2826,6 +2829,9 @@ export class Customization {
         result.colors = CustomizationColors.fromJson(jsonObject["colors"])
         result.fonts = CustomizationFonts.fromJson(jsonObject["fonts"])
         result.images = CustomizationImages.fromJson(jsonObject["images"])
+        result.timings = CustomizationTimings.fromJson(jsonObject["timings"])
+        result.contentModes = CustomizationContentModes.fromJson(jsonObject["contentModes"])
+        result.matrices = CustomizationMatrices.fromJson(jsonObject["matrices"])
 
         return result
     }
