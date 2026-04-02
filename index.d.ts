@@ -6171,8 +6171,8 @@ export default class DocumentReader {
     static recognize(config: RecognizeConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewPage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static stopScanner(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static startRFIDReader(config: RFIDConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static readRFID(config: RFIDConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startRFIDReader(config: RFIDConfig | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static readRFID(config: RFIDConfig | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static stopRFIDReader(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static providePACertificates(certificates: PKDCertificate[] | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTACertificates(certificates: PKDCertificate[] | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
