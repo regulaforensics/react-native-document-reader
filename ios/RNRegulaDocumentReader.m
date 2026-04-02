@@ -15,6 +15,8 @@ RCT_EXPORT_MODULE();
              paCertificateCompletionEvent,
              taCertificateCompletionEvent,
              taSignatureCompletionEvent,
+             paceProtocolCompletionEvent,
+             caProtocolCompletionEvent,
              drVideoEncoderCompletionEvent,
              drOnCustomButtonTappedEvent];
 }

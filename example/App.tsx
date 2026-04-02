@@ -210,12 +210,12 @@ export default class App extends React.Component<IProps, IState> {
 
   customRFID() {
     this.showRfidUI()
-    DocumentReader.readRFID(false, false, false, _ => { }, _ => { })
+    DocumentReader.readRFID(null, _ => { }, _ => { })
   }
 
   usualRFID() {
     isReadingRfid = true
-    DocumentReader.startRFIDReader(false, false, false, _ => { }, _ => { })
+    DocumentReader.startRFIDReader(null, _ => { }, _ => { })
   }
 
   handleResults(results: DocumentReaderResults) {
