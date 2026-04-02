@@ -3398,6 +3398,63 @@ export class FinalizeCompletion {
     }
 }
 
+export class PACEProtocol {
+    version?: string
+    stdDomainParams?: string
+    keyAlgorithm?: string
+
+    static fromJson(jsonObject?: any): PACEProtocol | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new PACEProtocol
+
+        result.version = jsonObject["version"]
+        result.stdDomainParams = jsonObject["stdDomainParams"]
+        result.keyAlgorithm = jsonObject["keyAlgorithm"]
+
+        return result
+    }
+}
+
+export class CAProtocol {
+    version?: string
+    scheme?: string
+    keyAlgorithm?: string
+    chipIndividual?: boolean
+
+    static fromJson(jsonObject?: any): CAProtocol | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new CAProtocol
+
+        result.version = jsonObject["version"]
+        result.scheme = jsonObject["scheme"]
+        result.keyAlgorithm = jsonObject["keyAlgorithm"]
+        result.chipIndividual = jsonObject["chipIndividual"]
+
+        return result
+    }
+}
+
+export class RFIDConfig {
+    onRequestPACertificates?: boolean
+    onRequestTACertificates?: boolean
+    onRequestTASignature?: boolean
+    onRequestPACEProtocol?: boolean
+    onRequestCAProtocol?: boolean
+
+    static fromJson(jsonObject?: any): RFIDConfig | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new RFIDConfig
+
+        result.onRequestPACertificates = jsonObject["onRequestPACertificates"]
+        result.onRequestTACertificates = jsonObject["onRequestTACertificates"]
+        result.onRequestTASignature = jsonObject["onRequestTASignature"]
+        result.onRequestPACEProtocol = jsonObject["onRequestPACEProtocol"]
+        result.onRequestCAProtocol = jsonObject["onRequestCAProtocol"]
+
+        return result
+    }
+}
+
 export const FontStyle = {
     NORMAL: 0,
     BOLD: 1,
@@ -6114,12 +6171,14 @@ export default class DocumentReader {
     static recognize(config: RecognizeConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewPage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static stopScanner(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static startRFIDReader(requestPACertificates: boolean, requestTACertificates: boolean, requestTASignature: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static readRFID(requestPACertificates: boolean, requestTACertificates: boolean, requestTASignature: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startRFIDReader(config: RFIDConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static readRFID(config: RFIDConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static stopRFIDReader(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static providePACertificates(certificates: PKDCertificate[] | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTACertificates(certificates: PKDCertificate[] | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTASignature(signature: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static selectPACEProtocol(protocol: PACEProtocol, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static selectCAProtocol(protocol: CAProtocol, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setTCCParams(params: TccParams, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static addPKDCertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void

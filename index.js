@@ -2205,6 +2205,48 @@ export class FinalizeCompletion {
     }
 }
 
+export class PACEProtocol {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new PACEProtocol()
+
+        result.version = jsonObject["version"]
+        result.stdDomainParams = jsonObject["stdDomainParams"]
+        result.keyAlgorithm = jsonObject["keyAlgorithm"]
+
+        return result
+    }
+}
+
+export class CAProtocol {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new CAProtocol()
+
+        result.version = jsonObject["version"]
+        result.scheme = jsonObject["scheme"]
+        result.keyAlgorithm = jsonObject["keyAlgorithm"]
+        result.chipIndividual = jsonObject["chipIndividual"]
+
+        return result
+    }
+}
+
+export class RFIDConfig {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new RFIDConfig()
+
+        result.onRequestPACertificates = jsonObject["onRequestPACertificates"]
+        result.onRequestTACertificates = jsonObject["onRequestTACertificates"]
+        result.onRequestTASignature = jsonObject["onRequestTASignature"]
+        result.onRequestPACEProtocol = jsonObject["onRequestPACEProtocol"]
+        result.onRequestCAProtocol = jsonObject["onRequestCAProtocol"]
+
+        return result
+    }
+}
+
 // Enum
 
 export const FontStyle = {
@@ -4924,12 +4966,14 @@ DocumentReader.startScanner = (config, successCallback, errorCallback) => RNRegu
 DocumentReader.recognize = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognize", [config], successCallback, errorCallback)
 DocumentReader.startNewPage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewPage", [], successCallback, errorCallback)
 DocumentReader.stopScanner = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopScanner", [], successCallback, errorCallback)
-DocumentReader.startRFIDReader = (requestPACertificates, requestTACertificates, requestTASignature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startRFIDReader", [requestPACertificates, requestTACertificates, requestTASignature], successCallback, errorCallback)
-DocumentReader.readRFID = (requestPACertificates, requestTACertificates, requestTASignature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "readRFID", [requestPACertificates, requestTACertificates, requestTASignature], successCallback, errorCallback)
+DocumentReader.startRFIDReader = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startRFIDReader", [config], successCallback, errorCallback)
+DocumentReader.readRFID = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "readRFID", [config], successCallback, errorCallback)
 DocumentReader.stopRFIDReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopRFIDReader", [], successCallback, errorCallback)
 DocumentReader.providePACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "providePACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTASignature = (signature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTASignature", [signature], successCallback, errorCallback)
+DocumentReader.selectPACEProtocol = (protocol, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "selectPACEProtocol", [protocol], successCallback, errorCallback)
+DocumentReader.selectCAProtocol = (protocol, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "selectCAProtocol", [protocol], successCallback, errorCallback)
 DocumentReader.setTCCParams = (params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTCCParams", [params], successCallback, errorCallback)
 DocumentReader.addPKDCertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "addPKDCertificates", [certificates], successCallback, errorCallback)
 DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
