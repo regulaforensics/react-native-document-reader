@@ -2205,6 +2205,48 @@ export class FinalizeCompletion {
     }
 }
 
+export class PACEProtocol {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new PACEProtocol()
+
+        result.version = jsonObject["version"]
+        result.stdDomainParams = jsonObject["stdDomainParams"]
+        result.keyAlgorithm = jsonObject["keyAlgorithm"]
+
+        return result
+    }
+}
+
+export class CAProtocol {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new CAProtocol()
+
+        result.version = jsonObject["version"]
+        result.scheme = jsonObject["scheme"]
+        result.keyAlgorithm = jsonObject["keyAlgorithm"]
+        result.chipIndividual = jsonObject["chipIndividual"]
+
+        return result
+    }
+}
+
+export class RFIDConfig {
+    static fromJson(jsonObject) {
+        if (jsonObject == null) return null
+        const result = new RFIDConfig()
+
+        result.onRequestPACertificates = jsonObject["onRequestPACertificates"]
+        result.onRequestTACertificates = jsonObject["onRequestTACertificates"]
+        result.onRequestTASignature = jsonObject["onRequestTASignature"]
+        result.onRequestPACEProtocol = jsonObject["onRequestPACEProtocol"]
+        result.onRequestCAProtocol = jsonObject["onRequestCAProtocol"]
+
+        return result
+    }
+}
+
 // Enum
 
 export const FontStyle = {
@@ -2812,9 +2854,9 @@ export const eRFID_NotificationCodes = {
     RFID_NOTIFICATION_AUXILIARY_DATA_VALIDATION: 0x000D0000,
     RFID_NOTIFICATION_RI_SECTOR_ID: 0x000E0000,
     RFID_NOTIFICATION_BIOMETRICS_EMPTY_PLACEHOLDER: 0x000F0000,
-    RFID_NOTIFICATION_SESSION_FILE_DATA_UPDATED: 1048576,
-    RFID_NOTIFICATION_TCC_TA_RESOURCES: 1114112,
-    RFID_NOTIFICATION_TCC_TA_SIGNATURE: 1114113,
+    RFID_NOTIFICATION_SESSION_FILE_DATA_UPDATED: 0x00100000,
+    RFID_NOTIFICATION_TCC_TA_RESOURCES: 0x00110000,
+    RFID_NOTIFICATION_TCC_TA_SIGNATURE: 0x00110001,
 }
 
 export const CameraPosition = {
@@ -3344,6 +3386,8 @@ export const eLDS_ParsingNotificationCodes = {
     NTF_LDS_ICAO_CERTIFICATE_MRZ_COUNTRY_NON_MATCHING: 0x90000252,
     NTF_LDS_ICAO_CERTIFICATE_ISSUER_COUNTRY_NON_UPPER_CASE: 0x90000253,
     NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COUNTRY_NON_UPPER_CASE: 0x90000254,
+    NTFLDS_SI_STORAGE_CS_NONCONSISTANT: 0x91000111,
+    NTFLDS_SI_STORAGE_CS_PACE_CAM_KEY_MISSING: 0x9100011,
 }
 
 export const eImageQualityCheckType = {
@@ -3910,6 +3954,13 @@ export const eRFID_DataFile_Type = {
     DFT_VDS: 900,
     DFT_VDSNC: 901,
     DFT_USERDEFINED: 1000,
+    DFT_POST_CA_RESPONSE: 710,
+    DFT_POST_CA_PUBLIC_KEY: 711,
+    DFT_POST_CA_INFO: 712,
+    DFT_POST_CA_DPARAMS: 713,
+    DFT_POST_CA_CHECK_PK: 714,
+    DFT_POST_CA_CHECK_SK: 715,
+    DFT_ID_DG22: 122,
 }
 
 export const eVisualFieldType = {
@@ -4570,6 +4621,7 @@ export const eVisualFieldType = {
     FT_NON_DOMICILED_INDICATOR: 702,
     FT_JURISDICTION_SPECIFIC_DATA: 703,
     FT_DATA_DATE_OF_EXPIRY: 704,
+    FT_CONSUL: 705,
 }
 
 export const DocReaderOrientation = {
@@ -4924,12 +4976,14 @@ DocumentReader.startScanner = (config, successCallback, errorCallback) => RNRegu
 DocumentReader.recognize = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "recognize", [config], successCallback, errorCallback)
 DocumentReader.startNewPage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewPage", [], successCallback, errorCallback)
 DocumentReader.stopScanner = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopScanner", [], successCallback, errorCallback)
-DocumentReader.startRFIDReader = (requestPACertificates, requestTACertificates, requestTASignature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startRFIDReader", [requestPACertificates, requestTACertificates, requestTASignature], successCallback, errorCallback)
-DocumentReader.readRFID = (requestPACertificates, requestTACertificates, requestTASignature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "readRFID", [requestPACertificates, requestTACertificates, requestTASignature], successCallback, errorCallback)
+DocumentReader.startRFIDReader = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startRFIDReader", [config], successCallback, errorCallback)
+DocumentReader.readRFID = (config, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "readRFID", [config], successCallback, errorCallback)
 DocumentReader.stopRFIDReader = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "stopRFIDReader", [], successCallback, errorCallback)
 DocumentReader.providePACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "providePACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTASignature = (signature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTASignature", [signature], successCallback, errorCallback)
+DocumentReader.selectPACEProtocol = (protocol, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "selectPACEProtocol", [protocol], successCallback, errorCallback)
+DocumentReader.selectCAProtocol = (protocol, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "selectCAProtocol", [protocol], successCallback, errorCallback)
 DocumentReader.setTCCParams = (params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTCCParams", [params], successCallback, errorCallback)
 DocumentReader.addPKDCertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "addPKDCertificates", [certificates], successCallback, errorCallback)
 DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
