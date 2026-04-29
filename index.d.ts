@@ -3398,6 +3398,63 @@ export class FinalizeCompletion {
     }
 }
 
+export class PACEProtocol {
+    version?: string
+    stdDomainParams?: string
+    keyAlgorithm?: string
+
+    static fromJson(jsonObject?: any): PACEProtocol | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new PACEProtocol
+
+        result.version = jsonObject["version"]
+        result.stdDomainParams = jsonObject["stdDomainParams"]
+        result.keyAlgorithm = jsonObject["keyAlgorithm"]
+
+        return result
+    }
+}
+
+export class CAProtocol {
+    version?: string
+    scheme?: string
+    keyAlgorithm?: string
+    chipIndividual?: boolean
+
+    static fromJson(jsonObject?: any): CAProtocol | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new CAProtocol
+
+        result.version = jsonObject["version"]
+        result.scheme = jsonObject["scheme"]
+        result.keyAlgorithm = jsonObject["keyAlgorithm"]
+        result.chipIndividual = jsonObject["chipIndividual"]
+
+        return result
+    }
+}
+
+export class RFIDConfig {
+    onRequestPACertificates?: boolean
+    onRequestTACertificates?: boolean
+    onRequestTASignature?: boolean
+    onRequestPACEProtocol?: boolean
+    onRequestCAProtocol?: boolean
+
+    static fromJson(jsonObject?: any): RFIDConfig | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new RFIDConfig
+
+        result.onRequestPACertificates = jsonObject["onRequestPACertificates"]
+        result.onRequestTACertificates = jsonObject["onRequestTACertificates"]
+        result.onRequestTASignature = jsonObject["onRequestTASignature"]
+        result.onRequestPACEProtocol = jsonObject["onRequestPACEProtocol"]
+        result.onRequestCAProtocol = jsonObject["onRequestCAProtocol"]
+
+        return result
+    }
+}
+
 export const FontStyle = {
     NORMAL: 0,
     BOLD: 1,
@@ -4003,9 +4060,9 @@ export const eRFID_NotificationCodes = {
     RFID_NOTIFICATION_AUXILIARY_DATA_VALIDATION: 0x000D0000,
     RFID_NOTIFICATION_RI_SECTOR_ID: 0x000E0000,
     RFID_NOTIFICATION_BIOMETRICS_EMPTY_PLACEHOLDER: 0x000F0000,
-    RFID_NOTIFICATION_SESSION_FILE_DATA_UPDATED: 1048576,
-    RFID_NOTIFICATION_TCC_TA_RESOURCES: 1114112,
-    RFID_NOTIFICATION_TCC_TA_SIGNATURE: 1114113,
+    RFID_NOTIFICATION_SESSION_FILE_DATA_UPDATED: 0x00100000,
+    RFID_NOTIFICATION_TCC_TA_RESOURCES: 0x00110000,
+    RFID_NOTIFICATION_TCC_TA_SIGNATURE: 0x00110001,
 }
 
 export const CameraPosition = {
@@ -4535,6 +4592,8 @@ export const eLDS_ParsingNotificationCodes = {
     NTF_LDS_ICAO_CERTIFICATE_MRZ_COUNTRY_NON_MATCHING: 0x90000252,
     NTF_LDS_ICAO_CERTIFICATE_ISSUER_COUNTRY_NON_UPPER_CASE: 0x90000253,
     NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COUNTRY_NON_UPPER_CASE: 0x90000254,
+    NTFLDS_SI_STORAGE_CS_NONCONSISTANT: 0x91000111,
+    NTFLDS_SI_STORAGE_CS_PACE_CAM_KEY_MISSING: 0x91000112,
 }
 
 export const eImageQualityCheckType = {
@@ -5101,6 +5160,13 @@ export const eRFID_DataFile_Type = {
     DFT_VDS: 900,
     DFT_VDSNC: 901,
     DFT_USERDEFINED: 1000,
+    DFT_POST_CA_RESPONSE: 710,
+    DFT_POST_CA_PUBLIC_KEY: 711,
+    DFT_POST_CA_INFO: 712,
+    DFT_POST_CA_DPARAMS: 713,
+    DFT_POST_CA_CHECK_PK: 714,
+    DFT_POST_CA_CHECK_SK: 715,
+    DFT_ID_DG22: 122,
 }
 
 export const eVisualFieldType = {
@@ -5761,6 +5827,7 @@ export const eVisualFieldType = {
     FT_NON_DOMICILED_INDICATOR: 702,
     FT_JURISDICTION_SPECIFIC_DATA: 703,
     FT_DATA_DATE_OF_EXPIRY: 704,
+    FT_CONSUL: 705,
 }
 
 export const DocReaderOrientation = {
@@ -6114,12 +6181,14 @@ export default class DocumentReader {
     static recognize(config: RecognizeConfig, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewPage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static stopScanner(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static startRFIDReader(requestPACertificates: boolean, requestTACertificates: boolean, requestTASignature: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
-    static readRFID(requestPACertificates: boolean, requestTACertificates: boolean, requestTASignature: boolean, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static startRFIDReader(config: RFIDConfig | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static readRFID(config: RFIDConfig | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static stopRFIDReader(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static providePACertificates(certificates: PKDCertificate[] | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTACertificates(certificates: PKDCertificate[] | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTASignature(signature: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static selectPACEProtocol(protocol: PACEProtocol, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static selectCAProtocol(protocol: CAProtocol, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setTCCParams(params: TccParams, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static addPKDCertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
