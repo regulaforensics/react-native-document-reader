@@ -10,8 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@regulaforensics/react-native-document-reader-api": "9.4.567-rc",
-    "@regulaforensics/react-native-document-reader-core-fullauthrfid": "9.5.2412-rc",
+    "@regulaforensics/react-native-document-reader-api": "9.4.569-rc",
+    "@regulaforensics/react-native-document-reader-core-fullauthrfid": "9.4.2427-rc",
     "@rneui/base": "4.0.0-rc.7",
     "@rneui/themed": "4.0.0-rc.7",
     "react": "19.0.0",
