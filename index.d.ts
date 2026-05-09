@@ -1652,6 +1652,7 @@ export class RecognizeConfig {
     image?: string
     data?: string
     images?: string[]
+    dataList?: string[]
     imageInputData?: ImageInputData[]
 
     static fromJson(jsonObject?: any): RecognizeConfig | undefined {
@@ -1670,6 +1671,12 @@ export class RecognizeConfig {
         if (jsonObject["images"] != null) {
             for (const i in jsonObject["images"]) {
                 result.images.push(jsonObject["images"][i])
+            }
+        }
+        result.dataList = []
+        if (jsonObject["dataList"] != null) {
+            for (const i in jsonObject["dataList"]) {
+                result.dataList.push(jsonObject["dataList"][i])
             }
         }
         result.imageInputData = []
@@ -1936,6 +1943,7 @@ export class Functionality {
     torchTurnedOn?: boolean
     preventScreenRecording?: boolean
     homeIndicatorAutoHide?: boolean
+    hideStatusBar?: boolean
     showCaptureButtonDelayFromDetect?: number
     showCaptureButtonDelayFromStart?: number
     rfidTimeout?: number
@@ -1977,6 +1985,7 @@ export class Functionality {
         result.torchTurnedOn = jsonObject["torchTurnedOn"]
         result.preventScreenRecording = jsonObject["preventScreenRecording"]
         result.homeIndicatorAutoHide = jsonObject["homeIndicatorAutoHide"]
+        result.hideStatusBar = jsonObject["hideStatusBar"]
         result.showCaptureButtonDelayFromDetect = jsonObject["showCaptureButtonDelayFromDetect"]
         result.showCaptureButtonDelayFromStart = jsonObject["showCaptureButtonDelayFromStart"]
         result.rfidTimeout = jsonObject["rfidTimeout"]
@@ -2166,6 +2175,7 @@ export class LivenessParams {
     checkBlackAndWhiteCopy?: boolean
     checkDynaprint?: boolean
     checkGeometry?: boolean
+    checkBarcodeBackground?: boolean
 
     static fromJson(jsonObject?: any): LivenessParams | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2178,6 +2188,7 @@ export class LivenessParams {
         result.checkBlackAndWhiteCopy = jsonObject["checkBlackAndWhiteCopy"]
         result.checkDynaprint = jsonObject["checkDynaprint"]
         result.checkGeometry = jsonObject["checkGeometry"]
+        result.checkBarcodeBackground = jsonObject["checkBarcodeBackground"]
 
         return result
     }
@@ -2248,7 +2259,6 @@ export class ProcessParams {
     updateOCRValidityByGlare?: boolean
     noGraphics?: boolean
     multiDocOnImage?: boolean
-    forceReadMrzBeforeLocate?: boolean
     parseBarcodes?: boolean
     shouldReturnPackageForReprocess?: boolean
     disablePerforationOCR?: boolean
@@ -2271,6 +2281,7 @@ export class ProcessParams {
     strictExpiryDate?: boolean
     debugSaveBinarySession?: boolean
     checkVDS?: boolean
+    strictAgeCheck?: boolean
     barcodeParserType?: number
     perspectiveAngle?: number
     minDPI?: number
@@ -2337,7 +2348,6 @@ export class ProcessParams {
         result.updateOCRValidityByGlare = jsonObject["updateOCRValidityByGlare"]
         result.noGraphics = jsonObject["noGraphics"]
         result.multiDocOnImage = jsonObject["multiDocOnImage"]
-        result.forceReadMrzBeforeLocate = jsonObject["forceReadMrzBeforeLocate"]
         result.parseBarcodes = jsonObject["parseBarcodes"]
         result.shouldReturnPackageForReprocess = jsonObject["shouldReturnPackageForReprocess"]
         result.disablePerforationOCR = jsonObject["disablePerforationOCR"]
@@ -2360,6 +2370,7 @@ export class ProcessParams {
         result.strictExpiryDate = jsonObject["strictExpiryDate"]
         result.debugSaveBinarySession = jsonObject["debugSaveBinarySession"]
         result.checkVDS = jsonObject["checkVDS"]
+        result.strictAgeCheck = jsonObject["strictAgeCheck"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]

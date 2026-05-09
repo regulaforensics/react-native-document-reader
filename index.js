@@ -1117,6 +1117,10 @@ export class RecognizeConfig {
         if (jsonObject["images"] != null)
             for (const i in jsonObject["images"])
                 result.images.push(jsonObject["images"][i])
+        result.dataList = []
+        if (jsonObject["dataList"] != null)
+            for (const i in jsonObject["dataList"])
+                result.dataList.push(jsonObject["dataList"][i])
         result.imageInputData = []
         if (jsonObject["imageInputData"] != null)
             for (const i in jsonObject["imageInputData"])
@@ -1326,6 +1330,7 @@ export class Functionality {
         result.torchTurnedOn = jsonObject["torchTurnedOn"]
         result.preventScreenRecording = jsonObject["preventScreenRecording"]
         result.homeIndicatorAutoHide = jsonObject["homeIndicatorAutoHide"]
+        result.hideStatusBar = jsonObject["hideStatusBar"]
         result.showCaptureButtonDelayFromDetect = jsonObject["showCaptureButtonDelayFromDetect"]
         result.showCaptureButtonDelayFromStart = jsonObject["showCaptureButtonDelayFromStart"]
         result.rfidTimeout = jsonObject["rfidTimeout"]
@@ -1473,6 +1478,7 @@ export class LivenessParams {
         result.checkBlackAndWhiteCopy = jsonObject["checkBlackAndWhiteCopy"]
         result.checkDynaprint = jsonObject["checkDynaprint"]
         result.checkGeometry = jsonObject["checkGeometry"]
+        result.checkBarcodeBackground = jsonObject["checkBarcodeBackground"]
 
         return result
     }
@@ -1530,7 +1536,6 @@ export class ProcessParams {
         result.updateOCRValidityByGlare = jsonObject["updateOCRValidityByGlare"]
         result.noGraphics = jsonObject["noGraphics"]
         result.multiDocOnImage = jsonObject["multiDocOnImage"]
-        result.forceReadMrzBeforeLocate = jsonObject["forceReadMrzBeforeLocate"]
         result.parseBarcodes = jsonObject["parseBarcodes"]
         result.shouldReturnPackageForReprocess = jsonObject["shouldReturnPackageForReprocess"]
         result.disablePerforationOCR = jsonObject["disablePerforationOCR"]
@@ -1553,6 +1558,7 @@ export class ProcessParams {
         result.strictExpiryDate = jsonObject["strictExpiryDate"]
         result.debugSaveBinarySession = jsonObject["debugSaveBinarySession"]
         result.checkVDS = jsonObject["checkVDS"]
+        result.strictAgeCheck = jsonObject["strictAgeCheck"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
