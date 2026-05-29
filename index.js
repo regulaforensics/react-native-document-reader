@@ -1117,6 +1117,10 @@ export class RecognizeConfig {
         if (jsonObject["images"] != null)
             for (const i in jsonObject["images"])
                 result.images.push(jsonObject["images"][i])
+        result.dataList = []
+        if (jsonObject["dataList"] != null)
+            for (const i in jsonObject["dataList"])
+                result.dataList.push(jsonObject["dataList"][i])
         result.imageInputData = []
         if (jsonObject["imageInputData"] != null)
             for (const i in jsonObject["imageInputData"])
@@ -1326,6 +1330,7 @@ export class Functionality {
         result.torchTurnedOn = jsonObject["torchTurnedOn"]
         result.preventScreenRecording = jsonObject["preventScreenRecording"]
         result.homeIndicatorAutoHide = jsonObject["homeIndicatorAutoHide"]
+        result.hideStatusBar = jsonObject["hideStatusBar"]
         result.showCaptureButtonDelayFromDetect = jsonObject["showCaptureButtonDelayFromDetect"]
         result.showCaptureButtonDelayFromStart = jsonObject["showCaptureButtonDelayFromStart"]
         result.rfidTimeout = jsonObject["rfidTimeout"]
@@ -1473,6 +1478,7 @@ export class LivenessParams {
         result.checkBlackAndWhiteCopy = jsonObject["checkBlackAndWhiteCopy"]
         result.checkDynaprint = jsonObject["checkDynaprint"]
         result.checkGeometry = jsonObject["checkGeometry"]
+        result.checkBarcodeBackground = jsonObject["checkBarcodeBackground"]
 
         return result
     }
@@ -1530,7 +1536,6 @@ export class ProcessParams {
         result.updateOCRValidityByGlare = jsonObject["updateOCRValidityByGlare"]
         result.noGraphics = jsonObject["noGraphics"]
         result.multiDocOnImage = jsonObject["multiDocOnImage"]
-        result.forceReadMrzBeforeLocate = jsonObject["forceReadMrzBeforeLocate"]
         result.parseBarcodes = jsonObject["parseBarcodes"]
         result.shouldReturnPackageForReprocess = jsonObject["shouldReturnPackageForReprocess"]
         result.disablePerforationOCR = jsonObject["disablePerforationOCR"]
@@ -1553,6 +1558,7 @@ export class ProcessParams {
         result.strictExpiryDate = jsonObject["strictExpiryDate"]
         result.debugSaveBinarySession = jsonObject["debugSaveBinarySession"]
         result.checkVDS = jsonObject["checkVDS"]
+        result.strictAgeCheck = jsonObject["strictAgeCheck"]
         result.barcodeParserType = jsonObject["barcodeParserType"]
         result.perspectiveAngle = jsonObject["perspectiveAngle"]
         result.minDPI = jsonObject["minDPI"]
@@ -2553,6 +2559,8 @@ export const eLDS_ParsingErrorCodes = {
     ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_SIG_ALGORITHM: 0x81000308,
     ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_CERTIFICATE: 0x81000309,
     ERR_LDS_VDS_NC_MISSING_OR_INCORRECT_SIG_VALUE: 0x8100030A,
+    ERR_LDS_PACE_CAM_DATA_USAGE_INCORRECT: 0x8100012B,
+    ERR_LDS_PACE_IM_MAPPING_DATA_INCORRECT: 0x8100012F,
 }
 
 export const eRFID_CertificateType = {
@@ -2567,6 +2575,7 @@ export const eRFID_CertificateType = {
     CT_LDS2: 8,
     CT_BCS: 9,
     CT_BCSNC: 10,
+    CT_MDLS: 13,
 }
 
 export const RGLMeasureSystem = {
@@ -3388,6 +3397,11 @@ export const eLDS_ParsingNotificationCodes = {
     NTF_LDS_ICAO_CERTIFICATE_SUBJECT_COUNTRY_NON_UPPER_CASE: 0x90000254,
     NTFLDS_SI_STORAGE_CS_NONCONSISTANT: 0x91000111,
     NTFLDS_SI_STORAGE_CS_PACE_CAM_KEY_MISSING: 0x91000112,
+    NTFLDS_ASN_CERTIFICATE_NONMATCHINGDSROLE: 0x90000011,
+    NTFLDS_MDL_CERTIFICATE_CHAIN_SOP_NONMATCHING: 0x90000400,
+    NTFLDS_MDL_CERTIFICATE_UNSUPPORTEDPUBLICKEYALGORITHM: 0x90000401,
+    NTFLDS_MDL_CERTIFICATE_UNSUPPORTEDSIGNATUREALGORITHM: 0x90000402,
+    NTFLDS_MDL_CERTIFICATE_UNSUPPORTEDPUBLICKEYPARAMS: 0x90000403,
 }
 
 export const eImageQualityCheckType = {
