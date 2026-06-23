@@ -2663,6 +2663,7 @@ export class CustomizationMatrices {
 }
 
 export class Customization {
+    theme?: number
     showStatusMessages?: boolean
     showResultStatusMessages?: boolean
     showHelpAnimation?: boolean
@@ -2743,6 +2744,7 @@ export class Customization {
         if (jsonObject == null || jsonObject == undefined) return undefined
         const result = new Customization
 
+        result.theme = jsonObject["theme"]
         result.showStatusMessages = jsonObject["showStatusMessages"]
         result.showResultStatusMessages = jsonObject["showResultStatusMessages"]
         result.showHelpAnimation = jsonObject["showHelpAnimation"]
@@ -3571,7 +3573,7 @@ export const eRFID_ErrorCodes = {
     RFID_ERROR_LAYER6_GENERAL_AUTH_FAILURE: 0x86000309,
     RFID_ERROR_LAYER6_FILE_NOT_FOUND: 0x80006A82,
     RFID_ERROR_LAYER6_FILE_EOF1: 0x80006282,
-    RFID_ERROR_LAYER6_FILE_EOF2: 0x80006B00,
+    RFID_LAYER6_WRONG_PARAMS: 0x80006B00,
     RFID_ERROR_LAYER6_INCORRECT_PARAMS: 0x80006A80,
     RFID_ERROR_LAYER6_NO_REFERENCE_DATA: 0x80006A88,
     RFID_ERROR_LAYER6_PWD_SUSPEND: 0x800063C1,
@@ -3854,6 +3856,11 @@ export const FrameShapeType = {
 export const eMDLDeviceRetrieval = {
     NFC: 1,
     BLE: 2,
+}
+
+export const CustomizationTheme = {
+    CLEAR: 0,
+    LIQUID_GLASS: 1,
 }
 
 export const eRFID_BaudRate = {
@@ -5847,6 +5854,7 @@ export const eVisualFieldType = {
     FT_JURISDICTION_SPECIFIC_DATA: 703,
     FT_DATA_DATE_OF_EXPIRY: 704,
     FT_CONSUL: 705,
+    FT_CANTON_REFERENCE: 706,
 }
 
 export const DocReaderOrientation = {
@@ -6104,6 +6112,7 @@ export const Enum = {
    eRPRM_ResultType,
    FrameShapeType,
    eMDLDeviceRetrieval,
+   CustomizationTheme,
    eRFID_BaudRate,
    LineCap,
    eRPRM_FieldVerificationResult,
