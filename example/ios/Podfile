@@ -1,4 +1,5 @@
-source "https://github.com/CocoaPods/Specs.git"
+source 'https://github.com/CocoaPods/Specs.git'
+source 'https://github.com/regulaforensics/podspecs.git'
 
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
@@ -36,5 +37,14 @@ target 'DocumentReader' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
+
+    # Fix for Xcode 26
+    installer.pods_project.targets.each do |target|
+      if target.name == 'fmt'
+        target.build_configurations.each do |config|
+          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+        end
+      end
+    end
   end
 end
