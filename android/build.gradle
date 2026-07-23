@@ -20,7 +20,8 @@ android {
 rootProject.allprojects {
     repositories {
         maven {
-            url "https://maven.regulaforensics.com/RegulaDocumentReader/Stage"
+            url "url_place_holder"
+            allowInsecureProtocol = true
         }
     }
 }
@@ -29,7 +30,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
     //noinspection GradleDependency
-    implementation('com.regula.documentreader:api:9.5.13040') {
+    implementation('com.regula.documentreader:api:version_place_holder') {
         transitive = true
     }
 }
