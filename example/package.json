@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@regulaforensics/react-native-document-reader-api": "9.6.699-rc",
+    "@regulaforensics/react-native-document-reader-api": "9.6.700-rc",
     "@regulaforensics/react-native-document-reader-core-fullauthrfid": "9.7.2969-rc",
     "@rneui/base": "4.0.0-rc.7",
     "@rneui/themed": "4.0.0-rc.7",
@@ -25,7 +25,10 @@
   "overrides": {
     "fast-xml-parser": "^5.5.8",
     "js-yaml": "^4.1.1",
-    "brace-expansion": "^5.0.7"
+    "brace-expansion": "5.0.8",
+    "glob@7.2.3": {
+      "minimatch": "10.2.5"
+    }
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
