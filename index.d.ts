@@ -2115,6 +2115,7 @@ export class FaceApiParams {
     proxy?: string
     proxyPassword?: string
     proxyType?: number
+    livenessTransactionId?: string
 
     static fromJson(jsonObject?: any): FaceApiParams | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2128,6 +2129,7 @@ export class FaceApiParams {
         result.proxy = jsonObject["proxy"]
         result.proxyPassword = jsonObject["proxyPassword"]
         result.proxyType = jsonObject["proxyType"]
+        result.livenessTransactionId = jsonObject["livenessTransactionId"]
 
         return result
     }
@@ -2194,6 +2196,19 @@ export class LivenessParams {
     }
 }
 
+export class AuthenticityPropertiesParams {
+    checkHoldersSignature?: boolean
+
+    static fromJson(jsonObject?: any): AuthenticityPropertiesParams | undefined {
+        if (jsonObject == null || jsonObject == undefined) return undefined
+        const result = new AuthenticityPropertiesParams
+
+        result.checkHoldersSignature = jsonObject["checkHoldersSignature"]
+
+        return result
+    }
+}
+
 export class AuthenticityParams {
     useLivenessCheck?: boolean
     livenessParams?: LivenessParams
@@ -2211,6 +2226,8 @@ export class AuthenticityParams {
     checkPhotoComparison?: boolean
     checkLetterScreen?: boolean
     checkSecurityText?: boolean
+    checkProperties?: boolean
+    propertiesParams?: AuthenticityPropertiesParams
 
     static fromJson(jsonObject?: any): AuthenticityParams | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
@@ -2232,6 +2249,8 @@ export class AuthenticityParams {
         result.checkPhotoComparison = jsonObject["checkPhotoComparison"]
         result.checkLetterScreen = jsonObject["checkLetterScreen"]
         result.checkSecurityText = jsonObject["checkSecurityText"]
+        result.checkProperties = jsonObject["checkProperties"]
+        result.propertiesParams = AuthenticityPropertiesParams.fromJson(jsonObject["propertiesParams"])
 
         return result
     }
@@ -3497,6 +3516,8 @@ export const eRPRM_Authenticity = {
     OVI: 1024,
     LIVENESS: 2097152,
     OCR: 4194304,
+    ENCRYPTED_IPI: 16777216,
+    AUTHENTICITY_PROPERTY: 0x02000000,
 }
 
 export const CustomizationColor = {
@@ -4308,7 +4329,6 @@ export const eCheckDiagnose = {
     CHD_DOC_LIVENESS_BLACK_AND_WHITE_COPY_DETECTED: 239,
     DOC_LIVENESS_ELECTRONIC_DEVICE_DETECTED: 240,
     DOC_LIVENESS_INVALID_BARCODE_BACKGROUND: 241,
-    DOC_LIVENESS_VIRTUAL_CAMERA_DETECTED: 242,
     ICAO_IDB_BASE_32_ERROR: 243,
     ICAO_IDB_ZIPPED_ERROR: 244,
     ICAO_IDB_MESSAGE_ZONE_EMPTY: 245,
@@ -4316,6 +4336,10 @@ export const eCheckDiagnose = {
     ICAO_IDB_SIGNATURE_MUST_NOT_BE_PRESENT: 247,
     ICAO_IDB_CERTIFICATE_MUST_NOT_BE_PRESENT: 248,
     INCORRECT_OBJECT_COLOR: 250,
+    DOC_LIVENESS_VIRTUAL_CAMERA_DETECTED: 242,
+    CHD_PROPERTY_NO_SIGNATURE: 260,
+    CHD_PROPERTY_TEXT_AS_SIGNATURE: 261,
+    CHD_PROPERTY_FINGERPRINT_AS_SIGNATURE: 262,
 }
 
 export const eMDLIntentToRetain = {
@@ -4731,6 +4755,7 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_BARCODEVSGHOST: 59,
     SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_GHOSTVSLIVE: 60,
     SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_EXTVSGHOST: 61,
+    SECURITY_FEATURE_TYPE_SIGNATURE_PRESENCE: 62,
 }
 
 export const OnlineMode = {
@@ -5854,7 +5879,9 @@ export const eVisualFieldType = {
     FT_JURISDICTION_SPECIFIC_DATA: 703,
     FT_DATA_DATE_OF_EXPIRY: 704,
     FT_CONSUL: 705,
-    FT_CANTON_REFERENCE: 706,
+    FT_DLCLASSCODE_B3_FROM: 706,
+    FT_DLCLASSCODE_B3_TO: 707,
+    FT_DLCLASSCODE_B3_NOTES: 708,
 }
 
 export const DocReaderOrientation = {
