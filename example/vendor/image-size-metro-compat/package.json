@@ -1,0 +1,8 @@
+{
+  "name": "image-size",
+  "version": "2.1.1-compat.0",
+  "main": "index.cjs",
+  "dependencies": {
+    "image-size-next": "2.1.1"
+  }
+}
