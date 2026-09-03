@@ -10,8 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@regulaforensics/react-native-document-reader-api": "9.8.759-nightly",
-    "@regulaforensics/react-native-document-reader-core-fullauthrfid": "9.8.3255-nightly",
+    "@regulaforensics/react-native-document-reader-api": "9.8.765-nightly",
+    "@regulaforensics/react-native-document-reader-core-fullauthrfid": "9.8.3270-nightly",
     "@rneui/base": "4.0.0-rc.7",
     "@rneui/themed": "4.0.0-rc.7",
     "react": "19.0.0",
@@ -20,13 +20,14 @@
     "react-native-image-picker": "7.2.3",
     "react-native-progress": "5.0.0",
     "react-native-radio-buttons-group": "3.0.5",
-    "react-native-vector-icons": "10.2.0"
+    "react-native-vector-icons": "10.2.0",
+    "image-size": "file:vendor/image-size-metro-compat"
   },
   "overrides": {
     "fast-xml-parser": "^5.5.8",
     "js-yaml": "^4.1.1",
     "brace-expansion": "^5.0.9",
-    "image-size": "npm:image-size-next@2.1.1",
+    "image-size": "$image-size",
     "glob@7.2.3": {
       "minimatch": "^10.2.6"
     }
