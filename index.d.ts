@@ -3079,6 +3079,7 @@ export class RFIDScenario {
     mrzStrictCheck?: boolean
     loadCRLFromRemote?: boolean
     independentSODStatus?: boolean
+    readUser?: boolean
     readingBuffer?: number
     onlineTAToSignDataType?: number
     defaultReadingBufferSize?: number
@@ -3099,6 +3100,7 @@ export class RFIDScenario {
     documentNumber?: string
     dateOfBirth?: string
     dateOfExpiry?: string
+    defaultUserPIN?: string
     eDLDataGroups?: EDLDataGroups
     ePassportDataGroups?: EPassportDataGroups
     eIDDataGroups?: EIDDataGroups
@@ -3146,6 +3148,7 @@ export class RFIDScenario {
         result.mrzStrictCheck = jsonObject["mrzStrictCheck"]
         result.loadCRLFromRemote = jsonObject["loadCRLFromRemote"]
         result.independentSODStatus = jsonObject["independentSODStatus"]
+        result.readUser = jsonObject["readUser"]
         result.readingBuffer = jsonObject["readingBuffer"]
         result.onlineTAToSignDataType = jsonObject["onlineTAToSignDataType"]
         result.defaultReadingBufferSize = jsonObject["defaultReadingBufferSize"]
@@ -3166,6 +3169,7 @@ export class RFIDScenario {
         result.documentNumber = jsonObject["documentNumber"]
         result.dateOfBirth = jsonObject["dateOfBirth"]
         result.dateOfExpiry = jsonObject["dateOfExpiry"]
+        result.defaultUserPIN = jsonObject["defaultUserPIN"]
         result.eDLDataGroups = EDLDataGroups.fromJson(jsonObject["eDLDataGroups"])
         result.ePassportDataGroups = EPassportDataGroups.fromJson(jsonObject["ePassportDataGroups"])
         result.eIDDataGroups = EIDDataGroups.fromJson(jsonObject["eIDDataGroups"])
