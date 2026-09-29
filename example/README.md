@@ -20,12 +20,14 @@ $ pod install
 4. Android:
   * Copy the `regula.license` file to the `example/android/app/src/main/assets` folder.
   * Run `npx react-native run-android` inside `example` folder - this is just one way to run the app. You can also run it directly from within Android Studio. **Note**: `npx react-native log-android` is used to view logs.
+  * If gradle sync fails, select JDK-17 in Android Studio
 
 **Note**: if the running failed with the following error `Error: spawn ./gradlew EACCES`, try to run the following command `chmod +x gradlew` within the `example/android` directory.
 
 5. iOS:
   * Copy the `regula.license` file to the `example/ios` folder.
   * Run `npx react-native run-ios` inside `example` folder - this is just one way to run the app. You can also run it directly from within Xcode.
+  * This example does not support MacOS-27+ and iOS-27+
 
 # Troubleshooting license issues
 
