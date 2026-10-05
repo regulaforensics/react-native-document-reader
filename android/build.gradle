@@ -30,7 +30,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
     //noinspection GradleDependency
-    implementation('com.regula.documentreader:api:9.8.13491') {
+    implementation('com.regula.documentreader:api:9.9.13492') {
         transitive = true
     }
 }
