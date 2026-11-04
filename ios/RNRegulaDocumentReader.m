@@ -15,6 +15,7 @@ RCT_EXPORT_MODULE();
              paCertificateCompletionEvent,
              taCertificateCompletionEvent,
              taSignatureCompletionEvent,
+             aaChallengeCompletionEvent,
              paceProtocolCompletionEvent,
              caProtocolCompletionEvent,
              drVideoEncoderCompletionEvent,
