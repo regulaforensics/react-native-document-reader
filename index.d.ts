@@ -2213,12 +2213,14 @@ export class LivenessParams {
 
 export class AuthenticityPropertiesParams {
     checkHoldersSignature?: boolean
+    checkDocumentDamage?: boolean
 
     static fromJson(jsonObject?: any): AuthenticityPropertiesParams | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
         const result = new AuthenticityPropertiesParams
 
         result.checkHoldersSignature = jsonObject["checkHoldersSignature"]
+        result.checkDocumentDamage = jsonObject["checkDocumentDamage"]
 
         return result
     }
@@ -3489,6 +3491,7 @@ export class RFIDConfig {
     onRequestPACertificates?: boolean
     onRequestTACertificates?: boolean
     onRequestTASignature?: boolean
+    onRequestAAChallenge?: boolean
     onRequestPACEProtocol?: boolean
     onRequestCAProtocol?: boolean
 
@@ -3499,6 +3502,7 @@ export class RFIDConfig {
         result.onRequestPACertificates = jsonObject["onRequestPACertificates"]
         result.onRequestTACertificates = jsonObject["onRequestTACertificates"]
         result.onRequestTASignature = jsonObject["onRequestTASignature"]
+        result.onRequestAAChallenge = jsonObject["onRequestAAChallenge"]
         result.onRequestPACEProtocol = jsonObject["onRequestPACEProtocol"]
         result.onRequestCAProtocol = jsonObject["onRequestCAProtocol"]
 
@@ -4378,6 +4382,8 @@ export const eCheckDiagnose = {
     CHD_PROPERTY_NO_SIGNATURE: 260,
     CHD_PROPERTY_TEXT_AS_SIGNATURE: 261,
     CHD_PROPERTY_FINGERPRINT_AS_SIGNATURE: 262,
+    CHD_PROPERTY_DOCUMENT_DAMAGED: 263,
+    CHD_PROPERTY_DOCUMENT_CANCELLED: 264,
 }
 
 export const eMDLIntentToRetain = {
@@ -4794,6 +4800,7 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_GHOSTVSLIVE: 60,
     SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_EXTVSGHOST: 61,
     SECURITY_FEATURE_TYPE_SIGNATURE_PRESENCE: 62,
+    SECURITY_FEATURE_TYPE_DAMAGE_CHECK: 63,
 }
 
 export const OnlineMode = {
@@ -5920,6 +5927,8 @@ export const eVisualFieldType = {
     FT_DLCLASSCODE_B3_FROM: 706,
     FT_DLCLASSCODE_B3_TO: 707,
     FT_DLCLASSCODE_B3_NOTES: 708,
+    FT_ADDRESS_POST_OFFICE: 709,
+    FT_ADDRESS_LOT: 710,
 }
 
 export const DocReaderOrientation = {
@@ -6282,6 +6291,7 @@ export default class DocumentReader {
     static providePACertificates(certificates: PKDCertificate[] | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTACertificates(certificates: PKDCertificate[] | null, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static provideTASignature(signature: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static provideAAChallenge(challenge: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static selectPACEProtocol(protocol: PACEProtocol, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static selectCAProtocol(protocol: CAProtocol, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static setTCCParams(params: TccParams, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
