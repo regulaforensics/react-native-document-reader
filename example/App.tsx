@@ -4,7 +4,6 @@ import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario,
 import * as RNFS from 'react-native-fs'
 import RadioGroup, { RadioButtonProps } from 'react-native-radio-buttons-group'
 import { launchImageLibrary } from 'react-native-image-picker'
-import * as Progress from 'react-native-progress'
 
 var isReadingRfid = false
 
@@ -237,6 +236,7 @@ export default class App extends React.Component<IProps, IState> {
   }
 
   render() {
+    const progress = Math.max(0, Math.min(1, this.state.rfidProgress))
     return (
       <View style={styles.container}>
         {!this.state.isReadingRfidCustomUi && <View style={styles.container}>
@@ -285,8 +285,11 @@ export default class App extends React.Component<IProps, IState> {
         {(this.state.isReadingRfidCustomUi) && <View style={styles.container}>
           <Text style={{ paddingBottom: 30, fontSize: 23, color: this.state.rfidUIHeaderColor }}>{this.state.rfidUIHeader}</Text>
           <Text style={{ paddingBottom: 50, fontSize: 20 }}>{this.state.rfidDescription}</Text>
-          <View style={{ marginBottom: 30 }}>
-            <Progress.Bar width={200} useNativeDriver={true} color="#4285F4" progress={Math.max(0, Math.min(1, this.state.rfidProgress))} />
+          <View
+            accessibilityRole="progressbar"
+            accessibilityValue={{ min: 0, max: 100, now: Math.round(progress * 100) }}
+            style={{ marginBottom: 30, width: 200, height: 8, borderWidth: 1, borderColor: '#4285F4', borderRadius: 4, overflow: 'hidden' }}>
+            <View style={{ width: `${progress * 100}%`, height: '100%', backgroundColor: '#4285F4' }} />
           </View>
           <TouchableOpacity style={styles.cancelButton} onPress={() => { this.hideRfidUI() }}>
             <Text style={{ fontSize: 20 }}>X</Text>
