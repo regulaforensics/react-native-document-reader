@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, StyleSheet, Text, View, NativeEventEmitter, EmitterSubscription, Platform, TouchableOpacity, Image, Button } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, NativeEventEmitter, EventSubscription, Platform, TouchableOpacity, Image, Button } from 'react-native'
 import DocumentReader, { Enum, DocumentReaderCompletion, DocumentReaderScenario, RNRegulaDocumentReader, DocumentReaderResults, DocumentReaderNotification, ScannerConfig, RecognizeConfig, DocReaderConfig, Functionality } from '@regulaforensics/react-native-document-reader-api'
 import * as RNFS from 'react-native-fs'
 import RadioGroup, { RadioButtonProps } from 'react-native-radio-buttons-group'
@@ -26,7 +26,7 @@ interface IState {
 }
 
 export default class App extends React.Component<IProps, IState> {
-  private subscriptions: EmitterSubscription[] = []
+  private subscriptions: EventSubscription[] = []
 
   onInitialized() {
     this.setState({ fullName: "Ready" })
