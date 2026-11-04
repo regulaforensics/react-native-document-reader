@@ -3488,23 +3488,23 @@ export class CAProtocol {
 }
 
 export class RFIDConfig {
-    onRequestPACertificates?: boolean
-    onRequestTACertificates?: boolean
-    onRequestTASignature?: boolean
-    onRequestAAChallenge?: boolean
-    onRequestPACEProtocol?: boolean
-    onRequestCAProtocol?: boolean
+    paCertificates?: boolean
+    taCertificates?: boolean
+    taSignature?: boolean
+    aaChallenge?: boolean
+    paceProtocol?: boolean
+    caProtocol?: boolean
 
     static fromJson(jsonObject?: any): RFIDConfig | undefined {
         if (jsonObject == null || jsonObject == undefined) return undefined
         const result = new RFIDConfig
 
-        result.onRequestPACertificates = jsonObject["onRequestPACertificates"]
-        result.onRequestTACertificates = jsonObject["onRequestTACertificates"]
-        result.onRequestTASignature = jsonObject["onRequestTASignature"]
-        result.onRequestAAChallenge = jsonObject["onRequestAAChallenge"]
-        result.onRequestPACEProtocol = jsonObject["onRequestPACEProtocol"]
-        result.onRequestCAProtocol = jsonObject["onRequestCAProtocol"]
+        result.paCertificates = jsonObject["paCertificates"]
+        result.taCertificates = jsonObject["taCertificates"]
+        result.taSignature = jsonObject["taSignature"]
+        result.aaChallenge = jsonObject["aaChallenge"]
+        result.paceProtocol = jsonObject["paceProtocol"]
+        result.caProtocol = jsonObject["caProtocol"]
 
         return result
     }

@@ -2273,12 +2273,12 @@ export class RFIDConfig {
         if (jsonObject == null) return null
         const result = new RFIDConfig()
 
-        result.onRequestPACertificates = jsonObject["onRequestPACertificates"]
-        result.onRequestTACertificates = jsonObject["onRequestTACertificates"]
-        result.onRequestTASignature = jsonObject["onRequestTASignature"]
-        result.onRequestAAChallenge = jsonObject["onRequestAAChallenge"]
-        result.onRequestPACEProtocol = jsonObject["onRequestPACEProtocol"]
-        result.onRequestCAProtocol = jsonObject["onRequestCAProtocol"]
+        result.paCertificates = jsonObject["paCertificates"]
+        result.taCertificates = jsonObject["taCertificates"]
+        result.taSignature = jsonObject["taSignature"]
+        result.aaChallenge = jsonObject["aaChallenge"]
+        result.paceProtocol = jsonObject["paceProtocol"]
+        result.caProtocol = jsonObject["caProtocol"]
 
         return result
     }
