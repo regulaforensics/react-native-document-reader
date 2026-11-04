@@ -19,7 +19,8 @@ public class MainApplication extends Application implements ReactApplication {
       new DefaultReactNativeHost(this) {
         @Override
         public boolean getUseDeveloperSupport() {
-          return BuildConfig.DEBUG;
+          // Load the embedded JS bundle directly, including in Debug builds.
+          return false;
         }
 
         @Override
