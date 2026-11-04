@@ -47,7 +47,6 @@
         @"providePACertificates": ^{ [self providePACertificates :args[0]]; },
         @"provideTACertificates": ^{ [self provideTACertificates :args[0]]; },
         @"provideTASignature": ^{ [self provideTASignature :args[0]]; },
-        @"provideAAChallenge": ^{ [self provideAAChallenge :args[0]]; },
         @"selectPACEProtocol": ^{ [self selectPACEProtocol :args[0]]; },
         @"selectCAProtocol": ^{ [self selectCAProtocol :args[0]]; },
         @"setTCCParams": ^{ [self setTCCParams :args[0] :callback]; },
@@ -288,10 +287,6 @@ static NSDictionary* headers;
 
 +(void)provideTASignature:(NSString*)signature {
     taSignatureCompletion([RGLWJSONConstructor base64Decode:signature]);
-}
-
-+(void)provideAAChallenge:(NSString*)challenge {
-    aaChallengeCompletion(challenge);
 }
 
 +(void)selectPACEProtocol:(NSDictionary*)protocol {
@@ -637,7 +632,6 @@ RGLWCallback savedCallbackForBluetoothResult;
 RGLRFIDCertificatesCallback paCertificateCompletion;
 RGLRFIDCertificatesCallback taCertificateCompletion;
 RGLWRFIDSignatureCallback taSignatureCompletion;
-RGLRFIDAAChallengeCallback aaChallengeCompletion;
 RGLRFIDAccessControlPACECallback paceProtocolCompletion;
 RGLRFIDAccessControlCACallback caProtocolCompletion;
 
@@ -669,16 +663,6 @@ NSDictionary* rfidReaderRequest;
         sendEvent(taSignatureCompletionEvent, [RGLWJSONConstructor dictToString: [RGLWJSONConstructor generateTAChallenge:challenge]]);
     } else {
         taSignatureCompletion = nil;
-        callback(nil);
-    }
-}
-
-- (void)onRequestAAChallenge:(NSString*)challenge callback:(void(^)(NSString* challenge))callback {
-    if ([rfidReaderRequest isKindOfClass:[NSDictionary class]] && [rfidReaderRequest[@"aaChallenge"] boolValue]) {
-        aaChallengeCompletion = callback;
-        sendEvent(aaChallengeCompletionEvent, challenge);
-    } else {
-        aaChallengeCompletion = nil;
         callback(nil);
     }
 }

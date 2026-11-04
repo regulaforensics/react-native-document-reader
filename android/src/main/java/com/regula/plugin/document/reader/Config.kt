@@ -789,14 +789,12 @@ fun getLivenessParams(input: LivenessParams?) = input?.let {
 fun setAuthenticityPropertiesParams(input: AuthenticityPropertiesParams, opts: JSONObject) = opts.forEach { k, v ->
     when (k) {
         "checkHoldersSignature" -> input.checkHoldersSignature = v as Boolean
-        "checkDocumentDamage" -> input.checkDocumentDamage = v as Boolean
     }
 }
 
 fun getAuthenticityPropertiesParams(input: AuthenticityPropertiesParams?) = input?.let {
     mapOf(
         "checkHoldersSignature" to it.checkHoldersSignature,
-        "checkDocumentDamage" to it.checkDocumentDamage,
     ).toJson()
 }
 

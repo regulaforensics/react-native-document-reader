@@ -1503,7 +1503,6 @@ export class AuthenticityPropertiesParams {
         const result = new AuthenticityPropertiesParams()
 
         result.checkHoldersSignature = jsonObject["checkHoldersSignature"]
-        result.checkDocumentDamage = jsonObject["checkDocumentDamage"]
 
         return result
     }
@@ -2273,12 +2272,11 @@ export class RFIDConfig {
         if (jsonObject == null) return null
         const result = new RFIDConfig()
 
-        result.paCertificates = jsonObject["paCertificates"]
-        result.taCertificates = jsonObject["taCertificates"]
-        result.taSignature = jsonObject["taSignature"]
-        result.aaChallenge = jsonObject["aaChallenge"]
-        result.paceProtocol = jsonObject["paceProtocol"]
-        result.caProtocol = jsonObject["caProtocol"]
+        result.onRequestPACertificates = jsonObject["onRequestPACertificates"]
+        result.onRequestTACertificates = jsonObject["onRequestTACertificates"]
+        result.onRequestTASignature = jsonObject["onRequestTASignature"]
+        result.onRequestPACEProtocol = jsonObject["onRequestPACEProtocol"]
+        result.onRequestCAProtocol = jsonObject["onRequestCAProtocol"]
 
         return result
     }
@@ -3158,8 +3156,6 @@ export const eCheckDiagnose = {
     CHD_PROPERTY_NO_SIGNATURE: 260,
     CHD_PROPERTY_TEXT_AS_SIGNATURE: 261,
     CHD_PROPERTY_FINGERPRINT_AS_SIGNATURE: 262,
-    CHD_PROPERTY_DOCUMENT_DAMAGED: 263,
-    CHD_PROPERTY_DOCUMENT_CANCELLED: 264,
 }
 
 export const eMDLIntentToRetain = {
@@ -3576,7 +3572,6 @@ export const eRPRM_SecurityFeatureType = {
     SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_GHOSTVSLIVE: 60,
     SECURITY_FEATURE_TYPE_PORTRAIT_COMPARISON_EXTVSGHOST: 61,
     SECURITY_FEATURE_TYPE_SIGNATURE_PRESENCE: 62,
-    SECURITY_FEATURE_TYPE_DAMAGE_CHECK: 63,
 }
 
 export const OnlineMode = {
@@ -4703,8 +4698,6 @@ export const eVisualFieldType = {
     FT_DLCLASSCODE_B3_FROM: 706,
     FT_DLCLASSCODE_B3_TO: 707,
     FT_DLCLASSCODE_B3_NOTES: 708,
-    FT_ADDRESS_POST_OFFICE: 709,
-    FT_ADDRESS_LOT: 710,
 }
 
 export const DocReaderOrientation = {
@@ -5068,7 +5061,6 @@ DocumentReader.stopRFIDReader = (successCallback, errorCallback) => RNRegulaDocu
 DocumentReader.providePACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "providePACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTACertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTACertificates", [certificates], successCallback, errorCallback)
 DocumentReader.provideTASignature = (signature, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideTASignature", [signature], successCallback, errorCallback)
-DocumentReader.provideAAChallenge = (challenge, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "provideAAChallenge", [challenge], successCallback, errorCallback)
 DocumentReader.selectPACEProtocol = (protocol, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "selectPACEProtocol", [protocol], successCallback, errorCallback)
 DocumentReader.selectCAProtocol = (protocol, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "selectCAProtocol", [protocol], successCallback, errorCallback)
 DocumentReader.setTCCParams = (params, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "setTCCParams", [params], successCallback, errorCallback)
