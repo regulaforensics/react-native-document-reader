@@ -565,23 +565,23 @@ fun getRfidReaderRequest(config: JSONObject? = null): IRfidReaderRequest {
     val result = IRfidReaderRequest()
     if (config == null) return result
 
-    if (config.getBoolean("paCertificates")) result.setPACertificates { serialNumber, issuer, completion ->
+    if (config.getBooleanOrNull("paCertificates") == true) result.setPACertificates { serialNumber, issuer, completion ->
         paCertificateCompletion = completion
         sendEvent(paCertificateCompletionEvent, generatePACertificateCompletion(serialNumber, issuer))
     }
-    if (config.getBoolean("taCertificates")) result.setTACertificates { keyCAR, completion ->
+    if (config.getBooleanOrNull("taCertificates") == true) result.setTACertificates { keyCAR, completion ->
         taCertificateCompletion = completion
         sendEvent(taCertificateCompletionEvent, keyCAR)
     }
-    if (config.getBoolean("taSignature")) result.setTASignature { challenge, completion ->
+    if (config.getBooleanOrNull("taSignature") == true) result.setTASignature { challenge, completion ->
         taSignatureCompletion = completion
         sendEvent(taSignatureCompletionEvent, generateTAChallenge(challenge))
     }
-    if (config.getBoolean("aaChallenge")) result.setRfidAaChallenge { challenge, completion ->
+    if (config.getBooleanOrNull("aaChallenge") == true) result.setRfidAaChallenge { challenge, completion ->
         aaChallengeCompletion = completion
         sendEvent(aaChallengeCompletionEvent, challenge)
     }
-    if (config.getBoolean("paceProtocol") || config.getBoolean("caProtocol")) result.setRfidAccessControl(object : IRfidAccessControl {
+    if (config.getBooleanOrNull("paceProtocol") == true || config.getBooleanOrNull("caProtocol") == true) result.setRfidAccessControl(object : IRfidAccessControl {
         override fun onRequestPaceProtocol(list: List<PaceProtocol?>, completion: IPaceProtocolCompletion) {
             paceProtocolCompletion = completion
             sendEvent(paceProtocolCompletionEvent, list.toJson(::generatePaceProtocol))
