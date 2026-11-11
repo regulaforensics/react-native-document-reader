@@ -43,11 +43,30 @@
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>To use gallery</string>
+	<key>RCTNewArchEnabled</key>
+	<true/>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>SceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
@@ -58,7 +77,7 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+	<true/>
 	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
 	<array>
 		<string>A0000002471001</string>
@@ -68,28 +87,6 @@
 		<string>A0000002480200</string>
 		<string>A0000002480300</string>
 		<string>A00000045645444C2D3031</string>
-	</array>
-	<key>UIAppFonts</key>
-	<array>
-  		<string>AntDesign.ttf</string>
-  		<string>Entypo.ttf</string>
-  		<string>EvilIcons.ttf</string>
-  		<string>Feather.ttf</string>
-  		<string>FontAwesome.ttf</string>
-  		<string>FontAwesome5_Brands.ttf</string>
-  		<string>FontAwesome5_Regular.ttf</string>
-  		<string>FontAwesome5_Solid.ttf</string>
-  		<string>FontAwesome6_Brands.ttf</string>
-  		<string>FontAwesome6_Regular.ttf</string>
-  		<string>FontAwesome6_Solid.ttf</string>
-  		<string>Foundation.ttf</string>
-  		<string>Ionicons.ttf</string>
-  		<string>MaterialIcons.ttf</string>
-  		<string>MaterialCommunityIcons.ttf</string>
-  		<string>SimpleLineIcons.ttf</string>
-  		<string>Octicons.ttf</string>
-  		<string>Zocial.ttf</string>
-  		<string>Fontisto.ttf</string>
 	</array>
 </dict>
 </plist>

@@ -8,7 +8,7 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
+platform :ios, '17.6'
 prepare_react_native_project!
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -26,10 +26,6 @@ target 'DocumentReader' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'DocumentReaderTests' do
-    inherit! :complete
-  end
-
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
@@ -38,11 +34,11 @@ target 'DocumentReader' do
       :mac_catalyst_enabled => false
     )
 
-    # Fix for Xcode 26
+    # Xcode 27 rejects older deployment targets, including resource/privacy bundles.
     installer.pods_project.targets.each do |target|
-      if target.name == 'fmt'
-        target.build_configurations.each do |config|
-          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+      target.build_configurations.each do |config|
+        if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 17.6
+          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.6'
         end
       end
     end

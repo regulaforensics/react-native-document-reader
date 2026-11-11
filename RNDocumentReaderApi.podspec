@@ -12,8 +12,8 @@ Pod::Spec.new do |s|
   s.homepage     = 'https://regulaforensics.com'
 
   s.source       = { :http => 'file:' + __dir__ }
-  s.ios.deployment_target = '15.0'
+  s.ios.deployment_target = '16.0'
   s.source_files  = "ios/*.{h,m}"
-  s.dependency 'DocumentReader', '9.9.7126'
+  s.dependency 'DocumentReader', '9.10.7343'
   s.dependency 'React'
 end
