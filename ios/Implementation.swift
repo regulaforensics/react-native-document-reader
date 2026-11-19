@@ -172,6 +172,28 @@ func methodCall(_ method: String, _ callback: @escaping Callback) {
     }
 }
 
+// MARK: - Completions
+
+func generateSuccessCompletion(_ success: Bool, _ error: Error?) -> [String: Any?] {
+    return ["success": success, "error": error?.encode()]
+}
+
+func generateCompletion(_ action: Int, _ results: DocumentReaderResults?, _ error: Error?) -> [String: Any?] {
+    return [
+        "action": action,
+        "results": [0, 2, 3, 4, 6].contains(action) ? results?.encode() : nil,
+        "error": error?.encode(),
+    ]
+}
+
+func generateDeviceEngagementCompletion(_ deviceEngagement: DocReader.DeviceEngagement?, _ error: Error?) -> [String: Any?] {
+    return ["deviceEngagement": deviceEngagement?.encode(), "error": error?.encode()]
+}
+
+func generateFinalizePackageCompletion(_ action: Int, _ info: RGLTransactionInfo?, _ error: Error?) -> [String: Any?] {
+    return ["action": action, "info": info?.encode(), "error": error?.encode()]
+}
+
 let completion: DocumentReaderCompletion = { action, results, error in
     sendEvent(completionEvent, generateCompletion(action.encode(), results, error))
 }
