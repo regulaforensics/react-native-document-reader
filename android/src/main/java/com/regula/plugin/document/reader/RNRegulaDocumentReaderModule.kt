@@ -25,9 +25,7 @@ import org.json.JSONObject
 
 var listenerCount = 0
 
-// Args pass null arguments as nulls, null elements in arrays as nulls,
-// but in maps keys with null values are removed.
-lateinit var args: List<Any?>
+lateinit var args: JSONArray
 lateinit var binding: ReactContext
 val context: Context
     get() = binding.applicationContext
@@ -45,12 +43,12 @@ fun sendEvent(event: String, data: Any? = "") {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <T> argsNullable(index: Int): T? = when (val value = args[index]) {
-    is Map<*, *> -> value.toJson()
-    is List<*> -> value.toJson()
-    is Double -> if (value % 1 == 0.0) value.toInt() else value
-    else -> value
-} as T?
+fun <T> argsNullable(index: Int): T? {
+    val value = args[index]
+    if (value is Double && value % 1 == 0.0) return value.toInt() as T
+    if (value.toString() == "null") return null
+    return value as T
+}
 
 fun requestPermissions(activity: Activity, permissions: Array<String>, requestCode: Int) {
     (activity as PermissionAwareActivity).requestPermissions(permissions, requestCode) { code, perms, grantResults ->
@@ -93,7 +91,7 @@ class RNRegulaDocumentReaderModule(reactContext: ReactApplicationContext) : Reac
 
     @ReactMethod
     fun exec(moduleName: String, method: String, arguments: ReadableArray, success: com.facebook.react.bridge.Callback, error: com.facebook.react.bridge.Callback) {
-        args = arguments.toArrayList()
+        args = JSONArray(arguments.toArrayList())
         try {
             methodCall(method) { data -> success(data.toSendable()) }
         } catch (error: Exception) {

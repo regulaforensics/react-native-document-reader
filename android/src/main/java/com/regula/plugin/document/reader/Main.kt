@@ -139,7 +139,7 @@ fun methodCall(method: String, callback: (Any?) -> Unit): Any = when (method) {
     "finalizePackage" -> finalizePackage(callback)
     "finalizePackageWithFinalizeConfig" -> finalizePackageWithFinalizeConfig(callback, args(0))
     "endBackendTransaction" -> endBackendTransaction()
-    "getTranslation" -> getTranslation(callback, args(0), (args[1] as Number).toLong().toInt())
+    "getTranslation" -> getTranslation(callback, args(0), args(1))
     else -> Unit
 }
 
@@ -510,7 +510,7 @@ fun encryptedContainers(
     raw: String
 ) = callback(fromRawResults(raw).encryptedContainers)
 
-fun getTranslation(callback: Callback, className: String, value: Int) = if (value == -1) callback("Unknown") else when (className) {
+fun getTranslation(callback: Callback, className: String, value: Int) = when (className) {
     "RFIDErrorCodes" -> callback(eRFID_ErrorCodes.getTranslation(context, value))
     "LDSParsingErrorCodes" -> callback(eLDS_ParsingErrorCodes.getTranslation(context, value))
     "LDSParsingNotificationCodes" -> callback(eLDS_ParsingNotificationCodes.getTranslation(context, value))
