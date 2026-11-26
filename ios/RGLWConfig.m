@@ -527,11 +527,13 @@
     if([options valueForKey:@"borderBackgroundImageContentMode"] != nil)
         customization.borderBackgroundImageContentMode = [self viewContentModeWithNumber:[options valueForKey:@"borderBackgroundImageContentMode"]];
     
-    if(options[@"colors"]) [self setColors:[customization.uiConfiguration valueForKey:@"colors"] input:options[@"colors"]];
-    if(options[@"fonts"]) [self setFonts:[customization.uiConfiguration valueForKey:@"fonts"] input:options[@"fonts"]];
-    if(options[@"images"]) [self setImages:[customization.uiConfiguration valueForKey:@"images"] input:options[@"images"]];
-    if(options[@"timings"]) [self setTimings:[customization.uiConfiguration valueForKey:@"timings"] input:options[@"timings"]];
-    if(options[@"contentModes"]) [self setContentModes:[customization.uiConfiguration valueForKey:@"contentModes"] input:options[@"contentModes"]];
+    [customization updateUIConfigurationWithBuilderBlock:^(RGLUIConfigurationBuilder *builder) {
+        if(options[@"colors"]) [self setColors:builder input:options[@"colors"]];
+        if(options[@"fonts"]) [self setFonts:builder input:options[@"fonts"]];
+        if(options[@"images"]) [self setImages:builder input:options[@"images"]];
+        if(options[@"timings"]) [self setTimings:builder input:options[@"timings"]];
+        if(options[@"contentModes"]) [self setContentModes:builder input:options[@"contentModes"]];
+    }];
 }
 
 +(NSDictionary*)getCustomization:(RGLCustomization*)customization {
@@ -1117,32 +1119,25 @@
     return result;
 }
 
-+(void)setColors:(NSMutableDictionary*)result input:(NSDictionary*)input {
-    if([input valueForKey:@"rfidProcessingScreenBackground"] != nil)
-        result[@(RFIDProcessingScreenBackground)] = [self colorWithInt:[input valueForKey:@"rfidProcessingScreenBackground"]];
-    if([input valueForKey:@"rfidProcessingScreenHintLabelText"] != nil)
-        result[@(RFIDProcessingScreenHintLabelText)] = [self colorWithInt:[input valueForKey:@"rfidProcessingScreenHintLabelText"]];
-    if([input valueForKey:@"rfidProcessingScreenHintLabelBackground"] != nil)
-        result[@(RFIDProcessingScreenHintLabelBackground)] = [self colorWithInt:[input valueForKey:@"rfidProcessingScreenHintLabelBackground"]];
-    if([input valueForKey:@"rfidProcessingScreenProgressLabelText"] != nil)
-        result[@(RFIDProcessingScreenProgressLabelText)] = [self colorWithInt:[input valueForKey:@"rfidProcessingScreenProgressLabelText"]];
-    if([input valueForKey:@"rfidProcessingScreenProgressBar"] != nil)
-        result[@(RFIDProcessingScreenProgressBar)] = [self colorWithInt:[input valueForKey:@"rfidProcessingScreenProgressBar"]];
-    if([input valueForKey:@"rfidProcessingScreenProgressBarBackground"] != nil)
-        result[@(RFIDProcessingScreenProgressBarBackground)] = [self colorWithInt:[input valueForKey:@"rfidProcessingScreenProgressBarBackground"]];
-    if([input valueForKey:@"rfidProcessingScreenResultLabelText"] != nil)
-        result[@(RFIDProcessingScreenResultLabelText)] = [self colorWithInt:[input valueForKey:@"rfidProcessingScreenResultLabelText"]];
-    if(input[@"rfidProcessingScreenLoadingBar"]) result[@(RFIDProcessingScreenLoadingBar)] = [self colorWithInt:input[@"rfidProcessingScreenLoadingBar"]];
-    if(input[@"mdlProcessingScreenBackground"]) result[@(MDLProcessingScreenBackground)] = [self colorWithInt:input[@"mdlProcessingScreenBackground"]];
-    if(input[@"mdlProcessingScreenHintLabelText"]) result[@(MDLProcessingScreenHintLabelText)] = [self colorWithInt:input[@"mdlProcessingScreenHintLabelText"]];
-    if(input[@"mdlProcessingScreenHintLabelBackground"]) result[@(MDLProcessingScreenHintLabelBackground)] = [self colorWithInt:input[@"mdlProcessingScreenHintLabelBackground"]];
-    if(input[@"mdlProcessingScreenProgressLabelText"]) result[@(MDLProcessingScreenProgressLabelText)] = [self colorWithInt:input[@"mdlProcessingScreenProgressLabelText"]];
-    if(input[@"mdlProcessingScreenResultLabelText"]) result[@(MDLProcessingScreenResultLabelText)] = [self colorWithInt:input[@"mdlProcessingScreenResultLabelText"]];
-    if(input[@"mdlProcessingScreenLoadingBar"]) result[@(MDLProcessingScreenLoadingBar)] = [self colorWithInt:input[@"mdlProcessingScreenLoadingBar"]];
-    if(input[@"nextPageIdCardFront"]) result[@(RGLCustomizationColorNextPageIdCardFront)] = [self colorWithInt:input[@"nextPageIdCardFront"]];
-    if(input[@"nextPageIdCardBack"]) result[@(RGLCustomizationColorNextPageIdCardBack)] = [self colorWithInt:input[@"nextPageIdCardBack"]];
-    if(input[@"nextPagePassportShift"]) result[@(RGLCustomizationColorNextPagePassportShift)] = [self colorWithInt:input[@"nextPagePassportShift"]];
-    if(input[@"nextPagePassportFlip"]) result[@(RGLCustomizationColorNextPagePassportFlip)] = [self colorWithInt:input[@"nextPagePassportFlip"]];
++(void)setColors:(RGLUIConfigurationBuilder*)builder input:(NSDictionary*)input {
+    if(input[@"rfidProcessingScreenBackground"]) [builder setColor:[self colorWithInt:input[@"rfidProcessingScreenBackground"]] forItem:RGLCustomizationColorRFIDProcessingScreenBackground];
+    if(input[@"rfidProcessingScreenHintLabelText"]) [builder setColor:[self colorWithInt:input[@"rfidProcessingScreenHintLabelText"]] forItem:RGLCustomizationColorRFIDProcessingScreenHintLabelText];
+    if(input[@"rfidProcessingScreenHintLabelBackground"]) [builder setColor:[self colorWithInt:input[@"rfidProcessingScreenHintLabelBackground"]] forItem:RGLCustomizationColorRFIDProcessingScreenHintLabelBackground];
+    if(input[@"rfidProcessingScreenProgressLabelText"]) [builder setColor:[self colorWithInt:input[@"rfidProcessingScreenProgressLabelText"]] forItem:RGLCustomizationColorRFIDProcessingScreenProgressLabelText];
+    if(input[@"rfidProcessingScreenProgressBar"]) [builder setColor:[self colorWithInt:input[@"rfidProcessingScreenProgressBar"]] forItem:RGLCustomizationColorRFIDProcessingScreenProgressBar];
+    if(input[@"rfidProcessingScreenProgressBarBackground"]) [builder setColor:[self colorWithInt:input[@"rfidProcessingScreenProgressBarBackground"]] forItem:RGLCustomizationColorRFIDProcessingScreenProgressBarBackground];
+    if(input[@"rfidProcessingScreenResultLabelText"]) [builder setColor:[self colorWithInt:input[@"rfidProcessingScreenResultLabelText"]] forItem:RGLCustomizationColorRFIDProcessingScreenResultLabelText];
+    if(input[@"rfidProcessingScreenLoadingBar"]) [builder setColor:[self colorWithInt:input[@"rfidProcessingScreenLoadingBar"]] forItem:RGLCustomizationColorRFIDProcessingScreenLoadingBar];
+    if(input[@"mdlProcessingScreenBackground"]) [builder setColor:[self colorWithInt:input[@"mdlProcessingScreenBackground"]] forItem:RGLCustomizationColorMDLProcessingScreenBackground];
+    if(input[@"mdlProcessingScreenHintLabelText"]) [builder setColor:[self colorWithInt:input[@"mdlProcessingScreenHintLabelText"]] forItem:RGLCustomizationColorMDLProcessingScreenHintLabelText];
+    if(input[@"mdlProcessingScreenHintLabelBackground"]) [builder setColor:[self colorWithInt:input[@"mdlProcessingScreenHintLabelBackground"]] forItem:RGLCustomizationColorMDLProcessingScreenHintLabelBackground];
+    if(input[@"mdlProcessingScreenProgressLabelText"]) [builder setColor:[self colorWithInt:input[@"mdlProcessingScreenProgressLabelText"]] forItem:RGLCustomizationColorMDLProcessingScreenProgressLabelText];
+    if(input[@"mdlProcessingScreenResultLabelText"]) [builder setColor:[self colorWithInt:input[@"mdlProcessingScreenResultLabelText"]] forItem:RGLCustomizationColorMDLProcessingScreenResultLabelText];
+    if(input[@"mdlProcessingScreenLoadingBar"]) [builder setColor:[self colorWithInt:input[@"mdlProcessingScreenLoadingBar"]] forItem:RGLCustomizationColorMDLProcessingScreenLoadingBar];
+    if(input[@"nextPageIdCardFront"]) [builder setColor:[self colorWithInt:input[@"nextPageIdCardFront"]] forItem:RGLCustomizationColorNextPageIdCardFront];
+    if(input[@"nextPageIdCardBack"]) [builder setColor:[self colorWithInt:input[@"nextPageIdCardBack"]] forItem:RGLCustomizationColorNextPageIdCardBack];
+    if(input[@"nextPagePassportShift"]) [builder setColor:[self colorWithInt:input[@"nextPagePassportShift"]] forItem:RGLCustomizationColorNextPagePassportShift];
+    if(input[@"nextPagePassportFlip"]) [builder setColor:[self colorWithInt:input[@"nextPagePassportFlip"]] forItem:RGLCustomizationColorNextPagePassportFlip];
 }
 
 +(NSDictionary*)getColors:(NSDictionary*)input {
@@ -1170,15 +1165,13 @@
     return result;
 }
 
-+(void)setFonts:(NSMutableDictionary*)result input:(NSDictionary*)input {
-    if([input valueForKey:@"rfidProcessingScreenHintLabel"] != nil)
-        result[@(RFIDProcessingScreenHintLabel)] = [self UIFontFromJSON:[input valueForKey:@"rfidProcessingScreenHintLabel"]];
-    if([input valueForKey:@"rfidProcessingScreenProgressLabel"] != nil)
-        result[@(RFIDProcessingScreenProgressLabel)] = [self UIFontFromJSON:[input valueForKey:@"rfidProcessingScreenProgressLabel"]];
-    if(input[@"rfidProcessingScreenResultLabel"]) result[@(RFIDProcessingScreenResultLabel)] = [self UIFontFromJSON:input[@"rfidProcessingScreenResultLabel"]];
-    if(input[@"mdlProcessingScreenHintLabel"]) result[@(MDLProcessingScreenHintLabel)] = [self UIFontFromJSON:input[@"mdlProcessingScreenHintLabel"]];
-    if(input[@"mdlProcessingScreenProgressLabel"]) result[@(MDLProcessingScreenProgressLabel)] = [self UIFontFromJSON:input[@"mdlProcessingScreenProgressLabel"]];
-    if(input[@"mdlProcessingScreenResultLabel"]) result[@(MDLProcessingScreenResultLabel)] = [self UIFontFromJSON:input[@"mdlProcessingScreenResultLabel"]];
++(void)setFonts:(RGLUIConfigurationBuilder*)builder input:(NSDictionary*)input {
+    if(input[@"rfidProcessingScreenHintLabel"]) [builder setFont:[self UIFontFromJSON:input[@"rfidProcessingScreenHintLabel"]] forItem:RGLCustomizationFontRFIDProcessingScreenHintLabel];
+    if(input[@"rfidProcessingScreenProgressLabel"]) [builder setFont:[self UIFontFromJSON:input[@"rfidProcessingScreenProgressLabel"]] forItem:RGLCustomizationFontRFIDProcessingScreenProgressLabel];
+    if(input[@"rfidProcessingScreenResultLabel"]) [builder setFont:[self UIFontFromJSON:input[@"rfidProcessingScreenResultLabel"]] forItem:RGLCustomizationFontRFIDProcessingScreenResultLabel];
+    if(input[@"mdlProcessingScreenHintLabel"]) [builder setFont:[self UIFontFromJSON:input[@"mdlProcessingScreenHintLabel"]] forItem:RGLCustomizationFontMDLProcessingScreenHintLabel];
+    if(input[@"mdlProcessingScreenProgressLabel"]) [builder setFont:[self UIFontFromJSON:input[@"mdlProcessingScreenProgressLabel"]] forItem:RGLCustomizationFontMDLProcessingScreenProgressLabel];
+    if(input[@"mdlProcessingScreenResultLabel"]) [builder setFont:[self UIFontFromJSON:input[@"mdlProcessingScreenResultLabel"]] forItem:RGLCustomizationFontMDLProcessingScreenResultLabel];
 }
 
 +(NSDictionary*)getFonts:(NSDictionary*)input {
@@ -1192,25 +1185,25 @@
     };
 }
 
-+(void)setImages:(NSMutableDictionary*)result input:(NSDictionary*)input {
-    if(input[@"helpAnimation"]) result[RGLCustomizationImageHelpAnimation] = [RGLWJSONConstructor imageWithBase64:input[@"helpAnimation"]];
-    if(input[@"livenessAnimation"]) result[RGLCustomizationImageLivenessAnimation] = [RGLWJSONConstructor imageWithBase64:input[@"livenessAnimation"]];
-    if(input[@"borderBackground"]) result[RGLCustomizationImageBorderBackground] = [RGLWJSONConstructor imageWithBase64:input[@"borderBackground"]];
-    if(input[@"torchButtonOn"]) result[RGLCustomizationImageTorchButtonOn] = [RGLWJSONConstructor imageWithBase64:input[@"torchButtonOn"]];
-    if(input[@"torchButtonOff"]) result[RGLCustomizationImageTorchButtonOff] = [RGLWJSONConstructor imageWithBase64:input[@"torchButtonOff"]];
-    if(input[@"captureButton"]) result[RGLCustomizationImageCaptureButton] = [RGLWJSONConstructor imageWithBase64:input[@"captureButton"]];
-    if(input[@"switchButton"]) result[RGLCustomizationImageSwitchButton] = [RGLWJSONConstructor imageWithBase64:input[@"switchButton"]];
-    if(input[@"closeButton"]) result[RGLCustomizationImageCloseButton] = [RGLWJSONConstructor imageWithBase64:input[@"closeButton"]];
-    if(input[@"multipageButton"]) result[RGLCustomizationImageMultipageButton] = [RGLWJSONConstructor imageWithBase64:input[@"multipageButton"]];
-    if(input[@"rfidProcessingScreenFailureImage"]) result[RGLCustomizationImageRFIDProcessingScreenFailure] = [RGLWJSONConstructor imageWithBase64:input[@"rfidProcessingScreenFailureImage"]];
-    if(input[@"mdlProcessingScreenFailureImage"]) result[RGLCustomizationImageMDLProcessingScreenFailure] = [RGLWJSONConstructor imageWithBase64:input[@"mdlProcessingScreenFailureImage"]];
-    if(input[@"nextPageIdCardFront"]) result[RGLCustomizationImageNextPageIdCardFront] = [RGLWJSONConstructor imageWithBase64:input[@"nextPageIdCardFront"]];
-    if(input[@"nextPageIdCardBack"]) result[RGLCustomizationImageNextPageIdCardBack] = [RGLWJSONConstructor imageWithBase64:input[@"nextPageIdCardBack"]];
-    if(input[@"nextPagePassportShift"]) result[RGLCustomizationImageNextPagePassportShift] = [RGLWJSONConstructor imageWithBase64:input[@"nextPagePassportShift"]];
-    if(input[@"nextPagePassportFlipStart"]) result[RGLCustomizationImageNextPagePassportFlipStart] = [RGLWJSONConstructor imageWithBase64:input[@"nextPagePassportFlipStart"]];
-    if(input[@"nextPagePassportFlipClean"]) result[RGLCustomizationImageNextPagePassportFlipClean] = [RGLWJSONConstructor imageWithBase64:input[@"nextPagePassportFlipClean"]];
-    if(input[@"nextPagePassportFlipTop"]) result[RGLCustomizationImageNextPagePassportFlipTop] = [RGLWJSONConstructor imageWithBase64:input[@"nextPagePassportFlipTop"]];
-    if(input[@"nextPagePassportFlipBottom"]) result[RGLCustomizationImageNextPagePassportFlipBottom] = [RGLWJSONConstructor imageWithBase64:input[@"nextPagePassportFlipBottom"]];
++(void)setImages:(RGLUIConfigurationBuilder*)builder input:(NSDictionary*)input {
+    if(input[@"helpAnimation"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"helpAnimation"]] forItem:RGLCustomizationImageHelpAnimation];
+    if(input[@"livenessAnimation"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"livenessAnimation"]] forItem:RGLCustomizationImageLivenessAnimation];
+    if(input[@"borderBackground"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"borderBackground"]] forItem:RGLCustomizationImageBorderBackground];
+    if(input[@"torchButtonOn"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"torchButtonOn"]] forItem:RGLCustomizationImageTorchButtonOn];
+    if(input[@"torchButtonOff"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"torchButtonOff"]] forItem:RGLCustomizationImageTorchButtonOff];
+    if(input[@"captureButton"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"captureButton"]] forItem:RGLCustomizationImageCaptureButton];
+    if(input[@"switchButton"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"switchButton"]] forItem:RGLCustomizationImageSwitchButton];
+    if(input[@"closeButton"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"closeButton"]] forItem:RGLCustomizationImageCloseButton];
+    if(input[@"multipageButton"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"multipageButton"]] forItem:RGLCustomizationImageMultipageButton];
+    if(input[@"rfidProcessingScreenFailureImage"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"rfidProcessingScreenFailureImage"]] forItem:RGLCustomizationImageRFIDProcessingScreenFailure];
+    if(input[@"mdlProcessingScreenFailureImage"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"mdlProcessingScreenFailureImage"]] forItem:RGLCustomizationImageMDLProcessingScreenFailure];
+    if(input[@"nextPageIdCardFront"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"nextPageIdCardFront"]] forItem:RGLCustomizationImageNextPageIdCardFront];
+    if(input[@"nextPageIdCardBack"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"nextPageIdCardBack"]] forItem:RGLCustomizationImageNextPageIdCardBack];
+    if(input[@"nextPagePassportShift"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"nextPagePassportShift"]] forItem:RGLCustomizationImageNextPagePassportShift];
+    if(input[@"nextPagePassportFlipStart"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"nextPagePassportFlipStart"]] forItem:RGLCustomizationImageNextPagePassportFlipStart];
+    if(input[@"nextPagePassportFlipClean"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"nextPagePassportFlipClean"]] forItem:RGLCustomizationImageNextPagePassportFlipClean];
+    if(input[@"nextPagePassportFlipTop"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"nextPagePassportFlipTop"]] forItem:RGLCustomizationImageNextPagePassportFlipTop];
+    if(input[@"nextPagePassportFlipBottom"]) [builder setImage:[RGLWJSONConstructor imageWithBase64:input[@"nextPagePassportFlipBottom"]] forItem:RGLCustomizationImageNextPagePassportFlipBottom];
 }
 
 +(NSDictionary*)getImages:(NSDictionary*)input {
@@ -1257,13 +1250,13 @@
     return result;
 }
 
-+(void)setTimings:(NSMutableDictionary*)result input:(NSDictionary*)input {
-    if(input[@"nextPageIdCardStartDelay"]) result[@(RGLCustomizationTimingNextPageIdCardStartDelay)] = [input[@"nextPageIdCardStartDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPageIdCardStartDelay"];
-    if(input[@"nextPageIdCardEndDelay"]) result[@(RGLCustomizationTimingNextPageIdCardEndDelay)] = [input[@"nextPageIdCardEndDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPageIdCardEndDelay"];
-    if(input[@"nextPagePassportShiftStartDelay"]) result[@(RGLCustomizationTimingNextPagePassportShiftStartDelay)] = [input[@"nextPagePassportShiftStartDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportShiftStartDelay"];
-    if(input[@"nextPagePassportShiftEndDelay"]) result[@(RGLCustomizationTimingNextPagePassportShiftEndDelay)] = [input[@"nextPagePassportShiftEndDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportShiftEndDelay"];
-    if(input[@"nextPagePassportFlipStartDelay"]) result[@(RGLCustomizationTimingNextPagePassportFlipStartDelay)] = [input[@"nextPagePassportFlipStartDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportFlipStartDelay"];
-    if(input[@"nextPagePassportFlipEndDelay"]) result[@(RGLCustomizationTimingNextPagePassportFlipEndDelay)] = [input[@"nextPagePassportFlipEndDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportFlipEndDelay"];
++(void)setTimings:(RGLUIConfigurationBuilder*)builder input:(NSDictionary*)input {
+    if(input[@"nextPageIdCardStartDelay"]) [builder setTiming:[input[@"nextPageIdCardStartDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPageIdCardStartDelay"] forItem:RGLCustomizationTimingNextPageIdCardStartDelay];
+    if(input[@"nextPageIdCardEndDelay"]) [builder setTiming:[input[@"nextPageIdCardEndDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPageIdCardEndDelay"] forItem:RGLCustomizationTimingNextPageIdCardEndDelay];
+    if(input[@"nextPagePassportShiftStartDelay"]) [builder setTiming:[input[@"nextPagePassportShiftStartDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportShiftStartDelay"] forItem:RGLCustomizationTimingNextPagePassportShiftStartDelay];
+    if(input[@"nextPagePassportShiftEndDelay"]) [builder setTiming:[input[@"nextPagePassportShiftEndDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportShiftEndDelay"] forItem:RGLCustomizationTimingNextPagePassportShiftEndDelay];
+    if(input[@"nextPagePassportFlipStartDelay"]) [builder setTiming:[input[@"nextPagePassportFlipStartDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportFlipStartDelay"] forItem:RGLCustomizationTimingNextPagePassportFlipStartDelay];
+    if(input[@"nextPagePassportFlipEndDelay"]) [builder setTiming:[input[@"nextPagePassportFlipEndDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportFlipEndDelay"] forItem:RGLCustomizationTimingNextPagePassportFlipEndDelay];
 }
 
 +(NSDictionary*)getTimings:(NSDictionary*)input {
@@ -1286,9 +1279,9 @@
     return result;
 }
 
-+(void)setContentModes:(NSMutableDictionary*)result input:(NSDictionary*)input {
-    if(input[@"nextPageIdCardFront"]) result[@(RGLCustomizationContentModeNextPageIdCardFront)] = [input[@"nextPageIdCardFront"] isEqual:[NSNull null]] ? nil : input[@"nextPageIdCardFront"];
-    if(input[@"nextPageIdCardBack"]) result[@(RGLCustomizationContentModeNextPageIdCardBack)] = [input[@"nextPageIdCardBack"] isEqual:[NSNull null]] ? nil : input[@"nextPageIdCardBack"];
++(void)setContentModes:(RGLUIConfigurationBuilder*)builder input:(NSDictionary*)input {
+    if(input[@"nextPageIdCardFront"]) [builder setContentMode:[input[@"nextPageIdCardFront"] isEqual:[NSNull null]] ? UIViewContentModeScaleAspectFit : [input[@"nextPageIdCardFront"] integerValue] forItem:RGLCustomizationContentModeNextPageIdCardFront];
+    if(input[@"nextPageIdCardBack"]) [builder setContentMode:[input[@"nextPageIdCardBack"] isEqual:[NSNull null]] ? UIViewContentModeScaleAspectFit : [input[@"nextPageIdCardBack"] integerValue] forItem:RGLCustomizationContentModeNextPageIdCardBack];
 }
 
 +(NSDictionary*)getContentModes:(NSDictionary*)input {
