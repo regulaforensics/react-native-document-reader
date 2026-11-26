@@ -420,6 +420,7 @@
     if([options valueForKey:@"resultStatus"] != nil)
         customization.resultStatus = [options valueForKey:@"resultStatus"];
     if(options[@"multipageButtonText"]) customization.multipageButtonText = options[@"multipageButtonText"];
+    if(options[@"globalFontFamily"]) customization.globalFontFamily = [options[@"globalFontFamily"] isEqual:[NSNull null]] ? nil : options[@"globalFontFamily"];
     
     // Color
     if([options valueForKey:@"cameraFrameDefaultColor"] != nil)
@@ -556,6 +557,7 @@
     result[@"status"] = customization.status;
     result[@"resultStatus"] = customization.resultStatus;
     result[@"multipageButtonText"] = customization.multipageButtonText;
+    result[@"globalFontFamily"] = customization.globalFontFamily;
     
     // Color
     result[@"cameraFrameDefaultColor"] = [self intWithColor:customization.cameraFrameDefaultColor];
@@ -1256,12 +1258,12 @@
 }
 
 +(void)setTimings:(NSMutableDictionary*)result input:(NSDictionary*)input {
-    if(input[@"nextPageIdCardStartDelay"]) result[@(RGLCustomizationTimingNextPageIdCardStartDelay)] = input[@"nextPageIdCardStartDelay"];
-    if(input[@"nextPageIdCardEndDelay"]) result[@(RGLCustomizationTimingNextPageIdCardEndDelay)] = input[@"nextPageIdCardEndDelay"];
-    if(input[@"nextPagePassportShiftStartDelay"]) result[@(RGLCustomizationTimingNextPagePassportShiftStartDelay)] = input[@"nextPagePassportShiftStartDelay"];
-    if(input[@"nextPagePassportShiftEndDelay"]) result[@(RGLCustomizationTimingNextPagePassportShiftEndDelay)] = input[@"nextPagePassportShiftEndDelay"];
-    if(input[@"nextPagePassportFlipStartDelay"]) result[@(RGLCustomizationTimingNextPagePassportFlipStartDelay)] = input[@"nextPagePassportFlipStartDelay"];
-    if(input[@"nextPagePassportFlipEndDelay"]) result[@(RGLCustomizationTimingNextPagePassportFlipEndDelay)] = input[@"nextPagePassportFlipEndDelay"];
+    if(input[@"nextPageIdCardStartDelay"]) result[@(RGLCustomizationTimingNextPageIdCardStartDelay)] = [input[@"nextPageIdCardStartDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPageIdCardStartDelay"];
+    if(input[@"nextPageIdCardEndDelay"]) result[@(RGLCustomizationTimingNextPageIdCardEndDelay)] = [input[@"nextPageIdCardEndDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPageIdCardEndDelay"];
+    if(input[@"nextPagePassportShiftStartDelay"]) result[@(RGLCustomizationTimingNextPagePassportShiftStartDelay)] = [input[@"nextPagePassportShiftStartDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportShiftStartDelay"];
+    if(input[@"nextPagePassportShiftEndDelay"]) result[@(RGLCustomizationTimingNextPagePassportShiftEndDelay)] = [input[@"nextPagePassportShiftEndDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportShiftEndDelay"];
+    if(input[@"nextPagePassportFlipStartDelay"]) result[@(RGLCustomizationTimingNextPagePassportFlipStartDelay)] = [input[@"nextPagePassportFlipStartDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportFlipStartDelay"];
+    if(input[@"nextPagePassportFlipEndDelay"]) result[@(RGLCustomizationTimingNextPagePassportFlipEndDelay)] = [input[@"nextPagePassportFlipEndDelay"] isEqual:[NSNull null]] ? nil : input[@"nextPagePassportFlipEndDelay"];
 }
 
 +(NSDictionary*)getTimings:(NSDictionary*)input {
@@ -1285,18 +1287,19 @@
 }
 
 +(void)setContentModes:(NSMutableDictionary*)result input:(NSDictionary*)input {
-    if(input[@"nextPageIdCardFront"]) result[@(RGLCustomizationContentModeNextPageIdCardFront)] = input[@"nextPageIdCardFront"];
-    if(input[@"nextPageIdCardBack"]) result[@(RGLCustomizationContentModeNextPageIdCardBack)] = input[@"nextPageIdCardBack"];
+    if(input[@"nextPageIdCardFront"]) result[@(RGLCustomizationContentModeNextPageIdCardFront)] = [input[@"nextPageIdCardFront"] isEqual:[NSNull null]] ? nil : input[@"nextPageIdCardFront"];
+    if(input[@"nextPageIdCardBack"]) result[@(RGLCustomizationContentModeNextPageIdCardBack)] = [input[@"nextPageIdCardBack"] isEqual:[NSNull null]] ? nil : input[@"nextPageIdCardBack"];
 }
 
 +(NSDictionary*)getContentModes:(NSDictionary*)input {
     return @{
-        @"nextPageIdCardFront": input[@(RGLCustomizationContentModeNextPageIdCardFront)],
-        @"nextPageIdCardBack": input[@(RGLCustomizationContentModeNextPageIdCardBack)],
+        @"nextPageIdCardFront": input[@(RGLCustomizationContentModeNextPageIdCardFront)] ?: [NSNull null],
+        @"nextPageIdCardBack": input[@(RGLCustomizationContentModeNextPageIdCardBack)] ?: [NSNull null],
     };
 }
 
 +(UIColor*)colorWithInt:(NSNumber*)input {
+    if(input == nil || [input isEqual:[NSNull null]]) return nil;
     // Convert hex int to hex string
     NSInteger hexInt = [input integerValue];
     NSString* numbers = @"0123456789ABCDEF";
@@ -1378,13 +1381,14 @@
 }
 
 +(UIFont*)UIFontFromJSON:(NSDictionary*)input {
+    if(input == nil || [input isEqual:[NSNull null]]) return nil;
     UIFont* result = [UIFont fontWithName:[input valueForKey:@"name"] size:[[input valueForKey:@"size"] integerValue]];
     if (!result || !result.fontName) return nil;
     return result;
 }
 
 +(NSDictionary*)generateUIFont:(UIFont*)input {
-    if (!input || !input.fontName) return nil;
+    if (!input || !input.fontName) return (id)[NSNull null];
     return @{
         @"name": input.fontName,
         @"size": @(input.pointSize)

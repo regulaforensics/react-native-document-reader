@@ -2714,6 +2714,7 @@ export class Customization {
     status?: string
     resultStatus?: string
     multipageButtonText?: string
+    globalFontFamily?: string
     cameraFrameDefaultColor?: number
     cameraFrameActiveColor?: number
     statusTextColor?: number
@@ -2795,6 +2796,7 @@ export class Customization {
         result.status = jsonObject["status"]
         result.resultStatus = jsonObject["resultStatus"]
         result.multipageButtonText = jsonObject["multipageButtonText"]
+        result.globalFontFamily = jsonObject["globalFontFamily"]
         result.cameraFrameDefaultColor = jsonObject["cameraFrameDefaultColor"]
         result.cameraFrameActiveColor = jsonObject["cameraFrameActiveColor"]
         result.statusTextColor = jsonObject["statusTextColor"]
@@ -6298,6 +6300,7 @@ export default class DocumentReader {
     static addPKDCertificates(certificates: PKDCertificate[], successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static clearPKDCertificates(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static startNewSession(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
+    static clearLastPage(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static connectBluetoothDevice(btDeviceName: string, successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static btDeviceRequestFlashing(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void
     static btDeviceRequestFlashingFullIR(successCallback: (response: string) => void, errorCallback?: (error: string) => void): void

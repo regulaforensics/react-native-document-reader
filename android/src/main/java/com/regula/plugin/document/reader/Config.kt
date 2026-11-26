@@ -307,6 +307,7 @@ fun setCustomization(customization: ParamsCustomization, opts: JSONObject) = opt
         "status" -> editor.setStatus(v as String)
         "resultStatus" -> editor.setResultStatus(v as String)
         "multipageButtonText" -> editor.setMultipageButtonText(v as String)
+        "globalFontFamily" -> editor.setGlobalFontFamily(typefaceFromJSON((v as? String)?.let { JSONObject().put("name", it) }).first)
         "cameraFrameDefaultColor" -> editor.setCameraFrameDefaultColor(v.toColor())
         "cameraFrameActiveColor" -> editor.setCameraFrameActiveColor(v.toColor())
         "statusTextColor" -> editor.setStatusTextColor(v.toColor())
@@ -967,8 +968,8 @@ fun getTimings(input: Map<CustomizationTiming, Int>) = mapOf(
 
 fun setMatrices(input: ParamsCustomization.CustomizationEditor, opts: JSONObject) = opts.forEach { k, v ->
     when (k) {
-        "nextPageIdCardFront" -> input.setMatrix(CustomizationMatrix.NEXT_PAGE_ID_CARD_FRONT, matrixFromJSON(v as JSONArray?)).setScaleType(CustomizationScaleType.NEXT_PAGE_ID_CARD_FRONT, ImageView.ScaleType.MATRIX)
-        "nextPageIdCardBack" -> input.setMatrix(CustomizationMatrix.NEXT_PAGE_ID_CARD_BACK, matrixFromJSON(v as JSONArray?)).setScaleType(CustomizationScaleType.NEXT_PAGE_ID_CARD_BACK, ImageView.ScaleType.MATRIX)
+        "nextPageIdCardFront" -> input.setMatrix(CustomizationMatrix.NEXT_PAGE_ID_CARD_FRONT, matrixFromJSON(v as? JSONArray)).setScaleType(CustomizationScaleType.NEXT_PAGE_ID_CARD_FRONT, ImageView.ScaleType.MATRIX)
+        "nextPageIdCardBack" -> input.setMatrix(CustomizationMatrix.NEXT_PAGE_ID_CARD_BACK, matrixFromJSON(v as? JSONArray)).setScaleType(CustomizationScaleType.NEXT_PAGE_ID_CARD_BACK, ImageView.ScaleType.MATRIX)
     }
 }
 
@@ -981,7 +982,7 @@ fun CustomizationFont.getFont(fonts: Map<CustomizationFont, Typeface>, sizes: Ma
     generateTypeface(fonts[this], sizes[this])
 
 fun CustomizationFont.setFont(editor: ParamsCustomization.CustomizationEditor, value: Any?) {
-    val font = typefaceFromJSON(value as JSONObject)
+    val font = typefaceFromJSON(value as? JSONObject)
     editor.setFont(this, font.first)
     font.second?.let { editor.setFontSize(this, it) }
 }

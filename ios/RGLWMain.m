@@ -54,6 +54,7 @@
         @"addPKDCertificates": ^{ [self addPKDCertificates :args[0]]; },
         @"clearPKDCertificates": ^{ [self clearPKDCertificates]; },
         @"startNewSession": ^{ [self startNewSession]; },
+        @"clearLastPage": ^{ [self clearLastPage]; },
         @"connectBluetoothDevice": ^{ [self connectBluetoothDevice :args[0] :callback]; },
         @"btDeviceRequestFlashing": ^{ /* android only */ },
         @"btDeviceRequestFlashingFullIR": ^{ /* android only */ },
@@ -321,6 +322,10 @@ static NSDictionary* headers;
 
 +(void)startNewSession {
     [RGLDocReader.shared startNewSession];
+}
+
++(void)clearLastPage {
+    [RGLDocReader.shared clearLastPage];
 }
 
 RGLBluetooth* bluetooth;
