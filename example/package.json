@@ -7,8 +7,8 @@
     "ios": "react-native run-ios --no-packager"
   },
   "dependencies": {
-    "@regulaforensics/react-native-document-reader-api": "9.11.963-nightly",
-    "@regulaforensics/react-native-document-reader-core-fullauthrfid": "9.11.4009-nightly",
+    "@regulaforensics/react-native-document-reader-api": "9.11.968-nightly",
+    "@regulaforensics/react-native-document-reader-core-fullauthrfid": "9.11.4024-nightly",
     "react": "19.3.1",
     "react-native": "0.88.1",
     "react-native-fs": "2.20.0",

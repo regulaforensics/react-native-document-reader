@@ -561,7 +561,8 @@ fun generateOcclusionCheckParams(input: OcclusionCheckParams?) = input?.let {
 }
 
 @SuppressLint("DiscouragedApi")
-fun typefaceFromJSON(it: JSONObject): Pair<Typeface?, Int?> {
+fun typefaceFromJSON(it: JSONObject?): Pair<Typeface?, Int?> {
+    if (it == null) return Pair(null, null)
     val name = it.getString("name")
     val font = try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)

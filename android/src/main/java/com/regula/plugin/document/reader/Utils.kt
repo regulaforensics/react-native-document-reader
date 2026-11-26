@@ -228,7 +228,7 @@ internal object Convert {
         result
     }
 
-    fun Any?.toDrawable() = (this as String?)?.let {
+    fun Any?.toDrawable() = (this as? String)?.let {
         val decodedByte = it.toByteArray()!!
         val bitmap = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.size)
         val density = context.resources.displayMetrics.density

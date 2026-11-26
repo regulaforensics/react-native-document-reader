@@ -100,6 +100,7 @@ fun methodCall(method: String, callback: (Any?) -> Unit): Any = when (method) {
     "addPKDCertificates" -> addPKDCertificates(args(0))
     "clearPKDCertificates" -> clearPKDCertificates()
     "startNewSession" -> startNewSession()
+    "clearLastPage" -> clearLastPage()
     "connectBluetoothDevice" -> connectBluetoothDevice(args(0), callback)
     "btDeviceRequestFlashing" -> btDeviceRequestFlashing()
     "btDeviceRequestFlashingFullIR" -> btDeviceRequestFlashingFullIR()
@@ -307,6 +308,8 @@ fun addPKDCertificates(certificates: JSONArray) = Instance().addPKDCertificates(
 fun clearPKDCertificates() = Instance().clearPKDCertificates()
 
 fun startNewSession() = Instance().startNewSession()
+
+fun clearLastPage() = Instance().clearLastPage()
 
 fun startReadMDl(type: Int, dataRetrieval: JSONObject, callback: Callback) {
     stopBackgroundRFID()

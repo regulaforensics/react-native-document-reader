@@ -42,7 +42,7 @@ static NSMutableArray* weakReferencesHolder;
 }
 
 +(UIImage*)imageWithBase64:(NSString*)input {
-    if(input == nil) return nil;
+    if(input == nil || [input isEqual:[NSNull null]]) return nil;
     return [UIImage imageWithData:[self base64Decode:input]];
 }
 

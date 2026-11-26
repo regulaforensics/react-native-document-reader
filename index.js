@@ -1811,6 +1811,7 @@ export class Customization {
         result.status = jsonObject["status"]
         result.resultStatus = jsonObject["resultStatus"]
         result.multipageButtonText = jsonObject["multipageButtonText"]
+        result.globalFontFamily = jsonObject["globalFontFamily"]
         result.cameraFrameDefaultColor = jsonObject["cameraFrameDefaultColor"]
         result.cameraFrameActiveColor = jsonObject["cameraFrameActiveColor"]
         result.statusTextColor = jsonObject["statusTextColor"]
@@ -5075,6 +5076,7 @@ DocumentReader.setTCCParams = (params, successCallback, errorCallback) => RNRegu
 DocumentReader.addPKDCertificates = (certificates, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "addPKDCertificates", [certificates], successCallback, errorCallback)
 DocumentReader.clearPKDCertificates = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearPKDCertificates", [], successCallback, errorCallback)
 DocumentReader.startNewSession = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "startNewSession", [], successCallback, errorCallback)
+DocumentReader.clearLastPage = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "clearLastPage", [], successCallback, errorCallback)
 DocumentReader.connectBluetoothDevice = (btDeviceName, successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "connectBluetoothDevice", [btDeviceName], successCallback, errorCallback)
 DocumentReader.btDeviceRequestFlashing = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "btDeviceRequestFlashing", [], successCallback, errorCallback)
 DocumentReader.btDeviceRequestFlashingFullIR = (successCallback, errorCallback) => RNRegulaDocumentReader.exec("DocumentReader", "btDeviceRequestFlashingFullIR", [], successCallback, errorCallback)
